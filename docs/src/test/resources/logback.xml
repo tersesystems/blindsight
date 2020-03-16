@@ -1,0 +1,20 @@
+<configuration>
+    <include resource="initial.xml"/>
+    <include resource="exceptions.xml"/>
+
+    <include resource="console-appenders.xml"/>
+    <include resource="jsonfile-appenders.xml"/>
+    <include resource="textfile-appenders.xml"/>
+
+    <root>
+        <appender class="com.tersesystems.logback.uniqueid.UniqueIdComponentAppender">
+            <appender class="com.tersesystems.logback.classic.NanoTimeComponentAppender">
+                <appender-ref ref="CONSOLE"/>
+                <appender-ref ref="TEXTFILE"/>
+                <appender-ref ref="JSONFILE"/>
+            </appender>
+        </appender>
+    </root>
+
+    <include resource="ending.xml"/>
+</configuration>

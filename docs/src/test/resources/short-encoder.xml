@@ -1,0 +1,5 @@
+<included>
+    <encoder>
+        <pattern>${encoders.short.pattern}</pattern>
+    </encoder>
+</included>

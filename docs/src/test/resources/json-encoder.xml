@@ -1,0 +1,45 @@
+<included>
+
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+        <providers>
+            <pattern>
+                <pattern>
+                    {
+                    "id": "%uniqueId",
+                    "relative_ns": "#asLong{%nanoTime}",
+                    "tse_ms": "#asLong{%tse}"
+                    }
+                </pattern>
+            </pattern>
+            <timestamp>
+                <!-- UTC is the best server consistent timezone -->
+                <timeZone>${encoders.json.timeZone}</timeZone>
+                <pattern>${encoders.json.timestampPattern}</pattern>
+            </timestamp>
+            <version/>
+            <message/>
+            <loggerName/>
+            <threadName/>
+            <logLevel/>
+            <logLevelValue/><!-- numeric value is useful for filtering >= -->
+            <stackHash/>
+            <mdc/>
+            <!-- <tags/> --> <!-- non-logstash markers -->
+            <logstashMarkers/>
+            <arguments/>
+            <provider class="com.tersesystems.logback.exceptionmapping.json.ExceptionArgumentsProvider">
+                <fieldName>exception</fieldName>
+            </provider>
+
+            <stackTrace>
+                <!--
+                  https://github.com/logstash/logstash-logback-encoder#customizing-stack-traces
+                -->
+                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                    <rootCauseFirst>${encoders.json.shortenedThrowableConverter.rootCauseFirst}</rootCauseFirst>
+                    <inlineHash>${encoders.json.shortenedThrowableConverter.inlineHash}</inlineHash>
+                </throwableConverter>
+            </stackTrace>
+        </providers>
+    </encoder>
+</included>
