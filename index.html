@@ -35,6 +35,20 @@
 </div>
 <div class="nav-toc">
 <ul>
+  <li><a href="setup/index.html" class="page">Setup</a></li>
+  <li><a href="usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="usage/statements.html" class="page">Statements</a></li>
+    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
+  </ul></li>
+  <li><a href="extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="extending/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="extending/conditional.html" class="page">Conditional Fluent Logger</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -71,6 +85,20 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 </div>
 <div class="nav-toc">
 <ul>
+  <li><a href="setup/index.html" class="page">Setup</a></li>
+  <li><a href="usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="usage/statements.html" class="page">Statements</a></li>
+    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
+  </ul></li>
+  <li><a href="extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="extending/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="extending/conditional.html" class="page">Conditional Fluent Logger</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -90,24 +118,46 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#blindsight" name="blindsight" class="anchor"><span class="anchor-link"></span></a>Blindsight</h1>
+<p>Blindsight is a Scala logging API that allows for fluent logging, semantic logging, and context aware logging.</p>
+<p>The name is taken from Peter Watts&rsquo; excellent first contact novel, <a href="https://en.wikipedia.org/wiki/Blindsight_(Watts_novel)">Blindsight</a>.</p>
+<h2><a href="#requirements" name="requirements" class="anchor"><span class="anchor-link"></span></a>Requirements</h2>
+<p>Blindsight is based around SLF4J. It does not configure or constrain SLF4J in any way, and is designed to defer layout decisions to the backend logging framework, so you can write the same logging event out to a text file, console, to a database, and to JSON on the backend. </p>
+<p>Having said that, the default assumption in the examples is that you are using <a href="https://github.com/logstash/logstash-logback-encoder">logstash-logback-encoder</a> and <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend, and are roughly familiar with the <a href="https://tersesystems.com/category/logging/">blog posts at tersesystems.com</a> and the <a href="https://github.com/tersesystems/terse-logback-showcase">diagnostic logging showcase</a>.</p>
+<h2><a href="#overview" name="overview" class="anchor"><span class="anchor-link"></span></a>Overview</h2>
 <p>Blindsight breaks down logging statements into component parts through type classes:</p>
 <ul>
-  <li><code>api</code> - <code>Markers</code>, <code>Message</code>, and <code>Arguments</code>, which compose to <code>Statement</code> through type class patterns.</li>
-  <li><code>logstash</code> - Type class bindings of <code>Markers</code> and <code>Arguments</code> to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Logstash Markers and StructuredArguments</a>.</li>
+  <li><a href="usage/statements.html">Statement Classes</a> - <code>Markers</code>, <code>Message</code>, and <code>Arguments</code>, which compose to <code>Statement</code> through type class patterns.</li>
+  <li><a href="usage/logstash.html">Logstash Type Classes</a> - Type class bindings of <code>Markers</code> and <code>Arguments</code> to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Logstash Markers and StructuredArguments</a>.</li>
 </ul>
 <p>Blindsight provides three different logging API: </p>
 <ul>
-  <li><code>slf4j</code> - a straight reimplementation of the SLF4J API, designed for drop in replacements.</li>
-  <li><code>fluent</code> - a fluent builder API using provided type classes where logging statements are built progressively.</li>
-  <li><code>semantic</code> - a strongly typed API relying on user provided type classes that is well-suited for rich domain events.</li>
+  <li><a href="usage/slf4j.html">slf4j</a> - an SLF4J compatible API, designed for drop in replacements, but with context markers.</li>
+  <li><a href="usage/fluent.html">fluent</a> - a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent builder API</a> using provided type classes where logging statements are built progressively.</li>
+  <li><a href="usage/semantic.html">semantic</a> - a <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md#introduction-strongly-typed-semantic-logging">strongly typed</a> API relying on user provided type classes that is well-suited for rich domain events.</li>
 </ul>
-<p>Blindsight is designed to defer layout decisions to the backend logging framework, so you can write the same logging event out to a text file, console, to a database, and to JSON on the backend. Having said that, you are strongly encouraged to use <a href="https://github.com/logstash/logstash-logback-encoder">logstash-logback-encoder</a> and <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a>.</p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/index.md">here</a>.
 </div>
 
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="setup/index.html">Setup</a></p>
+</div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="index.html#blindsight" class="header">Blindsight</a>
+  <ul>
+    <li><a href="index.html#requirements" class="header">Requirements</a></li>
+    <li><a href="index.html#overview" class="header">Overview</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 
