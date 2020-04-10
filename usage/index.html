@@ -39,10 +39,12 @@
   <li><a href="../usage/index.html" class="active page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -89,10 +91,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../usage/index.html" class="active page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -124,13 +128,34 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h1>
+<p>The simplest possible logger is:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.LoggerFactory
+val logger = LoggerFactory.getLogger(getClass)
+logger.info(&quot;I am an SLF4J-like logger&quot;)
+</code></pre>
+<p>A <code>com.tersesystems.blindsight.Logger</code> instance provides an <code>SLF4JLogger</code> interface by default, but also gives you access to fluent and semantic interfaces as well.</p>
+<p>To work as fluent logger:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.fluent.FluentLogger
+
+val fluentLogger: FluentLogger = logger.fluent
+fluentLogger.info.message(&quot;I am a fluent logger&quot;).log()
+</code></pre>
+<p>To work as a semantic logger:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.semantic.SemanticLogger
+
+val semanticLogger: SemanticLogger[Statement] = logger.refine[Statement]
+semanticLogger.info(Statement().withMessage(&quot;I am a semantic logger that takes Statement&quot;))
+</code></pre>
 <div class="toc ">
 <ul>
   <li><a href="../usage/statements.html" class="page">Statements</a></li>
-  <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
+  <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+  <li><a href="../usage/context.html" class="page">Context</a></li>
   <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
   <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
   <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+  <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
 </ul>
 </div>
 <div class="source-github">

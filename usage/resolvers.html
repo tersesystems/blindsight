@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Semantic API · Blindsight</title>
+<title>Logger Resolvers · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
@@ -39,11 +39,11 @@
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/resolvers.html" class="active page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
-    <li><a href="../usage/semantic.html" class="active page">Semantic API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -91,11 +91,11 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/resolvers.html" class="active page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
-    <li><a href="../usage/semantic.html" class="active page">Semantic API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -120,7 +120,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
   <li><a href="../usage/index.html">Usage</a></li>
-  <li>Semantic API</li>
+  <li>Logger Resolvers</li>
 </ul>
 </div>
 </div>
@@ -128,85 +128,26 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#semantic-api" name="semantic-api" class="anchor"><span class="anchor-link"></span></a>Semantic API</h1>
-<p>A semantic logging API is <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md">strongly typed</a> and does not have the same construction oriented approach as the fluent API. Instead, the type of the instance is presumed to have a mapping directly to the attributes being logged.</p>
-<p>The semantic API works against <code>Statement</code> directly. The application is expected to handle the type class mapping to <code>Statement</code>.</p>
-<p>Here is an example:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.semantic.SemanticLogger
-import net.logstash.logback.argument.StructuredArguments.kv
-
-object SemanticMain {
-
-  trait UserEvent {
-    def name: String
-  }
-
-  final case class UserLoggedInEvent(name: String, ipAddr: String) extends UserEvent
-
-  object UserLoggedInEvent {
-    implicit val toMessage: ToMessage[UserLoggedInEvent] = ToMessage { instance =&gt;
-      Message(instance.toString)
-    }
-
-    implicit val toArguments: ToArguments[UserLoggedInEvent] = ToArguments { instance =&gt;
-      Arguments(
-        kv(&quot;name&quot;, instance.name),
-        kv(&quot;ipAddr&quot;, instance.ipAddr)
-      )
-    }
-
-    implicit val toStatement: ToStatement[UserLoggedInEvent] = ToStatement { instance =&gt;
-      Statement().withMessage(instance).withArguments(instance)
-    }
-  }
-
-  final case class UserLoggedOutEvent(name: String, reason: String) extends UserEvent
-
-  object UserLoggedOutEvent {
-    implicit val toMessage: ToMessage[UserLoggedOutEvent] = ToMessage { instance =&gt;
-      Message(instance.toString)
-    }
-
-    implicit val toArguments: ToArguments[UserLoggedOutEvent] = ToArguments { instance =&gt;
-      Arguments(
-        kv(&quot;name&quot;, instance.name),
-        kv(&quot;reason&quot;, instance.reason)
-      )
-    }
-
-    implicit val toStatement: ToStatement[UserLoggedOutEvent] = ToStatement { instance =&gt;
-      Statement().withMessage(instance).withArguments(instance)
-    }
-  }
-
-  def main(args: Array[String]): Unit = {
-    val underlying = org.slf4j.LoggerFactory.getLogger(getClass)
-    val userEventLogger: SemanticLogger[UserEvent] = SemanticLogger(underlying)
-    userEventLogger.info(UserLoggedInEvent(&quot;steve&quot;, &quot;127.0.0.1&quot;))
-    userEventLogger.info(UserLoggedOutEvent(&quot;steve&quot;, &quot;timeout&quot;))
-
-    val onlyLoggedInEventLogger: SemanticLogger[UserLoggedInEvent] = userEventLogger.refine[UserLoggedInEvent]
-    onlyLoggedInEventLogger.info(UserLoggedInEvent(&quot;mike&quot;, &quot;10.0.0.1&quot;)) // won&#39;t work with logged out event
-  }
+<h1><a href="#logger-resolvers" name="logger-resolvers" class="anchor"><span class="anchor-link"></span></a>Logger Resolvers</h1>
+<pre class="prettyprint"><code class="language-scala">trait LoggerResolver[T] {
+  def resolveLogger(instance: T): org.slf4j.Logger
 }
 </code></pre>
-<p>in plain text:</p>
-<pre><code>FgEdhil2znw6O0Qbm7EAAA 2020-04-05T23:09:08.359+0000 [INFO ] example.semantic.SemanticMain$ in main  - UserLoggedInEvent(steve,127.0.0.1)
-FgEdhil2zsg6O0Qbm7EAAA 2020-04-05T23:09:08.435+0000 [INFO ] example.semantic.SemanticMain$ in main  - UserLoggedOutEvent(steve,timeout)
-FgEdhil2zsk6O0Qbm7EAAA 2020-04-05T23:09:08.436+0000 [INFO ] example.semantic.SemanticMain$ in main  - UserLoggedInEvent(mike,10.0.0.1)
+<p>means you can do</p>
+<pre class="prettyprint"><code class="language-scala">implicit val requestToResolver: LoggerResolver[Request] = (instance: Request) =&gt; {
+    ... // returns some org.slf4j.Logger instance
+}
 </code></pre>
-<p>and in JSON:</p>
-<pre class="prettyprint"><code class="language-json">{&quot;id&quot;:&quot;FgEdhil2znw6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:-298700,&quot;tse_ms&quot;:1586128148359,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.359Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedInEvent(steve,127.0.0.1)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;steve&quot;,&quot;ipAddr&quot;:&quot;127.0.0.1&quot;}
-{&quot;id&quot;:&quot;FgEdhil2zsg6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:74895700,&quot;tse_ms&quot;:1586128148435,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.435Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedOutEvent(steve,timeout)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;steve&quot;,&quot;reason&quot;:&quot;timeout&quot;}
-{&quot;id&quot;:&quot;FgEdhil2zsk6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:75837600,&quot;tse_ms&quot;:1586128148436,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.436Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedInEvent(mike,10.0.0.1)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;mike&quot;,&quot;ipAddr&quot;:&quot;10.0.0.1&quot;}
+<p>And from then on, you can do:</p>
+<pre class="prettyprint"><code class="language-scala">val myRequest: Request = ...
+val logger = LoggerFactory.getLogger(myRequest)
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/semantic.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/resolvers.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../usage/logstash.html">Logstash Type Classes</a></p>
+<p><strong>Next:</strong> <a href="../usage/context.html">Context</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>

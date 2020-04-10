@@ -39,10 +39,12 @@
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -89,10 +91,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -124,7 +128,29 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#setup" name="setup" class="anchor"><span class="anchor-link"></span></a>Setup</h1>
-<p>When Blindsight is published to Bintray, this is where the instructions will be.</p>
+<p>To install Blindsight, add the following lines to the project settings in SBT:</p>
+<pre><code>val blindsightVersion = &quot;&lt;latest-version&gt;&quot;
+
+resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+libraryDependencies += &quot;com.tersesystems.blindsight&quot; %% &quot;blindsight&quot; % blindsightVersion
+</code></pre>
+<p>Blindsight depends on SLF4J using a service loader pattern, which is typically <a href="http://logback.qos.ch/">Logback</a> or <a href="https://logging.apache.org/log4j/2.x/">Log4J 2</a>. This means you should also plug in one of the service loader implementations, provided below.</p>
+<h2><a href="#logback" name="logback" class="anchor"><span class="anchor-link"></span></a>Logback</h2>
+<p>The recommended option for Logback is to use <code>blindsight-logstash</code>, which includes source information (line, file, enclosing) as logstash markers on the logger and provides a mapping for <code>Arguments</code> and <code>Markers</code>. </p>
+<pre><code>libraryDependencies += &quot;net.logstash.logback&quot; % &quot;blindsight-logstash&quot; % blindsightVersion
+</code></pre>
+<p>If you are not using <code>logstash-logback-encoder</code>, you should use <code>blindsight-logback</code>, which has a library dependency on Logback but does not depend on Logstash and does not include source code information.</p>
+<pre><code>libraryDependencies += &quot;com.tersesystems.blindsight&quot; %% &quot;blindsight-logback&quot; % blindsightVersion
+</code></pre>
+<p>It is recommended (but not required) to use <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend:</p>
+<pre><code># resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+libraryDependencies += &quot;com.tersesystems.logback&quot; % &quot;logback-structured-config&quot; % &quot;0.16.0&quot;
+</code></pre>
+<h2><a href="#log4j-2" name="log4j-2" class="anchor"><span class="anchor-link"></span></a>Log4J 2</h2>
+<p>To install the Log4J 2 implementation of Blindsight, add the following lines:</p>
+<pre class="prettyprint"><code class="language-dtd">libraryDependencies += &quot;com.tersesystems.blindsight&quot; %% &quot;blindsight-log4j2&quot; % blindsightVersion
+</code></pre>
+<p>This library depends on <code>log4j-slf4j-impl</code>, binding the Log4J 2 to the SLF4J API. It does not include source code information.</p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/setup/index.md">here</a>.
 </div>
@@ -134,6 +160,20 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html#setup" class="header">Setup</a>
+  <ul>
+    <li><a href="../setup/index.html#logback" class="header">Logback</a></li>
+    <li><a href="../setup/index.html#log4j-2" class="header">Log4J 2</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 

@@ -39,10 +39,12 @@
   <li><a href="usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="usage/statements.html" class="page">Statements</a></li>
-    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="usage/context.html" class="page">Context</a></li>
     <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="extending/index.html" class="page">Extending</a>
   <ul>
@@ -89,10 +91,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="usage/statements.html" class="page">Statements</a></li>
-    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
+    <li><a href="usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="usage/context.html" class="page">Context</a></li>
     <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="extending/index.html" class="page">Extending</a>
   <ul>
@@ -118,11 +122,25 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#blindsight" name="blindsight" class="anchor"><span class="anchor-link"></span></a>Blindsight</h1>
-<p>Blindsight is a Scala logging API that allows for fluent logging, semantic logging, and context aware logging.</p>
+<p>Blindsight is a Scala logging API that allows for fluent logging, semantic logging, and context aware logging. It is heavily informed by the <a href="https://tersesystems.com/category/logging/">blog posts at tersesystems.com</a> and the <a href="https://github.com/tersesystems/terse-logback-showcase">diagnostic logging showcase</a>.</p>
 <p>The name is taken from Peter Watts&rsquo; excellent first contact novel, <a href="https://en.wikipedia.org/wiki/Blindsight_(Watts_novel)">Blindsight</a>.</p>
-<h2><a href="#requirements" name="requirements" class="anchor"><span class="anchor-link"></span></a>Requirements</h2>
-<p>Blindsight is based around SLF4J. It does not configure or constrain SLF4J in any way, and is designed to defer layout decisions to the backend logging framework, so you can write the same logging event out to a text file, console, to a database, and to JSON on the backend. </p>
-<p>Having said that, the default assumption in the examples is that you are using <a href="https://github.com/logstash/logstash-logback-encoder">logstash-logback-encoder</a> and <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend, and are roughly familiar with the <a href="https://tersesystems.com/category/logging/">blog posts at tersesystems.com</a> and the <a href="https://github.com/tersesystems/terse-logback-showcase">diagnostic logging showcase</a>.</p>
+<h2><a href="#principles" name="principles" class="anchor"><span class="anchor-link"></span></a>Principles</h2>
+<p>Blindsight has some organizing principles that inform the design.</p>
+<ul>
+  <li>Loggers depend directly and solely on the SLF4J API.</li>
+  <li>Loggers are instantiated through logger factories backed by service loaders.</li>
+  <li>Easy access to the underlying SLF4J logger.</li>
+  <li>Type class based operation, ideally without explicit imports.</li>
+  <li>Extensible implementations.</li>
+</ul>
+<p>Likewise, there are things that Blindsight eschews:</p>
+<ul>
+  <li>No effects.</li>
+  <li>No &ldquo;magic&rdquo; implicit conversions.</li>
+  <li>No constraints or configuration on SLF4J implementation.</li>
+  <li>No FP library requirements; no need for scalaz, cats, zio etc.</li>
+  <li>No formatting on the front end; messages should not contain JSON/XML.</li>
+</ul>
 <h2><a href="#overview" name="overview" class="anchor"><span class="anchor-link"></span></a>Overview</h2>
 <p>Blindsight breaks down logging statements into component parts through type classes:</p>
 <ul>
@@ -135,6 +153,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="usage/fluent.html">fluent</a> - a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent builder API</a> using provided type classes where logging statements are built progressively.</li>
   <li><a href="usage/semantic.html">semantic</a> - a <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md#introduction-strongly-typed-semantic-logging">strongly typed</a> API relying on user provided type classes that is well-suited for rich domain events.</li>
 </ul>
+<h2><a href="#setup" name="setup" class="anchor"><span class="anchor-link"></span></a>Setup</h2>
+<p>Please see the <a href="setup/index.html">Setup</a> page for instructions.</p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/index.md">here</a>.
 </div>
@@ -151,8 +171,9 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <ul>
   <li><a href="index.html#blindsight" class="header">Blindsight</a>
   <ul>
-    <li><a href="index.html#requirements" class="header">Requirements</a></li>
+    <li><a href="index.html#principles" class="header">Principles</a></li>
     <li><a href="index.html#overview" class="header">Overview</a></li>
+    <li><a href="index.html#setup" class="header">Setup</a></li>
   </ul></li>
 </ul>
 </div>
