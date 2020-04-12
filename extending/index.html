@@ -38,15 +38,12 @@
   <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="active page">Extending</a></li>
 </ul>
@@ -88,15 +85,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="active page">Extending</a></li>
 </ul>
@@ -178,21 +172,95 @@ trait FluentLoggerMethod extends FluentAPI {
 </code></pre>
 <p>Breaking down the API means that you can pass through only the <code>LoggerMethod</code>, or assemble your custom logging levels. You have the option of extending <code>LoggerMethod</code> and <code>LoggerPredicate</code> with your own application specific logging API. Blindsight is designed to work with you so that adding new functionality is easy.</p>
 <p>For example, if you want to add entry and exit logging levels to the SLF4J compatible API with automatically applied markers, you can do this:</p>
-<pre class="prettyprint"><code class="language-scala">class EntryExitLogger(protected val logger: SLF4JLogger)
-    extends ProxyLoggerAPI[LoggerPredicate, LoggerMethod] with Logger {
-  override type Self = EntryExitLogger
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api.{Arguments, ToArguments}
+import com.tersesystems.blindsight.fluent.FluentLogger
+import com.tersesystems.blindsight.logstash.ToArgumentsImplicits
+import net.logstash.logback.argument.StructuredArguments
+import org.slf4j.MarkerFactory
+import sourcecode.{Args, Enclosing, File, Line}
 
-  private val entryLogger: SLF4JLogger = logger.marker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
-  private val exitLogger: SLF4JLogger = logger.marker(MarkerFactory.getMarker(&quot;EXIT&quot;))
+import scala.util.{Failure, Success, Try}
 
-  def entry: Method = new SLF4JLoggerMethod(Level.TRACE, entryLogger)
-  def exit: Method = new SLF4JLoggerMethod(Level.TRACE, exitLogger)
+class FlowLogger(logger: FluentLogger) {
+
+  def flow[B]: FlowLoggerMethod[B] = new FlowLoggerMethod.Impl[B](logger, defaults[B])
+
+  private def defaults[B]: ToArguments[B] = new ToArguments[B] {
+    override def toArguments(instance: =&gt; B): Arguments = {
+      instance match {
+        case array: Array[_] =&gt;
+          Arguments(StructuredArguments.kv(&quot;result&quot;, array.toSeq))
+        case other =&gt;
+          Arguments(StructuredArguments.kv(&quot;result&quot;, other))
+      }
+    }
+  }
+
+  def typedFlow[B: ToArguments]: FlowLoggerMethod[B] = {
+    new FlowLoggerMethod.Impl[B](logger, implicitly[ToArguments[B]])
+  }
+}
+
+trait FlowLoggerMethod[B] {
+
+  def apply(block: =&gt; B)(implicit line: Line, file: File, enclosing: Enclosing, sourceArgs: Args): B
+
+  def map(mappings: B =&gt; Arguments): FlowLoggerMethod[B]
+}
+
+object FlowLoggerMethod {
+
+  class Impl[B](logger: FluentLogger, ta: ToArguments[B])
+      extends FlowLoggerMethod[B]
+      with ToArgumentsImplicits {
+    private val entryLogger =
+      logger.withMarker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
+    private val exitLogger = logger.withMarker(MarkerFactory.getMarker(&quot;EXIT&quot;))
+
+    val markers = entryLogger.markers
+
+    def map(mappings: B =&gt; Arguments): FlowLoggerMethod[B] = {
+      new FlowLoggerMethod.Impl[B](logger, ToArguments(mappings))
+    }
+
+    override def apply(
+        attempt: =&gt; B
+    )(implicit line: Line, file: File, enclosing: Enclosing, sourceArgs: Args): B = {
+      if (entryLogger.isTraceEnabled()) {
+        entryLogger.trace
+          .message(s&quot;${enclosing.value} entry&quot;)
+          .argument(sourceArgs)
+          .logWithPlaceholders()
+      }
+      tryExecution(attempt)
+    }
+
+    protected def tryExecution(
+        attempt: =&gt; B
+    )(implicit line: Line, file: File, enclosing: Enclosing, sourceArgs: Args): B = {
+      if (exitLogger.isTraceEnabled()) {
+        val result = Try(attempt)
+        result match {
+          case Success(resultValue) =&gt;
+            val resultArgument: Arguments = ta.toArguments(resultValue)
+            exitLogger.trace
+              .message(s&quot;${enclosing.value} exit&quot;)
+              .argument(resultArgument)
+              .logWithPlaceholders()
+          case Failure(exception) =&gt;
+            exitLogger.trace
+              .cause(exception)
+              .message(s&quot;${enclosing.value} exception&quot;)
+              .logWithPlaceholders()
+        }
+        result.get
+      } else {
+        attempt
+      }
+    }
+  }
 }
 </code></pre>
-<div class="toc ">
-<ul>
-</ul>
-</div>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/extending/index.md">here</a>.
 </div>

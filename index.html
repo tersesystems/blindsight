@@ -38,15 +38,12 @@
   <li><a href="setup/index.html" class="page">Setup</a></li>
   <li><a href="usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="usage/statements.html" class="page">Statements</a></li>
-    <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="usage/context.html" class="page">Context</a></li>
     <li><a href="usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="usage/underlying.html" class="page">Underlying SLF4J</a></li>
-    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -88,15 +85,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="setup/index.html" class="page">Setup</a></li>
   <li><a href="usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="usage/statements.html" class="page">Statements</a></li>
-    <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="usage/context.html" class="page">Context</a></li>
     <li><a href="usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="usage/underlying.html" class="page">Underlying SLF4J</a></li>
-    <li><a href="usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -123,11 +117,11 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h2><a href="#principles" name="principles" class="anchor"><span class="anchor-link"></span></a>Principles</h2>
 <p>Blindsight has some organizing principles that inform the design.</p>
 <ul>
-  <li>Loggers depend directly and solely on the SLF4J API.</li>
-  <li>Loggers are instantiated through logger factories backed by service loaders.</li>
-  <li>Easy access to the underlying SLF4J logger.</li>
-  <li>Type class based operation, ideally without explicit imports.</li>
-  <li>Extensible implementations.</li>
+  <li>Loggers depend directly and solely on the SLF4J API, which can always be accessed directly.</li>
+  <li>Structured logging is baked in, uses standard Scala idioms, and can be overridden.</li>
+  <li>Knowing <strong>when</strong> and <strong>when not</strong> to log is more important than &ldquo;how fast&rdquo; you log.</li>
+  <li>Loggers are not class bound, and can have custom resolution logic.</li>
+  <li>Implementations can be extended for domain specific logging.</li>
 </ul>
 <p>Likewise, there are things that Blindsight eschews:</p>
 <ul>
@@ -137,21 +131,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li>No FP library requirements; no need for scalaz, cats, zio etc.</li>
   <li>No formatting on the front end; messages should not contain JSON/XML.</li>
 </ul>
-<h2><a href="#overview" name="overview" class="anchor"><span class="anchor-link"></span></a>Overview</h2>
-<p>Blindsight breaks down logging statements into component parts through type classes:</p>
-<ul>
-  <li><a href="usage/statements.html">Statement Classes</a> - <code>Markers</code>, <code>Message</code>, and <code>Arguments</code>, which compose to <code>Statement</code> through type class patterns.</li>
-</ul>
-<p>Blindsight provides three different logging APIs, all accessible through <code>com.tersesystems.blindsight.Logger</code>: </p>
-<ul>
-  <li><a href="usage/slf4j.html">slf4j</a> - an SLF4J compatible API, designed for drop in replacements, but with context markers.</li>
-  <li><a href="usage/fluent.html">fluent</a> - a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent builder API</a> using provided type classes where logging statements are built progressively.</li>
-  <li><a href="usage/semantic.html">semantic</a> - a <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md#introduction-strongly-typed-semantic-logging">strongly typed</a> API relying on user provided type classes that is well-suited for rich domain events.</li>
-</ul>
-<p>Blindsight provides the following bindings for structured logging:</p>
-<ul>
-  <li><a href="usage/logstash.html">Logstash Type Classes</a> - Type class bindings of <code>Markers</code> and <code>Arguments</code> to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Logstash Markers and StructuredArguments</a>.</li>
-</ul>
+<h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
+<p>Please see the <a href="usage/index.html">Usage</a> page for instructions.</p>
 <h2><a href="#setup" name="setup" class="anchor"><span class="anchor-link"></span></a>Setup</h2>
 <p>Please see the <a href="setup/index.html">Setup</a> page for instructions.</p>
 <div class="source-github">
@@ -171,7 +152,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
   <li><a href="index.html#blindsight" class="header">Blindsight</a>
   <ul>
     <li><a href="index.html#principles" class="header">Principles</a></li>
-    <li><a href="index.html#overview" class="header">Overview</a></li>
+    <li><a href="index.html#usage" class="header">Usage</a></li>
     <li><a href="index.html#setup" class="header">Setup</a></li>
   </ul></li>
 </ul>

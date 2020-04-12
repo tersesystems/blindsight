@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Underlying SLF4J · Blindsight</title>
+<title>SLF4J API · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
@@ -38,15 +38,12 @@
   <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/api.html" class="active page">SLF4J API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="active page">Underlying SLF4J</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -88,15 +85,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/api.html" class="active page">SLF4J API</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="active page">Underlying SLF4J</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -116,7 +110,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
   <li><a href="../usage/index.html">Usage</a></li>
-  <li>Underlying SLF4J</li>
+  <li>SLF4J API</li>
 </ul>
 </div>
 </div>
@@ -124,9 +118,51 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#underlying-slf4j" name="underlying-slf4j" class="anchor"><span class="anchor-link"></span></a>Underlying SLF4J</h1>
+<h1><a href="#slf4j-api" name="slf4j-api" class="anchor"><span class="anchor-link"></span></a>SLF4J API</h1>
+<p>The SLF4J API has the same logger methods and type signature as SLF4J, but has a couple of extra features in the <code>Logger</code> interface itself.</p>
+<p>Notably, you can pass in something that is not a marker, and provided you have a <code>ToMarker</code> in implicit scope, you can get it auto-converted.</p>
+<p>Markers can also be passed into the logger through the <code>logger.marker</code> method. This provides a logger of the same time that will automatically apply the marker on any logging call. This is extremely useful when you want to build up state inside a logger without having to expose it explicitly. Under this API, you pass in a logger, and any markers you explicitly add are merged on top of the logger&rsquo;s markers.</p>
+<p>Finally, you can also use the <code>LoggerAPI</code> traits to selectively limit the abilities of the logger. For example, you can create a logger which only logs at info level. </p>
+<pre class="prettyprint"><code class="language-scala"><br/>import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.api.{Arguments, Markers, ToMarkers}
+import com.tersesystems.blindsight.slf4j._
+import org.slf4j.MarkerFactory
+
+object Slf4jMain {
+
+  final case class FeatureFlag(flagName: String)
+
+  object FeatureFlag {
+    implicit val toMarkers: ToMarkers[FeatureFlag] = ToMarkers { instance =&gt;
+      Markers(MarkerFactory.getDetachedMarker(instance.flagName))
+    }
+  }
+
+  def main(args: Array[String]): Unit = {
+    val logger = LoggerFactory.getLogger(getClass)
+
+    val featureFlag = FeatureFlag(&quot;flag.enabled&quot;)
+    if (logger.isDebugEnabled(featureFlag)) {
+      logger.debug(&quot;this is a test&quot;)
+    }
+
+    val m1 = MarkerFactory.getMarker(&quot;M1&quot;)
+    logger.info(m1, &quot;a&quot; -&gt; &quot;b {} {}&quot;, Arguments(42, 53))
+
+    val onlyInfo = new SLF4JLoggerAPI.Info[base.Predicate, base.Method] {
+      override type Self      = base.Self
+      override type Predicate = base.Predicate
+      override type Method    = base.Method
+
+      override def isInfoEnabled: Predicate = base.isInfoEnabled
+      override def info: Method             = base.info
+    }
+    onlyInfo.info(&quot;good&quot;)
+  }
+}
+</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/underlying.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/api.md">here</a>.
 </div>
 
 <div class="nav-next">

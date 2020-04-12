@@ -38,15 +38,12 @@
   <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/logstash.html" class="active page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
-    <li><a href="../usage/logstash.html" class="active page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -88,15 +85,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/logstash.html" class="active page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
-    <li><a href="../usage/logstash.html" class="active page">Logstash Type Classes</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -153,34 +147,12 @@ object LowPriorityMarkers extends LowPriorityMarkers
 <pre class="prettyprint"><code class="language-scala">import LowPriorityMarkers._
 logger.info.markers(&quot;userId&quot; -&gt; userId).log()
 </code></pre>
-<p>This is especially important for the semantic and fluent APIs. The semantic API is strongly typed, and so all conversion is handled through type classes:</p>
-<pre class="prettyprint"><code class="language-scala">final case class UserLoggedOutEvent(name: String, reason: String) extends UserEvent
-object UserLoggedOutEvent {
-  implicit val toMessage: ToMessage[UserLoggedOutEvent] = ToMessage { instance =&gt;
-    Message(instance.toString)
-  }
-
-  implicit val toArguments: ToArguments[UserLoggedOutEvent] = ToArguments { instance =&gt;
-    Arguments(
-      kv(&quot;name&quot;, instance.name),
-      kv(&quot;reason&quot;, instance.reason)
-    )
-  }
-
-  implicit val toStatement: ToStatement[UserLoggedOutEvent] = ToStatement { instance =&gt;
-    Statement().withMessage(instance).withArguments(instance)
-  }
-}
-
-val semanticLogger: SemanticLogger[UserLoggedOutEvent] = ...
-logger.info(userLoggedOutEvent)
-</code></pre>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/logstash.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../extending/index.html">Extending</a></p>
+<p><strong>Next:</strong> <a href="../usage/fluent.html">Fluent API</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
