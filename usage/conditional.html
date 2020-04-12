@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Extending · Blindsight</title>
+<title>Conditional Logging · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
@@ -44,11 +44,11 @@
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
-    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/conditional.html" class="active page">Conditional Logging</a></li>
     <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="active page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
 </div>
 
@@ -94,11 +94,11 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
-    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/conditional.html" class="active page">Conditional Logging</a></li>
     <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="active page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
 </div>
 
@@ -115,7 +115,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="nav-breadcrumbs">
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
-  <li>Extending</li>
+  <li><a href="../usage/index.html">Usage</a></li>
+  <li>Conditional Logging</li>
 </ul>
 </div>
 </div>
@@ -123,82 +124,59 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#extending" name="extending" class="anchor"><span class="anchor-link"></span></a>Extending</h1>
-<p>Because of the way that Blindsight is constructed, it is very easy to extend and adapt Blindsight to your needs. </p>
-<p>Blindsight does this by breaking down the components of logging. In SLF4J, you have a logging API that looks like this: </p>
-<pre class="prettyprint"><code class="language-java">public interface Logger {
-  boolean isInfoEnabled();
-  void info(String message);
+<h1><a href="#conditional-logging" name="conditional-logging" class="anchor"><span class="anchor-link"></span></a>Conditional Logging</h1>
+<p>No matter how fast your logging is, it&rsquo;s always faster not to log a statement at all. Blindsight does its best to allow the system to <strong>not</strong> log as much as it makes it possible to log.</p>
+<p>Blindsight has conditional logging on two levels; on the logger itself, and on the method. Conditional logging does not take into account any internal state of the logger, i.e. marker state, logger names, etc. It takes a boolean call by name, and that&rsquo;s it.</p>
+<h2><a href="#on-condition" name="on-condition" class="anchor"><span class="anchor-link"></span></a>On Condition</h2>
+<p>All loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
+<p>This logger will only log if the condition is true.</p>
+<pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
+val conditionalLogger = logger.onCondition(booleanCondition)
+conditionalLogger.info(&quot;Only logs when condition is true&quot;)
+</code></pre>
+<p>Conditions will be stacked with a boolean AND.</p>
+<pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
+val bothConditionsLogger = conditionalLogger.onCondition(anotherCondition)
+bothConditionsLogger.info(&quot;Only logs when both conditions are true&quot;)
+</code></pre>
+<p>The conditions are not exposed from the logger, and clients should not peek under the hood.</p>
+<p>Conditional loggers are good with feature flags, circuit breakers, sampling, and other systems that throttle logging. </p>
+<p>They are also good with capabilities, because loggers can be revoked along with the capability. For example, a logger reporting a failed network stream can be silenced if the reason why the stream failed is because of an intentional security cutoff.</p>
+<h2><a href="#when" name="when" class="anchor"><span class="anchor-link"></span></a>When</h2>
+<p>By contrast, <code>when</code> is used on methods, rather than the logger, and provides a block that is executed only when the condition is true:</p>
+<pre class="prettyprint"><code class="language-scala">logger.info.when(booleanCondition) { info =&gt;
+  info(&quot;log&quot;)
 }
 </code></pre>
-<p>In Blindsight, the API and the logging levels are all traits, and the <code>LoggerAPI</code> is a composition of those traits. </p>
-<pre class="prettyprint"><code class="language-scala">trait LoggerComponent[P, M] {
-  type Predicate &lt;: P
-  type Method    &lt;: M
-  type Self
-}
-
-trait InfoLoggerAPI[P, M] extends LoggerComponent[P, M] {
-  def isInfoEnabled: Predicate
-  def info: Method
-}
-
-trait LoggerAPI[P, M]
-    extends LoggerComponent[P, M]
-    with TraceLoggerAPI[P, M]
-    with DebugLoggerAPI[P, M]
-    with InfoLoggerAPI[P, M]
-    with WarnLoggerAPI[P, M]
-    with ErrorLoggerAPI[P, M]
+<p>This is useful when constructing and executing a logging statement is expensive in itself, and allows for finer grained control. </p>
+<p>You can, of course, partially apply <code>when</code> to return a function:</p>
+<pre class="prettyprint"><code class="language-scala">val infoFunction = logger.info.when(1 == 1)(_)
+infoFunction(info =&gt; info(&quot;when true&quot;))
 </code></pre>
-<p>Here&rsquo;s the SLF4J compatible API:</p>
-<pre class="prettyprint"><code class="language-scala">trait Logger extends LoggerAPI[LoggerPredicate, LoggerMethod]
-
-trait LoggerPredicate {
-  def apply(): Boolean
-}
-
-trait LoggerMethod {
-  def apply(message: String): Unit
-}
-</code></pre>
-<p>And here&rsquo;s the fluent API:</p>
-<pre class="prettyprint"><code class="language-scala">trait FluentLogger extends LoggerAPI[LoggerPredicate, FluentLoggerMethod]
-
-trait FluentAPI {
-  def marker[T: ToMarkers](instance: =&gt; T): FluentLoggerMethod.Builder
-  def message[T: ToMessage](instance: =&gt; T): FluentLoggerMethod.Builder
-  def argument[T: ToArguments](instance: =&gt; T): FluentLoggerMethod.Builder
-  def cause(e: Throwable): FluentLoggerMethod.Builder
-}
-
-trait FluentLoggerMethod extends FluentAPI {
-  def apply[T: ToStatement](instance: =&gt; T): Unit
-}
-</code></pre>
-<p>Breaking down the API means that you can pass through only the <code>LoggerMethod</code>, or assemble your custom logging levels. You have the option of extending <code>LoggerMethod</code> and <code>LoggerPredicate</code> with your own application specific logging API. Blindsight is designed to work with you so that adding new functionality is easy.</p>
-<p>For example, if you want to add entry and exit logging levels to the SLF4J compatible API with automatically applied markers, you can do this:</p>
-<pre class="prettyprint"><code class="language-scala">class EntryExitLogger(protected val logger: SLF4JLogger)
-    extends ProxyLoggerAPI[LoggerPredicate, LoggerMethod] with Logger {
-  override type Self = EntryExitLogger
-
-  private val entryLogger: SLF4JLogger = logger.marker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
-  private val exitLogger: SLF4JLogger = logger.marker(MarkerFactory.getMarker(&quot;EXIT&quot;))
-
-  def entry: Method = new SLF4JLoggerMethod(Level.TRACE, entryLogger)
-  def exit: Method = new SLF4JLoggerMethod(Level.TRACE, exitLogger)
-}
-</code></pre>
-<div class="toc ">
-<ul>
-</ul>
-</div>
+<p>But it is generally easier to pass a conditional logger around rather than a logging function.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/extending/index.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/conditional.md">here</a>.
 </div>
 
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../usage/underlying.html">Underlying SLF4J</a></p>
+</div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/conditional.html#conditional-logging" class="header">Conditional Logging</a>
+  <ul>
+    <li><a href="../usage/conditional.html#on-condition" class="header">On Condition</a></li>
+    <li><a href="../usage/conditional.html#when" class="header">When</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 

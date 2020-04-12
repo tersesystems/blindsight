@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Extending · Blindsight</title>
+<title>Underlying SLF4J · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
@@ -45,10 +45,10 @@
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
+    <li><a href="../usage/underlying.html" class="active page">Underlying SLF4J</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="active page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
 </div>
 
@@ -95,10 +95,10 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
+    <li><a href="../usage/underlying.html" class="active page">Underlying SLF4J</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="active page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
 </div>
 
@@ -115,7 +115,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="nav-breadcrumbs">
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
-  <li>Extending</li>
+  <li><a href="../usage/index.html">Usage</a></li>
+  <li>Underlying SLF4J</li>
 </ul>
 </div>
 </div>
@@ -123,80 +124,14 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#extending" name="extending" class="anchor"><span class="anchor-link"></span></a>Extending</h1>
-<p>Because of the way that Blindsight is constructed, it is very easy to extend and adapt Blindsight to your needs. </p>
-<p>Blindsight does this by breaking down the components of logging. In SLF4J, you have a logging API that looks like this: </p>
-<pre class="prettyprint"><code class="language-java">public interface Logger {
-  boolean isInfoEnabled();
-  void info(String message);
-}
-</code></pre>
-<p>In Blindsight, the API and the logging levels are all traits, and the <code>LoggerAPI</code> is a composition of those traits. </p>
-<pre class="prettyprint"><code class="language-scala">trait LoggerComponent[P, M] {
-  type Predicate &lt;: P
-  type Method    &lt;: M
-  type Self
-}
-
-trait InfoLoggerAPI[P, M] extends LoggerComponent[P, M] {
-  def isInfoEnabled: Predicate
-  def info: Method
-}
-
-trait LoggerAPI[P, M]
-    extends LoggerComponent[P, M]
-    with TraceLoggerAPI[P, M]
-    with DebugLoggerAPI[P, M]
-    with InfoLoggerAPI[P, M]
-    with WarnLoggerAPI[P, M]
-    with ErrorLoggerAPI[P, M]
-</code></pre>
-<p>Here&rsquo;s the SLF4J compatible API:</p>
-<pre class="prettyprint"><code class="language-scala">trait Logger extends LoggerAPI[LoggerPredicate, LoggerMethod]
-
-trait LoggerPredicate {
-  def apply(): Boolean
-}
-
-trait LoggerMethod {
-  def apply(message: String): Unit
-}
-</code></pre>
-<p>And here&rsquo;s the fluent API:</p>
-<pre class="prettyprint"><code class="language-scala">trait FluentLogger extends LoggerAPI[LoggerPredicate, FluentLoggerMethod]
-
-trait FluentAPI {
-  def marker[T: ToMarkers](instance: =&gt; T): FluentLoggerMethod.Builder
-  def message[T: ToMessage](instance: =&gt; T): FluentLoggerMethod.Builder
-  def argument[T: ToArguments](instance: =&gt; T): FluentLoggerMethod.Builder
-  def cause(e: Throwable): FluentLoggerMethod.Builder
-}
-
-trait FluentLoggerMethod extends FluentAPI {
-  def apply[T: ToStatement](instance: =&gt; T): Unit
-}
-</code></pre>
-<p>Breaking down the API means that you can pass through only the <code>LoggerMethod</code>, or assemble your custom logging levels. You have the option of extending <code>LoggerMethod</code> and <code>LoggerPredicate</code> with your own application specific logging API. Blindsight is designed to work with you so that adding new functionality is easy.</p>
-<p>For example, if you want to add entry and exit logging levels to the SLF4J compatible API with automatically applied markers, you can do this:</p>
-<pre class="prettyprint"><code class="language-scala">class EntryExitLogger(protected val logger: SLF4JLogger)
-    extends ProxyLoggerAPI[LoggerPredicate, LoggerMethod] with Logger {
-  override type Self = EntryExitLogger
-
-  private val entryLogger: SLF4JLogger = logger.marker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
-  private val exitLogger: SLF4JLogger = logger.marker(MarkerFactory.getMarker(&quot;EXIT&quot;))
-
-  def entry: Method = new SLF4JLoggerMethod(Level.TRACE, entryLogger)
-  def exit: Method = new SLF4JLoggerMethod(Level.TRACE, exitLogger)
-}
-</code></pre>
-<div class="toc ">
-<ul>
-</ul>
-</div>
+<h1><a href="#underlying-slf4j" name="underlying-slf4j" class="anchor"><span class="anchor-link"></span></a>Underlying SLF4J</h1>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/extending/index.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/underlying.md">here</a>.
 </div>
 
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../usage/logstash.html">Logstash Type Classes</a></p>
+</div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
 </div>

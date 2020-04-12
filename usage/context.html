@@ -39,18 +39,16 @@
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
-    <li><a href="../usage/context.html" class="active page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/context.html" class="active page">Context</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/flow.html" class="page">Flow Logger</a></li>
-    <li><a href="../extending/conditional.html" class="page">Conditional Fluent Logger</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
 </div>
 
@@ -91,18 +89,16 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/statements.html" class="page">Statements</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
-    <li><a href="../usage/context.html" class="active page">Context</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/context.html" class="active page">Context</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/underlying.html" class="page">Underlying SLF4J</a></li>
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/flow.html" class="page">Flow Logger</a></li>
-    <li><a href="../extending/conditional.html" class="page">Conditional Fluent Logger</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
 </div>
 
@@ -129,23 +125,58 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#context" name="context" class="anchor"><span class="anchor-link"></span></a>Context</h1>
-<p>Blindsight loggers can build up context through markers.</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
-
-val markers: Markers = Markers.append(&quot;a&quot;, &quot;b&quot;) 
-val loggerWithMarker = logger.marker(markers)
-
-loggerWithMarker.info(&quot;This logs with the marker!&quot;)
+<p>Blindsight can handle context cleanly over multiple threads. Context is handled through an immutable API that returns new instances on modification.</p>
+<p>This is very useful when you are logging <a href="https://www.honeycomb.io/blog/how-are-structured-logs-different-from-events/">events</a>, because a complete picture is often not available at the beginning of the unit of work. There are various FP ways of doing this, but explicit <code>logger</code> arguments also work fine.</p>
+<p>Blindsight does not use MDC for managing context, and does not touch thread local storage. Instead, it uses markers and builds up those markers for use in structured logging. This is especially useful for events.</p>
+<p>The assumption is that you will be using the <a href="logstash.html">Logstash Bindings</a> and <a href="https://tersesystems.github.io/terse-logback">Terse Logback</a>. You should also read through how to create your own <a href="https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/">markers</a> for use in logging.</p>
+<h2><a href="#marker-context" name="marker-context" class="anchor"><span class="anchor-link"></span></a>Marker Context</h2>
+<p>Blindsight allows state to be built up through a set of SLF4J markers, wrapped by <code>Markers</code>.</p>
+<pre class="prettyprint"><code class="language-scala">val entryLogger = logger.withMarker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
+entryLogger.trace(&quot;entry: entering method&quot;)
 </code></pre>
+<p>You can accumulate several markers at once.</p>
+<pre class="prettyprint"><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
+val loggerWithTwoMarkers = entryLogger.withMarker(LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;))
+</code></pre>
+<p>The markers are not added to each other &ndash; in fact, there is no absolutely use of SLF4J marker parent/child relationships or SLF4J iterators in the code. Instead, they&rsquo;re handled by a Scala immutable set, and a custom parent marker is created lazily when you call <code>markers.marker</code>.</p>
+<blockquote>
+  <p><strong>Note</strong>: You should not call <code>marker.add(childMarker)</code> or otherwise use the SLF4J Marker API, as it directly mutates marker internal state.</p>
+</blockquote>
+<p>The markers are available from the logger using <code>markers</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val markers: Markers = entryLogger.markers
+val parentMarker: Marker = markers.marker
+</code></pre>
+<p>You can log with markers as usual, and they will be added on top of the logger&rsquo;s markers:</p>
+<pre class="prettyprint"><code class="language-scala">val anotherMarker = ... 
+entryLogger.info(anotherMarker, &quot;a message&quot;)
+</code></pre>
+<p>Managing context is from this point a question of whether you want to pass around <code>Markers</code>, or pass around a <code>Logger</code>, useful for <a href="https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/">constructing events</a>. </p>
+<h2><a href="#mdc" name="mdc" class="anchor"><span class="anchor-link"></span></a>MDC</h2>
+<p>Blindsight does not use MDC, and does not recommend its use.</p>
+<p>There are many reasons to not use MDC. It is inherently limiting as a <code>Map[String,String]</code>. It must be managed carefully in asynchronous programming to resolve the Map. It is mutable &ndash; it will only contain the last written values in the map at the time of logging, and no record is kept of prior values. It is static &ndash; it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed. And finally, MDC fails silently. When something goes wrong in MDC, it&rsquo;s anyone&rsquo;s guess what cleared it.</p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/context.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../usage/slf4j.html">SLF4J API</a></p>
+<p><strong>Next:</strong> <a href="../usage/conditional.html">Conditional Logging</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/context.html#context" class="header">Context</a>
+  <ul>
+    <li><a href="../usage/context.html#marker-context" class="header">Marker Context</a></li>
+    <li><a href="../usage/context.html#mdc" class="header">MDC</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 
