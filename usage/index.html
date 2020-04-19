@@ -42,7 +42,7 @@
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -90,7 +90,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -232,7 +232,7 @@ semanticLogger.info(userEvent)
 </code></pre>
 <p>See <a href="semantic.html">semantic logger</a> for details.</p>
 <h2><a href="#conditionals" name="conditionals" class="anchor"><span class="anchor-link"></span></a>Conditionals</h2>
-<p>All loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
+<p>Most of the loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
 <p>This logger will only log if the condition is true:</p>
 <pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
 val conditionalLogger = logger.onCondition(booleanCondition)
@@ -244,6 +244,15 @@ conditionalLogger.info(&quot;Only logs when condition is true&quot;)
 }
 </code></pre>
 <p>See <a href="conditional.html">Conditional Logging</a> for more details.</p>
+<h2><a href="#flow" name="flow" class="anchor"><span class="anchor-link"></span></a>Flow</h2>
+<p>The flow API is used to render the entry and exit of a given method. It is tied together with a flow behavior which provides the relevant <code>Statement</code> on entry and exit. This can also be used for timers and hierarchical tracing such as Opentracing.</p>
+<pre class="prettyprint"><code class="language-scala">implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = ...
+
+def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+  arg1 + arg2
+}
+</code></pre>
+<p>See <a href="flow.html">Flow API</a> for more details.</p>
 <h2><a href="#context" name="context" class="anchor"><span class="anchor-link"></span></a>Context</h2>
 <p>Blindsight builds up context with markers. You can use <code>withMarkers</code> to add markers that don&rsquo;t have to explicitly added to a statement.</p>
 <pre class="prettyprint"><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
@@ -325,6 +334,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
     <li><a href="../usage/index.html#fluent-api" class="header">Fluent API</a></li>
     <li><a href="../usage/index.html#semantic-api" class="header">Semantic API</a></li>
     <li><a href="../usage/index.html#conditionals" class="header">Conditionals</a></li>
+    <li><a href="../usage/index.html#flow" class="header">Flow</a></li>
     <li><a href="../usage/index.html#context" class="header">Context</a></li>
     <li><a href="../usage/index.html#underlying" class="header">Underlying</a></li>
     <li><a href="../usage/index.html#logger-factory" class="header">Logger Factory</a></li>

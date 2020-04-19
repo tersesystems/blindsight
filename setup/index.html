@@ -42,7 +42,7 @@
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -90,7 +90,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -124,17 +124,28 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h2><a href="#logback" name="logback" class="anchor"><span class="anchor-link"></span></a>Logback</h2>
 <p>The recommended option for Logback is to use <code>blindsight-logstash</code>, which includes source information (line, file, enclosing) as logstash markers on the logger and provides a mapping for <code>Arguments</code> and <code>Markers</code>. </p>
 <pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
-libraryDependencies += &quot;net.logstash.logback&quot; % &quot;blindsight-logstash&quot; % blindsightVersion
-</code></pre>
-<p>It is recommended (but not required) to use <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend:</p>
-<pre><code># resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
-libraryDependencies += &quot;com.tersesystems.logback&quot; % &quot;logback-structured-config&quot; % &quot;0.16.0&quot;
-</code></pre>
+</code></pre><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "net.logstash.logback" %% "blindsight-logstash" % "1.0.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;net.logstash.logback&lt;/groupId&gt;
+  &lt;artifactId&gt;blindsight-logstash_2.13&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  compile group: 'net.logstash.logback', name: 'blindsight-logstash_2.13', version: '1.0.0'
+}</code></pre></dd></dl>
+<p>It is recommended (but not required) to use <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-structured-config" % "0.16.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
+  &lt;artifactId&gt;logback-structured-config&lt;/artifactId&gt;
+  &lt;version&gt;0.16.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  compile group: 'com.tersesystems.logback', name: 'logback-structured-config', version: '0.16.0'
+}</code></pre></dd></dl>
 <h2><a href="#generic" name="generic" class="anchor"><span class="anchor-link"></span></a>Generic</h2>
-<p>If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don&rsquo;t want to use the Logstash binding, you should use <code>blindsight-generic</code>, which has a serviceloader binding that depends solely on <code>slf4j-api</code>.</p>
-<pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
-libraryDependencies += &quot;com.tersesystems.blindsight&quot; %% &quot;blindsight-generic&quot; % blindsightVersion
-</code></pre>
+<p>If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don&rsquo;t want to use the Logstash binding, you should use <code>blindsight-generic</code>, which has a serviceloader binding that depends solely on <code>slf4j-api</code>.</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" % "blindsight-generic" % "0.16.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
+  &lt;artifactId&gt;blindsight-generic&lt;/artifactId&gt;
+  &lt;version&gt;0.16.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  compile group: 'com.tersesystems.blindsight', name: 'blindsight-generic', version: '0.16.0'
+}</code></pre></dd></dl>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/setup/index.md">here</a>.
 </div>

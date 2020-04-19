@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Flow Logger · Blindsight</title>
+<title>Flow API · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
@@ -42,7 +42,7 @@
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="active page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="active page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -90,7 +90,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="active page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="active page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -112,7 +112,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
   <li><a href="../usage/index.html">Usage</a></li>
-  <li>Flow Logger</li>
+  <li>Flow API</li>
 </ul>
 </div>
 </div>
@@ -120,8 +120,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#flow-logger" name="flow-logger" class="anchor"><span class="anchor-link"></span></a>Flow Logger</h1>
-<p>The flow logger is used when logging surrounds an execution flow.</p>
+<h1><a href="#flow-api" name="flow-api" class="anchor"><span class="anchor-link"></span></a>Flow API</h1>
+<p>The flow API is used when logging surrounds an execution flow.</p>
 <p>You can access the flow logger from Blindsight using <code>logger.flow</code>:</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
 
@@ -129,15 +129,12 @@ val logger = LoggerFactory.getLogger
 val flowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
-<p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. It takes an implicit flow mapping, which determines the behavior of the logging flow. </p>
-<pre class="prettyprint"><code class="language-scala">implicit val flowMapping: FlowMapping[B] = ...
-
-def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+<p>The flow logger takes a block of execution, and returns the result transparently, according to the log level.</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/flow/Flow.scala#L35-L37" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
-}
-</code></pre>
+}</code></pre>
 <p>The result must have a type class instance of <code>ToArguments</code>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/flow/Flow.scala#L41-L51" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
 
@@ -147,63 +144,71 @@ object Person {
   implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
     Arguments(kv(&quot;person&quot;, person.name), kv(&quot;age&quot;, person.age))
   }
-}
-</code></pre>
-<h2><a href="#flow-mapping" name="flow-mapping" class="anchor"><span class="anchor-link"></span></a>Flow Mapping</h2>
-<p>Implementing a flow mapping behavior comes down to creating <code>Markers</code> and <code>Statements</code> for entry, exit, and exceptions.</p>
-<pre class="prettyprint"><code class="language-scala">case class Source(line: Line, file: File, enclosing: Enclosing, args: Args)
+}</code></pre>
+<p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging level is not enabled or logging execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p>
+<p>Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the <code>OnConditionMixin</code> and should not be used with conditional logging logic. If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the FlowBehavior.</p>
+<h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
+<p>Implementing a flow behavior comes down to creating <code>Markers</code> and <code>Statements</code> for entry, exit, and exceptions.</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/flow/SimpleFlowBehavior.scala#L4-L32" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
 
-trait Mapping[B] {
-  def entryMarkers(source: Source): Markers    = Markers.empty
-  def exitMarkers(source: Source): Markers     = Markers.empty
-  def throwingMarkers(source: Source): Markers = Markers.empty
-
-  def createEntryStatement(source: Source): Statement
-
-  def createExitStatement(
-    resultValue: B,
-    source: Source
-  ): Statement
-
-  def createThrowingStatement(
-    exc: Throwable,
-    source: Source
-  ): Statement
-}
-</code></pre>
-<p>For example, you can replicate the behavior of the SLF4J <a href="https://github.com/qos-ch/slf4j/blob/master/slf4j-ext/src/main/java/org/slf4j/ext/XLogger.java">XLogger</a> methods transparently, by passing in the appropriate markers and using the logstash implicits to convert source code arguments.</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
-import net.logstash.logback.argument.StructuredArguments._
-
-class XLoggerFlowMapping[B: ToArguments] extends FlowLoggerMethod.Mapping[B] {
-  override def entryMarkers(source: Source): Markers    = XLoggerFlowMapping.entryMarkers
-  override def exitMarkers(source: Source): Markers     = XLoggerFlowMapping.exitMarkers
-  override def throwingMarkers(source: Source): Markers = XLoggerFlowMapping.throwingMarkers
-
-  override def createEntryStatement(source: Source): Statement = {
+  override def createEntryStatement(source: Source): Option[Statement] = {
     import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
-
-    Statement()
-      .withMarkers(entryMarkers(source))
-      .withMessage(s&quot;${source.enclosing.value} entry {}&quot;)
-      .withArguments(source.args)
+    Some(
+      Statement()
+        .withMarkers(entryMarkers(source))
+        .withMessage(s&quot;${source.enclosing.value} entry {}&quot;)
+        .withArguments(source.args)
+    )
   }
 
-  override def createThrowingStatement(throwable: Throwable, source: Source): Statement = {
-    Statement()
-      .withThrowable(throwable)
-      .withMarkers(throwingMarkers(source))
-      .withMessage(s&quot;${source.enclosing.value} exception&quot;)
+  override def createThrowingStatement(throwable: Throwable, source: Source): Option[Statement] = {
+    Some(
+      Statement()
+        .withThrowable(throwable)
+        .withMessage(s&quot;${source.enclosing.value} exception&quot;)
+    )
   }
 
-  override def createExitStatement(resultValue: B, source: Source): Statement = {
-    Statement()
-      .withMarkers(exitMarkers(source))
-      .withMessage(s&quot;${source.enclosing.value} exit with result {}&quot;)
-      .withArguments(resultValue)
+  override def createExitStatement(resultValue: B, source: Source): Option[Statement] = {
+    Some(
+      Statement()
+        .withMarkers(exitMarkers(source))
+        .withMessage(s&quot;${source.enclosing.value} exit with result {}&quot;)
+        .withArguments(resultValue)
+    )
   }
-}
-</code></pre>
+}</code></pre>
+<p>From there, using the flow API is a matter of plugging in the relevant flow behavior.</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/flow/Flow.scala#L20-L53" target="_blank" title="Go to snippet source"></a><code class="language-scala">object Flow {
+
+  private implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new SimpleFlowBehavior
+
+  def main(args: Array[String]): Unit = {
+    logger.info(&quot;About to execute number flow&quot;)
+    val intResult = flowMethod(1, 2)
+    println(&quot;This is &quot; + intResult)
+
+    logger.info(&quot;About to execute person flow&quot;)
+    val personResult = personFlowMethod(1, 2)
+    println(&quot;This is &quot; + personResult)
+  }
+
+  def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+    arg1 + arg2
+  }
+
+  def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+    Person(name = &quot;Will&quot;, age = arg1 + arg2)
+  }
+
+  case class Person(name: String, age: Int)
+
+  object Person {
+    implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
+      Arguments(kv(&quot;person&quot;, person.name), kv(&quot;age&quot;, person.age))
+    }
+  }
+}</code></pre>
 <p>This produces the following output:</p>
 <pre class="prettyprint"><code class="nocode">FgcMMra7u2U6O0Qbm7EAAA 17:00:47.067 [INFO ] e.flow.FlowMain -  About to execute number flow
 FgcMMra7u8QdHaINzdiAAA 17:00:47.166 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod entry source.arguments={arg1=1, arg2=2}
@@ -224,10 +229,10 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <div class="nav-title">On this page:</div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../usage/flow.html#flow-logger" class="header">Flow Logger</a>
+  <li><a href="../usage/flow.html#flow-api" class="header">Flow API</a>
   <ul>
     <li><a href="../usage/flow.html#usage" class="header">Usage</a></li>
-    <li><a href="../usage/flow.html#flow-mapping" class="header">Flow Mapping</a></li>
+    <li><a href="../usage/flow.html#flow-behavior" class="header">Flow Behavior</a></li>
   </ul></li>
 </ul>
 </div>
