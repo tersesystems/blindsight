@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Conditional Logging · Blindsight</title>
+<title>Flow Logger · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
@@ -42,9 +42,9 @@
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="active page">Flow Logger</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
-    <li><a href="../usage/conditional.html" class="active page">Conditional Logging</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -90,9 +90,9 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
-    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
+    <li><a href="../usage/flow.html" class="active page">Flow Logger</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
-    <li><a href="../usage/conditional.html" class="active page">Conditional Logging</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -112,7 +112,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
   <li><a href="../usage/index.html">Usage</a></li>
-  <li>Conditional Logging</li>
+  <li>Flow Logger</li>
 </ul>
 </div>
 </div>
@@ -120,42 +120,102 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#conditional-logging" name="conditional-logging" class="anchor"><span class="anchor-link"></span></a>Conditional Logging</h1>
-<p>No matter how fast your logging is, it&rsquo;s always faster not to log a statement at all. Blindsight does its best to allow the system to <strong>not</strong> log as much as it makes it possible to log.</p>
-<p>Blindsight has conditional logging on two levels; on the logger itself, and on the method. Conditional logging does not take into account any internal state of the logger, i.e. marker state, logger names, etc. It takes a boolean call by name, and that&rsquo;s it.</p>
-<h2><a href="#on-condition" name="on-condition" class="anchor"><span class="anchor-link"></span></a>On Condition</h2>
-<p>All loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
-<p>This logger will only log if the condition is true.</p>
-<pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
-val conditionalLogger = logger.onCondition(booleanCondition)
-conditionalLogger.info(&quot;Only logs when condition is true&quot;)
+<h1><a href="#flow-logger" name="flow-logger" class="anchor"><span class="anchor-link"></span></a>Flow Logger</h1>
+<p>The flow logger is used when logging surrounds an execution flow.</p>
+<p>You can access the flow logger from Blindsight using <code>logger.flow</code>:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
+
+val logger = LoggerFactory.getLogger
+val flowLogger = logger.flow
 </code></pre>
-<p>Conditions will be stacked with a boolean AND.</p>
-<pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
-val bothConditionsLogger = conditionalLogger.onCondition(anotherCondition)
-bothConditionsLogger.info(&quot;Only logs when both conditions are true&quot;)
-</code></pre>
-<p>The conditions are not exposed from the logger, and clients should not peek under the hood.</p>
-<p>Conditional loggers are good with feature flags, circuit breakers, sampling, and other systems that throttle logging. </p>
-<p>They are also good with capabilities, because loggers can be revoked along with the capability. For example, a logger reporting a failed network stream can be silenced if the reason why the stream failed is because of an intentional security cutoff.</p>
-<h2><a href="#when" name="when" class="anchor"><span class="anchor-link"></span></a>When</h2>
-<p>By contrast, <code>when</code> is used on methods, rather than the logger, and provides a block that is executed only when the condition is true:</p>
-<pre class="prettyprint"><code class="language-scala">logger.info.when(booleanCondition) { info =&gt;
-  info(&quot;log&quot;)
+<h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
+<p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. It takes an implicit flow mapping, which determines the behavior of the logging flow. </p>
+<pre class="prettyprint"><code class="language-scala">implicit val flowMapping: FlowMapping[B] = ...
+
+def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+  arg1 + arg2
 }
 </code></pre>
-<p>This is useful when constructing and executing a logging statement is expensive in itself, and allows for finer grained control. </p>
-<p>You can, of course, partially apply <code>when</code> to return a function:</p>
-<pre class="prettyprint"><code class="language-scala">val infoFunction = logger.info.when(1 == 1)(_)
-infoFunction(info =&gt; info(&quot;when true&quot;))
+<p>The result must have a type class instance of <code>ToArguments</code>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
+<pre class="prettyprint"><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+  Person(name = &quot;Will&quot;, age = arg1 + arg2)
+}
+
+case class Person(name: String, age: Int)
+
+object Person {
+  implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
+    Arguments(kv(&quot;person&quot;, person.name), kv(&quot;age&quot;, person.age))
+  }
+}
 </code></pre>
-<p>But it is generally easier to pass a conditional logger around rather than a logging function.</p>
+<h2><a href="#flow-mapping" name="flow-mapping" class="anchor"><span class="anchor-link"></span></a>Flow Mapping</h2>
+<p>Implementing a flow mapping behavior comes down to creating <code>Markers</code> and <code>Statements</code> for entry, exit, and exceptions.</p>
+<pre class="prettyprint"><code class="language-scala">case class Source(line: Line, file: File, enclosing: Enclosing, args: Args)
+
+trait Mapping[B] {
+  def entryMarkers(source: Source): Markers    = Markers.empty
+  def exitMarkers(source: Source): Markers     = Markers.empty
+  def throwingMarkers(source: Source): Markers = Markers.empty
+
+  def createEntryStatement(source: Source): Statement
+
+  def createExitStatement(
+    resultValue: B,
+    source: Source
+  ): Statement
+
+  def createThrowingStatement(
+    exc: Throwable,
+    source: Source
+  ): Statement
+}
+</code></pre>
+<p>For example, you can replicate the behavior of the SLF4J <a href="https://github.com/qos-ch/slf4j/blob/master/slf4j-ext/src/main/java/org/slf4j/ext/XLogger.java">XLogger</a> methods transparently, by passing in the appropriate markers and using the logstash implicits to convert source code arguments.</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
+import net.logstash.logback.argument.StructuredArguments._
+
+class XLoggerFlowMapping[B: ToArguments] extends FlowLoggerMethod.Mapping[B] {
+  override def entryMarkers(source: Source): Markers    = XLoggerFlowMapping.entryMarkers
+  override def exitMarkers(source: Source): Markers     = XLoggerFlowMapping.exitMarkers
+  override def throwingMarkers(source: Source): Markers = XLoggerFlowMapping.throwingMarkers
+
+  override def createEntryStatement(source: Source): Statement = {
+    import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
+
+    Statement()
+      .withMarkers(entryMarkers(source))
+      .withMessage(s&quot;${source.enclosing.value} entry {}&quot;)
+      .withArguments(source.args)
+  }
+
+  override def createThrowingStatement(throwable: Throwable, source: Source): Statement = {
+    Statement()
+      .withThrowable(throwable)
+      .withMarkers(throwingMarkers(source))
+      .withMessage(s&quot;${source.enclosing.value} exception&quot;)
+  }
+
+  override def createExitStatement(resultValue: B, source: Source): Statement = {
+    Statement()
+      .withMarkers(exitMarkers(source))
+      .withMessage(s&quot;${source.enclosing.value} exit with result {}&quot;)
+      .withArguments(resultValue)
+  }
+}
+</code></pre>
+<p>This produces the following output:</p>
+<pre class="prettyprint"><code class="nocode">FgcMMra7u2U6O0Qbm7EAAA 17:00:47.067 [INFO ] e.flow.FlowMain -  About to execute number flow
+FgcMMra7u8QdHaINzdiAAA 17:00:47.166 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod entry source.arguments={arg1=1, arg2=2}
+FgcMMra7u9CdHaINzdiAAA 17:00:47.191 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod exit with result 3
+This is 3
+</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/conditional.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../extending/index.html">Extending</a></p>
+<p><strong>Next:</strong> <a href="../usage/context.html">Context</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
@@ -164,10 +224,10 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <div class="nav-title">On this page:</div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../usage/conditional.html#conditional-logging" class="header">Conditional Logging</a>
+  <li><a href="../usage/flow.html#flow-logger" class="header">Flow Logger</a>
   <ul>
-    <li><a href="../usage/conditional.html#on-condition" class="header">On Condition</a></li>
-    <li><a href="../usage/conditional.html#when" class="header">When</a></li>
+    <li><a href="../usage/flow.html#usage" class="header">Usage</a></li>
+    <li><a href="../usage/flow.html#flow-mapping" class="header">Flow Mapping</a></li>
   </ul></li>
 </ul>
 </div>

@@ -42,6 +42,7 @@
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -89,6 +90,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -119,17 +121,20 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#slf4j-api" name="slf4j-api" class="anchor"><span class="anchor-link"></span></a>SLF4J API</h1>
-<p>The SLF4J API has the same logger methods and type signature as SLF4J, but has a couple of extra features in the <code>Logger</code> interface itself.</p>
-<p>Notably, you can pass in something that is not a marker, and provided you have a <code>ToMarker</code> in implicit scope, you can get it auto-converted.</p>
-<p>Markers can also be passed into the logger through the <code>logger.marker</code> method. This provides a logger of the same time that will automatically apply the marker on any logging call. This is extremely useful when you want to build up state inside a logger without having to expose it explicitly. Under this API, you pass in a logger, and any markers you explicitly add are merged on top of the logger&rsquo;s markers.</p>
-<p>Finally, you can also use the <code>LoggerAPI</code> traits to selectively limit the abilities of the logger. For example, you can create a logger which only logs at info level. </p>
-<pre class="prettyprint"><code class="language-scala"><br/>import com.tersesystems.blindsight._
+<p>The default Logger API has the same logger methods and (roughly) the type signature as SLF4J.</p>
+<p>The biggest difference is that methods take a type class instance of <code>Markers</code> and <code>Arguments</code>, if you have them defined.</p>
+<h2><a href="#markers" name="markers" class="anchor"><span class="anchor-link"></span></a>Markers</h2>
+<p>you can pass in something that is not a marker, and provided you have a <code>ToMarker</code> in implicit scope, you can get it auto-converted.</p>
+<pre class="prettyprint"><code class="language-scala">val marker: org.slf4j.Marker = MarkerFactory.getDetachedMarker(&quot;SOME_MARKER&quot;)
+logger.info(markers, &quot;message with marker&quot;)
+</code></pre>
+<p>You can also convert your own objects into appropriate markers.</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.api.{Arguments, Markers, ToMarkers}
 import com.tersesystems.blindsight.slf4j._
 import org.slf4j.MarkerFactory
 
 object Slf4jMain {
-
   final case class FeatureFlag(flagName: String)
 
   object FeatureFlag {
@@ -145,22 +150,90 @@ object Slf4jMain {
     if (logger.isDebugEnabled(featureFlag)) {
       logger.debug(&quot;this is a test&quot;)
     }
-
-    val m1 = MarkerFactory.getMarker(&quot;M1&quot;)
-    logger.info(m1, &quot;a&quot; -&gt; &quot;b {} {}&quot;, Arguments(42, 53))
-
-    val onlyInfo = new SLF4JLoggerAPI.Info[base.Predicate, base.Method] {
-      override type Self      = base.Self
-      override type Predicate = base.Predicate
-      override type Method    = base.Method
-
-      override def isInfoEnabled: Predicate = base.isInfoEnabled
-      override def info: Method             = base.info
-    }
-    onlyInfo.info(&quot;good&quot;)
   }
 }
 </code></pre>
+<p>Logstash Markers are encouraged here, as they can make marker specification much easier:</p>
+<pre class="prettyprint"><code class="language-scala"><br/>import com.tersesystems.blindsight.logstash.Implicits._
+logger.info(&quot;markerKey&quot; -&gt; &quot;markerValue&quot;, &quot;marker and argument&quot;)
+</code></pre>
+<p>There is an automatic implicit conversion from <code>org.slf4j.Marker</code> to <code>Markers</code>. You can also combine markers:</p>
+<pre class="prettyprint"><code class="language-scala">val markersOnePlusTwo: Markers = markers1 + markers2
+</code></pre>
+<p>Getting at the underlying marker is a <code>lazy val</code> that is computed once:</p>
+<pre class="prettyprint"><code class="language-scala">val marker: org.slf4j.Marker = markersOnePlusTwo.marker
+</code></pre>
+<p>You should <strong>not</strong> try to manipulate the marker through <code>marker.add</code> or <code>marker.remove</code>. It&rsquo;s better to treat a <code>org.slf4j.Marker</code> instance as completely immutable, and manage any composition through <code>Markers</code>.</p>
+<h2><a href="#arguments" name="arguments" class="anchor"><span class="anchor-link"></span></a>Arguments</h2>
+<p>Arguments in Blindsight occupy one variable. In constrast to the SLF4J API, which takes an <code>Any</code>, nd there <strong>must</strong> be a type class instance of <code>ToArguments</code> in scope. This is to prevent awkward <code>toString</code> matches on object instances, and ensure that structured logging is taking place. </p>
+<pre class="prettyprint"><code class="language-scala">// Will not compile, because no ToArguments[SomeRandomObject] is found in implicit scope!
+logger.info(&quot;one argument {}&quot;, new SomeRandomObject()) 
+</code></pre>
+<p>Default <code>ToArguments</code> are determined for the primitives (<code>String</code>, <code>Int</code>, etc) but are not defined for time based objects like <code>Date</code> as these could be represented in multiple ways.</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;one argument {}&quot;, 42) // works, because default
+</code></pre>
+<p>If you have several arguments, you will need to wrap them so they are provided as a single <code>Arguments</code> instance:</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;arg {}, arg {}, arg {}&quot;, Arguments(1, &quot;2&quot;, false))
+</code></pre>
+<p>comes out as:</p>
+<pre><code>FgEddUhGnXE6O0Qbm7EAAA 17:36:55.142 [INFO ] e.s.Slf4jMain$ -  arg 1, arg 2, arg false
+</code></pre>
+<p>Logstash <code>StructuredArguments</code> are covered if you import the <code>blindsight-logstash</code> library. Using Logstash markers means that key value pairs can be created from tuples. </p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
+
+logger.info(&quot;marker and argument {}&quot;, &quot;argumentKey&quot; -&gt; &quot;argumentValue&quot;)
+
+// Maps are autoconverted
+logger.info(
+  &quot;first is [{}], second is [{}]&quot;,
+  Map(&quot;a&quot; -&gt; &quot;b&quot;, &quot;c&quot; -&gt; &quot;d&quot;)
+)
+
+// Otherwise, wrapping in Arguments() is the way to go
+logger.info(
+  &quot;first is [{}], second is [{}]&quot;,
+  Arguments(&quot;a&quot; -&gt; &quot;b&quot;, &quot;c&quot; -&gt; &quot;d&quot;)
+)
+</code></pre>
+<p>Not everything is defined as an implicit out of the box, but it&rsquo;s easy to define defaults. For example, for dates you may want to define some defaults:</p>
+<pre class="prettyprint"><code class="language-scala">import java.time.format.DateTimeFormatter
+
+implicit val dateToArgument: ToArguments[Date] = ToArguments[java.util.Date] { date =&gt;
+  new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(date.toInstant)))
+}
+
+implicit val instantToArgument: ToArguments[java.time.Instant] = ToArguments[java.time.Instant] { instant =&gt;
+  new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(instant)))
+}
+
+logger.info(&quot;date is {}&quot;, new java.util.Date())
+logger.info(&quot;instant is {}&quot;, Instant.now())
+</code></pre>
+<p>Exceptions must be the last argument in the <code>Arguments</code>. For example:</p>
+<pre class="prettyprint"><code class="language-scala">val e = new Exception(&quot;something is horribly wrong&quot;)
+logger.error(&quot;this is an error with argument {}&quot;, Arguments(&quot;a&quot; -&gt; &quot;b&quot;, e))
+</code></pre>
+<p>Note that <code>ToArguments</code> is a contravariant type class. This means that the <em>lowest</em> type class match will take priority. This is useful when it comes time to passing things like exceptions:</p>
+<pre class="prettyprint"><code class="language-scala">val exception: IllegalStateException = new IllegalStateException(&quot;Cannot divide by zero&quot;)
+logger.error(&quot;Some error&quot;, exception) // does not compile under invariant type class
+</code></pre>
+<p>but this does lead to some <a href="https://groups.google.com/forum/#!topic/scala-language/ZE83TvSWpT4">unintuitive behavior</a> in type class resolving that <a href="https://www.scala-lang.org/old/node/4626">even the Scala team question</a>.</p>
+<p>Getting at the underlying array can be done with <code>asArray</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val argArray: Array[_] = arguments.asArray
+</code></pre>
+<p>But this is really for the underlying SLF4J logger and shouldn&rsquo;t need to be touched directly.</p>
+<h2><a href="#unchecked-api" name="unchecked-api" class="anchor"><span class="anchor-link"></span></a>Unchecked API</h2>
+<p>An unchecked API is available that does not use type class inference at all, and looks just like SLF4J with the additions of conditions and markers.</p>
+<pre class="prettyprint"><code class="language-scala">val logger = LoggerFactory.getLogger
+val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = logger.unchecked
+val e = new Exception(&quot;derp&quot;)
+unchecked.error(&quot;Exception occured&quot;, e)
+val creditCard = CreditCard(&quot;4111111111111&quot;)
+unchecked.info(&quot;this is risky unchecked {}&quot;, creditCard) // case class tostring renders CC number
+unchecked.info(&quot;this is unchecked {}&quot;, Arguments(42, 53))
+unchecked.info(m1, &quot;unchecked with argument and marker {}&quot;, Arguments(42, 53))
+</code></pre>
+<p>This is easier to use, but since <code>Any</code> cannot be typed checked, these methods are marked as deprecated and you can turn on a warning: output will be written to <code>System.out.error</code> when the system property is set to true: <code>-Dblindsight.anywarn=true</code>.</p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/api.md">here</a>.
 </div>
@@ -170,6 +243,21 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/api.html#slf4j-api" class="header">SLF4J API</a>
+  <ul>
+    <li><a href="../usage/api.html#markers" class="header">Markers</a></li>
+    <li><a href="../usage/api.html#arguments" class="header">Arguments</a></li>
+    <li><a href="../usage/api.html#unchecked-api" class="header">Unchecked API</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 

@@ -42,6 +42,7 @@
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -89,6 +90,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow Logger</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   </ul></li>
@@ -125,7 +127,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 val logger = LoggerFactory.getLogger(getClass)
 logger.info(&quot;I am an SLF4J-like logger&quot;)
 </code></pre>
-<p>What does this do under the hood? It converts to <code>Messages</code> case class, and logs only if the level of the SLF4J logger is set to at least <code>INFO</code>. Very roughly:</p>
+<p>What does this do under the hood? It converts to a <code>Message</code> case class, and logs only if the level of the SLF4J logger is set to at least <code>INFO</code>. </p>
+<p>Very roughly:</p>
 <pre class="prettyprint"><code class="language-scala">val infoMethod: InfoMethod = logger.info
 infoMethod.apply(() =&gt; Message(&quot;I am an SLF4J-like logger&quot;))
 
@@ -151,7 +154,8 @@ logger.info(marker, message, arguments);
 val message = Message(&quot;some message&quot;)
 val arguments = Arguments(&quot;arg1&quot;, 42, 1337)
 </code></pre>
-<p>Where possible, Blindsight provides typeclass mappings to automatically convert to the appropriate type. For example, you can pass a feature flag into <code>isDebugEnabled</code> and it will convert it into a <code>Markers</code>:</p>
+<p>Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type. So <code>Markers</code> has a <code>ToMarkers</code> type class, <code>Message</code> has <code>ToMessage</code>, and so on.</p>
+<p>You can use type class instances to extend Blindsight&rsquo;s functionality. For example, you can pass a feature flag into <code>isDebugEnabled</code> and it will convert it into a <code>Markers</code>:</p>
 <pre class="prettyprint"><code class="language-scala">object Slf4jMain {
   final case class FeatureFlag(flagName: String)
   object FeatureFlag {
@@ -223,7 +227,7 @@ fluentLogger.info.message(&quot;I am a fluent logger&quot;).log()
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.semantic.SemanticLogger
 
-val semanticLogger: SemanticLogger[UserEvent] = logger.refine[UserEvent]
+val semanticLogger: SemanticLogger[UserEvent] = logger.semantic[UserEvent]
 semanticLogger.info(userEvent)
 </code></pre>
 <p>See <a href="semantic.html">semantic logger</a> for details.</p>
