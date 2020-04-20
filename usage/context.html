@@ -6,6 +6,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
+<link rel="canonical" href="https:/tersesystems.github.io/blindsight/usage/context.html"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="../js/page.js"></script>
@@ -39,12 +40,12 @@
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="active page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -87,12 +88,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="active page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -151,7 +152,7 @@ entryLogger.info(anotherMarker, &quot;a message&quot;)
 <p>Blindsight does not use MDC, and does not recommend its use.</p>
 <p>There are many reasons to not use MDC. It is inherently limiting as a <code>Map[String,String]</code>. It must be managed carefully in asynchronous programming to resolve the Map. It is mutable &ndash; it will only contain the last written values in the map at the time of logging, and no record is kept of prior values. It is static &ndash; it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed. And finally, MDC fails silently. When something goes wrong in MDC, it&rsquo;s anyone&rsquo;s guess what cleared it.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/context.md">here</a>.
+The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/context.md">here</a>.
 </div>
 
 <div class="nav-next">

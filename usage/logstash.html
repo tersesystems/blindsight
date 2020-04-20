@@ -2,10 +2,11 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Logstash Type Classes · Blindsight</title>
+<title>Logstash Type Class Mappings · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
+<link rel="canonical" href="https:/tersesystems.github.io/blindsight/usage/logstash.html"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="../js/page.js"></script>
@@ -39,12 +40,12 @@
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
-    <li><a href="../usage/logstash.html" class="active page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/logstash.html" class="active page">Logstash Type Class Mappings</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -87,12 +88,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
-    <li><a href="../usage/logstash.html" class="active page">Logstash Type Classes</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/context.html" class="page">Context</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/logstash.html" class="active page">Logstash Type Class Mappings</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a></li>
 </ul>
@@ -112,7 +113,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
   <li><a href="../usage/index.html">Usage</a></li>
-  <li>Logstash Type Classes</li>
+  <li>Logstash Type Class Mappings</li>
 </ul>
 </div>
 </div>
@@ -120,8 +121,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#logstash-type-classes" name="logstash-type-classes" class="anchor"><span class="anchor-link"></span></a>Logstash Type Classes</h1>
-<p>Blindsight provides a <code>logstash</code> typeclass mapping which maps between tuples, arrays, and JSON nodes to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Markers and StructuredArguments</a>.</p>
+<h1><a href="#logstash-type-class-mappings" name="logstash-type-class-mappings" class="anchor"><span class="anchor-link"></span></a>Logstash Type Class Mappings</h1>
+<p>Blindsight provides a <code>logstash</code> type class mapping which maps between tuples, arrays, and JSON nodes to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Markers and StructuredArguments</a>.</p>
 <pre class="prettyprint"><code class="language-scala">trait ToMarkers[T] {
   def toMarkers(instance: T): Markers
 }
@@ -149,12 +150,32 @@ object LowPriorityMarkers extends LowPriorityMarkers
 <pre class="prettyprint"><code class="language-scala">import LowPriorityMarkers._
 logger.info.markers(&quot;userId&quot; -&gt; userId).log()
 </code></pre>
+<p>From there, you can build up structured logging statements and rely on the type class mappings, for example:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
+
+val tupleStringMarker = Markers(&quot;string&quot; -&gt; &quot;steve&quot;)
+val tupleNumberMarker = Markers(&quot;number&quot; -&gt; 42)
+val tupleBooleanNumber = Marker(&quot;boolean&quot; -&gt; true)
+val arrayMarker = Markers(&quot;array&quot; -&gt; Seq(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))
+
+import com.fasterxml.jackson.databind.ObjectMapper
+val json         = &quot;&quot;&quot;{ &quot;f1&quot; : &quot;v1&quot; }&quot;&quot;&quot;
+val objectMapper = new ObjectMapper
+val jsonNode     = objectMapper.readTree(json)
+val jsonMarker = Markers(&quot;markerJson&quot; -&gt; jsonNode)
+
+val tupleStringArguments = Arguments(&quot;arg1&quot; -&gt; &quot;value1&quot;)
+val tupleNumberArguments = Arguments(&quot;numericArg&quot; -&gt; 42)
+val tupleBooleanArguments = Arguments(&quot;booleanArg&quot; -&gt; false)
+val mapArguments = Arguments(Map(&quot;a&quot; -&gt; &quot;b&quot;))
+val arrayArguments = Arguments(&quot;sequenceArg&quot; -&gt; Seq(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/master/docs/src/main/paradox/usage/logstash.md">here</a>.
+The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/logstash.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../usage/fluent.html">Fluent API</a></p>
+<p><strong>Next:</strong> <a href="../extending/index.html">Extending</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
