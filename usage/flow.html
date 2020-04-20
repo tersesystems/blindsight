@@ -131,11 +131,11 @@ val flowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/flow/Flow.scala#L35-L37" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L42-L44" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }</code></pre>
 <p>The result must have a type class instance of <code>ToArguments</code>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/flow/Flow.scala#L41-L51" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L48-L59" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
 
@@ -143,16 +143,17 @@ case class Person(name: String, age: Int)
 
 object Person {
   implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
-    Arguments(kv(&quot;person&quot;, person.name), kv(&quot;age&quot;, person.age))
+    import com.tersesystems.blindsight.logstash.Implicits._
+    Arguments(&quot;person&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age)
   }
 }</code></pre>
 <p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging level is not enabled or logging execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p>
 <p>Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the <code>OnConditionMixin</code> and should not be used with conditional logging logic. If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the FlowBehavior.</p>
 <h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
 <p>Implementing a flow behavior comes down to creating <code>Markers</code> and <code>Statements</code> for entry, exit, and exceptions.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/flow/SimpleFlowBehavior.scala#L4-L32" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
 
-  override def createEntryStatement(source: Source): Option[Statement] = {
+  override def entryStatement(source: Source): Option[Statement] = {
     import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
     Some(
       Statement()
@@ -162,15 +163,16 @@ object Person {
     )
   }
 
-  override def createThrowingStatement(throwable: Throwable, source: Source): Option[Statement] = {
+  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] = {
     Some(
+      Level.ERROR,
       Statement()
         .withThrowable(throwable)
         .withMessage(s&quot;${source.enclosing.value} exception&quot;)
     )
   }
 
-  override def createExitStatement(resultValue: B, source: Source): Option[Statement] = {
+  override def exitStatement(resultValue: B, source: Source): Option[Statement] = {
     Some(
       Statement()
         .withMarkers(exitMarkers(source))
@@ -180,9 +182,11 @@ object Person {
   }
 }</code></pre>
 <p>From there, using the flow API is a matter of plugging in the relevant flow behavior.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/flow/Flow.scala#L20-L53" target="_blank" title="Go to snippet source"></a><code class="language-scala">object Flow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L25-L61" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
 
   private implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new SimpleFlowBehavior
+
+  private val logger: Logger = LoggerFactory.getLogger
 
   def main(args: Array[String]): Unit = {
     logger.info(&quot;About to execute number flow&quot;)
@@ -206,7 +210,8 @@ object Person {
 
   object Person {
     implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
-      Arguments(kv(&quot;person&quot;, person.name), kv(&quot;age&quot;, person.age))
+      import com.tersesystems.blindsight.logstash.Implicits._
+      Arguments(&quot;person&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age)
     }
   }
 }</code></pre>
@@ -216,6 +221,118 @@ FgcMMra7u8QdHaINzdiAAA 17:00:47.166 [TRACE] e.flow.FlowMain -  example.flow.Flow
 FgcMMra7u9CdHaINzdiAAA 17:00:47.191 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod exit with result 3
 This is 3
 </code></pre>
+<h2><a href="#integrating-with-tracing" name="integrating-with-tracing" class="anchor"><span class="anchor-link"></span></a>Integrating with Tracing</h2>
+<p>If you integrate with <a href="https://tersesystems.github.io/terse-logback/guide/tracing/">logback-tracing</a>, then you can also log to Honeycomb using a <code>FlowBehavior</code>. To do this, add the following  resolver:</p>
+<pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+</code></pre>
+<p>and the following dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-tracing" % "0.16.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
+  &lt;artifactId&gt;logback-tracing&lt;/artifactId&gt;
+  &lt;version&gt;0.16.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  compile group: 'com.tersesystems.logback', name: 'logback-tracing', version: '0.16.0'
+}</code></pre></dd></dl><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-uniqueid-appender" % "0.16.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
+  &lt;artifactId&gt;logback-uniqueid-appender&lt;/artifactId&gt;
+  &lt;version&gt;0.16.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: '0.16.0'
+}</code></pre></dd></dl>
+<p>And you can produce Honeycomb manual traces with the following:</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/HoneycombFlow.scala#L39-L132" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+
+  private val logger = LoggerFactory.getLogger
+
+  private val idgen = new RandomUUIDIdGenerator
+  private val builder: SpanInfo.Builder = {
+    SpanInfo
+      .builder()
+      .setServiceName(&quot;blindsight-example&quot;)
+  }
+
+  implicit def flowMapping[B: ToArguments](implicit spanInfo: SpanInfo): HoneycombFlowBehavior[B] = {
+    new HoneycombFlowBehavior[B]
+  }
+
+  def main(args: Array[String]): Unit = {
+    generateRootSpan { implicit rootSpan =&gt;
+      val intResult = flowMethod(1, 2)
+      val personResult = personFlowMethod(1, 2)
+    }
+  }
+
+  def flowMethod(arg1: Int, arg2: Int)(implicit spanInfo: SpanInfo): Int = {
+    logger.flow.info {
+      arg1 + arg2
+    }
+  }
+
+  def personFlowMethod(arg1: Int, arg2: Int)(implicit spanInfo: SpanInfo): Person = {
+    logger.flow.info {
+      Person(name = &quot;Will&quot;, age = arg1 + arg2)
+    }
+  }
+
+  private def generateRootSpan[T](block: SpanInfo =&gt; T)(implicit enclosing: Enclosing): T = {
+    val rootSpan = builder.setRootSpan(() =&gt; idgen.generateId(), enclosing.value).buildNow
+    try {
+      block(rootSpan)
+    } finally {
+      // The root span has to be logged _last_, after the child spans.
+      logger.info(HoneycombFlowBehavior.markerFactory(rootSpan),
+        s&quot;${enclosing.value} exit, duration ${rootSpan.duration()}&quot;)
+    }
+  }
+
+  case class Person(name: String, age: Int)
+
+  object Person {
+    implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
+      Arguments(kv(&quot;person&quot;, person.name), kv(&quot;age&quot;, person.age))
+    }
+  }
+}
+
+class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
+  extends FlowBehavior[B] {
+  import HoneycombFlowBehavior.markerFactory
+
+  // Create a thread local stack of span info.
+  private val threadLocalStack: ThreadLocal[mutable.Stack[SpanInfo]] = {
+    val local: ThreadLocal[mutable.Stack[SpanInfo]] = new ThreadLocal()
+    local.set(mutable.Stack[SpanInfo]())
+    local
+  }
+
+  override def entryStatement(source: Source): Option[Statement] = {
+    // Start a child span, and push it onto the stack
+    spanInfo.withChild(source.enclosing.value, pushCurrentSpan)
+    None
+  }
+
+  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] = Some {
+    (Level.ERROR,
+      Statement()
+        .withThrowable(throwable)
+        .withMarkers(Markers(markerFactory(popCurrentSpan)))
+        .withMessage(s&quot;${source.enclosing.value} exception&quot;))
+  }
+
+  override def exitStatement(resultValue: B, source: Source): Option[Statement] = Some {
+    val span = popCurrentSpan
+    Statement()
+      .withMarkers(Markers(markerFactory(span)))
+      .withMessage(s&quot;${source.enclosing.value} exit, duration ${span.duration()}&quot;)
+      .withArguments(resultValue)
+  }
+
+  private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)
+  private def popCurrentSpan: SpanInfo = threadLocalStack.get().pop()
+}
+
+object HoneycombFlowBehavior {
+  val markerFactory = new SpanMarkerFactory
+}</code></pre>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
@@ -234,6 +351,7 @@ The source code for this page can be found <a href="https://github.com/lightbend
   <ul>
     <li><a href="../usage/flow.html#usage" class="header">Usage</a></li>
     <li><a href="../usage/flow.html#flow-behavior" class="header">Flow Behavior</a></li>
+    <li><a href="../usage/flow.html#integrating-with-tracing" class="header">Integrating with Tracing</a></li>
   </ul></li>
 </ul>
 </div>
