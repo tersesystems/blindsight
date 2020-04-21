@@ -202,7 +202,7 @@ val arguments = Arguments(&quot;arg1&quot;, 42, 1337)
 val fluentLogger: FluentLogger = logger.fluent
 fluentLogger.info.message(&quot;I am a fluent logger&quot;).log()
 </code></pre>
-<p>See <a href="fluent.html">fluent logger</a> for details.</p>
+<p>See <a href="fluent.html">Fluent API</a> for details.</p>
 <h2><a href="#semantic-api" name="semantic-api" class="anchor"><span class="anchor-link"></span></a>Semantic API</h2>
 <p>The semantic API takes a single strongly typed argument, and the logger is instantiated with the type that is acceptable. This makes it very useful for event logging.</p>
 <p>To work as a strongly typed logging API:</p>
@@ -227,7 +227,7 @@ val stringLogger = logger.semantic[String]
 val urlLogger = stringLogger.refine[String Refined Url]
 urlLogger.info(refineMV(&quot;https://tersesystems.com&quot;))
 </code></pre>
-<p>See <a href="semantic.html">semantic API</a> for details.</p>
+<p>See <a href="semantic.html">Semantic API</a> for details.</p>
 <h2><a href="#conditionals" name="conditionals" class="anchor"><span class="anchor-link"></span></a>Conditionals</h2>
 <p>Most of the loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
 <p>This logger will only log if the condition is true:</p>

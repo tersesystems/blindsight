@@ -207,14 +207,14 @@ implicit def stringToStatement[R]: ToStatement[Refined[String, R]] = ToStatement
 }
 
 val notEmptyLogger: SemanticLogger[String Refined NonEmpty] = logger.semantic[String Refined NonEmpty]
-notEmptyLogger.info(refineMV[NonEmpty](&quot;this is a statement&quot;))
+notEmptyLogger.info(refineMV(&quot;this is a statement&quot;))
 // will not compile
-//notEmptyLogger.info(refineMV[NonEmpty](&quot;&quot;))
+//notEmptyLogger.info(refineMV(&quot;&quot;))
 
 val urlLogger: SemanticLogger[String Refined Url] = logger.semantic[String Refined Url]
-urlLogger.info(refineMV[Url](&quot;http://google.com&quot;))
+urlLogger.info(refineMV(&quot;http://google.com&quot;))
 // will not compile
-//urlLogger.info(refineMV[Url](&quot;this is a statement&quot;))
+//urlLogger.info(refineMV(&quot;this is a statement&quot;))
 </code></pre>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/semantic.md">here</a>.
