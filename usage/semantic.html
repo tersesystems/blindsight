@@ -194,6 +194,28 @@ FgEdhil2zsk6O0Qbm7EAAA 2020-04-05T23:09:08.436+0000 [INFO ] example.semantic.Sem
 {&quot;id&quot;:&quot;FgEdhil2zsg6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:74895700,&quot;tse_ms&quot;:1586128148435,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.435Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedOutEvent(steve,timeout)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;steve&quot;,&quot;reason&quot;:&quot;timeout&quot;}
 {&quot;id&quot;:&quot;FgEdhil2zsk6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:75837600,&quot;tse_ms&quot;:1586128148436,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.436Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedInEvent(mike,10.0.0.1)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;mike&quot;,&quot;ipAddr&quot;:&quot;10.0.0.1&quot;}
 </code></pre>
+<h2><a href="#refinement-types" name="refinement-types" class="anchor"><span class="anchor-link"></span></a>Refinement Types</h2>
+<p>Semantic Logging works very well with <a href="https://github.com/fthomas/refined">refinement types</a>. </p>
+<p>For example, you can add compile time limitations on the kinds of messages that are passed in:</p>
+<pre class="prettyprint"><code class="language-scala">import eu.timepit.refined.api.Refined
+import eu.timepit.refined.collection.NonEmpty
+import eu.timepit.refined.string._
+import eu.timepit.refined._
+
+implicit def stringToStatement[R]: ToStatement[Refined[String, R]] = ToStatement { str =&gt;
+  Statement().withMessage(str.value)
+}
+
+val notEmptyLogger: SemanticLogger[String Refined NonEmpty] = logger.semantic[String Refined NonEmpty]
+notEmptyLogger.info(refineMV[NonEmpty](&quot;this is a statement&quot;))
+// will not compile
+//notEmptyLogger.info(refineMV[NonEmpty](&quot;&quot;))
+
+val urlLogger: SemanticLogger[String Refined Url] = logger.semantic[String Refined Url]
+urlLogger.info(refineMV[Url](&quot;http://google.com&quot;))
+// will not compile
+//urlLogger.info(refineMV[Url](&quot;this is a statement&quot;))
+</code></pre>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/semantic.md">here</a>.
 </div>
@@ -203,6 +225,19 @@ The source code for this page can be found <a href="https://github.com/lightbend
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/semantic.html#semantic-api" class="header">Semantic API</a>
+  <ul>
+    <li><a href="../usage/semantic.html#refinement-types" class="header">Refinement Types</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 

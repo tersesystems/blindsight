@@ -125,7 +125,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h2><a href="#logback" name="logback" class="anchor"><span class="anchor-link"></span></a>Logback</h2>
 <p>The recommended option for Logback is to use <code>blindsight-logstash</code>, which includes source information (line, file, enclosing) as logstash markers on the logger and provides a mapping for <code>Arguments</code> and <code>Markers</code>. </p>
 <pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
-</code></pre><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "net.logstash.logback" %% "blindsight-logstash" % "1.0.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+</code></pre><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "net.logstash.logback" % "blindsight-logstash_2.13" % "1.0.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;net.logstash.logback&lt;/groupId&gt;
   &lt;artifactId&gt;blindsight-logstash_2.13&lt;/artifactId&gt;
   &lt;version&gt;1.0.0&lt;/version&gt;

@@ -122,7 +122,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#flow-api" name="flow-api" class="anchor"><span class="anchor-link"></span></a>Flow API</h1>
-<p>The flow API is used when logging surrounds an execution flow.</p>
+<p>The flow API is used when logging surrounds an execution flow. This is a good fit when you want tracing or <a href="https://martinfowler.com/articles/domain-oriented-observability.html">domain-oriented observability</a>.</p>
 <p>You can access the flow logger from Blindsight using <code>logger.flow</code>:</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
 
@@ -130,11 +130,11 @@ val logger = LoggerFactory.getLogger
 val flowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
-<p>The flow logger takes a block of execution, and returns the result transparently, according to the log level.</p>
+<p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
 <pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L42-L44" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }</code></pre>
-<p>The result must have a type class instance of <code>ToArguments</code>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
+<p>The result should have a type class instance of <code>ToArguments</code>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
 <pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L48-L59" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
@@ -239,7 +239,7 @@ This is 3
   compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: '0.16.0'
 }</code></pre></dd></dl>
 <p>And you can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/HoneycombFlow.scala#L39-L132" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -274,7 +274,7 @@ This is 3
   }
 
   private def generateRootSpan[T](block: SpanInfo =&gt; T)(implicit enclosing: Enclosing): T = {
-    val rootSpan = builder.setRootSpan(() =&gt; idgen.generateId(), enclosing.value).buildNow
+    val rootSpan = builder.setRootSpan(asJavaSupplier(() =&gt; idgen.generateId()), enclosing.value).buildNow
     try {
       block(rootSpan)
     } finally {
@@ -306,7 +306,7 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
 
   override def entryStatement(source: Source): Option[Statement] = {
     // Start a child span, and push it onto the stack
-    spanInfo.withChild(source.enclosing.value, pushCurrentSpan)
+    spanInfo.withChild(source.enclosing.value, asJavaFunction(pushCurrentSpan))
     None
   }
 
