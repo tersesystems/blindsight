@@ -25,13 +25,13 @@ If logging is enabled, then the execution is wrapped to capture the result or ex
 
 @@@ note
 
-Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the @scaladoc[OnConditionMixin](com.tersesystems.blindsight.api.mixins.OnConditionMixin) and should not be used with conditional logging logic.  If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the FlowBehavior.
+Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the @scaladoc[OnConditionMixin](com.tersesystems.blindsight.api.mixins.OnConditionMixin) and should not be used with conditional logging logic.  If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).
 
 @@@
 
 ## Flow Behavior
 
-Implementing a flow behavior comes down to creating @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) and @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) for entry, exit, and exceptions.
+What happens in a flow is determined by the @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).  Implementing a flow behavior comes down to creating @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) and @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) for entry, exit, and exceptions.
 
 @@snip [Flow.scala](../../../test/scala/flow/SimpleFlowBehavior.scala) { #flow_behavior }
 
@@ -50,7 +50,7 @@ This is 3
 
 ## Integrating with Tracing
 
-If you integrate with [logback-tracing](https://tersesystems.github.io/terse-logback/guide/tracing/), then you can also log to Honeycomb using a `FlowBehavior`.  To do this, add the following resolver:
+If you integrate with [logback-tracing](https://tersesystems.github.io/terse-logback/guide/tracing/), then you can also log to Honeycomb using a @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).  To do this, add the following resolver:
 
 ```
 resolvers += Resolver.bintrayRepo("tersesystems", "maven")
