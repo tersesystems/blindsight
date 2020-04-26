@@ -150,7 +150,7 @@
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="com.tersesystems.blindsight.semantic.SemanticLoggerAPI.Debug#debug" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="debug:Debug.this.Method[MessageType]"></a>
+      <a id="debug:Debug.this.Method[StatementType]"></a>
       <a id="debug:Method[StatementType]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -161,13 +161,13 @@
         <span class="name">debug</span><span class="result">: <a href="#Method[T]=M[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.Method">Method</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.StatementType">StatementType</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@debug:Debug.this.Method[MessageType]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@debug:Debug.this.Method[StatementType]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SemanticLoggerAPI$$Debug.html" class="extype" name="com.tersesystems.blindsight.semantic.SemanticLoggerAPI.Debug">Debug</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.semantic.SemanticLoggerAPI.Error#error" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="error:Error.this.Method[MessageType]"></a>
+      <a id="error:Error.this.Method[StatementType]"></a>
       <a id="error:Method[StatementType]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -178,13 +178,13 @@
         <span class="name">error</span><span class="result">: <a href="#Method[T]=M[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.Method">Method</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.StatementType">StatementType</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@error:Error.this.Method[MessageType]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@error:Error.this.Method[StatementType]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SemanticLoggerAPI$$Error.html" class="extype" name="com.tersesystems.blindsight.semantic.SemanticLoggerAPI.Error">Error</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.semantic.SemanticLoggerAPI.Info#info" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="info:Info.this.Method[MessageType]"></a>
+      <a id="info:Info.this.Method[StatementType]"></a>
       <a id="info:Method[StatementType]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -195,7 +195,7 @@
         <span class="name">info</span><span class="result">: <a href="#Method[T]=M[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.Method">Method</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.StatementType">StatementType</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@info:Info.this.Method[MessageType]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@info:Info.this.Method[StatementType]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -355,7 +355,7 @@
       <p class="shortcomment cmt">Returns the predicate instance for this level.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the predicate instance for this level.
 </p></div><dl class="paramcmts block"><dt class="param">level</dt><dd class="cmt"><p>the SLF4J level.</p></dd><dt>returns</dt><dd class="cmt"><p>the predicate instance.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../api/mixins/PredicateMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.PredicateMixin">PredicateMixin</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.semantic.SemanticRefineMixin#refine" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="refine[T&lt;:MessageType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]"></a>
+      <a id="refine[T&lt;:StatementType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]"></a>
       <a id="refine[T&lt;:StatementType](ToStatement[T],NotNothing[T]):Self[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -366,11 +366,12 @@
         <span class="name">refine</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.StatementType">StatementType</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToStatement.html" class="extype" name="com.tersesystems.blindsight.api.ToStatement">ToStatement</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>, <span name="arg1">arg1: <a href="../api/NotNothing.html" class="extype" name="com.tersesystems.blindsight.api.NotNothing">NotNothing</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>)</span><span class="result">: <a href="#Self[T]=com.tersesystems.blindsight.semantic.SemanticLogger[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.Self">Self</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@refine[T&lt;:MessageType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@refine[T&lt;:StatementType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SemanticRefineMixin.html" class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin">SemanticRefineMixin</a></dd></dl></div>
+      <p class="shortcomment cmt">Refines the statement type to the given subtype.</p><div class="fullcomment"><div class="comment cmt"><p>Refines the statement type to the given subtype.
+</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the refined type</p></dd><dt>returns</dt><dd class="cmt"><p>a semantic logger with the new type</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SemanticRefineMixin.html" class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin">SemanticRefineMixin</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.api.mixins.SourceInfoMixin#sourceInfoMarker" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="sourceInfoMarker(level:org.slf4j.event.Level,line:sourcecode.Line,file:sourcecode.File,enclosing:sourcecode.Enclosing):com.tersesystems.blindsight.api.Markers"></a>
       <a id="sourceInfoMarker(Level,Line,File,Enclosing):Markers"></a>
@@ -390,7 +391,7 @@
       <p class="shortcomment cmt">Returns marker information containing source code data.</p><div class="fullcomment"><div class="comment cmt"><p>Returns marker information containing source code data.
 </p></div><dl class="paramcmts block"><dt class="param">level</dt><dd class="cmt"><p>the level of the log method.</p></dd><dt class="param">line</dt><dd class="cmt"><p>the line that the log method was called on.</p></dd><dt class="param">file</dt><dd class="cmt"><p>the file name that the log method was in.</p></dd><dt class="param">enclosing</dt><dd class="cmt"><p>the enclosing method and class of the log method.</p></dd><dt>returns</dt><dd class="cmt"><p>a marker containing source code information.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../api/mixins/SourceInfoMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.SourceInfoMixin">SourceInfoMixin</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.semantic.SemanticLoggerAPI.Trace#trace" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="trace:Trace.this.Method[MessageType]"></a>
+      <a id="trace:Trace.this.Method[StatementType]"></a>
       <a id="trace:Method[StatementType]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -401,7 +402,7 @@
         <span class="name">trace</span><span class="result">: <a href="#Method[T]=M[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.Method">Method</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.StatementType">StatementType</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@trace:Trace.this.Method[MessageType]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@trace:Trace.this.Method[StatementType]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -424,7 +425,7 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../api/mixins/UnderlyingMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.UnderlyingMixin">UnderlyingMixin</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.semantic.SemanticLoggerAPI.Warn#warn" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="warn:Warn.this.Method[MessageType]"></a>
+      <a id="warn:Warn.this.Method[StatementType]"></a>
       <a id="warn:Method[StatementType]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -435,7 +436,7 @@
         <span class="name">warn</span><span class="result">: <a href="#Method[T]=M[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.Method">Method</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.ExtendedSemanticLogger.StatementType">StatementType</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@warn:Warn.this.Method[MessageType]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.ExtendedSemanticLogger@warn:Warn.this.Method[StatementType]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

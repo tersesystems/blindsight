@@ -45,7 +45,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">SemanticRefineMixin</span><span class="tparams">[<span name="MessageType">MessageType</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">SemanticRefineMixin</span><span class="tparams">[<span name="StatementType">StatementType</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
@@ -115,23 +115,24 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="com.tersesystems.blindsight.semantic.SemanticRefineMixin#refine" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="refine[T&lt;:MessageType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]"></a>
-      <a id="refine[T&lt;:MessageType](ToStatement[T],NotNothing[T]):Self[T]"></a>
+              <ol><li name="com.tersesystems.blindsight.semantic.SemanticRefineMixin#refine" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="refine[T&lt;:StatementType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]"></a>
+      <a id="refine[T&lt;:StatementType](ToStatement[T],NotNothing[T]):Self[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">refine</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.MessageType">MessageType</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToStatement.html" class="extype" name="com.tersesystems.blindsight.api.ToStatement">ToStatement</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>, <span name="arg1">arg1: <a href="../api/NotNothing.html" class="extype" name="com.tersesystems.blindsight.api.NotNothing">NotNothing</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>)</span><span class="result">: <a href="#Self[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.Self">Self</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>
+        <span class="name">refine</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.StatementType">StatementType</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToStatement.html" class="extype" name="com.tersesystems.blindsight.api.ToStatement">ToStatement</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>, <span name="arg1">arg1: <a href="../api/NotNothing.html" class="extype" name="com.tersesystems.blindsight.api.NotNothing">NotNothing</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>)</span><span class="result">: <a href="#Self[T]" class="extmbr" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.Self">Self</a>[<span class="extype" name="com.tersesystems.blindsight.semantic.SemanticRefineMixin.refine.T">T</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.SemanticRefineMixin@refine[T&lt;:MessageType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.semantic.SemanticRefineMixin@refine[T&lt;:StatementType](implicitevidence$1:com.tersesystems.blindsight.api.ToStatement[T],implicitevidence$2:com.tersesystems.blindsight.api.NotNothing[T]):SemanticRefineMixin.this.Self[T]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Refines the statement type to the given subtype.</p><div class="fullcomment"><div class="comment cmt"><p>Refines the statement type to the given subtype.
+</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the refined type</p></dd><dt>returns</dt><dd class="cmt"><p>a semantic logger with the new type</p></dd></dl></div>
     </li></ol>
             </div>
 

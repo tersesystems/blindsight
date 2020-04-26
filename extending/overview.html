@@ -170,33 +170,104 @@ trait LoggerAPI[P, M]
     with WarnLoggerAPI[P, M]
     with ErrorLoggerAPI[P, M]
 </code></pre>
-<p>Here&rsquo;s the SLF4J compatible API:</p>
-<pre class="prettyprint"><code class="language-scala">trait Logger extends LoggerAPI[LoggerPredicate, LoggerMethod]
+<p>And the logger itself just puts together the appropriate predicates and methods.</p>
+<pre class="prettyprint"><code class="language-scala"><br/>object SLF4JLogger {
 
-trait LoggerPredicate {
-  def apply(): Boolean
-}
+  abstract class Base[M: ClassTag](val underlying: org.slf4j.Logger, val markers: Markers)
+      extends ExtendedSLF4JLogger[M] {      
+    override type Self      = SLF4JLogger[M]
+    override type Method    = M
+    override type Predicate = SLF4JPredicate
 
-trait LoggerMethod {
-  def apply(message: String): Unit
+    // ... some infrastructure for parameter lists...
+
+    // implementation for trace, only the level changes
+    override def isTraceEnabled: Predicate = newPredicate(Level.TRACE)
+    override def trace: Method             = newMethod(Level.TRACE)
+
+    override def withMarker[T: ToMarkers](markerInst: T): Self = {
+      val markers = implicitly[ToMarkers[T]].toMarkers(markerInst)
+      newInstance(underlying, markers + markers)
+    }
+
+    protected def newInstance(underlying: org.slf4j.Logger, markerState: Markers): Self
+    protected def newMethod(level: Level): Method
+    protected def newPredicate(level: Level): Predicate = new SLF4JPredicate.Impl(level, this)
+  }
+
+  class Strict(underlying: org.slf4j.Logger, markers: Markers)
+      extends SLF4JLogger.Base[StrictSLF4JMethod](underlying, markers) {
+    override protected def newInstance(
+        underlying: org.slf4j.Logger,
+        markerState: Markers
+    ): Self = new Strict(underlying, markerState)
+
+    override protected def newMethod(level: Level): StrictSLF4JMethod =
+      new StrictSLF4JMethod.Impl(level, this)
+
+    override def onCondition(test: =&gt; Boolean): SLF4JLogger[StrictSLF4JMethod] =
+      new Strict.Conditional(test, this)
+  }
 }
 </code></pre>
-<p>And here&rsquo;s the fluent API:</p>
-<pre class="prettyprint"><code class="language-scala">trait FluentLogger extends LoggerAPI[LoggerPredicate, FluentLoggerMethod]
+<p>You can see there&rsquo;s very little to the logger itself. The method API itself is as you&rsquo;d expect:</p>
+<pre class="prettyprint"><code class="language-scala">trait StrictSLF4JMethod {
+  def level: Level
 
-trait FluentAPI {
-  def marker[T: ToMarkers](instance: =&gt; T): FluentLoggerMethod.Builder
-  def message[T: ToMessage](instance: =&gt; T): FluentLoggerMethod.Builder
-  def argument[T: ToArguments](instance: =&gt; T): FluentLoggerMethod.Builder
-  def cause(e: Throwable): FluentLoggerMethod.Builder
+  def when(condition: =&gt; Boolean)(block: StrictSLF4JMethod =&gt; Unit): Unit
+
+  def apply(
+      message: =&gt; Message
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[A: ToArguments](
+      message: =&gt; Message,
+      args: A
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[M: ToMarkers](
+      markers: M,
+      message: =&gt; Message
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[M: ToMarkers, A: ToArguments](
+      markers: M,
+      message: =&gt; Message,
+      args: A
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 }
+</code></pre>
+<p>And from there, the method implementation does the work of resolving type class instances and calling through to SLF4J with the appropriate parameters.</p>
+<pre class="prettyprint"><code class="language-scala">object StrictSLF4JMethod {
 
-trait FluentLoggerMethod extends FluentAPI {
-  def apply[T: ToStatement](instance: =&gt; T): Unit
+  class Impl(val level: Level, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
+      extends StrictSLF4JMethod {
+
+    @inline
+    protected def markers: Markers = logger.markers
+
+    protected val parameterList: ParameterList = logger.parameterList(level)
+
+    override def apply(
+        msg: =&gt; Message
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          parameterList.markerMessage(m.marker, msg.toString)
+        }
+      } else {
+        if (executePredicate()) {
+          parameterList.message(msg.toString)
+        }
+      }
+    }
+
+    // ... and so on for the rest of the API.
+  }
 }
 </code></pre>
 <p>Breaking down the API means that you can pass through only the <code>LoggerMethod</code>, or assemble your custom logging levels. You have the option of extending <code>LoggerMethod</code> and <code>LoggerPredicate</code> with your own application specific logging API. Blindsight is designed to work with you so that adding new functionality is easy.</p>
-<p>TODO Finish this</p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/extending/overview.md">here</a>.
 </div>

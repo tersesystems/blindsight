@@ -145,11 +145,19 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#slf4j-api" name="slf4j-api" class="anchor"><span class="anchor-link"></span></a>SLF4J API</h1>
 <p>The default Logger API has the same logger methods and (roughly) the type signature as SLF4J.</p>
-<p>The biggest difference is that methods take a type class instance of <code>Markers</code> and <code>Arguments</code>, if you have them defined.</p>
+<p>The biggest difference is that methods take a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a>, if you have them defined.</p>
 <h2><a href="#markers" name="markers" class="anchor"><span class="anchor-link"></span></a>Markers</h2>
-<p>you can pass in something that is not a marker, and provided you have a <code>ToMarker</code> in implicit scope, you can get it auto-converted.</p>
+<p>You can pass in something that is not a marker, and provided you have a <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a> in implicit scope, you can get it auto-converted.</p>
+<p>There is an automatic implicit conversion from <code>org.slf4j.Marker</code> to <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>:</p>
 <pre class="prettyprint"><code class="language-scala">val marker: org.slf4j.Marker = MarkerFactory.getDetachedMarker(&quot;SOME_MARKER&quot;)
 logger.info(markers, &quot;message with marker&quot;)
+</code></pre>
+<p>You can also combine markers:</p>
+<pre class="prettyprint"><code class="language-scala">val markersOnePlusTwo: Markers = markers1 + markers2
+</code></pre><div class="callout note "><div class="callout-title">Note</div>
+<p>You should <strong>not</strong> try to manipulate the marker through <code>marker.add</code> or <code>marker.remove</code>. It&rsquo;s better to treat a <code>org.slf4j.Marker</code> instance as completely immutable, and manage any composition through <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>.</p></div>
+<p>Getting at the underlying marker is a <code>lazy val</code> that is computed once:</p>
+<pre class="prettyprint"><code class="language-scala">val marker: org.slf4j.Marker = markersOnePlusTwo.marker
 </code></pre>
 <p>You can also convert your own objects into appropriate markers.</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
@@ -176,26 +184,19 @@ object Slf4jMain {
   }
 }
 </code></pre>
-<p>Logstash Markers are encouraged here, as they can make marker specification much easier:</p>
+<p><a href="structured.html">Logstash Markers</a> are encouraged here, as they can make marker specification much easier:</p>
 <pre class="prettyprint"><code class="language-scala"><br/>import com.tersesystems.blindsight.logstash.Implicits._
 logger.info(&quot;markerKey&quot; -&gt; &quot;markerValue&quot;, &quot;marker and argument&quot;)
 </code></pre>
-<p>There is an automatic implicit conversion from <code>org.slf4j.Marker</code> to <code>Markers</code>. You can also combine markers:</p>
-<pre class="prettyprint"><code class="language-scala">val markersOnePlusTwo: Markers = markers1 + markers2
-</code></pre>
-<p>Getting at the underlying marker is a <code>lazy val</code> that is computed once:</p>
-<pre class="prettyprint"><code class="language-scala">val marker: org.slf4j.Marker = markersOnePlusTwo.marker
-</code></pre>
-<p>You should <strong>not</strong> try to manipulate the marker through <code>marker.add</code> or <code>marker.remove</code>. It&rsquo;s better to treat a <code>org.slf4j.Marker</code> instance as completely immutable, and manage any composition through <code>Markers</code>.</p>
 <h2><a href="#arguments" name="arguments" class="anchor"><span class="anchor-link"></span></a>Arguments</h2>
-<p>Arguments in Blindsight occupy one variable. In constrast to the SLF4J API, which takes an <code>Any</code>, nd there <strong>must</strong> be a type class instance of <code>ToArguments</code> in scope. This is to prevent awkward <code>toString</code> matches on object instances, and ensure that structured logging is taking place. </p>
+<p>Arguments in Blindsight occupy one variable. In constrast to the SLF4J API, which takes an <code>Any</code>. There <strong>must</strong> be a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a> in scope. This is to prevent awkward <code>toString</code> matches on object instances, and ensure that structured logging is taking place. </p>
 <pre class="prettyprint"><code class="language-scala">// Will not compile, because no ToArguments[SomeRandomObject] is found in implicit scope!
 logger.info(&quot;one argument {}&quot;, new SomeRandomObject()) 
 </code></pre>
-<p>Default <code>ToArguments</code> are determined for the primitives (<code>String</code>, <code>Int</code>, etc) but are not defined for time based objects like <code>Date</code> as these could be represented in multiple ways.</p>
+<p>Default <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a> are determined for the primitives (<code>String</code>, <code>Int</code>, etc):</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;one argument {}&quot;, 42) // works, because default
 </code></pre>
-<p>If you have several arguments, you will need to wrap them so they are provided as a single <code>Arguments</code> instance:</p>
+<p>If you have several arguments, you will need to wrap them so they are provided as a single <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a> instance:</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;arg {}, arg {}, arg {}&quot;, Arguments(1, &quot;2&quot;, false))
 </code></pre>
 <p>comes out as:</p>
@@ -232,11 +233,11 @@ implicit val instantToArgument: ToArguments[java.time.Instant] = ToArguments[jav
 logger.info(&quot;date is {}&quot;, new java.util.Date())
 logger.info(&quot;instant is {}&quot;, Instant.now())
 </code></pre>
-<p>Exceptions must be the last argument in the <code>Arguments</code>. For example:</p>
+<p>Exceptions must be the last argument in the <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a>. For example:</p>
 <pre class="prettyprint"><code class="language-scala">val e = new Exception(&quot;something is horribly wrong&quot;)
 logger.error(&quot;this is an error with argument {}&quot;, Arguments(&quot;a&quot; -&gt; &quot;b&quot;, e))
 </code></pre>
-<p>Note that <code>ToArguments</code> is a contravariant type class. This means that the <em>lowest</em> type class match will take priority. This is useful when it comes time to passing things like exceptions:</p>
+<p>Note that <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a> is a contravariant type class. This means that the <em>lowest</em> type class match will take priority. This is useful when it comes time to passing things like exceptions:</p>
 <pre class="prettyprint"><code class="language-scala">val exception: IllegalStateException = new IllegalStateException(&quot;Cannot divide by zero&quot;)
 logger.error(&quot;Some error&quot;, exception) // does not compile under invariant type class
 </code></pre>
@@ -247,16 +248,18 @@ logger.error(&quot;Some error&quot;, exception) // does not compile under invari
 <p>But this is really for the underlying SLF4J logger and shouldn&rsquo;t need to be touched directly.</p>
 <h2><a href="#unchecked-api" name="unchecked-api" class="anchor"><span class="anchor-link"></span></a>Unchecked API</h2>
 <p>An unchecked API is available that does not use type class inference at all, and looks just like SLF4J with the additions of conditions and markers.</p>
+<p>This is easier to use, but since <code>Any</code> cannot be type checked, it can output information you don&rsquo;t expect. For example, it could output credit card information because calling <code>toString</code> exposes the case class data:</p>
 <pre class="prettyprint"><code class="language-scala">val logger = LoggerFactory.getLogger
+
 val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = logger.unchecked
-val e = new Exception(&quot;derp&quot;)
-unchecked.error(&quot;Exception occured&quot;, e)
+
+// Uses Any, renders credit card as &quot;toString&quot;
 val creditCard = CreditCard(&quot;4111111111111&quot;)
-unchecked.info(&quot;this is risky unchecked {}&quot;, creditCard) // case class tostring renders CC number
-unchecked.info(&quot;this is unchecked {}&quot;, Arguments(42, 53))
-unchecked.info(m1, &quot;unchecked with argument and marker {}&quot;, Arguments(42, 53))
+
+ // case class tostring renders CC number, which is unsafe!
+unchecked.info(&quot;this is risky unchecked {}&quot;, creditCard)
 </code></pre>
-<p>This is easier to use, but since <code>Any</code> cannot be typed checked, these methods are marked as deprecated and you can turn on a warning: output will be written to <code>System.out.error</code> when the system property is set to true: <code>-Dblindsight.anywarn=true</code>.</p>
+<p>In the unchecked API, you can set <code>-Dblindsight.anywarn=true</code> as a system property, and output will be written to <code>System.out.error</code> when calls to <code>Any</code> are made.</p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/slf4j.md">here</a>.
 </div>

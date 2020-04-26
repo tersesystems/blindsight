@@ -146,10 +146,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h1><a href="#contextual-logging" name="contextual-logging" class="anchor"><span class="anchor-link"></span></a>Contextual Logging</h1>
 <p>Blindsight can handle context cleanly over multiple threads. Context is handled through an immutable API that returns new instances on modification.</p>
 <p>This is very useful when you are logging <a href="https://www.honeycomb.io/blog/how-are-structured-logs-different-from-events/">events</a>, because a complete picture is often not available at the beginning of the unit of work. There are various FP ways of doing this, but explicit <code>logger</code> arguments also work fine.</p>
-<p>Blindsight does not use MDC for managing context, and does not touch thread local storage. Instead, it uses markers and builds up those markers for use in structured logging. This is especially useful for events.</p>
+<p>Blindsight does not use MDC for managing context, and does not touch thread local storage. Instead, it uses markers and builds up those markers for use in structured logging. This is especially useful for events.</p><div class="callout note "><div class="callout-title">Note</div>
+<p>Blindsight does not use MDC, and does not recommend its use.</p>
+<p>There are many reasons to not use MDC. It is inherently limiting as a <code>Map[String,String]</code>. It must be managed carefully in asynchronous programming to resolve the Map. It is mutable &ndash; it will only contain the last written values in the map at the time of logging, and no record is kept of prior values. It is static &ndash; it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed. And finally, MDC fails silently. When something goes wrong in MDC, it&rsquo;s anyone&rsquo;s guess what cleared it.</p></div>
 <p>The assumption is that you will be using the <a href="structured.html">Logstash Bindings</a> and <a href="https://tersesystems.github.io/terse-logback">Terse Logback</a>. You should also read through how to create your own <a href="https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/">markers</a> for use in logging.</p>
 <h2><a href="#marker-context" name="marker-context" class="anchor"><span class="anchor-link"></span></a>Marker Context</h2>
-<p>Blindsight allows state to be built up through a set of SLF4J markers, wrapped by <code>Markers</code>.</p>
+<p>Blindsight allows state to be built up through a set of SLF4J markers, wrapped by <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>.</p>
 <pre class="prettyprint"><code class="language-scala">val entryLogger = logger.withMarker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
 entryLogger.trace(&quot;entry: entering method&quot;)
 </code></pre>
@@ -157,10 +159,8 @@ entryLogger.trace(&quot;entry: entering method&quot;)
 <pre class="prettyprint"><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
 val loggerWithTwoMarkers = entryLogger.withMarker(LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;))
 </code></pre>
-<p>The markers are not added to each other &ndash; in fact, there is no absolutely use of SLF4J marker parent/child relationships or SLF4J iterators in the code. Instead, they&rsquo;re handled by a Scala immutable set, and a custom parent marker is created lazily when you call <code>markers.marker</code>.</p>
-<blockquote>
-  <p><strong>Note</strong>: You should not call <code>marker.add(childMarker)</code> or otherwise use the SLF4J Marker API, as it directly mutates marker internal state.</p>
-</blockquote>
+<p>The markers are not added to each other &ndash; in fact, there is no absolutely use of SLF4J marker parent/child relationships or SLF4J iterators in the code. Instead, they&rsquo;re handled by a Scala immutable set, and a custom parent marker is created lazily when you call <code>markers.marker</code>.</p><div class="callout note "><div class="callout-title">Note</div>
+<p>You should not call <code>marker.add(childMarker)</code> or otherwise use the SLF4J Marker API, as it directly mutates marker internal state.</p></div>
 <p>The markers are available from the logger using <code>markers</code>:</p>
 <pre class="prettyprint"><code class="language-scala">val markers: Markers = entryLogger.markers
 val parentMarker: Marker = markers.marker
@@ -169,10 +169,7 @@ val parentMarker: Marker = markers.marker
 <pre class="prettyprint"><code class="language-scala">val anotherMarker = ... 
 entryLogger.info(anotherMarker, &quot;a message&quot;)
 </code></pre>
-<p>Managing context is from this point a question of whether you want to pass around <code>Markers</code>, or pass around a <code>Logger</code>, useful for <a href="https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/">constructing events</a>. </p>
-<h2><a href="#mdc" name="mdc" class="anchor"><span class="anchor-link"></span></a>MDC</h2>
-<p>Blindsight does not use MDC, and does not recommend its use.</p>
-<p>There are many reasons to not use MDC. It is inherently limiting as a <code>Map[String,String]</code>. It must be managed carefully in asynchronous programming to resolve the Map. It is mutable &ndash; it will only contain the last written values in the map at the time of logging, and no record is kept of prior values. It is static &ndash; it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed. And finally, MDC fails silently. When something goes wrong in MDC, it&rsquo;s anyone&rsquo;s guess what cleared it.</p>
+<p>Managing context is from this point a question of whether you want to pass around <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>, or pass around a <a href="/blindsight/api/com/tersesystems/blindsight/Logger.html" title="com.tersesystems.blindsight.Logger"><code>Logger</code></a>, useful for <a href="https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/">constructing events</a>. </p>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/context.md">here</a>.
 </div>
@@ -190,7 +187,6 @@ The source code for this page can be found <a href="https://github.com/lightbend
   <li><a href="../usage/context.html#contextual-logging" class="header">Contextual Logging</a>
   <ul>
     <li><a href="../usage/context.html#marker-context" class="header">Marker Context</a></li>
-    <li><a href="../usage/context.html#mdc" class="header">MDC</a></li>
   </ul></li>
 </ul>
 </div>

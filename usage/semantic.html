@@ -145,10 +145,10 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#semantic-api" name="semantic-api" class="anchor"><span class="anchor-link"></span></a>Semantic API</h1>
 <p>A semantic logging API is <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md">strongly typed</a> and does not have the same construction oriented approach as the fluent API. Instead, the type of the instance is presumed to have a mapping directly to the attributes being logged.</p>
-<p>The semantic API works against <code>Statement</code> directly. The application is expected to handle the type class mapping to <code>Statement</code>.</p>
+<p>The semantic API works against <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> directly. The application is expected to handle the type class mapping to <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> .</p>
 <p>Here is an example:</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.semantic.SemanticLogger
+import com.tersesystems.blindsight.semantic._
 import net.logstash.logback.argument.StructuredArguments.kv
 
 object SemanticMain {
@@ -196,8 +196,7 @@ object SemanticMain {
   }
 
   def main(args: Array[String]): Unit = {
-    val underlying = org.slf4j.LoggerFactory.getLogger(getClass)
-    val userEventLogger: SemanticLogger[UserEvent] = SemanticLogger(underlying)
+    val userEventLogger: SemanticLogger[UserEvent] = LoggerFactory.getLogger.semantic[UserEvent] 
     userEventLogger.info(UserLoggedInEvent(&quot;steve&quot;, &quot;127.0.0.1&quot;))
     userEventLogger.info(UserLoggedOutEvent(&quot;steve&quot;, &quot;timeout&quot;))
 
@@ -212,9 +211,21 @@ FgEdhil2zsg6O0Qbm7EAAA 2020-04-05T23:09:08.435+0000 [INFO ] example.semantic.Sem
 FgEdhil2zsk6O0Qbm7EAAA 2020-04-05T23:09:08.436+0000 [INFO ] example.semantic.SemanticMain$ in main  - UserLoggedInEvent(mike,10.0.0.1)
 </code></pre>
 <p>and in JSON:</p>
-<pre class="prettyprint"><code class="language-json">{&quot;id&quot;:&quot;FgEdhil2znw6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:-298700,&quot;tse_ms&quot;:1586128148359,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.359Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedInEvent(steve,127.0.0.1)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;steve&quot;,&quot;ipAddr&quot;:&quot;127.0.0.1&quot;}
-{&quot;id&quot;:&quot;FgEdhil2zsg6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:74895700,&quot;tse_ms&quot;:1586128148435,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.435Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedOutEvent(steve,timeout)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;steve&quot;,&quot;reason&quot;:&quot;timeout&quot;}
-{&quot;id&quot;:&quot;FgEdhil2zsk6O0Qbm7EAAA&quot;,&quot;relative_ns&quot;:75837600,&quot;tse_ms&quot;:1586128148436,&quot;start_ms&quot;:null,&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.436Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;UserLoggedInEvent(mike,10.0.0.1)&quot;,&quot;logger_name&quot;:&quot;example.semantic.SemanticMain$&quot;,&quot;thread_name&quot;:&quot;main&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;level_value&quot;:20000,&quot;name&quot;:&quot;mike&quot;,&quot;ipAddr&quot;:&quot;10.0.0.1&quot;}
+<pre class="prettyprint"><code class="language-json">{
+  &quot;id&quot;: &quot;FgEdhil2znw6O0Qbm7EAAA&quot;,
+  &quot;relative_ns&quot;: -298700,
+  &quot;tse_ms&quot;: 1586128148359,
+  &quot;start_ms&quot;: null,
+  &quot;@timestamp&quot;: &quot;2020-04-05T23:09:08.359Z&quot;,
+  &quot;@version&quot;: &quot;1&quot;,
+  &quot;message&quot;: &quot;UserLoggedInEvent(steve,127.0.0.1)&quot;,
+  &quot;logger_name&quot;: &quot;example.semantic.SemanticMain$&quot;,
+  &quot;thread_name&quot;: &quot;main&quot;,
+  &quot;level&quot;: &quot;INFO&quot;,
+  &quot;level_value&quot;: 20000,
+  &quot;name&quot;: &quot;steve&quot;,
+  &quot;ipAddr&quot;: &quot;127.0.0.1&quot;
+}
 </code></pre>
 <h2><a href="#refinement-types" name="refinement-types" class="anchor"><span class="anchor-link"></span></a>Refinement Types</h2>
 <p>Semantic Logging works very well with <a href="https://github.com/fthomas/refined">refinement types</a>. </p>
@@ -229,12 +240,12 @@ implicit def stringToStatement[R]: ToStatement[Refined[String, R]] = ToStatement
 }
 
 val notEmptyLogger: SemanticLogger[String Refined NonEmpty] = logger.semantic[String Refined NonEmpty]
-notEmptyLogger.info(refineMV(&quot;this is a statement&quot;))
+notEmptyLogger.info(refineMV[NonEmpty](&quot;this is a statement&quot;))
 // will not compile
 //notEmptyLogger.info(refineMV(&quot;&quot;))
 
 val urlLogger: SemanticLogger[String Refined Url] = logger.semantic[String Refined Url]
-urlLogger.info(refineMV(&quot;http://google.com&quot;))
+urlLogger.info(refineMV[Url](&quot;http://google.com&quot;))
 // will not compile
 //urlLogger.info(refineMV(&quot;this is a statement&quot;))
 </code></pre>

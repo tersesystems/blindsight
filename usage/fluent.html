@@ -144,10 +144,10 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#fluent-api" name="fluent-api" class="anchor"><span class="anchor-link"></span></a>Fluent API</h1>
-<p>A <a href="https://www.martinfowler.com/bliki/FluentInterface.html">fluent builder interface</a> is an API that relies heavily on method chaining to build up an expression. The Blindsight fluent API works with <code>Markers</code>, <code>Message</code>, and <code>Arguments</code>, and uses type classes to map appropriately, using the <code>ToMarkers</code>, <code>ToMessage</code> and <code>ToArguments</code> type classes, respectively. </p>
+<p>A <a href="https://www.martinfowler.com/bliki/FluentInterface.html">fluent builder interface</a> is an API that relies heavily on method chaining to build up an expression. The Blindsight fluent API works with <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a>, and uses type classes to map appropriately, using the <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMessage.html" title="com.tersesystems.blindsight.api.ToMessage"><code>ToMessage</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a> type classes, respectively. </p>
 <p>The fluent API has an immediate advantage in that there&rsquo;s less overloading in the API, and there&rsquo;s more room to chain. With type classes, it&rsquo;s possible to set up much richer <a href="https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/">structured logging</a>.</p>
 <h2><a href="#accessing-fluent-logger" name="accessing-fluent-logger" class="anchor"><span class="anchor-link"></span></a>Accessing Fluent Logger</h2>
-<p>The easiest way of getting a fluent logger is to use the <code>LoggerFactory</code> and then call the <code>fluent</code> method:</p>
+<p>The easiest way of getting a fluent logger is to use the <a href="/blindsight/api/com/tersesystems/blindsight/LoggerFactory.html" title="com.tersesystems.blindsight.LoggerFactory"><code>LoggerFactory</code></a> and then call the <code>fluent</code> method:</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.fluent.FluentLogger
 
 val logger = com.tersesystems.blindsight.LoggerFactory.getLogger(getClass)
@@ -169,7 +169,7 @@ val marker: Marker = LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;)
 fluentLogger.marker(marker).log()
 </code></pre>
 <p>This will write out an empty string as the message, and a logstash marker.</p>
-<p>You can also write out anything that has a <code>ToMarkers</code> implementation, i.e. the Logstash implicits lets you do this:</p>
+<p>You can also write out anything that has a <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a> implementation, i.e. the Logstash implicits lets you do this:</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
 import com.tersesystems.blindsight.api._
 
@@ -180,7 +180,7 @@ implicit def arrayToMarkers[T]: ToMarkers[(String, Seq[T])] = ToMarkers {
 
 fluentLogger.marker(&quot;array&quot; -&gt; Seq(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;)).log()
 </code></pre>
-<p>All markers are in a <code>Markers</code> instance internally, but are not accessible from the builder.</p>
+<p>All markers are in a <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> instance internally, but are not accessible from the builder.</p>
 <h2><a href="#message" name="message" class="anchor"><span class="anchor-link"></span></a>Message</h2>
 <p>A message is the part of the statement that is written out as a string. </p>
 <pre class="prettyprint"><code class="language-scala">fluentLogger.message(&quot;some message&quot;).log()
@@ -200,7 +200,7 @@ fluentLogger.message(person).log()
 <p>Arguments can be added with <code>argument</code>. You do not need to define a message, but you should call <code>logWithPlaceholders</code> in that case so the argument is visible.</p>
 <pre class="prettyprint"><code class="language-scala">fluentLogger.argument(someArgument).logWithPlaceholders()
 </code></pre>
-<p>Custom formatting is done with <code>ToArguments</code>.</p>
+<p>Custom formatting is done with <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a>.</p>
 <pre class="prettyprint"><code class="language-scala">case class Person(name: String)
 
 implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;

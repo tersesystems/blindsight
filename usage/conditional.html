@@ -147,7 +147,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>No matter how fast your logging is, it&rsquo;s always faster not to log a statement at all. Blindsight does its best to allow the system to <strong>not</strong> log as much as it makes it possible to log.</p>
 <p>Blindsight has conditional logging on two levels; on the logger itself, and on the method. Conditional logging does not take into account any internal state of the logger, i.e. marker state, logger names, etc. It takes a boolean call by name, and that&rsquo;s it.</p>
 <h2><a href="#on-condition" name="on-condition" class="anchor"><span class="anchor-link"></span></a>On Condition</h2>
-<p>All loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
+<p>All loggers (with the exception of <code>flow</code>) have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
 <p>This logger will only log if the condition is true.</p>
 <pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
 val conditionalLogger = logger.onCondition(booleanCondition)
@@ -159,8 +159,8 @@ val bothConditionsLogger = conditionalLogger.onCondition(anotherCondition)
 bothConditionsLogger.info(&quot;Only logs when both conditions are true&quot;)
 </code></pre>
 <p>The conditions are not exposed from the logger, and clients should not peek under the hood.</p>
-<p>Conditional loggers are good with feature flags, circuit breakers, sampling, and other systems that throttle logging. </p>
-<p>They are also good with capabilities, because loggers can be revoked along with the capability. For example, a logger reporting a failed network stream can be silenced if the reason why the stream failed is because of an intentional security cutoff.</p>
+<p>Conditional loggers are good with <a href="https://tersesystems.com/blog/2019/07/22/targeted-diagnostic-logging-in-production/">feature flags</a>, circuit breakers, sampling, and other systems that throttle logging. </p>
+<p>They are also good with <a href="https://tersesystems.com/blog/2018/06/24/security-in-scala/">capabilities</a>, because loggers can be revoked along with the capability. For example, a logger reporting a failed network stream can be silenced if the reason why the stream failed is because of an intentional security cutoff.</p>
 <h2><a href="#when" name="when" class="anchor"><span class="anchor-link"></span></a>When</h2>
 <p>By contrast, <code>when</code> is used on methods, rather than the logger, and provides a block that is executed only when the condition is true:</p>
 <pre class="prettyprint"><code class="language-scala">logger.info.when(booleanCondition) { info =&gt;
