@@ -16,6 +16,24 @@ Blindsight is based around SLF4J.  It does not configure or constrain SLF4J in a
 
 Having said that, the default assumption in the examples is that you are using [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder) and [Terse Logback](https://tersesystems.github.io/terse-logback/) on the backend, and are roughly familiar with the [blog posts at tersesystems.com](https://tersesystems.com/category/logging/) and the [diagnostic logging showcase](https://github.com/tersesystems/terse-logback-showcase).
 
+## Publishing
+
+This project uses `sbt-bintray` to publish.  Here's an [example](http://queirozf.com/entries/publishing-an-sbt-project-onto-bintray-an-example).  This project stages artifacts first before releasing them.
+
+```scala
+sbt publish
+sbt bintrayRelease 
+```
+
+Publishing documentation is done using `sbt-site`
+
+```scala
+sbt
+> project docs 
+> makeSite
+> ghpagesPushSite
+```
+
 ## License
 
 Blindsight is released under the "Apache 2" license. See [LICENSE](LICENSE) for specifics and copyright declaration.

@@ -7,8 +7,11 @@ lazy val scala211 = "2.11.12"
 ThisBuild / scalaVersion := scala211
 ThisBuild / crossScalaVersions := Seq(scala211, scala212, scala213)
 
+ThisBuild / bintrayOrganization := Some("tersesystems")
+
 ThisBuild / organization := "com.tersesystems.blindsight"
 ThisBuild / organizationName := "Terse Systems"
+ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 
 ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
