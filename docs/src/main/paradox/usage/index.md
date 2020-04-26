@@ -7,8 +7,8 @@
 * [Semantic API](semantic.md)
 * [Flow API](flow.md)
 * [Structured Logging](structured.md)
-* [Contextual Logging](context.md)
 * [Conditional Logging](conditional.md)
+* [Contextual Logging](context.md)
 * [Logger Resolvers](resolvers.md)
 * [Source Code](sourcecode.md)
 
