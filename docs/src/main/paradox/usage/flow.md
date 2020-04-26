@@ -50,8 +50,7 @@ This is 3
 
 ## Integrating with Tracing
 
-If you integrate with [logback-tracing](https://tersesystems.github.io/terse-logback/guide/tracing/), then you can also log to Honeycomb using a `FlowBehavior`.  To do this, add the following
- resolver:
+If you integrate with [logback-tracing](https://tersesystems.github.io/terse-logback/guide/tracing/), then you can also log to Honeycomb using a `FlowBehavior`.  To do this, add the following resolver:
 
 ```
 resolvers += Resolver.bintrayRepo("tersesystems", "maven")
@@ -62,15 +61,17 @@ and the following dependencies:
 @@dependency[sbt,Maven,Gradle] {
   group="com.tersesystems.logback"
   artifact="logback-tracing"
-  version="0.16.0"
+  version="latest.version"
 }
 
 @@dependency[sbt,Maven,Gradle] {
   group="com.tersesystems.logback"
   artifact="logback-uniqueid-appender"
-  version="0.16.0"
+  version="latest.version"
 }
 
 And you can produce Honeycomb manual traces with the following:
 
 @@snip [HoneycombFlow.scala](../../../test/scala/flow/HoneycombFlow.scala) { #honeycomb_flow_example }
+
+See [play-blindsight](http://github.com/wsargent/play-blindsight) for a worked example.
