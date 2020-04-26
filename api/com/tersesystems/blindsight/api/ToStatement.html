@@ -51,8 +51,13 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Type class for mapping to a statement.
-</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the type</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Type class for mapping to a <code>Statement</code>.</p><pre><span class="kw">case</span> <span class="kw">class</span> Person(name: <span class="std">String</span>, age: <span class="std">Int</span>)
+<span class="kw">implicit</span> <span class="kw">val</span> personToStatement: ToStatement[Person] = ToStatement { person <span class="kw">=&gt;</span>
+  Statement(markers = Markers.empty,
+            message = Message(<span class="lit">"Person({}, {})"</span>),
+            arguments = Arguments(person.name) + person.age,
+            throwable = <span class="std">None</span>)
+}</pre></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the type to convert to a <code>Statement</code></p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>

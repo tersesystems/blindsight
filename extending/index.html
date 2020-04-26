@@ -36,18 +36,29 @@
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/principles.html" class="page">Principles</a></li>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/context.html" class="page">Context</a></li>
+    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="active page">Extending</a></li>
+  <li><a href="../extending/index.html" class="active page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -84,18 +95,29 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/principles.html" class="page">Principles</a></li>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/context.html" class="page">Context</a></li>
+    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="active page">Extending</a></li>
+  <li><a href="../extending/index.html" class="active page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -121,153 +143,18 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#extending" name="extending" class="anchor"><span class="anchor-link"></span></a>Extending</h1>
-<p>Because of the way that Blindsight is constructed, it is very easy to extend and adapt Blindsight to your needs. </p>
-<p>Blindsight does this by breaking down the components of logging. In SLF4J, you have a logging API that looks like this: </p>
-<pre class="prettyprint"><code class="language-java">public interface Logger {
-  boolean isInfoEnabled();
-  void info(String message);
-}
-</code></pre>
-<p>In Blindsight, the API and the logging levels are all traits, and the <code>LoggerAPI</code> is a composition of those traits. </p>
-<pre class="prettyprint"><code class="language-scala">trait LoggerComponent[P, M] {
-  type Predicate &lt;: P
-  type Method    &lt;: M
-  type Self
-}
-
-trait InfoLoggerAPI[P, M] extends LoggerComponent[P, M] {
-  def isInfoEnabled: Predicate
-  def info: Method
-}
-
-trait LoggerAPI[P, M]
-    extends LoggerComponent[P, M]
-    with TraceLoggerAPI[P, M]
-    with DebugLoggerAPI[P, M]
-    with InfoLoggerAPI[P, M]
-    with WarnLoggerAPI[P, M]
-    with ErrorLoggerAPI[P, M]
-</code></pre>
-<p>Here&rsquo;s the SLF4J compatible API:</p>
-<pre class="prettyprint"><code class="language-scala">trait Logger extends LoggerAPI[LoggerPredicate, LoggerMethod]
-
-trait LoggerPredicate {
-  def apply(): Boolean
-}
-
-trait LoggerMethod {
-  def apply(message: String): Unit
-}
-</code></pre>
-<p>And here&rsquo;s the fluent API:</p>
-<pre class="prettyprint"><code class="language-scala">trait FluentLogger extends LoggerAPI[LoggerPredicate, FluentLoggerMethod]
-
-trait FluentAPI {
-  def marker[T: ToMarkers](instance: =&gt; T): FluentLoggerMethod.Builder
-  def message[T: ToMessage](instance: =&gt; T): FluentLoggerMethod.Builder
-  def argument[T: ToArguments](instance: =&gt; T): FluentLoggerMethod.Builder
-  def cause(e: Throwable): FluentLoggerMethod.Builder
-}
-
-trait FluentLoggerMethod extends FluentAPI {
-  def apply[T: ToStatement](instance: =&gt; T): Unit
-}
-</code></pre>
-<p>Breaking down the API means that you can pass through only the <code>LoggerMethod</code>, or assemble your custom logging levels. You have the option of extending <code>LoggerMethod</code> and <code>LoggerPredicate</code> with your own application specific logging API. Blindsight is designed to work with you so that adding new functionality is easy.</p>
-<p>For example, if you want to add entry and exit logging levels to the SLF4J compatible API with automatically applied markers, you can do this:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api.{Arguments, ToArguments}
-import com.tersesystems.blindsight.fluent.FluentLogger
-import com.tersesystems.blindsight.logstash.ToArgumentsImplicits
-import net.logstash.logback.argument.StructuredArguments
-import org.slf4j.MarkerFactory
-import sourcecode.{Args, Enclosing, File, Line}
-
-import scala.util.{Failure, Success, Try}
-
-class FlowLogger(logger: FluentLogger) {
-
-  def flow[B]: FlowLoggerMethod[B] = new FlowLoggerMethod.Impl[B](logger, defaults[B])
-
-  private def defaults[B]: ToArguments[B] = new ToArguments[B] {
-    override def toArguments(instance: =&gt; B): Arguments = {
-      instance match {
-        case array: Array[_] =&gt;
-          Arguments(StructuredArguments.kv(&quot;result&quot;, array.toSeq))
-        case other =&gt;
-          Arguments(StructuredArguments.kv(&quot;result&quot;, other))
-      }
-    }
-  }
-
-  def typedFlow[B: ToArguments]: FlowLoggerMethod[B] = {
-    new FlowLoggerMethod.Impl[B](logger, implicitly[ToArguments[B]])
-  }
-}
-
-trait FlowLoggerMethod[B] {
-
-  def apply(block: =&gt; B)(implicit line: Line, file: File, enclosing: Enclosing, sourceArgs: Args): B
-
-  def map(mappings: B =&gt; Arguments): FlowLoggerMethod[B]
-}
-
-object FlowLoggerMethod {
-
-  class Impl[B](logger: FluentLogger, ta: ToArguments[B])
-      extends FlowLoggerMethod[B]
-      with ToArgumentsImplicits {
-    private val entryLogger =
-      logger.withMarker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
-    private val exitLogger = logger.withMarker(MarkerFactory.getMarker(&quot;EXIT&quot;))
-
-    val markers = entryLogger.markers
-
-    def map(mappings: B =&gt; Arguments): FlowLoggerMethod[B] = {
-      new FlowLoggerMethod.Impl[B](logger, ToArguments(mappings))
-    }
-
-    override def apply(
-        attempt: =&gt; B
-    )(implicit line: Line, file: File, enclosing: Enclosing, sourceArgs: Args): B = {
-      if (entryLogger.isTraceEnabled()) {
-        entryLogger.trace
-          .message(s&quot;${enclosing.value} entry&quot;)
-          .argument(sourceArgs)
-          .logWithPlaceholders()
-      }
-      tryExecution(attempt)
-    }
-
-    protected def tryExecution(
-        attempt: =&gt; B
-    )(implicit line: Line, file: File, enclosing: Enclosing, sourceArgs: Args): B = {
-      if (exitLogger.isTraceEnabled()) {
-        val result = Try(attempt)
-        result match {
-          case Success(resultValue) =&gt;
-            val resultArgument: Arguments = ta.toArguments(resultValue)
-            exitLogger.trace
-              .message(s&quot;${enclosing.value} exit&quot;)
-              .argument(resultArgument)
-              .logWithPlaceholders()
-          case Failure(exception) =&gt;
-            exitLogger.trace
-              .cause(exception)
-              .message(s&quot;${enclosing.value} exception&quot;)
-              .logWithPlaceholders()
-        }
-        result.get
-      } else {
-        attempt
-      }
-    }
-  }
-}
-</code></pre>
+<div class="toc ">
+<ul>
+  <li><a href="../extending/overview.html" class="page">Overview</a></li>
+</ul>
+</div>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/extending/index.md">here</a>.
 </div>
 
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../extending/overview.html">Overview</a></p>
+</div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
 </div>

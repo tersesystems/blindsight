@@ -36,18 +36,29 @@
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/principles.html" class="page">Principles</a></li>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="active page">Flow API</a></li>
-    <li><a href="../usage/context.html" class="page">Context</a></li>
+    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -84,18 +95,29 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/principles.html" class="page">Principles</a></li>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="active page">Flow API</a></li>
-    <li><a href="../usage/context.html" class="page">Context</a></li>
+    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -131,11 +153,11 @@ val flowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L42-L44" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlow.scala#L41-L43" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }</code></pre>
 <p>The result should have a type class instance of <code>ToArguments</code>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L48-L59" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlow.scala#L47-L58" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
 
@@ -151,7 +173,7 @@ object Person {
 <p>Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the <code>OnConditionMixin</code> and should not be used with conditional logging logic. If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the FlowBehavior.</p>
 <h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
 <p>Implementing a flow behavior comes down to creating <code>Markers</code> and <code>Statements</code> for entry, exit, and exceptions.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
 
   override def entryStatement(source: Source): Option[Statement] = {
     import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
@@ -182,7 +204,7 @@ object Person {
   }
 }</code></pre>
 <p>From there, using the flow API is a matter of plugging in the relevant flow behavior.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/SimpleFlow.scala#L25-L61" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlow.scala#L24-L60" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
 
   private implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new SimpleFlowBehavior
 
@@ -239,7 +261,7 @@ This is 3
   compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: '0.16.0'
 }</code></pre></dd></dl>
 <p>And you can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -338,7 +360,7 @@ The source code for this page can be found <a href="https://github.com/lightbend
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../usage/context.html">Context</a></p>
+<p><strong>Next:</strong> <a href="../usage/structured.html">Structured Logging</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>

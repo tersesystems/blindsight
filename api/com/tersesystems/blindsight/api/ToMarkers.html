@@ -51,7 +51,16 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This is a type class used to convert given types to <code>Markers</code>.</p><p>Markers are very useful for structured logging, because they can be
+converted into key/value pairs without altering the structure of a
+message or keeping the ordering in arguments (especially since an
+exception must be at the end of the tail).</p><p>The API does not define type class instances in this layer, but
+the logstash package provides many useful mappings to Markers.</p><pre><span class="kw">case</span> <span class="kw">class</span> Person(name: <span class="std">String</span>, age: <span class="std">Int</span>)
+<span class="kw">implicit</span> <span class="kw">val</span> personToMarkers: ToMarkers[Person] = ToMarkers { person <span class="kw">=&gt;</span>
+  <span class="kw">import</span> net.logstash.logback.marker.{Markers <span class="kw">=&gt;</span> LogstashMarkers}
+  <span class="kw">val</span> personMarker = LogstashMarkers.append(<span class="lit">"name"</span>, person.name)
+  Markers(personMarker)
+}</pre></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the type to convert to Markers</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>

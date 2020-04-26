@@ -51,7 +51,16 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This is a type class used to convert given types to <code>Arguments</code>.</p><p><code>ToArguments</code> uses a contravariant argument here so that a base
+class can be used, rather than defining every type.  This has
+advantages, notably when it comes to <code>ToArguments[Throwable]</code>,
+but does mean that the lowest bound will be applied if in scope.</p><p>Practically speaking, this means if you defined <code>ToArguments[Any]</code>,
+then everything is going to use that, even if there's a more
+specific type available.</p><pre><span class="kw">case</span> <span class="kw">class</span> Person(name: <span class="std">String</span>, age: <span class="std">Int</span>)
+<span class="kw">implicit</span> <span class="kw">val</span> personToArguments: ToArguments[Person] = ToArguments { person <span class="kw">=&gt;</span>
+  <span class="kw">import</span> net.logstash.logback.argument.StructuredArguments._
+  <span class="kw">new</span> Arguments(<span class="std">Seq</span>(keyValue(<span class="lit">"person"</span>, person.name)))
+}</pre></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the type to convert to Arguments</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>

@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Setup · Blindsight</title>
+<title>Generic · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
-<link rel="canonical" href="https:/tersesystems.github.io/blindsight/setup/index.html"/>
+<link rel="canonical" href="https:/tersesystems.github.io/blindsight/setup/generic.html"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="../js/page.js"></script>
@@ -36,10 +36,10 @@
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="active page">Setup</a>
+  <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
     <li><a href="../setup/logback.html" class="page">Logback</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+    <li><a href="../setup/generic.html" class="active page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
@@ -95,10 +95,10 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="active page">Setup</a>
+  <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
     <li><a href="../setup/logback.html" class="page">Logback</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+    <li><a href="../setup/generic.html" class="active page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
@@ -134,7 +134,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="nav-breadcrumbs">
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
-  <li>Setup</li>
+  <li><a href="../setup/index.html">Setup</a></li>
+  <li>Generic</li>
 </ul>
 </div>
 </div>
@@ -142,20 +143,25 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#setup" name="setup" class="anchor"><span class="anchor-link"></span></a>Setup</h1>
-<p>Blindsight depends on SLF4J using a service loader pattern, which is typically <a href="http://logback.qos.ch/">Logback</a> or <a href="https://logging.apache.org/log4j/2.x/">Log4J 2</a>. This means you should also plug in one of the service loader implementations, provided below.</p>
-<div class="toc ">
-<ul>
-  <li><a href="../setup/logback.html" class="page">Logback</a></li>
-  <li><a href="../setup/generic.html" class="page">Generic</a></li>
-</ul>
-</div>
+<h1><a href="#generic" name="generic" class="anchor"><span class="anchor-link"></span></a>Generic</h1>
+<p>If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don&rsquo;t want to use the Logstash binding, you should use <code>blindsight-generic</code>, which has a serviceloader binding that depends solely on <code>slf4j-api</code>.</p>
+<p>Add the bintray resolver:</p>
+<pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+</code></pre>
+<p>And then add the dependency:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-generic" % "1.0.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
+  &lt;artifactId&gt;blindsight-generic_2.11&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  compile group: 'com.tersesystems.blindsight', name: 'blindsight-generic_2.11', version: '1.0.0'
+}</code></pre></dd></dl>
+<p>See <a href="https://mvnrepository.com/search?q=tersesystems+blindsight">mvnrepository</a> for the latest version.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/setup/index.md">here</a>.
+The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/setup/generic.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../setup/logback.html">Logback</a></p>
+<p><strong>Next:</strong> <a href="../usage/index.html">Usage</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>

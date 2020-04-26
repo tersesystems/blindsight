@@ -47,13 +47,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">ToMessage</span><span class="result"> extends <a href="LowPriorityToMessage.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessage">LowPriorityToMessage</a></span>
+        <span class="name">ToMessage</span><span class="result"> extends <a href="LowPriorityToMessageImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits">LowPriorityToMessageImplicits</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="LowPriorityToMessage.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessage">LowPriorityToMessage</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="LowPriorityToMessageImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits">LowPriorityToMessageImplicits</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -71,7 +71,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.tersesystems.blindsight.api.ToMessage"><span>ToMessage</span></li><li class="in" name="com.tersesystems.blindsight.api.LowPriorityToMessage"><span>LowPriorityToMessage</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.tersesystems.blindsight.api.ToMessage"><span>ToMessage</span></li><li class="in" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits"><span>LowPriorityToMessageImplicits</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -148,18 +148,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.tersesystems.blindsight.api.ToMessage#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply[T](f:T=&gt;com.tersesystems.blindsight.api.Message):com.tersesystems.blindsight.api.ToMessage[T]"></a>
-      <a id="apply[T]((T)⇒Message):ToMessage[T]"></a>
+      <a id="apply[T](f:T=&gt;com.tersesystems.blindsight.api.Message)(implicitevidence$1:com.tersesystems.blindsight.api.NotNothing[T]):com.tersesystems.blindsight.api.ToMessage[T]"></a>
+      <a id="apply[T]((T)⇒Message)(NotNothing[T]):ToMessage[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.tersesystems.blindsight.api.ToMessage.apply.T">T</span>) ⇒ <a href="Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>)</span><span class="result">: <a href="ToMessage.html" class="extype" name="com.tersesystems.blindsight.api.ToMessage">ToMessage</a>[<span class="extype" name="com.tersesystems.blindsight.api.ToMessage.apply.T">T</span>]</span>
+        <span class="name">apply</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.tersesystems.blindsight.api.ToMessage.apply.T">T</span>) ⇒ <a href="Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="NotNothing.html" class="extype" name="com.tersesystems.blindsight.api.NotNothing">NotNothing</a>[<span class="extype" name="com.tersesystems.blindsight.api.ToMessage.apply.T">T</span>]</span>)</span><span class="result">: <a href="ToMessage.html" class="extype" name="com.tersesystems.blindsight.api.ToMessage">ToMessage</a>[<span class="extype" name="com.tersesystems.blindsight.api.ToMessage.apply.T">T</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.ToMessage$@apply[T](f:T=&gt;com.tersesystems.blindsight.api.Message):com.tersesystems.blindsight.api.ToMessage[T]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.ToMessage$@apply[T](f:T=&gt;com.tersesystems.blindsight.api.Message)(implicitevidence$1:com.tersesystems.blindsight.api.NotNothing[T]):com.tersesystems.blindsight.api.ToMessage[T]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -312,6 +312,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits#messageToMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="messageToMessage:com.tersesystems.blindsight.api.ToMessage[com.tersesystems.blindsight.api.Message]"></a>
+      <a id="messageToMessage:ToMessage[Message]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">messageToMessage</span><span class="result">: <a href="ToMessage.html" class="extype" name="com.tersesystems.blindsight.api.ToMessage">ToMessage</a>[<a href="Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.ToMessage$@messageToMessage:com.tersesystems.blindsight.api.ToMessage[com.tersesystems.blindsight.api.Message]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityToMessageImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits">LowPriorityToMessageImplicits</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -363,7 +380,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.tersesystems.blindsight.api.LowPriorityToMessage#stringToMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits#stringToMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="stringToMessage:com.tersesystems.blindsight.api.ToMessage[String]"></a>
       <a id="stringToMessage:ToMessage[String]"></a>
       <h4 class="signature">
@@ -379,7 +396,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityToMessage.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessage">LowPriorityToMessage</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityToMessageImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits">LowPriorityToMessageImplicits</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -414,7 +431,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.tersesystems.blindsight.api.LowPriorityToMessage#tupleToMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits#tupleToMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="tupleToMessage:com.tersesystems.blindsight.api.ToMessage[(String,String)]"></a>
       <a id="tupleToMessage:ToMessage[(String,String)]"></a>
       <h4 class="signature">
@@ -430,7 +447,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityToMessage.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessage">LowPriorityToMessage</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityToMessageImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits">LowPriorityToMessageImplicits</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -509,8 +526,8 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.tersesystems.blindsight.api.LowPriorityToMessage">
-              <h3>Inherited from <a href="LowPriorityToMessage.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessage">LowPriorityToMessage</a></h3>
+        <div class="parent" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits">
+              <h3>Inherited from <a href="LowPriorityToMessageImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToMessageImplicits">LowPriorityToMessageImplicits</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

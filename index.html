@@ -36,18 +36,29 @@
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="setup/index.html" class="page">Setup</a></li>
+  <li><a href="setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="setup/logback.html" class="page">Logback</a></li>
+    <li><a href="setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/principles.html" class="page">Principles</a></li>
+    <li><a href="usage/overview.html" class="page">Overview</a></li>
+    <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="usage/context.html" class="page">Context</a></li>
+    <li><a href="usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="extending/index.html" class="page">Extending</a></li>
+  <li><a href="extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -84,18 +95,29 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="setup/index.html" class="page">Setup</a></li>
+  <li><a href="setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="setup/logback.html" class="page">Logback</a></li>
+    <li><a href="setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/principles.html" class="page">Principles</a></li>
+    <li><a href="usage/overview.html" class="page">Overview</a></li>
+    <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="usage/context.html" class="page">Context</a></li>
+    <li><a href="usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="extending/index.html" class="page">Extending</a></li>
+  <li><a href="extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -117,27 +139,33 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h1><a href="#blindsight" name="blindsight" class="anchor"><span class="anchor-link"></span></a>Blindsight</h1>
 <p>Blindsight is a Scala logging API that allows for fluent logging, semantic logging, and context aware logging. It is heavily informed by the <a href="https://tersesystems.com/category/logging/">blog posts at tersesystems.com</a> and the <a href="https://github.com/tersesystems/terse-logback-showcase">diagnostic logging showcase</a>.</p>
 <p>The name is taken from Peter Watts&rsquo; excellent first contact novel, <a href="https://en.wikipedia.org/wiki/Blindsight_(Watts_novel)">Blindsight</a>.</p>
-<h2><a href="#principles" name="principles" class="anchor"><span class="anchor-link"></span></a>Principles</h2>
-<p>Blindsight has some organizing principles that inform the design.</p>
+<div class="toc ">
 <ul>
-  <li>Loggers depend directly and solely on the SLF4J API, which can always be accessed directly.</li>
-  <li>APIs can be extended or replaced for domain specific logging.</li>
-  <li>Knowing <strong>when</strong> and <strong>when not</strong> to log is more important than &ldquo;how fast&rdquo; you log.</li>
-  <li>Loggers can be resolved from user defined context, not simply by name or by class.</li>
-  <li>Structured logging is baked in, uses standard Scala idioms, and can be overridden.</li>
+  <li><a href="setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="setup/logback.html" class="page">Logback</a></li>
+    <li><a href="setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
+  <li><a href="usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="usage/principles.html" class="page">Principles</a></li>
+    <li><a href="usage/overview.html" class="page">Overview</a></li>
+    <li><a href="usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
-<p>Likewise, there are things that Blindsight eschews:</p>
-<ul>
-  <li>No effects; logging is always a side effect.</li>
-  <li>No magic &ldquo;any2string&rdquo; implicit conversions.</li>
-  <li>No constraints or configuration on SLF4J implementation.</li>
-  <li>No FP library requirements; no need for scalaz, cats, zio etc.</li>
-  <li>No formatting on the front end; messages should not contain JSON/XML.</li>
-</ul>
-<h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
-<p>Please see the <a href="usage/index.html">Usage</a> page for instructions.</p>
-<h2><a href="#setup" name="setup" class="anchor"><span class="anchor-link"></span></a>Setup</h2>
-<p>Please see the <a href="setup/index.html">Setup</a> page for instructions.</p>
+</div>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/index.md">here</a>.
 </div>
@@ -147,21 +175,6 @@ The source code for this page can be found <a href="https://github.com/lightbend
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
-<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
-<div class="page-nav">
-<div class="nav-title">On this page:</div>
-<div class="nav-toc">
-<ul>
-  <li><a href="index.html#blindsight" class="header">Blindsight</a>
-  <ul>
-    <li><a href="index.html#principles" class="header">Principles</a></li>
-    <li><a href="index.html#usage" class="header">Usage</a></li>
-    <li><a href="index.html#setup" class="header">Setup</a></li>
-  </ul></li>
-</ul>
-</div>
-</div>
-</nav>
 </div>
 </div>
 

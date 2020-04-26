@@ -51,7 +51,14 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This is the representation of arguments in an SLF4J logging statement.</p><p>Arguments present as an immutable API, which can be composed together using <code>+</code> and
+<code>++</code> for sequences.</p><pre><span class="kw">val</span> argsA: Arguments = Arguments(<span class="lit">"a"</span>)
+<span class="kw">val</span> argsPlus: Arguments = argsA + <span class="lit">"b"</span>
+<span class="kw">val</span> argsPlusPlus: Arguments = argsPlus ++ <span class="std">Seq</span>(<span class="num">1</span>, <span class="lit">"c"</span>)
+<span class="kw">val</span> messageWithPlaceHolders = Message(<span class="lit">"some message"</span>).withPlaceHolders(argsPlusPlus)
+logger.info(messageWithPlaceHolders, argsPlusPlus)</pre><p>There is no special treatment of exceptions; as in SLF4J, the exception must be the
+last element of arguments to be treated as the Throwable.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -150,19 +157,36 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.tersesystems.blindsight.api.Arguments#++" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="++(args:com.tersesystems.blindsight.api.Arguments):com.tersesystems.blindsight.api.Arguments"></a>
-      <a id="++(Arguments):Arguments"></a>
+    </li><li name="com.tersesystems.blindsight.api.Arguments#+" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="+[T](instance:T)(implicitevidence$1:com.tersesystems.blindsight.api.ToArguments[T]):com.tersesystems.blindsight.api.Arguments"></a>
+      <a id="+[T](T)(ToArguments[T]):Arguments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $plus$plus" class="name">++</span><span class="params">(<span name="args">args: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
+        <span title="gt4s: $plus" class="name">+</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="instance">instance: <span class="extype" name="com.tersesystems.blindsight.api.Arguments.+.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="ToArguments.html" class="extype" name="com.tersesystems.blindsight.api.ToArguments">ToArguments</a>[<span class="extype" name="com.tersesystems.blindsight.api.Arguments.+.T">T</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@++(args:com.tersesystems.blindsight.api.Arguments):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@+[T](instance:T)(implicitevidence$1:com.tersesystems.blindsight.api.ToArguments[T]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.tersesystems.blindsight.api.Arguments#++" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="++(asArguments:Seq[com.tersesystems.blindsight.api.AsArguments]):com.tersesystems.blindsight.api.Arguments"></a>
+      <a id="++(Seq[AsArguments]):Arguments"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $plus$plus" class="name">++</span><span class="params">(<span name="asArguments">asArguments: <span class="extype" name="scala.Seq">Seq</span>[<a href="AsArguments.html" class="extype" name="com.tersesystems.blindsight.api.AsArguments">AsArguments</a>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@++(asArguments:Seq[com.tersesystems.blindsight.api.AsArguments]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -383,6 +407,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.api.Arguments#nonEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="nonEmpty:Boolean"></a>
+      <a id="nonEmpty:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nonEmpty</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@nonEmpty:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -430,6 +471,23 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@placeholders:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.tersesystems.blindsight.api.Arguments#size" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="size:Int"></a>
+      <a id="size:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">size</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@size:Int" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

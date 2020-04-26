@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
 
 <head>
-<title>Setup · Blindsight</title>
+<title>Structured Logging · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
-<link rel="canonical" href="https:/tersesystems.github.io/blindsight/setup/index.html"/>
+<link rel="canonical" href="https:/tersesystems.github.io/blindsight/usage/structured.html"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="../js/page.js"></script>
@@ -36,7 +36,7 @@
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="active page">Setup</a>
+  <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
     <li><a href="../setup/logback.html" class="page">Logback</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
@@ -49,7 +49,7 @@
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/structured.html" class="active page">Structured Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
@@ -95,7 +95,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="active page">Setup</a>
+  <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
     <li><a href="../setup/logback.html" class="page">Logback</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
@@ -108,7 +108,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/structured.html" class="active page">Structured Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
@@ -134,7 +134,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="nav-breadcrumbs">
 <ul>
   <li><a href="../index.html">Blindsight</a></li>
-  <li>Setup</li>
+  <li><a href="../usage/index.html">Usage</a></li>
+  <li>Structured Logging</li>
 </ul>
 </div>
 </div>
@@ -142,20 +143,61 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
-<h1><a href="#setup" name="setup" class="anchor"><span class="anchor-link"></span></a>Setup</h1>
-<p>Blindsight depends on SLF4J using a service loader pattern, which is typically <a href="http://logback.qos.ch/">Logback</a> or <a href="https://logging.apache.org/log4j/2.x/">Log4J 2</a>. This means you should also plug in one of the service loader implementations, provided below.</p>
-<div class="toc ">
-<ul>
-  <li><a href="../setup/logback.html" class="page">Logback</a></li>
-  <li><a href="../setup/generic.html" class="page">Generic</a></li>
-</ul>
-</div>
+<h1><a href="#structured-logging" name="structured-logging" class="anchor"><span class="anchor-link"></span></a>Structured Logging</h1>
+<p>Blindsight provides a <code>logstash</code> type class mapping which maps between tuples, arrays, and JSON nodes to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Markers and StructuredArguments</a>.</p>
+<pre class="prettyprint"><code class="language-scala">trait ToMarkers[T] {
+  def toMarkers(instance: T): Markers
+}
+trait ToMessage[T] {
+  def toMessage(instance: =&gt; T): Message
+}
+trait ToArguments[T] {
+  def toArguments(instance: =&gt; T): Arguments
+}
+trait ToStatement[T] {
+  def toStatement(instance: =&gt; T): Statement
+}
+</code></pre>
+<p>You can set these up for yourself, but you don&rsquo;t have to. Blindsight comes with bindings of <code>ToMarkers</code> and <code>ToArguments</code> to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Logstash Markers and StructuredArguments</a>. This lets you be far more expressive in constructing markers and arguments, and lets you pack far more information in.</p>
+<p>For example, <code>LogstashMarkers</code> has the concept of a &ldquo;key=value&rdquo; pair that gets written out to JSON. We can create a type class to represent that as a tuple:</p>
+<pre class="prettyprint"><code class="language-scala">trait LowPriorityMarkers {
+  implicit val tupleStringToMarkers: ToMarkers[(String, String)] = ToMarkers {
+    case (k, v) =&gt;
+      Markers(LogstashMarkers.append(k, v))
+  }
+}
+object LowPriorityMarkers extends LowPriorityMarkers
+</code></pre>
+<p>And then we can do the following in the fluent API:</p>
+<pre class="prettyprint"><code class="language-scala">import LowPriorityMarkers._
+logger.info.markers(&quot;userId&quot; -&gt; userId).log()
+</code></pre>
+<p>From there, you can build up structured logging statements and rely on the type class mappings, for example:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
+
+val tupleStringMarker = Markers(&quot;string&quot; -&gt; &quot;steve&quot;)
+val tupleNumberMarker = Markers(&quot;number&quot; -&gt; 42)
+val tupleBooleanNumber = Marker(&quot;boolean&quot; -&gt; true)
+val arrayMarker = Markers(&quot;array&quot; -&gt; Seq(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))
+
+import com.fasterxml.jackson.databind.ObjectMapper
+val json         = &quot;&quot;&quot;{ &quot;f1&quot; : &quot;v1&quot; }&quot;&quot;&quot;
+val objectMapper = new ObjectMapper
+val jsonNode     = objectMapper.readTree(json)
+val jsonMarker = Markers(&quot;markerJson&quot; -&gt; jsonNode)
+
+val tupleStringArguments = Arguments(&quot;arg1&quot; -&gt; &quot;value1&quot;)
+val tupleNumberArguments = Arguments(&quot;numericArg&quot; -&gt; 42)
+val tupleBooleanArguments = Arguments(&quot;booleanArg&quot; -&gt; false)
+val mapArguments = Arguments(Map(&quot;a&quot; -&gt; &quot;b&quot;))
+val arrayArguments = Arguments(&quot;sequenceArg&quot; -&gt; Seq(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/setup/index.md">here</a>.
+The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/structured.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../setup/logback.html">Logback</a></p>
+<p><strong>Next:</strong> <a href="../usage/context.html">Contextual Logging</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>

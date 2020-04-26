@@ -51,7 +51,10 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This is a type class used to convert given types to <code>Message</code>.</p><pre><span class="kw">case</span> <span class="kw">class</span> Person(name: <span class="std">String</span>, age: <span class="std">Int</span>)
+<span class="kw">implicit</span> <span class="kw">val</span> personToMessage: ToMessage[Foo] = ToMessage { person <span class="kw">=&gt;</span>
+  <span class="kw">new</span> Message(person.name)
+}</pre></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the type to convert to Message</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>

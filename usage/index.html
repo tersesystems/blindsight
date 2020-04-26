@@ -36,18 +36,29 @@
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="../usage/index.html" class="active page">Usage</a>
   <ul>
-    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/principles.html" class="page">Principles</a></li>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/context.html" class="page">Context</a></li>
+    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -84,18 +95,29 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
   <li><a href="../usage/index.html" class="active page">Usage</a>
   <ul>
-    <li><a href="../usage/api.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/principles.html" class="page">Principles</a></li>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/context.html" class="page">Context</a></li>
+    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
-    <li><a href="../usage/logstash.html" class="page">Logstash Type Class Mappings</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
 </ul>
 </div>
 
@@ -121,226 +143,30 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h1>
-<p>This usage page will give a quick overview of Blindsight, rather than a deep drill down.</p>
-<h2><a href="#api" name="api" class="anchor"><span class="anchor-link"></span></a>API</h2>
-<p>The simplest possible <a href="/blindsight/api/com/tersesystems/blindsight/Logger.html" title="com.tersesystems.blindsight.Logger"><code>Logger</code></a> is created from a <a href="/blindsight/api/com/tersesystems/blindsight/LoggerFactory$.html" title="com.tersesystems.blindsight.LoggerFactory"><code>LoggerFactory</code></a>:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.LoggerFactory
-val logger = LoggerFactory.getLogger(getClass)
-logger.info(&quot;I am an SLF4J-like logger&quot;)
-</code></pre>
-<p>What does this do under the hood? It converts to a <code>Message</code> case class, and logs only if the level of the SLF4J logger is set to at least <code>INFO</code>. </p>
-<p>Very roughly:</p>
-<pre class="prettyprint"><code class="language-scala">val infoMethod: InfoMethod = logger.info
-infoMethod.apply(() =&gt; Message(&quot;I am an SLF4J-like logger&quot;))
-
-// rough implementation
-class InfoMethod {
-  def apply(msg: =&gt; Message) {
-    if (slf4jLogger.isInfoEnabled()) {
-       slf4jLogger.info(msg.message)
-    }
-  }
-}
-</code></pre>
-<p>First, let&rsquo;s explain <code>Message</code> and its compatriots.</p>
-<p>A single logging statement in SLF4J consists of a set of parameters in combination:</p>
-<pre class="prettyprint"><code class="language-java">Marker marker = ...
-String message = ...
-Object[] arguments = ...
-logger.info(marker, message, arguments);
-</code></pre>
-<p>All of these together make a logging statement.</p>
-<p>Blindsight keeps the same concept these parameters, but creates specific types; <code>Markers</code>, <code>Message</code>, and <code>Arguments</code>, with a <code>Statement</code> that encompasses all the above.</p>
-<pre class="prettyprint"><code class="language-scala">val markers = Markers(marker1, marker2)
-val message = Message(&quot;some message&quot;)
-val arguments = Arguments(&quot;arg1&quot;, 42, 1337)
-</code></pre>
-<p>Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type. So <code>Markers</code> has a <code>ToMarkers</code> type class, <code>Message</code> has <code>ToMessage</code>, and so on.</p>
-<p>You can use type class instances to extend Blindsight&rsquo;s functionality. For example, you can pass a feature flag into <code>isDebugEnabled</code> and it will convert it into a <code>Markers</code>:</p>
-<pre class="prettyprint"><code class="language-scala">object Slf4jMain {
-  final case class FeatureFlag(flagName: String)
-  object FeatureFlag {
-    implicit val toMarkers: ToMarkers[FeatureFlag] = ToMarkers { instance =&gt;
-      Markers(MarkerFactory.getDetachedMarker(instance.flagName))
-    }
-  }
-
-  def main(args: Array[String]): Unit = {
-    val logger: Logger = LoggerFactory.getLogger(getClass)
-
-    val featureFlag = FeatureFlag(&quot;flag.enabled&quot;)
-    // this is not a marker, but is converted via type class.
-    if (logger.isDebugEnabled(featureFlag)) {
-      logger.debug(&quot;this is a test&quot;)
-    }
-  }
-}
-</code></pre>
-<p>See the <a href="api.html">API</a> page for more details.</p>
-<h2><a href="#logstash-type-class-mappings" name="logstash-type-class-mappings" class="anchor"><span class="anchor-link"></span></a>Logstash Type Class Mappings</h2>
-<p>Blindsight provides a type class mapping which maps between tuples, arrays, and JSON nodes to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Markers and StructuredArguments</a>, if you are using Logback as the SLF4J implementation. This makes structured logging easy and intuitive.</p>
-<p>Automatic type class mapping is available through the <code>blindsight-logstash</code> library using <a href="../setup/index.html">setup</a>, and must be brought into lexical scope using the <code>Implicits</code> singleton object:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
-</code></pre>
-<p>This provides a number of type class mappings like:</p>
-<pre class="prettyprint"><code class="language-scala">implicit val tupleStringToMarkers: ToMarkers[(String, String)] = ToMarkers {
-  case (k, v) =&gt; Markers(LogstashMarkers.append(k, v))
-}
-</code></pre>
-<p>When you write out a logstash marker using a tuple in the position of a marker, it will compile:</p>
-<pre class="prettyprint"><code class="language-scala">logger.info(&quot;a&quot; -&gt; &quot;b&quot;, &quot;some message&quot;)
-</code></pre>
-<p>And when you are using the <code>LogstashEncoder</code> that writes out structured logs as JSON, you&rsquo;ll get the following:</p>
-<pre class="prettyprint"><code class="language-json">{&quot;@timestamp&quot;:&quot;2020-04-05T23:09:08.436Z&quot;,&quot;@version&quot;:&quot;1&quot;,&quot;message&quot;:&quot;some message&quot;,&quot;logger_name&quot;:&quot;example.Main$&quot;,&quot;a&quot;:&quot;b&quot;}
-</code></pre>
-<p>See <a href="logstash.html">Type Class Mappings</a> for more details.</p>
-<h2><a href="#fluent-api" name="fluent-api" class="anchor"><span class="anchor-link"></span></a>Fluent API</h2>
-<p>A <code>com.tersesystems.blindsight.Logger</code> instance provides access to a fluent logger API.</p>
-<p>To work as a fluent logger:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.fluent.FluentLogger
-
-val fluentLogger: FluentLogger = logger.fluent
-fluentLogger.info.message(&quot;I am a fluent logger&quot;).log()
-</code></pre>
-<p>See <a href="fluent.html">Fluent API</a> for details.</p>
-<h2><a href="#semantic-api" name="semantic-api" class="anchor"><span class="anchor-link"></span></a>Semantic API</h2>
-<p>The semantic API takes a single strongly typed argument, and the logger is instantiated with the type that is acceptable. This makes it very useful for event logging.</p>
-<p>To work as a strongly typed logging API:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.semantic.SemanticLogger
-
-val semanticLogger: SemanticLogger[UserEvent] = logger.semantic[UserEvent]
-val userLoggedInEvent = UserLoggedInEvent(name = &quot;steve&quot;)
-semanticLogger.info(userEvent)
-</code></pre>
-<p>You can also use this API with <a href="https://github.com/fthomas/refined">refinement types</a>:</p>
-<pre class="prettyprint"><code class="language-scala">import eu.timepit.refined.api.Refined
-import eu.timepit.refined.collection.NonEmpty
-import eu.timepit.refined.string._
-import eu.timepit.refined._
-
-implicit def stringToStatement[R]: ToStatement[Refined[String, R]] = ToStatement { str =&gt;
-  Statement().withMessage(str.value)
-}
-
-val stringLogger = logger.semantic[String]
-val urlLogger = stringLogger.refine[String Refined Url]
-urlLogger.info(refineMV(&quot;https://tersesystems.com&quot;))
-</code></pre>
-<p>See <a href="semantic.html">Semantic API</a> for details.</p>
-<h2><a href="#conditionals" name="conditionals" class="anchor"><span class="anchor-link"></span></a>Conditionals</h2>
-<p>Most of the loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
-<p>This logger will only log if the condition is true:</p>
-<pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
-val conditionalLogger = logger.onCondition(booleanCondition)
-conditionalLogger.info(&quot;Only logs when condition is true&quot;)
-</code></pre>
-<p>By contrast, <code>when</code> is used on methods, rather than the logger, and provides a block that is executed only when the condition is true:</p>
-<pre class="prettyprint"><code class="language-scala">logger.info.when(booleanCondition) { info =&gt;
-  info(&quot;log&quot;)
-}
-</code></pre>
-<p>See <a href="conditional.html">Conditional Logging</a> for more details.</p>
-<h2><a href="#flow" name="flow" class="anchor"><span class="anchor-link"></span></a>Flow</h2>
-<p>The flow API is used to render the entry and exit of a given method. It is tied together with a flow behavior which provides the relevant <code>Statement</code> on entry and exit. This can also be used for timers and hierarchical tracing such as Opentracing.</p>
-<pre class="prettyprint"><code class="language-scala">implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = ...
-
-def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
-  arg1 + arg2
-}
-</code></pre>
-<p>See <a href="flow.html">Flow API</a> for more details.</p>
-<h2><a href="#context" name="context" class="anchor"><span class="anchor-link"></span></a>Context</h2>
-<p>Blindsight builds up context with markers. You can use <code>withMarkers</code> to add markers that don&rsquo;t have to explicitly added to a statement.</p>
-<pre class="prettyprint"><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
-val loggerWithMarkers = logger.withMarker(LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;))
-</code></pre>
-<p>See <a href="context.html">Context</a> for more details.</p>
-<h2><a href="#underlying" name="underlying" class="anchor"><span class="anchor-link"></span></a>Underlying</h2>
-<p>You can always get access to the underlying SLF4J logger by calling <code>logger.underlying</code>:</p>
-<pre class="prettyprint"><code class="language-scala">val underlying: org.slf4j.Logger = logger.underlying
-</code></pre>
-<h2><a href="#logger-factory" name="logger-factory" class="anchor"><span class="anchor-link"></span></a>Logger Factory</h2>
-<p>The easiest way to get at a logger is to use <code>LoggerFactory</code>. This looks like the SLF4J version, but is more flexible because it uses a <code>LoggerResolver</code> type class under the hood.</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.LoggerFactory
-
-val loggerFromName = LoggerFactory.getLogger(&quot;some.Logger&quot;)
-val loggerFromClass = LoggerFactory.getLogger(getClass)
-</code></pre>
-<p>There is also a macro based version which finds the enclosing class name and hands it to you:</p>
-<pre class="prettyprint"><code class="language-scala">val loggerFromEnclosing = LoggerFactory.getLogger
-</code></pre>
-<p>Finally, you also have the option of creating your own logger resolver. This is useful when you want to get away from class based logging, and use a naming strategy based on a correlation id.</p>
-<pre class="prettyprint"><code class="language-scala">trait LoggerResolver[T] {
-  def resolveLogger(instance: T): org.slf4j.Logger
-}
-</code></pre>
-<p>means you can resolve a logger directly from a request:</p>
-<pre class="prettyprint"><code class="language-scala">implicit val requestToResolver: LoggerResolver[Request] = (instance: Request) =&gt; {
-    loggerFactory.getLogger(&quot;requests.&quot; + instance.requestId())
-}
-</code></pre>
-<p>And from then on, you can do:</p>
-<pre class="prettyprint"><code class="language-scala">val myRequest: Request = ...
-val logger = LoggerFactory.getLogger(myRequest)
-</code></pre>
-<h2><a href="#compile-time-caller-info" name="compile-time-caller-info" class="anchor"><span class="anchor-link"></span></a>Compile Time Caller Info</h2>
-<p>SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive. Blindsight provides this information for free, at compile time, through <a href="https://github.com/lihaoyi/sourcecode">sourcecode</a> macros, using the <code>SourceInfoMixin</code> on the logger.</p>
-<pre class="prettyprint"><code class="language-scala">trait SourceInfoMixin {
-  def sourceInfoMarker(
-      level: Level,
-      line: Line,
-      file: File,
-      enclosing: Enclosing
-  ): Markers
-}
-</code></pre>
-<p>When using <code>blindsight-generic</code>, this returns <code>Markers.empty</code>, but when using <code>blindsight-logstash</code>, this adds <code>source.line</code>, <code>source.file</code> and <code>source.enclosing</code> to the JSON logs automatically:</p>
-<pre class="prettyprint"><code class="language-json">{
-  &quot;@timestamp&quot;: &quot;2020-04-12T17:58:45.410Z&quot;,
-  &quot;@version&quot;: &quot;1&quot;,
-  &quot;message&quot;: &quot;this is a test&quot;,
-  &quot;logger_name&quot;: &quot;example.slf4j.Slf4jMain$&quot;,
-  &quot;thread_name&quot;: &quot;run-main-0&quot;,
-  &quot;level&quot;: &quot;DEBUG&quot;,
-  &quot;level_value&quot;: 10000,
-  &quot;source.line&quot;: 39,
-  &quot;source.file&quot;: &quot;/home/wsargent/work/blindsight/example/src/main/scala/example/slf4j/Slf4jMain.scala&quot;,
-  &quot;source.enclosing&quot;: &quot;example.slf4j.Slf4jMain.main&quot;
-}
-</code></pre>
-<p>This is the default behavior, and you can override <code>sourceInfoMarker</code> in your own implementation to return whatever you like.</p>
+<div class="toc ">
+<ul>
+  <li><a href="../usage/principles.html" class="page">Principles</a></li>
+  <li><a href="../usage/overview.html" class="page">Overview</a></li>
+  <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+  <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+  <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+  <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+  <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
+  <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+  <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+  <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+  <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+</ul>
+</div>
 <div class="source-github">
 The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/index.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../usage/api.html">SLF4J API</a></p>
+<p><strong>Next:</strong> <a href="../usage/principles.html">Principles</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
-<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
-<div class="page-nav">
-<div class="nav-title">On this page:</div>
-<div class="nav-toc">
-<ul>
-  <li><a href="../usage/index.html#usage" class="header">Usage</a>
-  <ul>
-    <li><a href="../usage/index.html#api" class="header">API</a></li>
-    <li><a href="../usage/index.html#logstash-type-class-mappings" class="header">Logstash Type Class Mappings</a></li>
-    <li><a href="../usage/index.html#fluent-api" class="header">Fluent API</a></li>
-    <li><a href="../usage/index.html#semantic-api" class="header">Semantic API</a></li>
-    <li><a href="../usage/index.html#conditionals" class="header">Conditionals</a></li>
-    <li><a href="../usage/index.html#flow" class="header">Flow</a></li>
-    <li><a href="../usage/index.html#context" class="header">Context</a></li>
-    <li><a href="../usage/index.html#underlying" class="header">Underlying</a></li>
-    <li><a href="../usage/index.html#logger-factory" class="header">Logger Factory</a></li>
-    <li><a href="../usage/index.html#compile-time-caller-info" class="header">Compile Time Caller Info</a></li>
-  </ul></li>
-</ul>
-</div>
-</div>
-</nav>
 </div>
 </div>
 
