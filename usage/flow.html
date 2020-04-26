@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.0*
+0.1.0
 </div>
 </div>
 <div class="nav-toc">
@@ -90,7 +90,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.0*
+0.1.0
 </div>
 </div>
 <div class="nav-toc">
@@ -153,11 +153,11 @@ val flowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlow.scala#L41-L43" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L41-L43" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlow.scala#L47-L58" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L47-L58" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
 
@@ -170,10 +170,10 @@ object Person {
   }
 }</code></pre>
 <p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging level is not enabled or logging execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p><div class="callout note "><div class="callout-title">Note</div>
-<p>Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the <a href="/blindsight/api/com/tersesystems/blindsight/api/mixins/OnConditionMixin.html" title="com.tersesystems.blindsight.api.mixins.OnConditionMixin"><code>OnConditionMixin</code></a> and should not be used with conditional logging logic. If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the FlowBehavior.</p></div>
+<p>Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the <a href="/blindsight/api/com/tersesystems/blindsight/api/mixins/OnConditionMixin.html" title="com.tersesystems.blindsight.api.mixins.OnConditionMixin"><code>OnConditionMixin</code></a> and should not be used with conditional logging logic. If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>.</p></div>
 <h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
-<p>Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
+<p>What happens in a flow is determined by the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0/docs/src/test/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
 
   override def entryStatement(source: Source): Option[Statement] = {
     import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
@@ -204,7 +204,7 @@ object Person {
   }
 }</code></pre>
 <p>From there, using the flow API is a matter of plugging in the relevant flow behavior.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/SimpleFlow.scala#L24-L60" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L24-L60" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
 
   private implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new SimpleFlowBehavior
 
@@ -244,24 +244,24 @@ FgcMMra7u9CdHaINzdiAAA 17:00:47.191 [TRACE] e.flow.FlowMain -  example.flow.Flow
 This is 3
 </code></pre>
 <h2><a href="#integrating-with-tracing" name="integrating-with-tracing" class="anchor"><span class="anchor-link"></span></a>Integrating with Tracing</h2>
-<p>If you integrate with <a href="https://tersesystems.github.io/terse-logback/guide/tracing/">logback-tracing</a>, then you can also log to Honeycomb using a <code>FlowBehavior</code>. To do this, add the following  resolver:</p>
+<p>If you integrate with <a href="https://tersesystems.github.io/terse-logback/guide/tracing/">logback-tracing</a>, then you can also log to Honeycomb using a <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. To do this, add the following resolver:</p>
 <pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
 </code></pre>
-<p>and the following dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-tracing" % "0.16.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+<p>and the following dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-tracing" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
   &lt;artifactId&gt;logback-tracing&lt;/artifactId&gt;
-  &lt;version&gt;0.16.0&lt;/version&gt;
+  &lt;version&gt;latest.version&lt;/version&gt;
 &lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
-  compile group: 'com.tersesystems.logback', name: 'logback-tracing', version: '0.16.0'
-}</code></pre></dd></dl><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-uniqueid-appender" % "0.16.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+  compile group: 'com.tersesystems.logback', name: 'logback-tracing', version: 'latest.version'
+}</code></pre></dd></dl><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-uniqueid-appender" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
   &lt;artifactId&gt;logback-uniqueid-appender&lt;/artifactId&gt;
-  &lt;version&gt;0.16.0&lt;/version&gt;
+  &lt;version&gt;latest.version&lt;/version&gt;
 &lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
-  compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: '0.16.0'
+  compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: 'latest.version'
 }</code></pre></dd></dl>
 <p>And you can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/test/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/lightbend/paradox/tree/0.1.0/docs/src/test/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -355,8 +355,9 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
 object HoneycombFlowBehavior {
   val markerFactory = new SpanMarkerFactory
 }</code></pre>
+<p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0-SNAPSHOT/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -441,7 +442,7 @@ The source code for this page can be found <a href="https://github.com/lightbend
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.0-SNAPSHOT', '')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.0', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
