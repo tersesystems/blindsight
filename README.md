@@ -21,7 +21,7 @@ Having said that, the default assumption in the examples is that you are using [
 This project uses `sbt-bintray` to publish.  Here's an [example](http://queirozf.com/entries/publishing-an-sbt-project-onto-bintray-an-example).  This project stages artifacts first before releasing them.
 
 ```scala
-sbt publish
+sbt "+publish"
 sbt bintrayRelease 
 ```
 
