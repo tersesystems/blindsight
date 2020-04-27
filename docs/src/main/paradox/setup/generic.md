@@ -13,7 +13,7 @@ And then add the dependency:
 @@dependency[sbt,Maven,Gradle] {
   group="com.tersesystems.blindsight"
   artifact="blindsight-generic_2.11"
-  version="1.0.0"
+  version="latest.version"
 }
 
-See [mvnrepository](https://mvnrepository.com/search?q=tersesystems+blindsight) for the latest version.
+See [Github Badge](https://github.com/tersesystems/blindsight#blindsight) for the latest version.

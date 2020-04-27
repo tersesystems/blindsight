@@ -46,7 +46,7 @@ lazy val docs = (project in file("docs"))
       file("LICENSE") -> "LICENSE"
     ),
     paradoxProperties in Compile ++= Map(
-      "github.base_url" -> s"https://github.com/lightbend/paradox/tree/${version.value}",
+      "github.base_url" -> s"https://github.com/tersesystems/blindsight/tree/${version.value}",
       "canonical.base_url" -> "https:/tersesystems.github.io/blindsight/",
       "scaladoc.base_url" -> "/blindsight/api/"
     ),

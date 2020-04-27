@@ -31,6 +31,8 @@ Publishing documentation is done using `sbt-site`
 sbt
 > project docs 
 > makeSite
+> paradoxValidateInternalLinks
+> paradoxValidateLinks
 > ghpagesPushSite
 ```
 
