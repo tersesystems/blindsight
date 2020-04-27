@@ -13,15 +13,15 @@ And then add the given dependencies:
 @@dependency[sbt,Maven,Gradle] {
   group="com.tersesystems.blindsight"
   artifact="blindsight-logstash_2.11"
-  version="1.0.0"
+  version="latest.version"
 }
 
-See [mvnrepository](https://mvnrepository.com/search?q=tersesystems+blindsight) for the latest version.
+See [Github Badge](https://github.com/tersesystems/blindsight#blindsight) for the latest version.
 
 It is recommended (but not required) to use [Terse Logback](https://tersesystems.github.io/terse-logback/) on the backend:
 
 @@dependency[sbt,Maven,Gradle] {
   group="com.tersesystems.logback"
   artifact="logback-structured-config"
-  version="0.16.1"
+  version="latest.version"
 }

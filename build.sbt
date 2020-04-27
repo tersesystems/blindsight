@@ -46,8 +46,8 @@ lazy val docs = (project in file("docs"))
       file("LICENSE") -> "LICENSE"
     ),
     paradoxProperties in Compile ++= Map(
-      "github.base_url" -> s"https://github.com/lightbend/paradox/tree/${version.value}",
-      "canonical.base_url" -> "https:/tersesystems.github.io/blindsight/",
+      "github.base_url" -> s"https://github.com/tersesystems/blindsight/tree/v${version.value}",
+      "canonical.base_url" -> "/blindsight/",
       "scaladoc.base_url" -> "/blindsight/api/"
     ),
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(fixtures),
