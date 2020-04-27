@@ -148,23 +148,23 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>Add the following resolver:</p>
 <pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
 </code></pre>
-<p>And then add the given dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-logstash" % "1.0.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+<p>And then add the given dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-logstash" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
   &lt;artifactId&gt;blindsight-logstash_2.11&lt;/artifactId&gt;
-  &lt;version&gt;1.0.0&lt;/version&gt;
+  &lt;version&gt;latest.version&lt;/version&gt;
 &lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
-  compile group: 'com.tersesystems.blindsight', name: 'blindsight-logstash_2.11', version: '1.0.0'
+  compile group: 'com.tersesystems.blindsight', name: 'blindsight-logstash_2.11', version: 'latest.version'
 }</code></pre></dd></dl>
-<p>See <a href="https://mvnrepository.com/search?q=tersesystems+blindsight">mvnrepository</a> for the latest version.</p>
-<p>It is recommended (but not required) to use <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-structured-config" % "0.16.1"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+<p>See <a href="https://github.com/tersesystems/blindsight#blindsight">Github Badge</a> for the latest version.</p>
+<p>It is recommended (but not required) to use <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-structured-config" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
   &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
   &lt;artifactId&gt;logback-structured-config&lt;/artifactId&gt;
-  &lt;version&gt;0.16.1&lt;/version&gt;
+  &lt;version&gt;latest.version&lt;/version&gt;
 &lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
-  compile group: 'com.tersesystems.logback', name: 'logback-structured-config', version: '0.16.1'
+  compile group: 'com.tersesystems.logback', name: 'logback-structured-config', version: 'latest.version'
 }</code></pre></dd></dl>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/lightbend/paradox/tree/0.1.0/docs/src/main/paradox/setup/logback.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/0.1.0/docs/src/main/paradox/setup/logback.md">here</a>.
 </div>
 
 <div class="nav-next">
