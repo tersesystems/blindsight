@@ -1,25 +1,16 @@
 # Structured Logging
 
-Blindsight provides a `logstash` type class mapping which maps between tuples, arrays, and JSON nodes to [Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).
+Structured logging is the basis for logging rich events.  `logstash-logback-encoder` has [Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields) which will write out markers and arguments to a [JSON encoder](https://github.com/logstash/logstash-logback-encoder#encoders--layouts) while still enabling line oriented output to console and file appenders.
 
-```scala
-trait ToMarkers[T] {
-  def toMarkers(instance: T): Markers
-}
-trait ToMessage[T] {
-  def toMessage(instance: => T): Message
-}
-trait ToArguments[T] {
-  def toArguments(instance: => T): Arguments
-}
-trait ToStatement[T] {
-  def toStatement(instance: => T): Statement
-}
-```
+@@@ note
 
-You can set these up for yourself, but you don't have to.   Blindsight comes with bindings of `ToMarkers` and `ToArguments` to [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  This lets you be far more expressive in constructing markers and arguments, and lets you pack far more information in.
+See [Terse Logback](https://tersesystems.github.io/terse-logback/) and the [Terse Logback Showcase](https://github.com/tersesystems/terse-logback-showcase) for examples of how to configure logstash-logback-encoder for JSON.
 
-For example, `LogstashMarkers` has the concept of a "key=value" pair that gets written out to JSON.  We can create a type class to represent that as a tuple:
+@@@
+
+You can set up structured logging using Logstash Markers and StructuredArguments, but you don't have to.   Blindsight comes with bindings of @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) and @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) to [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  This lets you be far more expressive in constructing markers and arguments, and lets you pack far more information in.
+
+For example, Logstash Markers has the concept of a "key=value" pair that gets written out to JSON using `append`.  We can create a type class to represent that as a tuple:
 
 ```scala
 trait LowPriorityMarkers {
@@ -28,16 +19,15 @@ trait LowPriorityMarkers {
       Markers(LogstashMarkers.append(k, v))
   }
 }
-object LowPriorityMarkers extends LowPriorityMarkers
+object Implicits extends LowPriorityMarkers
 ```
 
 And then we can do the following in the fluent API:
 
 ```scala
-import LowPriorityMarkers._
-logger.info.markers("userId" -> userId).log()
+import com.tersesystems.blindsight.logstash.Implicits._
+logger.info("userId" -> userId, "Logging with user id added as a marker!")
 ```
-
 
 From there, you can build up structured logging statements and rely on the type class mappings, for example:
 
