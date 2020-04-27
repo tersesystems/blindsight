@@ -6,7 +6,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content='docs'/>
-<link rel="canonical" href="https:/tersesystems.github.io/blindsight/usage/flow.html"/>
+<link rel="canonical" href="https://tersesystems.github.io/blindsightusage/flow.html"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="../js/page.js"></script>
@@ -153,11 +153,11 @@ val flowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L41-L43" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L41-L43" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L47-L58" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L47-L58" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
 
@@ -173,7 +173,7 @@ object Person {
 <p>Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the <a href="/blindsight/api/com/tersesystems/blindsight/api/mixins/OnConditionMixin.html" title="com.tersesystems.blindsight.api.mixins.OnConditionMixin"><code>OnConditionMixin</code></a> and should not be used with conditional logging logic. If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>.</p></div>
 <h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
 <p>What happens in a flow is determined by the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/0.1.0/docs/src/test/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
 
   override def entryStatement(source: Source): Option[Statement] = {
     import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
@@ -204,7 +204,7 @@ object Person {
   }
 }</code></pre>
 <p>From there, using the flow API is a matter of plugging in the relevant flow behavior.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L24-L60" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L24-L60" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
 
   private implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new SimpleFlowBehavior
 
@@ -261,7 +261,7 @@ This is 3
   compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: 'latest.version'
 }</code></pre></dd></dl>
 <p>And you can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/0.1.0/docs/src/test/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -357,7 +357,7 @@ object HoneycombFlowBehavior {
 }</code></pre>
 <p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/0.1.0/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
