@@ -10,30 +10,35 @@ object Common extends AutoPlugin {
   override lazy val projectSettings = {
     inTask(doc)(
       Seq(
-        scalacOptions in Compile ++= scaladocOptions(scalaBinaryVersion.value, version.value, (baseDirectory in ThisBuild).value),
+        scalacOptions in Compile ++= scaladocOptions(
+          scalaBinaryVersion.value,
+          version.value,
+          (baseDirectory in ThisBuild).value
+        ),
         autoAPIMappings := true
-      ))
+      )
+    )
   }
 
   def scaladocOptions(binVer: String, ver: String, base: File): List[String] = {
     val sourceUrlOptions = binVer match {
-        case "2.12" | "2.13" =>
-          Seq(
-            "-doc-source-url", {
-              val branch = if (ver.endsWith("SNAPSHOT")) "master" else "v" + ver
-              s"https://github.com/tersesystems/blindsight/tree/${branch}€{FILE_PATH_EXT}#L€{FILE_LINE}"
-            },
-            "-doc-canonical-base-url",
-            "https://tersesystems.github.io/blindsight/api/"
-          )
-        case "2.11" =>
-          Seq(
-            "-doc-source-url", {
-              val branch = if (ver.endsWith("SNAPSHOT")) "master" else "v" + ver
-              s"https://github.com/tersesystems/blindsight/tree/${branch}€{FILE_PATH}.scala#L1"
-            }
-          )
-      }
+      case "2.12" | "2.13" =>
+        Seq(
+          "-doc-source-url", {
+            val branch = if (ver.endsWith("SNAPSHOT")) "master" else "v" + ver
+            s"https://github.com/tersesystems/blindsight/tree/${branch}€{FILE_PATH_EXT}#L€{FILE_LINE}"
+          },
+          "-doc-canonical-base-url",
+          "https://tersesystems.github.io/blindsight/api/"
+        )
+      case "2.11" =>
+        Seq(
+          "-doc-source-url", {
+            val branch = if (ver.endsWith("SNAPSHOT")) "master" else "v" + ver
+            s"https://github.com/tersesystems/blindsight/tree/${branch}€{FILE_PATH}.scala#L1"
+          }
+        )
+    }
 
     List(
       "-implicits",
