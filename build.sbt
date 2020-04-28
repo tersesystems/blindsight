@@ -141,8 +141,26 @@ lazy val generic = (project in file("generic"))
     name := "blindsight-generic"
   ).dependsOn(all)
 
+// https://www.scala-sbt.org/1.x/docs/Cross-Build.html#Note+about+sbt-release
+import ReleaseTransformations._
 lazy val root = (project in file("."))
   .settings(
-    name := "blindsight-root",    
+    name := "blindsight-root",
+    crossScalaVersions := Nil,
+    // don't use sbt-release's cross facility
+    releaseCrossBuild := false,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      releaseStepCommandAndRemaining("+test"),
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("+publish"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
   ).settings(disableDocs).settings(disablePublishing)
   .aggregate(docs, fixtures, api, slf4j, semantic, fluent, flow, logstash, all, generic)

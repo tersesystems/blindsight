@@ -18,12 +18,13 @@ Having said that, the default assumption in the examples is that you are using [
 
 ## Publishing
 
-This project uses `sbt-bintray` to publish.  Here's an [example](http://queirozf.com/entries/publishing-an-sbt-project-onto-bintray-an-example).  This project stages artifacts first before releasing them.
+This project uses `sbt-release` to publish:
 
 ```scala
-sbt "+publish"
-sbt bintrayRelease 
+sbt release
 ```
+
+Publishing is done to bintray, so you need bintray credentials.  Here's an [example](http://queirozf.com/entries/publishing-an-sbt-project-onto-bintray-an-example).
 
 Publishing documentation is done using `sbt-site`
 
