@@ -6,36 +6,57 @@ Blindsight is a Scala logging API that allows for [structured logging](https://t
  
 The name is taken from Peter Watts's excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
+## TL;DR
+
+To use a Blindsight @scaladoc[Logger](com.tersesystems.blindsight.Logger):
+
+```scala
+val logger = com.tersesystems.blindsight.LoggerFactory.getLogger
+logger.info("I am an SLF4J-like logger")
+```
+
+But there's a lot more, of course.  You can do structured logging:
+
+```scala
+val markers = Markers("array" -> Seq("one", "two", "three"))
+logger.info(markers, "Logs with an array as marker")
+```
+
+There's fluent mode:
+
+```scala
+logger.fluent.info.message("I am a fluent logger").log()
+```
+
+Semantic mode:
+
+```scala
+logger.semantic[UserEvent].info(userEvent)
+```
+
+Flow mode:
+
+```scala
+val result = logger.flow.trace(arg1 + arg2)
+```
+
+Conditional logging:
+
+```scala
+logger.onCondition(booleanCondition).info("Only logs when condition is true")
+
+logger.info.when(booleanCondition) { info("when true") }
+```
+
+And contextual logging:
+
+```scala
+logger.withMarker("userId" -> userId).info("Logging with user id added as a context marker!")
+```
+
 ## Documentation 
 
 See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
-
-## Requirements
-
-Blindsight is based around SLF4J.  It does not configure or constrain SLF4J in any way, and is designed to defer layout decisions to the backend logging framework, so you can write the same logging event out to a text file, console, to a database, and to JSON on the backend.  
-
-Having said that, the default assumption in the examples is that you are using [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder) and [Terse Logback](https://tersesystems.github.io/terse-logback/) on the backend, and are roughly familiar with the [blog posts at tersesystems.com](https://tersesystems.com/category/logging/) and the [diagnostic logging showcase](https://github.com/tersesystems/terse-logback-showcase).
-
-## Publishing
-
-This project uses `sbt-release` to publish:
-
-```scala
-sbt release
-```
-
-Publishing is done to bintray, so you need bintray credentials.  Here's an [example](http://queirozf.com/entries/publishing-an-sbt-project-onto-bintray-an-example).
-
-Publishing documentation is done using `sbt-site`
-
-```scala
-sbt
-> project docs 
-> makeSite
-> paradoxValidateInternalLinks
-> paradoxValidateLinks
-> ghpagesPushSite
-```
 
 ## License
 

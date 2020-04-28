@@ -82,7 +82,7 @@ object Slf4jMain {
     val featureFlag = FeatureFlag("flag.enabled")
     // this is not a marker, but is converted via type class.
     if (logger.isDebugEnabled(featureFlag)) {
-      logger.debug("this is a test")
+      logger.debug(featureFlag, "this is a test")
     }
   }
 }
@@ -122,7 +122,7 @@ See @ref:[Semantic API](semantic.md) for details.
 
 ## Flow API
 
-The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a [control flow based] logging wrapper.  A @scaladoc[FlowLogger](com.tersesystems.blindsight.flow.FlowLogger) is accessible through `logger.flow`:
+The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a control flow based logging wrapper.  A @scaladoc[FlowLogger](com.tersesystems.blindsight.flow.FlowLogger) is accessible through `logger.flow`:
 
 ```scala
 import com.tersesystems.blindsight.api._

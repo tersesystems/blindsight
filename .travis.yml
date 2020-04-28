@@ -17,6 +17,8 @@ jobs:
       name: "Create all API docs"
     - env: CMD="docs/paradox"
       name: "Create site with Paradox"
+    - env: CMD="docs/paradoxValidateInternalLinks"
+      name: "Validate internal Links"
 stages:
   # runs on master commits and PRs
   - name: check
