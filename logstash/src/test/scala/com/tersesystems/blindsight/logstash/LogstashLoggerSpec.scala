@@ -23,7 +23,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
     "with SLF4J" should {
 
       "work with a plain info message" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         logger.info("a=b")
 
@@ -32,7 +32,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a info message with marker" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         logger.info("1" -> "2", "a=b")
 
@@ -42,7 +42,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a info message with argument" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         logger.info("a=b", "1" -> "2")
 
@@ -53,9 +53,9 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a info message with exception" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        val e = new Exception("derp")
+        val e              = new Exception("derp")
         logger.info("a=b", e)
 
         val event = listAppender.list.get(0)
@@ -64,9 +64,9 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a info message with argument and exception" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        val e = new Exception("derp")
+        val e              = new Exception("derp")
         logger.info("a=b", Arguments("1" -> "2", e))
 
         val event = listAppender.list.get(0)
@@ -77,20 +77,18 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with when" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
 
         //val infoFunction = logger.info.when(1 == 1)(_)
-        logger.info.when(1 == 1) { info =>
-          info("when true")
-        }
+        logger.info.when(1 == 1) { info => info("when true") }
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("when true")
       }
 
       "work with a condition" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         logger.onCondition(1 == 0).info("this is a failed message")
         logger.onCondition(1 == 1).info("this is a successful message")
@@ -101,7 +99,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a state marker" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         logger.withMarker("a" -> "b").info("I have a marker")
 
@@ -114,8 +112,8 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
     "with a fluent logger" should {
 
       "work with plain info" in {
-        val underlying = loggerContext.getLogger(this.getClass)
-        val logger: Logger = LoggerFactory.getLogger(underlying)
+        val underlying                 = loggerContext.getLogger(this.getClass)
+        val logger: Logger             = LoggerFactory.getLogger(underlying)
         val fluentLogger: FluentLogger = logger.fluent
         fluentLogger.info.message("a" -> "b").log()
         val event = listAppender.list.get(0)
@@ -123,8 +121,8 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a condition" in {
-        val underlying = loggerContext.getLogger(this.getClass)
-        val logger: Logger = LoggerFactory.getLogger(underlying)
+        val underlying                 = loggerContext.getLogger(this.getClass)
+        val logger: Logger             = LoggerFactory.getLogger(underlying)
         val fluentLogger: FluentLogger = logger.fluent
 
         fluentLogger.onCondition(1 == 0).info.message("this is a failed message").log()
@@ -136,8 +134,8 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a state marker" in {
-        val underlying = loggerContext.getLogger(this.getClass)
-        val logger: Logger = LoggerFactory.getLogger(underlying)
+        val underlying                 = loggerContext.getLogger(this.getClass)
+        val logger: Logger             = LoggerFactory.getLogger(underlying)
         val fluentLogger: FluentLogger = logger.fluent
         fluentLogger.withMarker("a" -> "b").info.message("I have a marker").log()
 
@@ -151,7 +149,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
     "with a semantic logger" should {
 
       "work with a plain info statement" in {
-        val underlying = loggerContext.getLogger(this.getClass)
+        val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
 
         val semanticLogger: SemanticLogger[Message] = logger.semantic[Message]
@@ -161,8 +159,8 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a condition" in {
-        val underlying = loggerContext.getLogger(this.getClass)
-        val logger: Logger = LoggerFactory.getLogger(underlying)
+        val underlying                              = loggerContext.getLogger(this.getClass)
+        val logger: Logger                          = LoggerFactory.getLogger(underlying)
         val semanticLogger: SemanticLogger[Message] = logger.semantic[Message]
 
         semanticLogger.onCondition(1 == 0).info(Message("this is a failed message"))
@@ -174,8 +172,8 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       "work with a state marker" in {
-        val underlying = loggerContext.getLogger(this.getClass)
-        val logger: Logger = LoggerFactory.getLogger(underlying)
+        val underlying                              = loggerContext.getLogger(this.getClass)
+        val logger: Logger                          = LoggerFactory.getLogger(underlying)
         val semanticLogger: SemanticLogger[Message] = logger.semantic[Message]
 
         semanticLogger.withMarker("a" -> "b").info(Message("I have a marker"))

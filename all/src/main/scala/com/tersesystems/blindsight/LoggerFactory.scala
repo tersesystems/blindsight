@@ -21,6 +21,7 @@ package com.tersesystems.blindsight
  * type class instance of `LoggerResolver`.
  */
 trait LoggerFactory {
+
   /**
    * Gets a logger from the resolver.
    *

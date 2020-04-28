@@ -18,7 +18,10 @@ class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
     )
   }
 
-  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] = {
+  override def throwingStatement(
+      throwable: Throwable,
+      source: Source
+  ): Option[(Level, Statement)] = {
     Some(
       Level.ERROR,
       Statement()

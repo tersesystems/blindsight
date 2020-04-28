@@ -51,7 +51,9 @@ object TracingMain {
       .setServiceName("blindsight-example")
   }
 
-  implicit def flowMapping[B: ToArguments](implicit spanInfo: SpanInfo): HoneycombFlowBehavior[B] = {
+  implicit def flowMapping[B: ToArguments](
+      implicit spanInfo: SpanInfo
+  ): HoneycombFlowBehavior[B] = {
     new HoneycombFlowBehavior[B]
   }
 
@@ -80,7 +82,8 @@ object TracingMain {
   }
 
   private def generateRootSpan[T](block: SpanInfo => T)(implicit enclosing: Enclosing): T = {
-    val rootSpan = builder.setRootSpan(asJavaSupplier(() => idgen.generateId()), enclosing.value).buildNow
+    val rootSpan =
+      builder.setRootSpan(asJavaSupplier(() => idgen.generateId()), enclosing.value).buildNow
     try {
       block(rootSpan)
     } finally {
@@ -98,8 +101,7 @@ object TracingMain {
   }
 }
 
-class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
-    extends FlowBehavior[B] {
+class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
   import HoneycombFlowBehavior.markerFactory
 
   // Create a thread local stack of span info.
@@ -115,13 +117,16 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
     None
   }
 
-  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] = Some {
-    (Level.ERROR,
-    Statement()
-      .withThrowable(throwable)
-      .withMarkers(Markers(markerFactory(popCurrentSpan)))
-      .withMessage(s"${source.enclosing.value} exception"))
-  }
+  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] =
+    Some {
+      (
+        Level.ERROR,
+        Statement()
+          .withThrowable(throwable)
+          .withMarkers(Markers(markerFactory(popCurrentSpan)))
+          .withMessage(s"${source.enclosing.value} exception")
+      )
+    }
 
   override def exitStatement(resultValue: B, source: Source): Option[Statement] = Some {
     Statement()
@@ -131,7 +136,7 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
   }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)
-  private def popCurrentSpan: SpanInfo = threadLocalStack.get().pop()
+  private def popCurrentSpan: SpanInfo                  = threadLocalStack.get().pop()
 }
 
 object HoneycombFlowBehavior {

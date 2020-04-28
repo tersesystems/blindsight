@@ -83,8 +83,6 @@ trait SourceCodeToMarkersImplicits {
 
 }
 
-trait ToMarkersImplicits
-    extends LogstashToMarkersImplicits
-    with SourceCodeToMarkersImplicits
+trait ToMarkersImplicits extends LogstashToMarkersImplicits with SourceCodeToMarkersImplicits
 
 object ToMarkersImplicits extends ToMarkersImplicits

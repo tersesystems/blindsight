@@ -37,7 +37,7 @@ final class Message(private val raw: String) extends AnyVal {
   def isEmpty: Boolean = raw.isEmpty
 
   def nonEmpty: Boolean = raw.nonEmpty
-  
+
   override def toString: String = raw
 
   def withPlaceHolders(args: Arguments): Message = {

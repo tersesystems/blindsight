@@ -13,7 +13,7 @@ import org.slf4j.MarkerFactory
 class FluentLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-    extends SLF4JLogger.Unchecked(underlying, markers)
+      extends SLF4JLogger.Unchecked(underlying, markers)
 
   final case class PayloadModel(payloadId: UUID, userSecretToken: String, data: String) {
     override def toString: String = s"PayloadModel(uuid=$payloadId)"

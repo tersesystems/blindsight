@@ -24,9 +24,10 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         )
       }
 
-      val underlying                                  = loggerContext.getLogger("testing")
-      val payloadLogger: SemanticLogger[PayloadModel] = new SemanticLogger.Impl[PayloadModel](new NoSourceSLF4JLogger(underlying))
-      val uuid                                        = UUID.randomUUID()
+      val underlying = loggerContext.getLogger("testing")
+      val payloadLogger: SemanticLogger[PayloadModel] =
+        new SemanticLogger.Impl[PayloadModel](new NoSourceSLF4JLogger(underlying))
+      val uuid = UUID.randomUUID()
       payloadLogger.info(PayloadModel(uuid, "1234", "data"))
 
       val event = listAppender.list.get(0)
@@ -50,9 +51,10 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         )
       }
 
-      val underlying                                  = loggerContext.getLogger("testing")
-      val payloadLogger: SemanticLogger[PayloadModel] = new SemanticLogger.Impl[PayloadModel](new NoSourceSLF4JLogger(underlying))
-      val uuid                                        = UUID.randomUUID()
+      val underlying = loggerContext.getLogger("testing")
+      val payloadLogger: SemanticLogger[PayloadModel] =
+        new SemanticLogger.Impl[PayloadModel](new NoSourceSLF4JLogger(underlying))
+      val uuid = UUID.randomUUID()
       payloadLogger.info(PayloadModel(uuid, "1234", "data"))
 
       val event = listAppender.list.get(0)
@@ -67,4 +69,4 @@ final case class PayloadModel(payloadId: UUID, userSecretToken: String, data: St
 }
 
 class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-  extends SLF4JLogger.Unchecked(underlying, markers)
+    extends SLF4JLogger.Unchecked(underlying, markers)

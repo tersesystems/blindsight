@@ -48,20 +48,20 @@ object SemanticLoggerAPI {
   trait Proxy[StatementType, P, M[_]] extends SemanticLoggerAPI[StatementType, P, M] {
     protected def logger: SemanticLoggerAPI[StatementType, Predicate, Method]
 
-    override def isTraceEnabled: Predicate = logger.isTraceEnabled
-    override def trace: Method[StatementType]   = logger.trace
+    override def isTraceEnabled: Predicate    = logger.isTraceEnabled
+    override def trace: Method[StatementType] = logger.trace
 
-    override def isDebugEnabled: Predicate = logger.isDebugEnabled
-    override def debug: Method[StatementType]   = logger.debug
+    override def isDebugEnabled: Predicate    = logger.isDebugEnabled
+    override def debug: Method[StatementType] = logger.debug
 
-    override def isInfoEnabled: Predicate = logger.isInfoEnabled
-    override def info: Method[StatementType]   = logger.info
+    override def isInfoEnabled: Predicate    = logger.isInfoEnabled
+    override def info: Method[StatementType] = logger.info
 
-    override def isWarnEnabled: Predicate = logger.isWarnEnabled
-    override def warn: Method[StatementType]   = logger.warn
+    override def isWarnEnabled: Predicate    = logger.isWarnEnabled
+    override def warn: Method[StatementType] = logger.warn
 
-    override def isErrorEnabled: Predicate = logger.isErrorEnabled
-    override def error: Method[StatementType]   = logger.error
+    override def isErrorEnabled: Predicate    = logger.isErrorEnabled
+    override def error: Method[StatementType] = logger.error
   }
 
   /**

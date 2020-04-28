@@ -23,7 +23,8 @@ trait LowPriorityLoggerResolverImplicits {
       factory.getLogger(instance.getName)
   }
 
-  implicit val loggerToResolver: LoggerResolver[org.slf4j.Logger] = LoggerResolver[org.slf4j.Logger](identity)
+  implicit val loggerToResolver: LoggerResolver[org.slf4j.Logger] =
+    LoggerResolver[org.slf4j.Logger](identity)
 }
 
 object LoggerResolver extends LowPriorityLoggerResolverImplicits {
