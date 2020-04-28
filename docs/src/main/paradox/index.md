@@ -12,4 +12,4 @@ Blindsight is a Scala logging API that allows for fluent logging, semantic loggi
 
 The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
-@@toc { depth=2 }
+@@toc { depth=1 }
