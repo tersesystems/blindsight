@@ -7,6 +7,8 @@ lazy val scala211 = "2.11.12"
 ThisBuild / scalaVersion := scala211
 ThisBuild / crossScalaVersions := Seq(scala211, scala212, scala213)
 
+ThisBuild / scalafmtOnCompile := true
+
 ThisBuild / bintrayOrganization := Some("tersesystems")
 
 ThisBuild / organization := "com.tersesystems.blindsight"
