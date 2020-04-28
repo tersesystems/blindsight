@@ -4,7 +4,7 @@ The recommended option for Logback is to use `blindsight-logstash`, which includ
 
 Add the following resolver:
  
-```
+```scala
 resolvers += Resolver.bintrayRepo("tersesystems", "maven")
 ```
 
@@ -12,8 +12,8 @@ And then add the given dependencies:
 
 @@dependency[sbt,Maven,Gradle] {
   group="com.tersesystems.blindsight"
-  artifact="blindsight-logstash_2.11"
-  version="latest.version"
+  artifact="blindsight-logstash_$scala.binary.version$"
+  version="$project.version.short$"
 }
 
 See [Github Badge](https://github.com/tersesystems/blindsight#blindsight) for the latest version.
