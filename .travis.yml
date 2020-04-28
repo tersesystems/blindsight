@@ -1,13 +1,26 @@
 jdk:
   - openjdk8
+  - openjdk11
 language: scala
 scala:
   - 2.13.1
   - 2.12.11
   - 2.11.12
-branches:
-  only:
-    - master
+jobs:
+  include:
+    - stage: check
+      script: sbt scalafmtCheckAll || { echo "[error] Unformatted code found. Please run 'scalafmtAll' and commit the reformatted code."; false; }
+      name: "Code style check (fixed with `sbt scalafmtAll`)"
+    - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please run 'scalafmtSbt' and commit the reformatted code."; false; }
+      name: "Build code style check (fixed with `sbt scalafmtSbt`)"
+    - env: CMD="unidoc"
+      name: "Create all API docs"
+    - env: CMD="docs/paradox"
+      name: "Create site with Paradox"
+stages:
+  # runs on master commits and PRs
+  - name: check
+    if: NOT tag =~ ^v
 before_cache:
   - rm -fv $HOME/.ivy2/.sbt.ivy.lock
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
@@ -16,4 +29,5 @@ cache:
   directories:
     - $HOME/.cache/coursier
     - $HOME/.ivy2/cache
-    - $HOME/.sbt
+    - $HOME/.sbt/boot
+    - $HOME/.sbt/launchers
