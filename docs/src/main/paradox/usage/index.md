@@ -29,11 +29,14 @@ But there's a lot more, of course.
 You can do structured logging:
 
 ```scala
+import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.logstash.Implicits._
+
 val markers = Markers("array" -> Seq("one", "two", "three"))
 logger.info(markers, "Logs with an array as marker")
 ```
 
-There's fluent mode:
+Fluent mode:
 
 ```scala
 logger.fluent.info.message("I am a fluent logger").log()
@@ -56,7 +59,7 @@ Conditional logging:
 ```scala
 logger.onCondition(booleanCondition).info("Only logs when condition is true")
 
-logger.info.when(booleanCondition) { info("when true") }
+logger.info.when(booleanCondition) { info => info("when true") }
 ```
 
 And contextual logging:
