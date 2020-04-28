@@ -48,13 +48,15 @@ object HoneycombFlow {
       .setServiceName("blindsight-example")
   }
 
-  implicit def flowMapping[B: ToArguments](implicit spanInfo: SpanInfo): HoneycombFlowBehavior[B] = {
+  implicit def flowMapping[B: ToArguments](
+      implicit spanInfo: SpanInfo
+  ): HoneycombFlowBehavior[B] = {
     new HoneycombFlowBehavior[B]
   }
 
   def main(args: Array[String]): Unit = {
     generateRootSpan { implicit rootSpan =>
-      val intResult = flowMethod(1, 2)
+      val intResult    = flowMethod(1, 2)
       val personResult = personFlowMethod(1, 2)
     }
   }
@@ -72,13 +74,16 @@ object HoneycombFlow {
   }
 
   private def generateRootSpan[T](block: SpanInfo => T)(implicit enclosing: Enclosing): T = {
-    val rootSpan = builder.setRootSpan(asJavaSupplier(() => idgen.generateId()), enclosing.value).buildNow
+    val rootSpan =
+      builder.setRootSpan(asJavaSupplier(() => idgen.generateId()), enclosing.value).buildNow
     try {
       block(rootSpan)
     } finally {
       // The root span has to be logged _last_, after the child spans.
-      logger.info(HoneycombFlowBehavior.markerFactory(rootSpan),
-        s"${enclosing.value} exit, duration ${rootSpan.duration()}")
+      logger.info(
+        HoneycombFlowBehavior.markerFactory(rootSpan),
+        s"${enclosing.value} exit, duration ${rootSpan.duration()}"
+      )
     }
   }
 
@@ -91,8 +96,7 @@ object HoneycombFlow {
   }
 }
 
-class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
-  extends FlowBehavior[B] {
+class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
   import HoneycombFlowBehavior.markerFactory
 
   // Create a thread local stack of span info.
@@ -108,13 +112,16 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
     None
   }
 
-  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] = Some {
-    (Level.ERROR,
-      Statement()
-        .withThrowable(throwable)
-        .withMarkers(Markers(markerFactory(popCurrentSpan)))
-        .withMessage(s"${source.enclosing.value} exception"))
-  }
+  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] =
+    Some {
+      (
+        Level.ERROR,
+        Statement()
+          .withThrowable(throwable)
+          .withMarkers(Markers(markerFactory(popCurrentSpan)))
+          .withMessage(s"${source.enclosing.value} exception")
+      )
+    }
 
   override def exitStatement(resultValue: B, source: Source): Option[Statement] = Some {
     val span = popCurrentSpan
@@ -125,7 +132,7 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
   }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)
-  private def popCurrentSpan: SpanInfo = threadLocalStack.get().pop()
+  private def popCurrentSpan: SpanInfo                  = threadLocalStack.get().pop()
 }
 
 object HoneycombFlowBehavior {

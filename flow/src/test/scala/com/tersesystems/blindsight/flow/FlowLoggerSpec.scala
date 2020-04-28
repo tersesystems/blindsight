@@ -19,11 +19,12 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       implicit def behavior[B]: FlowBehavior[B] = new FlowBehavior[B] {
         override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
           Some(Statement().withMessage("entry"))
-        override def exitStatement(resultValue: B,
-                                   source: FlowBehavior.Source): Option[Statement] =
+        override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =
           Some(Statement().withMessage("exit"))
-        override def throwingStatement(exc: Throwable,
-                                       source: FlowBehavior.Source): Option[(Level, Statement)] =
+        override def throwingStatement(
+            exc: Throwable,
+            source: FlowBehavior.Source
+        ): Option[(Level, Statement)] =
           Some(Level.ERROR, Statement().withMessage("throwing"))
       }
 
@@ -44,11 +45,12 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new FlowBehavior[B] {
         override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
           Some(Statement().withMessage("entry"))
-        override def exitStatement(resultValue: B,
-                                   source: FlowBehavior.Source): Option[Statement] =
+        override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =
           Some(Statement().withMessage("exit"))
-        override def throwingStatement(exc: Throwable,
-                                       source: FlowBehavior.Source): Option[(Level, Statement)] =
+        override def throwingStatement(
+            exc: Throwable,
+            source: FlowBehavior.Source
+        ): Option[(Level, Statement)] =
           Some(Level.ERROR, Statement().withMessage("throwing"))
       }
 
@@ -70,8 +72,7 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val underlying       = loggerContext.getLogger("logger")
       val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
 
-      implicit def flowMapping[B]: FlowBehavior[B] = new FlowBehavior[B] {
-      }
+      implicit def flowMapping[B]: FlowBehavior[B] = new FlowBehavior[B] {}
 
       Try {
         flow.info {
@@ -86,5 +87,4 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 }
 
 class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-      extends SLF4JLogger.Unchecked(underlying, markers)
-
+    extends SLF4JLogger.Unchecked(underlying, markers)
