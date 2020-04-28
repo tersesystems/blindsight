@@ -8,7 +8,7 @@ The name is taken from Peter Watts's excellent first contact novel, [Blindsight]
 
 ## TL;DR
 
-To use a Blindsight @scaladoc[Logger](com.tersesystems.blindsight.Logger):
+To use a Blindsight Logger:
 
 ```scala
 val logger = com.tersesystems.blindsight.LoggerFactory.getLogger
@@ -18,11 +18,14 @@ logger.info("I am an SLF4J-like logger")
 But there's a lot more, of course.  You can do structured logging:
 
 ```scala
+import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.logstash.Implicits._
+
 val markers = Markers("array" -> Seq("one", "two", "three"))
 logger.info(markers, "Logs with an array as marker")
 ```
 
-There's fluent mode:
+Fluent mode:
 
 ```scala
 logger.fluent.info.message("I am a fluent logger").log()
@@ -45,12 +48,15 @@ Conditional logging:
 ```scala
 logger.onCondition(booleanCondition).info("Only logs when condition is true")
 
-logger.info.when(booleanCondition) { info("when true") }
+logger.info.when(booleanCondition) { info => info("when true") }
 ```
 
 And contextual logging:
 
 ```scala
+import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.logstash.Implicits._
+
 logger.withMarker("userId" -> userId).info("Logging with user id added as a context marker!")
 ```
 
