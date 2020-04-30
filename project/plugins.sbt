@@ -18,5 +18,5 @@ addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.2")
 // https://github.com/sbt/sbt-bintray
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.6")
 
-// https://github.com/sbt/sbt-release
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
+
+addSbtPlugin("ch.epfl.scala" % "sbt-release-early" % "2.1.1")

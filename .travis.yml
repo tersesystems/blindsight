@@ -19,6 +19,13 @@ jobs:
       name: "Create site with Paradox"
     - env: CMD="docs/paradoxValidateInternalLinks"
       name: "Validate internal Links"
+script:
+- sbt ++$TRAVIS_SCALA_VERSION coverage test
+jdk:
+- oraclejdk8
+after_success:
+- if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION releaseEarly;
+  fi
 stages:
   # runs on master commits and PRs
   - name: check

@@ -3,3 +3,4 @@ target/
 *.log
 logs/
 .idea
+local.*
