@@ -1,6 +1,5 @@
 jdk:
   - openjdk8
-  - openjdk11
 language: scala
 scala:
   - 2.13.1
@@ -21,8 +20,6 @@ jobs:
       name: "Validate internal Links"
 script:
 - sbt ++$TRAVIS_SCALA_VERSION coverage test
-jdk:
-- oraclejdk8
 after_success:
 - if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION releaseEarly;
   fi
