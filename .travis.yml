@@ -1,6 +1,5 @@
 jdk:
   - openjdk8
-  - openjdk11
 language: scala
 scala:
   - 2.13.1
@@ -19,6 +18,11 @@ jobs:
       name: "Create site with Paradox"
     - env: CMD="docs/paradoxValidateInternalLinks"
       name: "Validate internal Links"
+script:
+- sbt ++$TRAVIS_SCALA_VERSION coverage test
+after_success:
+- if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION releaseEarly;
+  fi
 stages:
   # runs on master commits and PRs
   - name: check

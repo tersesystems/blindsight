@@ -9,8 +9,12 @@ ThisBuild / crossScalaVersions := Seq(scala211, scala212, scala213)
 
 ThisBuild / scalafmtOnCompile := true
 
+ThisBuild / releaseEarlyWith := BintrayPublisher
 ThisBuild / bintrayOrganization := Some("tersesystems")
 
+ThisBuild / developers := List(
+  Developer("wsargent", "Will Sargent", "will@tersesystems.com", url("https://tersesystems.com"))
+)
 ThisBuild / organization := "com.tersesystems.blindsight"
 ThisBuild / organizationName := "Terse Systems"
 ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
@@ -147,27 +151,9 @@ lazy val generic = (project in file("generic"))
   )
   .dependsOn(all)
 
-// https://www.scala-sbt.org/1.x/docs/Cross-Build.html#Note+about+sbt-release
-import ReleaseTransformations._
 lazy val root = (project in file("."))
   .settings(
-    name := "blindsight-root",
-    crossScalaVersions := Nil,
-    // don't use sbt-release's cross facility
-    releaseCrossBuild := false,
-    releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
-      inquireVersions,
-      runClean,
-      releaseStepCommandAndRemaining("+test"),
-      setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
-      releaseStepCommandAndRemaining("+publish"),
-      setNextVersion,
-      commitNextVersion,
-      pushChanges
-    )
+    name := "blindsight-root"
   )
   .settings(disableDocs)
   .settings(disablePublishing)
