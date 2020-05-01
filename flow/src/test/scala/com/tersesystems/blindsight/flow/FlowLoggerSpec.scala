@@ -12,21 +12,11 @@ import scala.util.Try
 class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   "flow logger" should {
-    "work" in {
+    "print entry and exit statements" in {
       val underlying       = loggerContext.getLogger("logger")
       val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
 
-      implicit def behavior[B]: FlowBehavior[B] = new FlowBehavior[B] {
-        override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
-          Some(Statement().withMessage("entry"))
-        override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =
-          Some(Statement().withMessage("exit"))
-        override def throwingStatement(
-            exc: Throwable,
-            source: FlowBehavior.Source
-        ): Option[(Level, Statement)] =
-          Some(Level.ERROR, Statement().withMessage("throwing"))
-      }
+      import LowPriorityBehavior._
 
       flow.info {
         1 + 1
@@ -38,21 +28,10 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       exit.getMessage must equal("exit")
     }
 
-    "work with exception" in {
+    "render an exception" in {
       val underlying       = loggerContext.getLogger("logger")
       val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
-
-      implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new FlowBehavior[B] {
-        override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
-          Some(Statement().withMessage("entry"))
-        override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =
-          Some(Statement().withMessage("exit"))
-        override def throwingStatement(
-            exc: Throwable,
-            source: FlowBehavior.Source
-        ): Option[(Level, Statement)] =
-          Some(Level.ERROR, Statement().withMessage("throwing"))
-      }
+      import LowPriorityBehavior._
 
       Try {
         flow.info {
@@ -84,7 +63,56 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       listAppender.list.size() must be(0)
     }
   }
+
+  "flow logger conditional" should {
+
+    "log when a predicate is present" in {
+      val underlying       = loggerContext.getLogger("logger")
+      val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
+      import LowPriorityBehavior._
+
+      val condition = flow.onCondition(true)
+      val result = condition.info {
+        1 + 1
+      }
+      result must be(2)
+      val entry = listAppender.list.get(0)
+      entry.getMessage must equal("entry")
+      val exit = listAppender.list.get(1)
+      exit.getMessage must equal("exit")
+    }
+
+    "not log when a predicate is off" in {
+      val underlying       = loggerContext.getLogger("logger")
+      val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
+      import LowPriorityBehavior._
+
+      val condition = flow.onCondition(false)
+      val result = condition.info {
+        1 + 1
+      }
+      result must be(2)
+      listAppender.list.size must be(0)
+    }
+  }
+
 }
+
+trait LowPriorityBehavior {
+  implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new FlowBehavior[B] {
+    override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
+      Some(Statement().withMessage("entry"))
+    override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =
+      Some(Statement().withMessage("exit"))
+    override def throwingStatement(
+        exc: Throwable,
+        source: FlowBehavior.Source
+    ): Option[(Level, Statement)] =
+      Some(Level.ERROR, Statement().withMessage("throwing"))
+  }
+}
+
+object LowPriorityBehavior extends LowPriorityBehavior
 
 class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
     extends SLF4JLogger.Unchecked(underlying, markers)

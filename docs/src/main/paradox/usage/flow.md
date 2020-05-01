@@ -23,30 +23,11 @@ The result should have a type class instance of @scaladoc[ToArguments](com.terse
 
 If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown.  If the logging level is not enabled or logging execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a `Try` block.
 
-@@@ note
-
-Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the @scaladoc[OnConditionMixin](com.tersesystems.blindsight.api.mixins.OnConditionMixin) and should not be used with conditional logging logic.  If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).
-
-@@@
-
 ## Flow Behavior
 
 What happens in a flow is determined by the @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).  Implementing a flow behavior comes down to creating @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) and @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) for entry, exit, and exceptions.
 
-@@snip [Flow.scala](../../../test/scala/flow/SimpleFlowBehavior.scala) { #flow_behavior }
-
-From there, using the flow API is a matter of plugging in the relevant flow behavior.
- 
-@@snip [Flow.scala](../../../test/scala/flow/SimpleFlow.scala) { #flow_example }
-
-This produces the following output:
-
-```text
-FgcMMra7u2U6O0Qbm7EAAA 17:00:47.067 [INFO ] e.flow.FlowMain -  About to execute number flow
-FgcMMra7u8QdHaINzdiAAA 17:00:47.166 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod entry source.arguments={arg1=1, arg2=2}
-FgcMMra7u9CdHaINzdiAAA 17:00:47.191 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod exit with result 3
-This is 3
-```
+There are two out of the box behaviors provided: @scaladoc[SimpleFlowBehavior](com.tersesystems.blindsight.flow.SimpleFlowBehavior) and @scaladoc[XLoggerFlowBehavior](com.tersesystems.blindsight.flow.XLoggerFlowBehavior).  These are modelled after [pos](https://github.com/JohnReedLOL/pos) and [XLogger](http://www.slf4j.org/extensions.html#extended_logger), respectively.
 
 ## Integrating with Tracing
 

@@ -19,6 +19,7 @@ package com.tersesystems.blindsight.flow
 import com.tersesystems.blindsight.api.{Markers, ParameterList, ToMarkers}
 import com.tersesystems.blindsight.api.mixins.{
   MarkerMixin,
+  OnConditionMixin,
   ParameterListMixin,
   PredicateMixin,
   SourceInfoMixin,
@@ -40,13 +41,11 @@ import sourcecode.{Enclosing, File, Line}
  * the result is returned or execution rethrown.  If the logging level is not enabled or logging
  * execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a
  * `Try` block.
- *
- * Because this logger executes blocks of computation and may optionally decorate it with logging,
- * it does <b>not</b> implement the `OnConditionMixin` and should not be used with conditional
- * logging logic.  If conditional logging is required, it is generally safer to do it in the logging
- * framework by using a deny filter with a marker defined in the FlowBehavior.
  */
-trait FlowLogger extends SLF4JLoggerAPI[SLF4JPredicate, FlowMethod] with MarkerMixin {
+trait FlowLogger
+    extends SLF4JLoggerAPI[SLF4JPredicate, FlowMethod]
+    with MarkerMixin
+    with OnConditionMixin {
   override type Self      = FlowLogger
   override type Method    = FlowMethod
   override type Predicate = SLF4JPredicate
@@ -95,6 +94,66 @@ object FlowLogger {
     ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
 
     override def underlying: org.slf4j.Logger = logger.underlying
+
+    /**
+     * Returns a new instance of the logger that will only log if the
+     * condition is met.
+     *
+     * @param test the call by name boolean that is a prerequisite for logging.
+     * @return the new conditional logger instance.
+     */
+    override def onCondition(test: => Boolean): FlowLogger = new Conditional(test, logger)
+  }
+
+  /**
+   * Runs the conditional block with logging if test is true, otherwise runs the block.
+   *
+   * @param test the test to be run for logging.
+   * @param logger the extended slf4j logger.
+   */
+  class Conditional(test: => Boolean, logger: ExtendedSLF4JLogger[_]) extends ExtendedFlowLogger {
+    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
+      new Conditional(test, logger.withMarker(markerInstance).asInstanceOf[ExtendedSLF4JLogger[_]])
+    }
+
+    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override def trace: Method             = new FlowMethod.Conditional(test, TRACE, this)
+
+    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override def debug: Method             = new FlowMethod.Conditional(test, DEBUG, this)
+
+    override def isInfoEnabled: Predicate = logger.predicate(INFO)
+    override def info: Method             = new FlowMethod.Conditional(test, INFO, this)
+
+    override def isWarnEnabled: Predicate = logger.predicate(WARN)
+    override def warn: Method             = new FlowMethod.Conditional(test, WARN, this)
+
+    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override def error: Method             = new FlowMethod.Conditional(test, ERROR, this)
+
+    override def parameterList(level: Level): ParameterList = logger.parameterList(level)
+
+    override def predicate(level: Level): Predicate = logger.predicate(level)
+
+    override def markers: Markers = logger.markers
+
+    override def sourceInfoMarker(
+        level: Level,
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
+
+    override def underlying: org.slf4j.Logger = logger.underlying
+
+    /**
+     * Returns a new instance of the logger that will only log if the
+     * condition is met.
+     *
+     * @param test2 the call by name boolean that is a prerequisite for logging.
+     * @return the new conditional logger instance.
+     */
+    override def onCondition(test2: => Boolean): FlowLogger = new Conditional(test && test2, logger)
   }
 
 }
