@@ -21,5 +21,4 @@ addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.6")
 // https://github.com/scoverage/sbt-scoverage
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
-
 addSbtPlugin("ch.epfl.scala" % "sbt-release-early" % "2.1.1")

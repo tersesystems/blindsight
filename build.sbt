@@ -12,7 +12,9 @@ ThisBuild / scalafmtOnCompile := true
 ThisBuild / releaseEarlyWith := BintrayPublisher
 ThisBuild / bintrayOrganization := Some("tersesystems")
 
-ThisBuild / developers := List(Developer("wsargent", "Will Sargent", "will@tersesystems.com", url("https://tersesystems.com")))
+ThisBuild / developers := List(
+  Developer("wsargent", "Will Sargent", "will@tersesystems.com", url("https://tersesystems.com"))
+)
 ThisBuild / organization := "com.tersesystems.blindsight"
 ThisBuild / organizationName := "Terse Systems"
 ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
