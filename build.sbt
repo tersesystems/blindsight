@@ -149,8 +149,6 @@ lazy val generic = (project in file("generic"))
   )
   .dependsOn(all)
 
-// https://www.scala-sbt.org/1.x/docs/Cross-Build.html#Note+about+sbt-release
-import ReleaseTransformations._
 lazy val root = (project in file("."))
   .settings(
     name := "blindsight-root"
