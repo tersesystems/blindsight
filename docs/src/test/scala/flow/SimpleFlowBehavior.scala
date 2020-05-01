@@ -1,42 +1,50 @@
 package flow
 
-import com.tersesystems.blindsight.api.{Statement, ToArguments}
+import java.io.File
+
+import com.tersesystems.blindsight.api.{Arguments, Statement, ToArguments}
 import com.tersesystems.blindsight.flow.FlowBehavior
-import com.tersesystems.blindsight.flow.FlowBehavior.Source
 import org.slf4j.event.Level
 
 // #flow_behavior
 class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
 
-  override def entryStatement(source: Source): Option[Statement] = {
-    import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
-    Some(
-      Statement()
-        .withMarkers(entryMarkers(source))
-        .withMessage(s"${source.enclosing.value} entry {}")
-        .withArguments(source.args)
-    )
-  }
+  override def entryStatement(source: FlowBehavior.Source): Option[Statement] = None
 
   override def throwingStatement(
-      throwable: Throwable,
-      source: Source
-  ): Option[(Level, Statement)] = {
+                                  throwable: Throwable,
+                                  source: FlowBehavior.Source
+                                ): Option[(Level, Statement)] = {
+    val args  = Arguments(findArgs(source)) + Arguments(throwable) + Arguments(findPos(source))
     Some(
       Level.ERROR,
       Statement()
         .withThrowable(throwable)
-        .withMessage(s"${source.enclosing.value} exception")
+        .withMessage(s"{} throws {} at {}")
+        .withArguments(args)
     )
   }
 
-  override def exitStatement(resultValue: B, source: Source): Option[Statement] = {
+  override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] = {
+    val args  = Arguments(findArgs(source)) + Arguments(resultValue) + Arguments(findPos(source))
     Some(
       Statement()
         .withMarkers(exitMarkers(source))
-        .withMessage(s"${source.enclosing.value} exit with result {}")
-        .withArguments(resultValue)
+        .withMessage("{} => {} {}")
+        .withArguments(args)
     )
   }
+
+  protected def findArgs(source: FlowBehavior.Source): String = {
+    source.args.value.flatMap(_.map(a => s"${a.source}=${a.value}")).mkString(",")
+  }
+
+  protected def findPos(source: FlowBehavior.Source): String = {
+    val file     = source.file.value
+    val index    = file.lastIndexOf(File.separator)
+    val filename = if (index == -1) file else file.substring(index + 1)
+    s"    at ${source.enclosing.value}(${filename}:${source.line.value})"
+  }
+
 }
 // #flow_behavior
