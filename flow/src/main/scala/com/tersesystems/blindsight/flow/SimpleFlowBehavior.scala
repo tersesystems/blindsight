@@ -15,11 +15,11 @@ class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
   override def entryStatement(source: FlowBehavior.Source): Option[Statement] = None
 
   override def throwingStatement(
-                                  throwable: Throwable,
-                                  source: FlowBehavior.Source
-                                ): Option[(Level, Statement)] = {
+      throwable: Throwable,
+      source: FlowBehavior.Source
+  ): Option[(Level, Statement)] = {
     val input = source.args.value.flatMap(_.map(a => s"${a.source}=${a.value}")).mkString(",")
-    val args = Arguments(input) + Arguments(throwable, findPos(source))
+    val args  = Arguments(input) + Arguments(throwable, findPos(source))
     Some(
       Level.ERROR,
       Statement()
@@ -31,7 +31,7 @@ class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
 
   override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] = {
     val input = source.args.value.flatMap(_.map(a => s"${a.source}=${a.value}")).mkString(",")
-    val args = Arguments(input) + Arguments(resultValue, findPos(source))
+    val args  = Arguments(input) + Arguments(resultValue, findPos(source))
     Some(
       Statement()
         .withMarkers(exitMarkers(source))
@@ -41,10 +41,10 @@ class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
   }
 
   protected def findPos(source: FlowBehavior.Source): String = {
-    val file = source.file.value
-    val index = file.lastIndexOf(File.separator)
+    val file     = source.file.value
+    val index    = file.lastIndexOf(File.separator)
     val filename = if (index == -1) file else file.substring(index + 1)
-    val pos = s"${source.enclosing.value}(${filename}:${source.line.value})"
+    val pos      = s"${source.enclosing.value}(${filename}:${source.line.value})"
     pos
   }
 
