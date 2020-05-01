@@ -103,4 +103,23 @@ object FlowMethod {
       }
     }
   }
+
+  class Conditional(test: => Boolean, level: Level, logger: ExtendedFlowLogger)
+      extends Impl(level, logger) {
+    override def apply[B: ToArguments](
+        attempt: => B
+    )(
+        implicit line: Line,
+        file: File,
+        enclosing: Enclosing,
+        sourceArgs: Args,
+        mapping: FlowBehavior[B]
+    ): B = {
+      if (test) {
+        super.apply(attempt)
+      } else {
+        attempt
+      }
+    }
+  }
 }

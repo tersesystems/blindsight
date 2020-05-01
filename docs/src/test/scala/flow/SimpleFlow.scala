@@ -16,12 +16,11 @@
 
 package flow
 
-import com.tersesystems.blindsight.{Logger, LoggerFactory}
-import com.tersesystems.blindsight.api.{Arguments, ToArguments}
-import com.tersesystems.blindsight.flow.FlowBehavior
-
 // #flow_example
 object SimpleFlow {
+  import com.tersesystems.blindsight.{Logger, LoggerFactory}
+  import com.tersesystems.blindsight.api.{Arguments, ToArguments}
+  import com.tersesystems.blindsight.flow._
 
   private implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new SimpleFlowBehavior
 
@@ -53,7 +52,7 @@ object SimpleFlow {
   object Person {
     implicit val personToArguments: ToArguments[Person] = ToArguments { person =>
       import com.tersesystems.blindsight.logstash.Implicits._
-      Arguments("person" -> person.name, "age" -> person.age)
+      Arguments("person" -> Map("name" -> person.name, "age" -> person.age))
     }
   }
   // #flow_person_definition
