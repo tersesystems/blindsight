@@ -21,7 +21,7 @@ jobs:
 script:
 - sbt ++$TRAVIS_SCALA_VERSION coverage test
 after_success:
-- if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION releaseEarly;
+- if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION releaseEarly docs/makeSite docs/ghpagesPushSite;
   fi
 stages:
   # runs on master commits and PRs
