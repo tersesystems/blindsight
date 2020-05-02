@@ -21,14 +21,22 @@ jobs:
     - env: CMD="docs/paradoxValidateInternalLinks"
       name: "Validate internal Links"
     - stage: test
-      script: sbt ++$TRAVIS_SCALA_VERSION coverage test
+      name: "Coverage and tests"
+      env: CMD="coverage test"
+    - stage: docs
+      name: "Push documentation to ghpages"
+      env: ISOLATED=false
+      scala: 2.13.1
+      script: sbt "docs/makeSite docs/ghpagesPushSite"
     - stage: deploy
-      script: if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt +releaseEarly docs/makeSite docs/ghpagesPushSite;
-
+      name: "Deploy to Bintray"
+      script: sbt ++$TRAVIS_SCALA_VERSION releaseEarly
 stages:
   - name: check
-    # runs on master commits and PRs
     if: NOT tag =~ ^v
+  - test
+  - name: docs
+    if: tag =~ ^v
   - name: deploy
     if: tag =~ ^v
 
