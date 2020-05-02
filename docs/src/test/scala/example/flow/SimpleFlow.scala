@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package flow
+package example.flow
 
 // #flow_example
 object SimpleFlow {
@@ -27,11 +27,11 @@ object SimpleFlow {
   private val logger: Logger = LoggerFactory.getLogger
 
   def main(args: Array[String]): Unit = {
-    logger.info("About to execute number flow")
+    logger.info("About to execute number example.flow")
     val intResult = flowMethod(1, 2)
     println("This is " + intResult)
 
-    logger.info("About to execute person flow")
+    logger.info("About to execute person example.flow")
     val personResult = personFlowMethod(1, 2)
     println("This is " + personResult)
   }

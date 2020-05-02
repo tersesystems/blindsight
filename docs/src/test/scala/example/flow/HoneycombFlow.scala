@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package flow
+package example.flow
 
 import com.tersesystems.blindsight.LoggerFactory
 import com.tersesystems.blindsight.api.{Arguments, Markers, Statement, ToArguments}
@@ -32,7 +32,7 @@ import scala.compat.java8.FunctionConverters.{asJavaFunction, asJavaSupplier}
 
 /**
  * This class demonstrates how to do hierarchical parent/child span style tracing to a
- * service using the flow logger API.  This also shows duration of the spans.
+ * service using the example.flow logger API.  This also shows duration of the spans.
  *
  * Most of the output will show up in application.json, so look there.
  */

@@ -5,7 +5,7 @@ import org.slf4j.{Marker, MarkerFactory}
 import org.slf4j.event.Level
 
 /**
- * A flow behavior that implements the <a href="http://www.slf4j.org/extensions.html#extended_logger">extended
+ * A example.flow behavior that implements the <a href="http://www.slf4j.org/extensions.html#extended_logger">extended
  * logger</a> interface.
  *
  * @see https://github.com/qos-ch/slf4j/blob/master/slf4j-ext/src/main/java/org/slf4j/ext/XLogger.java

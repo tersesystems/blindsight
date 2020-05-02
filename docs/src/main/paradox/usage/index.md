@@ -5,7 +5,7 @@
 * [SLF4J API](slf4j.md)
 * [Fluent API](fluent.md)
 * [Semantic API](semantic.md)
-* [Flow API](flow.md)
+* [Flow API](example.flow.md)
 * [Structured Logging](structured.md)
 * [Conditional Logging](conditional.md)
 * [Contextual Logging](context.md)
@@ -51,7 +51,7 @@ logger.semantic[UserEvent].info(userEvent)
 @ref:[Flow Logging](flow.md):
 
 ```scala
-val result = logger.flow.trace(arg1 + arg2)
+val result = logger.example.flow.trace(arg1 + arg2)
 ```
 
 @ref:[Conditional Logging](conditional.md):

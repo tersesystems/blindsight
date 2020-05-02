@@ -6,7 +6,7 @@ import com.tersesystems.blindsight.api.{Arguments, Statement, ToArguments}
 import org.slf4j.event.Level
 
 /**
- * A simple flow behavior that prints out the arguments and result, with the line number.
+ * A simple example.flow behavior that prints out the arguments and result, with the line number.
  *
  * @tparam B the type of the result.
  */

@@ -11,7 +11,7 @@ import scala.util.Try
 
 class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
-  "flow logger" should {
+  "example.flow logger" should {
     "print entry and exit statements" in {
       val underlying       = loggerContext.getLogger("logger")
       val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
@@ -64,7 +64,7 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
   }
 
-  "flow logger conditional" should {
+  "example.flow logger conditional" should {
 
     "log when a predicate is present" in {
       val underlying       = loggerContext.getLogger("logger")

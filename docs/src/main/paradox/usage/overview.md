@@ -147,22 +147,22 @@ See @ref:[Semantic API](semantic.md) for details.
 
 ## Flow API
 
-The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a control flow based logging wrapper.  A @scaladoc[FlowLogger](com.tersesystems.blindsight.flow.FlowLogger) is accessible through `logger.flow`:
+The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a control example.flow based logging wrapper.  A @scaladoc[FlowLogger](com.tersesystems.blindsight.example.flow.FlowLogger) is accessible through `logger.example.flow`:
 
 ```scala
 import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.flow._
+import com.tersesystems.blindsight.example.flow._
 
 implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = ...
 
-def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+def flowMethod(arg1: Int, arg2: Int): Int = logger.example.flow.trace {
   arg1 + arg2
 }
 ```
 
-The flow API is used to render the entry and exit of a given method.  It is tied together with a flow behavior which provides the relevant @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) on entry and exit.  This can also be used for timers and hierarchical tracing.
+The example.flow API is used to render the entry and exit of a given method.  It is tied together with a example.flow behavior which provides the relevant @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) on entry and exit.  This can also be used for timers and hierarchical tracing.
 
-See @ref:[Flow API](flow.md) for more details.
+See @ref:[Flow API](example.flow.md) for more details.
 
 ## Structured Logging
 

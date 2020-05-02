@@ -4,7 +4,7 @@ import com.tersesystems.blindsight.api.{Markers, Statement}
 import org.slf4j.event.Level
 
 /**
- * A type class that is used to provide a behavior to a logging flow.
+ * A type class that is used to provide a behavior to a logging example.flow.
  *
  * You can implement your own behavior and place it in scope for the code that you're using:
  *
@@ -19,7 +19,7 @@ import org.slf4j.event.Level
  * }}}
  *
  * You can use the `createEntryStatement` to start a timer and then complete it on exit/throwing,
- * or use the flow as hooks into the tracing framework.
+ * or use the example.flow as hooks into the tracing framework.
  *
  * The hooks are used in the FlowLoggerMethod roughly as follows:
  *
@@ -44,7 +44,7 @@ trait FlowBehavior[B] {
   import FlowBehavior._
 
   /**
-   * Returns the markers used by the flow logger method on entry.
+   * Returns the markers used by the example.flow logger method on entry.
    *
    * @param source the source info
    * @return the entry markers, empty by default.
@@ -70,7 +70,7 @@ trait FlowBehavior[B] {
   /**
    * Returns an exit statement, using the result value and the source.
    *
-   * @param resultValue the result of the flow.
+   * @param resultValue the result of the example.flow.
    * @param source the source info
    * @return the statement, None by default.
    */
@@ -83,7 +83,7 @@ trait FlowBehavior[B] {
    * Returns a tuple describing the statement and the level to log the exception at; if you
    * return `(Level.ERROR, statement)` then it will log the exception at error level, for example.
    *
-   * @param exc the throwable returned from flow
+   * @param exc the throwable returned from example.flow
    * @param source the source info
    * @return a tuple containing the statement and the level to execute the throwing statement.
    */

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/tersesystems/blindsight.svg?branch=master)](https://travis-ci.org/tersesystems/blindsight) ![Bintray](https://img.shields.io/bintray/v/tersesystems/maven/blindsight)
 
-Blindsight is a Scala logging API that allows for [structured logging](https://tersesystems.github.io/blindsight/usage/structured.html), [fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html), [semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html), [flow logging](https://tersesystems.github.io/blindsight/usage/flow.html), [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html), [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html), and [other useful things](https://tersesystems.github.io/blindsight/usage/overview.html).
+Blindsight is a Scala logging API that allows for [structured logging](https://tersesystems.github.io/blindsight/usage/structured.html), [fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html), [semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html), [example.flow logging](https://tersesystems.github.io/blindsight/usage/example.flow.html), [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html), [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html), and [other useful things](https://tersesystems.github.io/blindsight/usage/overview.html).
  
 To use a Blindsight Logger:
 
@@ -40,12 +40,12 @@ import eu.timepit.refined._
 logger.semantic[String Refined Url].info(refineMV(Url)("https://tersesystems.com"))
 ```
 
-[Flow logging](https://tersesystems.github.io/blindsight/usage/flow.html):
+[Flow logging](https://tersesystems.github.io/blindsight/usage/example.flow.html):
 
 ```scala
 implicit def flowBehavior[B]: FlowBehavior[B] = ???
 
-val result = logger.flow.trace(arg1 + arg2)
+val result = logger.example.flow.trace(arg1 + arg2)
 ```
 
 [Conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html):

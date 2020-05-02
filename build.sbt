@@ -105,9 +105,9 @@ lazy val semantic = (project in file("semantic"))
   .dependsOn(slf4j, api)
   .dependsOn(fixtures % "test->test")
 
-lazy val flow = (project in file("flow"))
+lazy val flow = (project in file("example.flow"))
   .settings(
-    name := "blindsight-flow",
+    name := "blindsight-example.flow",
     libraryDependencies += logbackClassic         % Test,
     libraryDependencies += logstashLogbackEncoder % Test,
     libraryDependencies += scalaTest              % Test,

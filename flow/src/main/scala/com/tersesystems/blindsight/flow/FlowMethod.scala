@@ -45,7 +45,7 @@ trait FlowMethod {
 object FlowMethod {
 
   /**
-   * The implementation of the flow logger method.
+   * The implementation of the example.flow logger method.
    *
    * @param level the level to log a statement with.
    * @param logger the parent logger.
