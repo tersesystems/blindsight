@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package flow
+package example.flow
 
 // #flow_example
 object SimpleFlow {

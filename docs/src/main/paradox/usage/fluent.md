@@ -7,35 +7,18 @@ The fluent API has an immediate advantage in that there's less overloading in th
 ## Accessing Fluent Logger
 
 The easiest way of getting a fluent logger is to use the @scaladoc[LoggerFactory](com.tersesystems.blindsight.LoggerFactory) and then call the `fluent` method:
-
-```scala
-import com.tersesystems.blindsight.fluent.FluentLogger
-
-val logger = com.tersesystems.blindsight.LoggerFactory.getLogger(getClass)
-val fluentLogger: FluentLogger = logger.fluent
-```
-
+ 
+@@snip [FluentMain.scala](../../../test/scala/example/fluent/FluentMain.scala) { #fluent-logger }
+ 
 The fluent logger builds up the logging statement by calling `marker`, `argument`, `message`, `cause`, and then finally `log()` or `logWithPlaceholders()` to execute the statement.  You may call each of these methods repeatedly, and they build up markers, arguments, or a concatenated message (note that exceptions are, well, an exception).  You may call them in any order.  If you call `log()` then the statement is executed exactly as written.  If you call `logWithPlaceholders()` then the number of arguments is counted and "{}" format placeholders are appended to the statement's message so that all arguments are visible.
 
-```scala
-fluentLogger.marker(someMarker)
-            .message("some message {}")
-            .argument(args)
-            .message("exception {}")
-            .cause(exception)
-            .log()
-```
+@@snip [FluentMain.scala](../../../test/scala/example/fluent/FluentMain.scala) { #fluent-statement }
 
 ## Markers
 
 You can log with a marker alone and then log:
 
-```scala
-import net.logstash.logback.marker.{Markers => LogstashMarkers}
-
-val marker: Marker = LogstashMarkers.append("user", "will")
-fluentLogger.marker(marker).log()
-```
+@@snip [FluentMain.scala](../../../test/scala/example/fluent/FluentMain.scala) { #fluent-markers }
 
 This will write out an empty string as the message, and a logstash marker.
 
