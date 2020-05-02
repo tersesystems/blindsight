@@ -53,7 +53,7 @@ object FluentSimple {
     // #fluent-logger
     import com.tersesystems.blindsight.fluent.FluentLogger
 
-    val logger = com.tersesystems.blindsight.LoggerFactory.getLogger(getClass)
+    val logger                     = com.tersesystems.blindsight.LoggerFactory.getLogger(getClass)
     val fluentLogger: FluentLogger = logger.fluent
     // #fluent-logger
 
@@ -65,7 +65,7 @@ object FluentSimple {
     // #fluent-markers
 
     val args: Arguments = Arguments("some arguments")
-    val exception = new RuntimeException("ex")
+    val exception       = new RuntimeException("ex")
 
     // #fluent-statement
     fluentLogger.info
