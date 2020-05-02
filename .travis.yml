@@ -20,9 +20,11 @@ jobs:
       name: "Validate internal Links"
 script:
 - sbt ++$TRAVIS_SCALA_VERSION coverage test
-after_success:
-- if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION releaseEarly docs/makeSite docs/ghpagesPushSite;
-  fi
+deploy:
+  provider: script
+  script: sbt ++releaseEarly docs/makeSite docs/ghpagesPushSite
+  on:
+    tags: true
 stages:
   # runs on master commits and PRs
   - name: check
