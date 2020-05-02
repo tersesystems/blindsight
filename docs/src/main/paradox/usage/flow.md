@@ -16,11 +16,11 @@ val flowLogger: FlowLogger = logger.flow
 
 The flow logger takes a block of execution, and returns the result transparently, according to the log level.  
 
-@@snip [Flow.scala](../../../test/scala/flow/SimpleFlow.scala) { #flow_method }
+@@snip [Flow.scala](../../../test/scala/example/flow/SimpleFlow.scala) { #flow_method }
 
 The result should have a type class instance of @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments), so that it can be considered in logging.  For example, if the return type is `Person`, then you must have a `ToArguments[Person]` in scope:
 
-@@snip [Flow.scala](../../../test/scala/flow/SimpleFlow.scala) { #flow_person_definition }
+@@snip [Flow.scala](../../../test/scala/example/flow/SimpleFlow.scala) { #flow_person_definition }
 
 If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown.  If the logging is not enabled (whether through conditional logging, explicit filtering, or threshold), then execution of the block still proceeds but is not wrapped by a `Try` block.
 
@@ -82,6 +82,6 @@ and the following dependencies:
 
 You can produce Honeycomb manual traces with the following:
 
-@@snip [HoneycombFlow.scala](../../../test/scala/flow/HoneycombFlow.scala) { #honeycomb_flow_example }
+@@snip [HoneycombFlow.scala](../../../test/scala/example/flow/HoneycombFlow.scala) { #honeycomb_flow_example }
 
 See [play-blindsight](http://github.com/wsargent/play-blindsight) for a worked example.

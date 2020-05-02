@@ -17,7 +17,7 @@
 package example.fluent
 
 import com.tersesystems.blindsight.LoggerFactory
-import com.tersesystems.blindsight.api.Statement
+import com.tersesystems.blindsight.api.{Arguments, Statement}
 import com.tersesystems.blindsight.logstash.Implicits._
 
 object FluentMain {
@@ -44,5 +44,37 @@ object FluentMain {
       .argument(Map("a" -> "b"))
       .argument("sequenceArg" -> Seq("a", "b", "c"))
       .log()
+  }
+}
+
+object FluentSimple {
+  def main(args: Array[String]): Unit = {
+
+    // #fluent-logger
+    import com.tersesystems.blindsight.fluent.FluentLogger
+
+    val logger                     = com.tersesystems.blindsight.LoggerFactory.getLogger(getClass)
+    val fluentLogger: FluentLogger = logger.fluent
+    // #fluent-logger
+
+    // #fluent-markers
+    import net.logstash.logback.marker.{Markers => LogstashMarkers}
+    val someMarker = LogstashMarkers.append("user", "will")
+
+    fluentLogger.info.marker(someMarker).log()
+    // #fluent-markers
+
+    val args: Arguments = Arguments("some arguments")
+    val exception       = new RuntimeException("ex")
+
+    // #fluent-statement
+    fluentLogger.info
+      .marker(someMarker)
+      .message("some message {}")
+      .argument(args)
+      .message("exception {}")
+      .cause(exception)
+      .log()
+    // #fluent-statement
   }
 }

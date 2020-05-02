@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package flow
+package example.flow
 
 import com.tersesystems.blindsight.LoggerFactory
 import com.tersesystems.blindsight.api.{Arguments, Markers, Statement, ToArguments}
@@ -91,7 +91,7 @@ object HoneycombFlow {
 
   object Person {
     implicit val personToArguments: ToArguments[Person] = ToArguments { person =>
-      Arguments(kv("person", person.name), kv("age", person.age))
+      Arguments("person" -> Map("name" -> person.name, "age" -> person.age))
     }
   }
 }
