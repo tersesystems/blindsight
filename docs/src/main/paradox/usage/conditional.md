@@ -6,7 +6,7 @@ Blindsight has conditional logging on two levels; on the logger itself, and on t
 
 ## On Condition
 
-All loggers (with the exception of `flow`) have an `onCondition` method that returns a conditional logger of the same type.
+All loggers have an `onCondition` method that returns a conditional logger of the same type.
 
 This logger will only log if the condition is true.
 

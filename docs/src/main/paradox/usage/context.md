@@ -6,15 +6,7 @@ This is very useful when you are logging [events](https://www.honeycomb.io/blog/
 
 Blindsight does not use MDC for managing context, and does not touch thread local storage.  Instead, it uses markers and builds up those markers for use in structured logging.  This is especially useful for events.
 
-@@@ note
-
-Blindsight does not use MDC, and does not recommend its use.
-
-There are many reasons to not use MDC.  It is inherently limiting as a `Map[String,String]`.  It must be managed carefully in asynchronous programming to resolve the Map.  It is mutable -- it will only contain the last written values in the map at the time of logging, and no record is kept of prior values.  It is static -- it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed.  And finally, MDC fails silently.  When something goes wrong in MDC, it's anyone's guess what cleared it.
-
-@@@
-
-The assumption is that you will be using the @ref:[Logstash Bindings](structured.md) and [Terse Logback](https://tersesystems.github.io/terse-logback).  You should also read through how to create your own [markers](https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/) for use in logging.
+The assumption is that you will be using the @ref:[structured logging](structured.md) and [Terse Logback](https://tersesystems.github.io/terse-logback).  You should also read through how to create your own [markers](https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/) for use in logging.
 
 ## Marker Context
 
@@ -55,3 +47,11 @@ entryLogger.info(anotherMarker, "a message")
 ```
 
 Managing context is from this point a question of whether you want to pass around @scaladoc[Markers](com.tersesystems.blindsight.api.Markers), or pass around a @scaladoc[Logger](com.tersesystems.blindsight.Logger), useful for [constructing events](https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/). 
+
+## Mapped Diagnostic Context
+
+Blindsight does not use MDC, and does not recommend its use.
+
+There are many reasons to not use MDC.  It is inherently limiting as a `Map[String,String]`.  It must be managed carefully in asynchronous programming to resolve the Map.  It is mutable -- it will only contain the last written values in the map at the time of logging, and no record is kept of prior values.  It is static -- it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed.  And finally, MDC fails silently.  When something goes wrong in MDC, it's anyone's guess what cleared it.
+
+MDC is still useful in some circumstances.  When you have third party code that already has logging, then setting variables in the MDC may be the only way of passing context to that library code: if this is the case, then you will have to manage the mapping of complex non-string data from markers to MDC by hand.

@@ -60,9 +60,11 @@ And [context aware logging](https://tersesystems.github.io/blindsight/usage/cont
 
 ```scala
 import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.logstash.Implicits._
+import net.logstash.logback.marker.{Markers => LogstashMarkers}
 
-logger.withMarker("userId" -> userId).info("Logging with user id added as a context marker!")
+val userIdMarker = LogstashMarkers.append("userId", userId)
+logger.withMarker(userIdMarker).info("Logging with user id added as a context marker!")
+val contextMarkers: Markers = logger.markers
 ```
 
 ## Documentation 

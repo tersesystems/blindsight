@@ -16,4 +16,4 @@ And then add the dependency:
   version="$project.version.short$"
 }
 
-See [Github Badge](https://github.com/tersesystems/blindsight#blindsight) for the latest version.
+See [Github](https://github.com/tersesystems/blindsight#blindsight) for the latest version.
