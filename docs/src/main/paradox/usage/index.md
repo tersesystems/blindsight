@@ -1,6 +1,7 @@
 @@@ index
 
 * [Overview](overview.md)
+* [Logger Resolvers](resolvers.md)
 * [SLF4J API](slf4j.md)
 * [Fluent API](fluent.md)
 * [Semantic API](semantic.md)
@@ -8,7 +9,6 @@
 * [Structured Logging](structured.md)
 * [Conditional Logging](conditional.md)
 * [Contextual Logging](context.md)
-* [Logger Resolvers](resolvers.md)
 * [Source Code](sourcecode.md)
 
 @@@
@@ -26,7 +26,7 @@ But there's a lot more, of course.
 
 ## Examples
 
-You can do structured logging:
+You can do @ref:[structured Logging](structured.md) using the Scala collection library:
 
 ```scala
 import com.tersesystems.blindsight.api._
@@ -36,25 +36,25 @@ val markers = Markers("array" -> Seq("one", "two", "three"))
 logger.info(markers, "Logs with an array as marker")
 ```
 
-Fluent mode:
+@ref:[Fluent Logging](fluent.md):
 
 ```scala
 logger.fluent.info.message("I am a fluent logger").log()
 ```
 
-Semantic mode:
+@ref:[Semantic Logging](semantic.md):
 
 ```scala
 logger.semantic[UserEvent].info(userEvent)
 ```
 
-Flow mode:
+@ref:[Flow Logging](flow.md):
 
 ```scala
 val result = logger.flow.trace(arg1 + arg2)
 ```
 
-Conditional logging:
+@ref:[Conditional Logging](conditional.md):
 
 ```scala
 logger.onCondition(booleanCondition).info("Only logs when condition is true")
@@ -62,7 +62,7 @@ logger.onCondition(booleanCondition).info("Only logs when condition is true")
 logger.info.when(booleanCondition) { info => info("when true") }
 ```
 
-And contextual logging:
+@ref:[Context Logging](context.md):
 
 ```scala
 logger.withMarker("userId" -> userId).info("Logging with user id added as a context marker!")

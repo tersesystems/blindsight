@@ -16,12 +16,6 @@ And then add the given dependencies:
   version="$project.version.short$"
 }
 
-See [Github Badge](https://github.com/tersesystems/blindsight#blindsight) for the latest version.
+See [Github](https://github.com/tersesystems/blindsight#blindsight) for the latest version.
 
-It is recommended (but not required) to use [Terse Logback](https://tersesystems.github.io/terse-logback/) on the backend:
-
-@@dependency[sbt,Maven,Gradle] {
-  group="com.tersesystems.logback"
-  artifact="logback-structured-config"
-  version="latest.version"
-}
+It is recommended (but not required) to use [Terse Logback](https://tersesystems.github.io/terse-logback/) on the backend.  Please see the documentation for what modules are appropriate for your use case.

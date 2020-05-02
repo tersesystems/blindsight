@@ -2,7 +2,7 @@
 
 This usage page will give a quick overview of Blindsight.
 
-## Logger 
+## Logger Resolvers 
 
 The simplest possible @scaladoc[Logger](com.tersesystems.blindsight.Logger) is created from a @scaladoc[LoggerFactory](com.tersesystems.blindsight.LoggerFactory$):
 
@@ -17,6 +17,31 @@ There is also a macro based version which finds the enclosing class name and han
 val loggerFromEnclosing = LoggerFactory.getLogger
 ```
 
+The  @scaladoc[LoggerFactory](com.tersesystems.blindsight.LoggerFactory$) @scaladoc[LoggerResolver](com.tersesystems.blindsight.LoggerResolver) type class under the hood, which means you have the option of creating your own logger resolver.  This is useful when you want to get away from class based logging, and use a naming strategy based on a correlation id.  For example:
+
+```scala
+trait LoggerResolver[T] {
+  def resolveLogger(instance: T): org.slf4j.Logger
+}
+```
+
+means you can resolve a logger directly from a request:
+
+```scala
+implicit val requestToResolver: LoggerResolver[Request] = LoggerResolver { (instance: Request) => 
+  org.slf4j.LoggerFactory.getLoggerFactory.getLogger("requests." + instance.requestId())
+}
+```
+
+And from then on, you can do:
+
+```scala
+val myRequest: Request = ...
+val logger = LoggerFactory.getLogger(myRequest)
+```
+
+See @ref:[Logger Resolvers](resolvers.md) for more details.
+
 ## SLF4J API
 
 The default logger provides an SLF4J-like API:
@@ -25,7 +50,7 @@ The default logger provides an SLF4J-like API:
 logger.info("I am an SLF4J-like logger")
 ```
 
-What does this do under the hood?  It converts to a @scaladoc[Message](com.tersesystems.blindsight.api.Message) class, and logs only if the level of the SLF4J logger is set to at least `INFO`.  Very roughly:
+This converts to a @scaladoc[Message](com.tersesystems.blindsight.api.Message) class, and logs only if the level of the SLF4J logger is set to at least `INFO`.  Very roughly:
 
 ```scala
 val infoMethod: InfoMethod = logger.info
@@ -209,35 +234,6 @@ val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append("user", "will"
 ```
 
 See @ref:[Context](context.md) for more details.
-
-## Logger Resolvers
-
-The easiest way to get at a logger is to use @scaladoc[LoggerFactory](com.tersesystems.blindsight.LoggerFactory$).  This looks like the SLF4J version, but is more flexible because it uses a @scaladoc[LoggerResolver](com.tersesystems.blindsight.LoggerResolver) type class under the hood.
-
-You have the option of creating your own logger resolver.  This is useful when you want to get away from class based logging, and use a naming strategy based on a correlation id.
-
-```scala
-trait LoggerResolver[T] {
-  def resolveLogger(instance: T): org.slf4j.Logger
-}
-```
-
-means you can resolve a logger directly from a request:
-
-```scala
-implicit val requestToResolver: LoggerResolver[Request] = (instance: Request) => {
-    loggerFactory.getLogger("requests." + instance.requestId())
-}
-```
-
-And from then on, you can do:
-
-```scala
-val myRequest: Request = ...
-val logger = LoggerFactory.getLogger(myRequest)
-```
-
-See @ref:[Logger Resolvers](resolvers.md) for more details.
 
 ## Source Code
 
