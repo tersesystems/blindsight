@@ -20,9 +20,6 @@ jobs:
       name: "Create site with Paradox"
     - env: CMD="docs/paradoxValidateInternalLinks"
       name: "Validate internal Links"
-    - stage: test
-      name: "Coverage and tests"
-      env: CMD="coverage test"
     - stage: docs
       name: "Push documentation to ghpages"
       env: ISOLATED=false
