@@ -5,6 +5,8 @@ scala:
   - 2.13.1
   - 2.12.11
   - 2.11.12
+
+# https://docs.travis-ci.com/user/build-stages/#how-to-define-build-stages
 jobs:
   include:
     - stage: check
@@ -18,15 +20,26 @@ jobs:
       name: "Create site with Paradox"
     - env: CMD="docs/paradoxValidateInternalLinks"
       name: "Validate internal Links"
-script:
-- sbt ++$TRAVIS_SCALA_VERSION coverage test
-after_success:
-  if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt +releaseEarly docs/makeSite docs/ghpagesPushSite;
-  fi
+    - stage: test
+      name: "Coverage and tests"
+      env: CMD="coverage test"
+    - stage: docs
+      name: "Push documentation to ghpages"
+      env: ISOLATED=false
+      scala: 2.13.1
+      script: sbt "docs/makeSite docs/ghpagesPushSite"
+    - stage: deploy
+      name: "Deploy to Bintray"
+      script: sbt ++$TRAVIS_SCALA_VERSION releaseEarly
 stages:
-  # runs on master commits and PRs
   - name: check
     if: NOT tag =~ ^v
+  - test
+  - name: docs
+    if: tag =~ ^v
+  - name: deploy
+    if: tag =~ ^v
+
 before_cache:
   - rm -fv $HOME/.ivy2/.sbt.ivy.lock
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
