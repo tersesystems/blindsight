@@ -31,8 +31,8 @@ jobs:
     - sbt ";docs/makeSite; docs/ghpagesPushSite"
   - stage: deploy
     name: Deploy to Bintray
-    script: 
-    - openssl aes-256-cbc -K $encrypted_adee94ab05d2_key -iv $encrypted_adee94ab05d2_iv
+    script:
+    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
       -in .travis/secrets.tar.enc -out .travis/local.secrets.tar -d
     - sbt ++$TRAVIS_SCALA_VERSION releaseEarly
 stages:
