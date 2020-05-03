@@ -1,56 +1,61 @@
 jdk:
-  - openjdk8
+- openjdk8
 language: scala
 scala:
-  - 2.13.1
-  - 2.12.11
-  - 2.11.12
-
-# https://docs.travis-ci.com/user/build-stages/#how-to-define-build-stages
+- 2.13.1
+- 2.12.11
+- 2.11.12
 jobs:
   include:
-    - stage: check
-      env: ISOLATED=true
-      scala: 2.13.1
-      script: sbt scalafmtCheckAll || { echo "[error] Unformatted code found. Please run 'scalafmtAll' and commit the reformatted code."; false; }
-      name: "Code style check (fixed with `sbt scalafmtAll`)"
-    - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please run 'scalafmtSbt' and commit the reformatted code."; false; }
-      name: "Build code style check (fixed with `sbt scalafmtSbt`)"
-    - stage: docs
-      name: "Push documentation to ghpages"
-      env: ISOLATED=true
-      scala: 2.13.1
-      script:
-        # Record minimal build information via the Git user ident
-        - git config --global user.name "$USER"
-        - git config --global user.email "$TRAVIS_BUILD_NUMBER@$TRAVIS_COMMIT"
-        # Decrypt the secret deploy key using instructions from `travis encrypt-file`
-        - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv -in project/travis-deploy-key.enc -out project/travis-deploy-key -d
-        - chmod 600 project/travis-deploy-key
-        # Start ssh-agent in the background and load the deploy key
-        - eval "$(ssh-agent -s)"
-        - ssh-add project/travis-deploy-key
-        - sbt ";docs/makeSite; docs/ghpagesPushSite"
-    - stage: deploy
-      name: "Deploy to Bintray"
-      script: sbt ++$TRAVIS_SCALA_VERSION releaseEarly
+  - stage: check
+    env: ISOLATED=true
+    scala: 2.13.1
+    script: sbt scalafmtCheckAll || { echo "[error] Unformatted code found. Please
+      run 'scalafmtAll' and commit the reformatted code."; false; }
+    name: Code style check (fixed with `sbt scalafmtAll`)
+  - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please
+      run 'scalafmtSbt' and commit the reformatted code."; false; }
+    name: Build code style check (fixed with `sbt scalafmtSbt`)
+  - stage: docs
+    name: Push documentation to ghpages
+    env: ISOLATED=true
+    scala: 2.13.1
+    script:
+    - git config --global user.name "$USER"
+    - git config --global user.email "$TRAVIS_BUILD_NUMBER@$TRAVIS_COMMIT"
+    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
+      -in project/travis-deploy-key.enc -out project/travis-deploy-key -d
+    - chmod 600 project/travis-deploy-key
+    - eval "$(ssh-agent -s)"
+    - ssh-add project/travis-deploy-key
+    - sbt ";docs/makeSite; docs/ghpagesPushSite"
+  - stage: deploy
+    name: Deploy to Bintray
+    script:
+    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
+      -in .travis/secrets.tar.enc -out .travis/local.secrets.tar -d
+    - sbt ++$TRAVIS_SCALA_VERSION releaseEarly
 stages:
-  - name: check
-    if: NOT tag =~ ^v
-  - test
-  - name: docs
-    if: tag =~ ^v
-  - name: deploy
-    if: tag =~ ^v
-
+- name: check
+  if: NOT tag =~ ^v
+- test
+- name: docs
+  if: tag =~ ^v
+- name: deploy
+  if: tag =~ ^v
 before_cache:
-  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
-  - rm -fv $HOME/.sbt/ghpages
-  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
-  - find $HOME/.sbt        -name "*.lock"               -print -delete
+- rm -fv $HOME/.ivy2/.sbt.ivy.lock
+- rm -fv $HOME/.sbt/ghpages
+- find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+- find $HOME/.sbt        -name "*.lock"               -print -delete
 cache:
   directories:
-    - $HOME/.cache/coursier
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot
-    - $HOME/.sbt/launchers
+  - "$HOME/.cache/coursier"
+  - "$HOME/.ivy2/cache"
+  - "$HOME/.sbt/boot"
+  - "$HOME/.sbt/launchers"
+env:
+  global:
+  - secure: mIS1xqFiTTpuHaFJ9oNsejYUwg7cESjryhSII1kbylTx4NcAt9emrrjorf7dA5h8I4hkKkw6umvcVnXgjbrHgemxLSPLNojVbj3N0wPei4GzYaca9piWcBGbO0YkW6wymeWVz7079uNcilAx9sWK7O4W26ADOkwMIxLc5QNMAbPU3h+kCA6uWoMkmPC+eiFT4s1JDz+iC6PJCWcaMVx1WdOOy0czmo8YYJQ1FjHmXM/TQMuKt8xq+yyNN+ijRpeWcI5MrJYcnslB0gevNtxC3NSVkcQkP7yWz5NhayHlN/dQNUMGwM81fkueZ20YrEvnuJ9apLQdXD8rPODeePYx8AsVNULODIMEaEMI1xecQiiE2k248NTrMBRAbGIO9poT5EEWVc8t/XlPB3waffecBZdczGtSURxu9plRFjuRX3wJFp/DQAvKaHI3XXTFs1iivrhKzACrKkbd8TYIX7KYObge0sBFEwWgj1hdHkANzNsHbZl4XocFwPvrkyim/2RAMOT41hkzXzcqYI6DWMRMmMAnOaLMQ/klGTZO5Jv/DzmtYBW6RG5e2msTI4cRPv+XWaBH4fKV1hxM08/JQ9X1xWQbKC8dFiLhd4jr6kwZ8LGN5dNSDeqbL9VYIIrG1ZJnUtniGyfA/NEIhyuBWpp34yml4LQ/IAZr99/5mgTOm3w=
+  - secure: nj3Ltp/8eXdI9iQ+fHiJQsco/Qs4EQpsta8KukJiUgYgNQ/ZBjnHY+7EziFcP2itMAV3khlR9bAKeTeGWyoZ3W3+jqArPc7iM79H/MDtEpUxWGdab6SiOb9io9pEtFPuuIMEfrbvPcTlYBGNR2HlCzUJT5hQXojArfsWmAcTRpq3bGd2xWvvSSa2zEe9InPuOzIZOWqiB0cUs5C3JA6mOTv8DtiqmYY4zlI+ozABmAbbwXZYcNh4xST4EXkQ3VbF7cRA89H6ADg8U2y3nVeCd+2srwdNGAvis426cggCrjkDEVhB25yTlghG/OAa2qe2lQKGd1nniWK6ObTm1ICwi2TR//TiujKSjCgbv4mWqkZpwPAExoIyNo0VRDxDB7ouwL+cj28adE4hZKIhIqBxcqnoQ4OjSuRBcrTEmbhqID+psF6vZKAhafrekUfl3AQb0Qx/qLTUKAIy0L7NPVczOxeQ6xfYJgERi1asp9i0bLl6E1uSZ3Ic7cvKmWo5aDRTrw+eb0RKyhilko2mq7EyhLyW+G47Am4rNhShIhXEGa4kIdtfkgjmDlq+M8+cL/H2P8tjxYatBcJCOoCDWwDsOJzGcma7d74gfbHOijKNJsSSFaxkqB7tN1hbfd7Lt/98dWya8+tu8+5+28JHXT3NKWhJJi2J2qrW1cEl0ITIBsw=
+  - secure: VSc+l/XT8z7TqQe9LPdq7aX/LrH/uMU/e8jaKjppokGpUJVrQf39uy7Puj2txZCbnpD6lDcGkoVFQTj2Eb6DGdSadXJ290Ps+31r5Y2uVdvI1kxNzho6wKxsoFXPCQi8vdBWO6UP6zj/tZaa9nAMZ8LyKVxUSiiNo/hiWuRnzWpWmA3ftBt+Z1Y//I99psWhqhh3r5sf5+ikennBG5KlWItbAToHj6DEOaTflz+71qD1ieh83Lr0WdnphJr5L/3JebgVtVck9cFf6OGeIZMp5Ma/KTTH1L/iW0sjzMDn+bGQuekqzwjbnNow8yx9Sm1UGV/Qo6Q5PencehmISm8E+A2n/sPu59cPniohRmJ7v2FqCTl7IAq+iKsRbMpGxOpXJ+GODZy2kR/56awMhR97fGpig9XXWhPmjxRYHbo+HaolJGptZwEs1yj4Iaz/L0YarKKCeOmWvvZ5TBy+27HY73DneLfdgsKH03PzZyVpA7MkXPe+k2zn8AFY4K2MRila0DwMuyeR7vpnKnvsiFdzEhytthYMLJwCBGimiXu5glTdA9zCt2iebitsKiNYgnLf+iZKiW0E/QkSKNLEsQPZLJ+tAsxCQ/5ASJaAAhwOIOa/B+3mGPTxsccxIqQ5tFguqMVsCdT1Uh3L49tzWoNXxXShoCLvXaKjU/aDAFqixKU=
