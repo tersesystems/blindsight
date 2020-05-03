@@ -6,6 +6,8 @@ scala:
   - 2.12.11
   - 2.11.12
 
+before_install: openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv -in project/travis-deploy-key.enc -out project/travis-deploy-key -d
+
 # https://docs.travis-ci.com/user/build-stages/#how-to-define-build-stages
 jobs:
   include:
