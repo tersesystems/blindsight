@@ -1,6 +1,15 @@
 # Publishing
 
-Publishing a new version is done with `sbt-dynver`.  This creates a build from a tag in github.
+Publishing a new version is done by updating `master` to the revision that you want, and then pushing the tag to `origin`:
+
+```bash
+export RELEASE_TAG=...
+export RELEASE_SHA=...
+git tag -fa $RELEASE_TAG $RELEASE_SHA
+git push origin $RELEASE_TAG
+```
+
+This creates a build from a tag in github, and from there, Travis CI should push documentation and run `releaseEarly` for all three versions.  
 
 * [How to release in Travis CI](https://github.com/jvican/sbt-release-early/wiki/How-to-release-in-Travis-%28CI%29)
 
