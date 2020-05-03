@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.0
+0.1.8
 </div>
 </div>
 <div class="nav-toc">
@@ -43,8 +43,8 @@
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/principles.html" class="page">Principles</a></li>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -52,7 +52,6 @@
     <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -90,7 +89,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.0
+0.1.8
 </div>
 </div>
 <div class="nav-toc">
@@ -102,8 +101,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/principles.html" class="page">Principles</a></li>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -111,7 +110,6 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -146,18 +144,24 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h1><a href="#generic" name="generic" class="anchor"><span class="anchor-link"></span></a>Generic</h1>
 <p>If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don&rsquo;t want to use the Logstash binding, you should use <code>blindsight-generic</code>, which has a serviceloader binding that depends solely on <code>slf4j-api</code>.</p>
 <p>Add the bintray resolver:</p>
-<pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+<pre class="prettyprint"><code class="language-scala">resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
 </code></pre>
-<p>And then add the dependency:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-generic" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
+<p>And then add the dependency:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-generic" % "0.1.8"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+  &lt;scala.binary.version&gt;2.11&lt;/scala.binary.version&gt;
+&lt;/properties&gt;
+&lt;dependency&gt;
   &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
-  &lt;artifactId&gt;blindsight-generic_2.11&lt;/artifactId&gt;
-  &lt;version&gt;latest.version&lt;/version&gt;
-&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
-  compile group: 'com.tersesystems.blindsight', name: 'blindsight-generic_2.11', version: 'latest.version'
+  &lt;artifactId&gt;blindsight-generic_${scala.binary.version}&lt;/artifactId&gt;
+  &lt;version&gt;0.1.8&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">versions += [
+  ScalaBinary: "2.11"
+]
+dependencies {
+  compile group: 'com.tersesystems.blindsight', name: "blindsight-generic_${versions.ScalaBinary}", version: '0.1.8'
 }</code></pre></dd></dl>
-<p>See <a href="https://github.com/tersesystems/blindsight#blindsight">Github Badge</a> for the latest version.</p>
+<p>See <a href="https://github.com/tersesystems/blindsight#blindsight">Github</a> for the latest version.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/main/paradox/setup/generic.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.8/docs/src/main/paradox/setup/generic.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -227,7 +231,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.8', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

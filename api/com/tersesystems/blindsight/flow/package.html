@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>flow - Blindsight 0.1.0 - com.tersesystems.blindsight.flow</title>
-          <meta name="description" content="flow - Blindsight 0.1.0 - com.tersesystems.blindsight.flow" />
-          <meta name="keywords" content="flow Blindsight 0.1.0 com.tersesystems.blindsight.flow" />
+          <title>flow - Blindsight 0.1.8 - com.tersesystems.blindsight.flow</title>
+          <meta name="description" content="flow - Blindsight 0.1.8 - com.tersesystems.blindsight.flow" />
+          <meta name="keywords" content="flow Blindsight 0.1.8 com.tersesystems.blindsight.flow" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -121,7 +121,7 @@ Try(executeCode) <span class="kw">match</span> {
     }
 }</pre></div></div>
     </li><li name="com.tersesystems.blindsight.flow.FlowLogger" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="FlowLoggerextendsSLF4JLoggerAPI[com.tersesystems.blindsight.slf4j.SLF4JPredicate,com.tersesystems.blindsight.flow.FlowMethod]withMarkerMixin"></a>
+      <a id="FlowLoggerextendsSLF4JLoggerAPI[com.tersesystems.blindsight.slf4j.SLF4JPredicate,com.tersesystems.blindsight.flow.FlowMethod]withMarkerMixinwithOnConditionMixin"></a>
       <a id="FlowLogger:FlowLogger"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -129,10 +129,10 @@ Try(executeCode) <span class="kw">match</span> {
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="FlowLogger.html"><span class="name">FlowLogger</span></a><span class="result"> extends <a href="../slf4j/SLF4JLoggerAPI.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">SLF4JLoggerAPI</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>] with <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a></span>
+        <a href="FlowLogger.html"><span class="name">FlowLogger</span></a><span class="result"> extends <a href="../slf4j/SLF4JLoggerAPI.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">SLF4JLoggerAPI</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>] with <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a> with <a href="../api/mixins/OnConditionMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin">OnConditionMixin</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.flow.package@FlowLoggerextendsSLF4JLoggerAPI[com.tersesystems.blindsight.slf4j.SLF4JPredicate,com.tersesystems.blindsight.flow.FlowMethod]withMarkerMixin" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.flow.package@FlowLoggerextendsSLF4JLoggerAPI[com.tersesystems.blindsight.slf4j.SLF4JPredicate,com.tersesystems.blindsight.flow.FlowMethod]withMarkerMixinwithOnConditionMixin" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -141,10 +141,7 @@ user-provided <code>FlowBehavior</code> that determines what statements and side
 and exit.</p><p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then
 the result is returned or execution rethrown.  If the logging level is not enabled or logging
 execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a
-<code>Try</code> block.</p><p>Because this logger executes blocks of computation and may optionally decorate it with logging,
-it does <b>not</b> implement the <code>OnConditionMixin</code> and should not be used with conditional
-logging logic.  If conditional logging is required, it is generally safer to do it in the logging
-framework by using a deny filter with a marker defined in the FlowBehavior.
+<code>Try</code> block.
 </p></div></div>
     </li><li name="com.tersesystems.blindsight.flow.FlowMethod" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="FlowMethodextendsAnyRef"></a>
@@ -165,6 +162,44 @@ framework by using a deny filter with a marker defined in the FlowBehavior.
       <p class="shortcomment cmt">This trait wraps an execution block, and applies a <code>FlowBehavior</code> to it on entry, exit, and exception.</p><div class="fullcomment"><div class="comment cmt"><p>This trait wraps an execution block, and applies a <code>FlowBehavior</code> to it on entry, exit, and exception.</p><p>Note that the return value must have a type class instance of <code>ToArguments</code> in scope, so that
 the logging statement can render it appropriately.
 </p></div></div>
+    </li><li name="com.tersesystems.blindsight.flow.SimpleFlowBehavior" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SimpleFlowBehavior[B]extendsFlowBehavior[B]"></a>
+      <a id="SimpleFlowBehavior[B]:SimpleFlowBehavior[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SimpleFlowBehavior.html"><span class="name">SimpleFlowBehavior</span></a><span class="tparams">[<span name="B">B</span>]</span><span class="result"> extends <a href="FlowBehavior.html" class="extype" name="com.tersesystems.blindsight.flow.FlowBehavior">FlowBehavior</a>[<span class="extype" name="com.tersesystems.blindsight.flow.SimpleFlowBehavior.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.flow.package@SimpleFlowBehavior[B]extendsFlowBehavior[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A simple flow behavior that prints out the arguments and result, with the line number.</p><div class="fullcomment"><div class="comment cmt"><p>A simple flow behavior that prints out the arguments and result, with the line number.
+</p></div><dl class="paramcmts block"><dt class="tparam">B</dt><dd class="cmt"><p>the type of the result.</p></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.flow.XLoggerFlowBehavior" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="XLoggerFlowBehavior[B]extendsFlowBehavior[B]"></a>
+      <a id="XLoggerFlowBehavior[B]:XLoggerFlowBehavior[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="XLoggerFlowBehavior.html"><span class="name">XLoggerFlowBehavior</span></a><span class="tparams">[<span name="B">B</span>]</span><span class="result"> extends <a href="FlowBehavior.html" class="extype" name="com.tersesystems.blindsight.flow.FlowBehavior">FlowBehavior</a>[<span class="extype" name="com.tersesystems.blindsight.flow.XLoggerFlowBehavior.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.flow.package@XLoggerFlowBehavior[B]extendsFlowBehavior[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A flow behavior that implements the <a href="http://www.slf4j.org/extensions.html#extended_logger">extended
+logger</a> interface.</a></p><div class="fullcomment"><div class="comment cmt"><p>A flow behavior that implements the <a href="http://www.slf4j.org/extensions.html#extended_logger">extended
+logger</a> interface.
+</p></div><dl class="paramcmts block"><dt class="tparam">B</dt><dd class="cmt"><p>the return type.</p></dd></dl><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>https://github.com/qos-ch/slf4j/blob/master/slf4j-ext/src/main/java/org/slf4j/ext/XLogger.java</p></span></dd></dl></div>
     </li></ol>
             </div>
 
@@ -219,6 +254,23 @@ the logging statement can render it appropriately.
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.tersesystems.blindsight.flow.package@FlowMethod" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.tersesystems.blindsight.flow.XLoggerFlowBehavior" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="XLoggerFlowBehavior"></a>
+      <a id="XLoggerFlowBehavior:XLoggerFlowBehavior"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="XLoggerFlowBehavior$.html"><span class="name">XLoggerFlowBehavior</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.flow.package@XLoggerFlowBehavior" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

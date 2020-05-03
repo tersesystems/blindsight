@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>FlowLogger - Blindsight 0.1.0 - com.tersesystems.blindsight.flow.FlowLogger</title>
-          <meta name="description" content="FlowLogger - Blindsight 0.1.0 - com.tersesystems.blindsight.flow.FlowLogger" />
-          <meta name="keywords" content="FlowLogger Blindsight 0.1.0 com.tersesystems.blindsight.flow.FlowLogger" />
+          <title>FlowLogger - Blindsight 0.1.8 - com.tersesystems.blindsight.flow.FlowLogger</title>
+          <meta name="description" content="FlowLogger - Blindsight 0.1.8 - com.tersesystems.blindsight.flow.FlowLogger" />
+          <meta name="keywords" content="FlowLogger Blindsight 0.1.8 com.tersesystems.blindsight.flow.FlowLogger" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -47,7 +47,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">FlowLogger</span><span class="result"> extends <a href="../slf4j/SLF4JLoggerAPI.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">SLF4JLoggerAPI</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>] with <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a></span>
+        <span class="name">FlowLogger</span><span class="result"> extends <a href="../slf4j/SLF4JLoggerAPI.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">SLF4JLoggerAPI</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>] with <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a> with <a href="../api/mixins/OnConditionMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin">OnConditionMixin</a></span>
       </span>
       </h4>
       
@@ -56,16 +56,13 @@ user-provided <code>FlowBehavior</code> that determines what statements and side
 and exit.</p><p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then
 the result is returned or execution rethrown.  If the logging level is not enabled or logging
 execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a
-<code>Try</code> block.</p><p>Because this logger executes blocks of computation and may optionally decorate it with logging,
-it does <b>not</b> implement the <code>OnConditionMixin</code> and should not be used with conditional
-logging logic.  If conditional logging is required, it is generally safer to do it in the logging
-framework by using a deny filter with a marker defined in the FlowBehavior.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/tersesystems/blindsight/tree/v0.1.0/flow/src/main/scala/com/tersesystems/blindsight/flow/FlowLogger.scala#L1" target="_blank">FlowLogger.scala</a></dd></dl><div class="toggleContainer block">
+<code>Try</code> block.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/tersesystems/blindsight/tree/v0.1.8/flow/src/main/scala/com/tersesystems/blindsight/flow/FlowLogger.scala#L1" target="_blank">FlowLogger.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a>, <a href="../slf4j/SLF4JLoggerAPI.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">SLF4JLoggerAPI</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Error.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Error">Error</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Warn.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Warn">Warn</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Info.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Info">Info</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Debug.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Debug">Debug</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Trace.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Trace">Trace</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerComponent.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerComponent">SLF4JLoggerComponent</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../api/mixins/OnConditionMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin">OnConditionMixin</a>, <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a>, <a href="../slf4j/SLF4JLoggerAPI.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">SLF4JLoggerAPI</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Error.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Error">Error</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Warn.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Warn">Warn</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Info.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Info">Info</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Debug.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Debug">Debug</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerAPI$$Trace.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Trace">Trace</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <a href="../slf4j/SLF4JLoggerComponent.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerComponent">SLF4JLoggerComponent</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="ExtendedFlowLogger.html" class="extype" name="com.tersesystems.blindsight.flow.ExtendedFlowLogger">ExtendedFlowLogger</a>, <a href="FlowLogger$$Impl.html" class="extype" name="com.tersesystems.blindsight.flow.FlowLogger.Impl">Impl</a></div>
+            <div class="subClasses hiddenContent"><a href="FlowLogger$$Conditional.html" class="extype" name="com.tersesystems.blindsight.flow.FlowLogger.Conditional">Conditional</a>, <a href="ExtendedFlowLogger.html" class="extype" name="com.tersesystems.blindsight.flow.ExtendedFlowLogger">ExtendedFlowLogger</a>, <a href="FlowLogger$$Impl.html" class="extype" name="com.tersesystems.blindsight.flow.FlowLogger.Impl">Impl</a></div>
           </div></div>
         
 
@@ -83,7 +80,7 @@ framework by using a deny filter with a marker defined in the FlowBehavior.
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.tersesystems.blindsight.flow.FlowLogger"><span>FlowLogger</span></li><li class="in" name="com.tersesystems.blindsight.api.mixins.MarkerMixin"><span>MarkerMixin</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI"><span>SLF4JLoggerAPI</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Error"><span>Error</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Warn"><span>Warn</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Info"><span>Info</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Debug"><span>Debug</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Trace"><span>Trace</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerComponent"><span>SLF4JLoggerComponent</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.tersesystems.blindsight.flow.FlowLogger"><span>FlowLogger</span></li><li class="in" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin"><span>OnConditionMixin</span></li><li class="in" name="com.tersesystems.blindsight.api.mixins.MarkerMixin"><span>MarkerMixin</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI"><span>SLF4JLoggerAPI</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Error"><span>Error</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Warn"><span>Warn</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Info"><span>Info</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Debug"><span>Debug</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Trace"><span>Trace</span></li><li class="in" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerComponent"><span>SLF4JLoggerComponent</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -159,7 +156,7 @@ framework by using a deny filter with a marker defined in the FlowBehavior.
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.flow.FlowLogger">FlowLogger</a> → <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a> → <a href="../slf4j/SLF4JLoggerComponent.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerComponent">SLF4JLoggerComponent</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.flow.FlowLogger">FlowLogger</a> → <a href="../api/mixins/OnConditionMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin">OnConditionMixin</a> → <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a> → <a href="../slf4j/SLF4JLoggerComponent.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerComponent">SLF4JLoggerComponent</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -319,6 +316,26 @@ framework by using a deny filter with a marker defined in the FlowBehavior.
     </span>
       <p class="shortcomment cmt">Returns the accumulated markers of this logger.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the accumulated markers of this logger.
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the accumulated markers, may be Markers.empty.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.api.mixins.OnConditionMixin#onCondition" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="onCondition(test:=&gt;Boolean):OnConditionMixin.this.Self"></a>
+      <a id="onCondition(⇒Boolean):Self"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onCondition</span><span class="params">(<span name="test">test: ⇒ <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="#Self=com.tersesystems.blindsight.flow.FlowLogger" class="extmbr" name="com.tersesystems.blindsight.flow.FlowLogger.Self">Self</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.flow.FlowLogger@onCondition(test:=&gt;Boolean):OnConditionMixin.this.Self" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Returns a new instance of the logger that will only log if the
+condition is met.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new instance of the logger that will only log if the
+condition is met.
+</p></div><dl class="paramcmts block"><dt class="param">test</dt><dd class="cmt"><p>the call by name boolean that is a prerequisite for logging.</p></dd><dt>returns</dt><dd class="cmt"><p>the new conditional logger instance.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../api/mixins/OnConditionMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin">OnConditionMixin</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI.Trace#trace" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="trace:Trace.this.Method"></a>
       <a id="trace:Method"></a>
@@ -912,7 +929,9 @@ framework by using a deny filter with a marker defined in the FlowBehavior.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">
+        <div class="parent" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin">
+              <h3>Inherited from <a href="../api/mixins/OnConditionMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.OnConditionMixin">OnConditionMixin</a></h3>
+            </div><div class="parent" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">
               <h3>Inherited from <a href="../api/mixins/MarkerMixin.html" class="extype" name="com.tersesystems.blindsight.api.mixins.MarkerMixin">MarkerMixin</a></h3>
             </div><div class="parent" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">
               <h3>Inherited from <a href="../slf4j/SLF4JLoggerAPI.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JLoggerAPI">SLF4JLoggerAPI</a>[<a href="../slf4j/SLF4JPredicate.html" class="extype" name="com.tersesystems.blindsight.slf4j.SLF4JPredicate">SLF4JPredicate</a>, <a href="FlowMethod.html" class="extype" name="com.tersesystems.blindsight.flow.FlowMethod">FlowMethod</a>]</h3>

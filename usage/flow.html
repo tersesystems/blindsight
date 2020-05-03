@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.0
+0.1.8
 </div>
 </div>
 <div class="nav-toc">
@@ -43,8 +43,8 @@
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/principles.html" class="page">Principles</a></li>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -52,7 +52,6 @@
     <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -90,7 +89,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.0
+0.1.8
 </div>
 </div>
 <div class="nav-toc">
@@ -102,8 +101,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
-    <li><a href="../usage/principles.html" class="page">Principles</a></li>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -111,7 +110,6 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
-    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -147,17 +145,18 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>The flow API is used when logging surrounds an execution flow. This is a good fit when you want tracing or <a href="https://martinfowler.com/articles/domain-oriented-observability.html">domain-oriented observability</a>.</p>
 <p>You can access the flow logger from Blindsight using <code>logger.flow</code>:</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.flow._
 
 val logger = LoggerFactory.getLogger
-val flowLogger = logger.flow
+val flowLogger: FlowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L41-L43" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.8/docs/src/test/scala/example/flow/SimpleFlow.scala#L40-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L47-L58" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.8/docs/src/test/scala/example/flow/SimpleFlow.scala#L46-L57" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
 
@@ -166,84 +165,31 @@ case class Person(name: String, age: Int)
 object Person {
   implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
     import com.tersesystems.blindsight.logstash.Implicits._
-    Arguments(&quot;person&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age)
+    Arguments(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age))
   }
 }</code></pre>
-<p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging level is not enabled or logging execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p><div class="callout note "><div class="callout-title">Note</div>
-<p>Because this logger executes blocks of computation and may optionally decorate it with logging, it does <b>not</b> implement the <a href="/blindsight/api/com/tersesystems/blindsight/api/mixins/OnConditionMixin.html" title="com.tersesystems.blindsight.api.mixins.OnConditionMixin"><code>OnConditionMixin</code></a> and should not be used with conditional logging logic. If conditional logging is required, it is generally safer to do it in the logging framework by using a deny filter with a marker defined in the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>.</p></div>
+<p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging is not enabled (whether through conditional logging, explicit filtering, or threshold), then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p>
 <h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
 <p>What happens in a flow is determined by the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlowBehavior.scala#L9-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
-
-  override def entryStatement(source: Source): Option[Statement] = {
-    import com.tersesystems.blindsight.logstash.ToArgumentsImplicits._
-    Some(
-      Statement()
-        .withMarkers(entryMarkers(source))
-        .withMessage(s&quot;${source.enclosing.value} entry {}&quot;)
-        .withArguments(source.args)
-    )
-  }
-
-  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] = {
-    Some(
-      Level.ERROR,
-      Statement()
-        .withThrowable(throwable)
-        .withMessage(s&quot;${source.enclosing.value} exception&quot;)
-    )
-  }
-
-  override def exitStatement(resultValue: B, source: Source): Option[Statement] = {
-    Some(
-      Statement()
-        .withMarkers(exitMarkers(source))
-        .withMessage(s&quot;${source.enclosing.value} exit with result {}&quot;)
-        .withArguments(resultValue)
-    )
-  }
-}</code></pre>
-<p>From there, using the flow API is a matter of plugging in the relevant flow behavior.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/SimpleFlow.scala#L24-L60" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SimpleFlow {
-
-  private implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new SimpleFlowBehavior
-
-  private val logger: Logger = LoggerFactory.getLogger
-
-  def main(args: Array[String]): Unit = {
-    logger.info(&quot;About to execute number flow&quot;)
-    val intResult = flowMethod(1, 2)
-    println(&quot;This is &quot; + intResult)
-
-    logger.info(&quot;About to execute person flow&quot;)
-    val personResult = personFlowMethod(1, 2)
-    println(&quot;This is &quot; + personResult)
-  }
-
-  def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
-    arg1 + arg2
-  }
-
-  def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
-    Person(name = &quot;Will&quot;, age = arg1 + arg2)
-  }
-
-  case class Person(name: String, age: Int)
-
-  object Person {
-    implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
-      import com.tersesystems.blindsight.logstash.Implicits._
-      Arguments(&quot;person&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age)
-    }
-  }
-}</code></pre>
-<p>This produces the following output:</p>
-<pre class="prettyprint"><code class="nocode">FgcMMra7u2U6O0Qbm7EAAA 17:00:47.067 [INFO ] e.flow.FlowMain -  About to execute number flow
-FgcMMra7u8QdHaINzdiAAA 17:00:47.166 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod entry source.arguments={arg1=1, arg2=2}
-FgcMMra7u9CdHaINzdiAAA 17:00:47.191 [TRACE] e.flow.FlowMain -  example.flow.FlowMain.flowMethod exit with result 3
-This is 3
+<p>There are two out of the box behaviors provided: <a href="/blindsight/api/com/tersesystems/blindsight/flow/SimpleFlowBehavior.html" title="com.tersesystems.blindsight.flow.SimpleFlowBehavior"><code>SimpleFlowBehavior</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/flow/XLoggerFlowBehavior.html" title="com.tersesystems.blindsight.flow.XLoggerFlowBehavior"><code>XLoggerFlowBehavior</code></a>. These are modelled after <a href="https://github.com/JohnReedLOL/pos">pos</a> and <a href="http://www.slf4j.org/extensions.html#extended_logger">XLogger</a>, respectively.</p>
+<h2><a href="#integration" name="integration" class="anchor"><span class="anchor-link"></span></a>Integration</h2>
+<p>Flow based logging, because it leaves the flow behavior open, is a good way to integrate with third party systems.</p>
+<h3><a href="#opentracing" name="opentracing" class="anchor"><span class="anchor-link"></span></a>Opentracing</h3>
+<p>While it&rsquo;s possible to set up an Opentracing <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a> that creates spans directly, spans will not show up in the logs (which is confusing) and will tightly couple the Opentracing instrumentation with your logging (which may lead to bugs).</p>
+<p>What you can do instead is inject your logs into an active span inside of a flow, using the <a href="https://github.com/opentracing/specification/blob/master/semantic_conventions.md#log-fields-table">standard log fields</a>:</p>
+<pre class="prettyprint"><code class="language-java">ActiveSpan span = ...
+span.log(ImmutableMap.of(&quot;message&quot;, message));
+span.log(ImmutableMap.of(&quot;error.kind&quot;, throwable.getClass().getName()));
+span.log(ImmutableMap.of(&quot;error.object&quot;, throwable));
 </code></pre>
-<h2><a href="#integrating-with-tracing" name="integrating-with-tracing" class="anchor"><span class="anchor-link"></span></a>Integrating with Tracing</h2>
+<h3><a href="#datadog" name="datadog" class="anchor"><span class="anchor-link"></span></a>Datadog</h3>
+<p>You can connect your logs to Datadog traces using the <a href="https://docs.datadoghq.com/tracing/connect_logs_and_traces/java/?tab=slf4jlogback#manual-trace-id-injection">Correlation Identifier</a> using <code>dd.trace_id</code> and <code>dd.span_id</code> respectively:</p>
+<pre class="prettyprint"><code class="language-scala">import datadog.trace.api.CorrelationIdentifier._
+
+val datadogTraceId = Markers(&quot;dd.trace_id&quot; -&gt; Option(getTraceId).getOrElse(&quot;0&quot;))
+val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOrElse(&quot;0&quot;))
+</code></pre>
+<h3><a href="#honeycomb" name="honeycomb" class="anchor"><span class="anchor-link"></span></a>Honeycomb</h3>
 <p>If you integrate with <a href="https://tersesystems.github.io/terse-logback/guide/tracing/">logback-tracing</a>, then you can also log to Honeycomb using a <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. To do this, add the following resolver:</p>
 <pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
 </code></pre>
@@ -260,8 +206,8 @@ This is 3
 &lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
   compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: 'latest.version'
 }</code></pre></dd></dl>
-<p>And you can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/test/scala/flow/HoneycombFlow.scala#L40-L133" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<p>You can produce Honeycomb manual traces with the following:</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.8/docs/src/test/scala/example/flow/HoneycombFlow.scala#L40-L140" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -272,13 +218,15 @@ This is 3
       .setServiceName(&quot;blindsight-example&quot;)
   }
 
-  implicit def flowMapping[B: ToArguments](implicit spanInfo: SpanInfo): HoneycombFlowBehavior[B] = {
+  implicit def flowMapping[B: ToArguments](
+      implicit spanInfo: SpanInfo
+  ): HoneycombFlowBehavior[B] = {
     new HoneycombFlowBehavior[B]
   }
 
   def main(args: Array[String]): Unit = {
     generateRootSpan { implicit rootSpan =&gt;
-      val intResult = flowMethod(1, 2)
+      val intResult    = flowMethod(1, 2)
       val personResult = personFlowMethod(1, 2)
     }
   }
@@ -296,13 +244,16 @@ This is 3
   }
 
   private def generateRootSpan[T](block: SpanInfo =&gt; T)(implicit enclosing: Enclosing): T = {
-    val rootSpan = builder.setRootSpan(asJavaSupplier(() =&gt; idgen.generateId()), enclosing.value).buildNow
+    val rootSpan =
+      builder.setRootSpan(asJavaSupplier(() =&gt; idgen.generateId()), enclosing.value).buildNow
     try {
       block(rootSpan)
     } finally {
       // The root span has to be logged _last_, after the child spans.
-      logger.info(HoneycombFlowBehavior.markerFactory(rootSpan),
-        s&quot;${enclosing.value} exit, duration ${rootSpan.duration()}&quot;)
+      logger.info(
+        HoneycombFlowBehavior.markerFactory(rootSpan),
+        s&quot;${enclosing.value} exit, duration ${rootSpan.duration()}&quot;
+      )
     }
   }
 
@@ -310,13 +261,12 @@ This is 3
 
   object Person {
     implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
-      Arguments(kv(&quot;person&quot;, person.name), kv(&quot;age&quot;, person.age))
+      Arguments(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age))
     }
   }
 }
 
-class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
-  extends FlowBehavior[B] {
+class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
   import HoneycombFlowBehavior.markerFactory
 
   // Create a thread local stack of span info.
@@ -332,13 +282,16 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
     None
   }
 
-  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] = Some {
-    (Level.ERROR,
-      Statement()
-        .withThrowable(throwable)
-        .withMarkers(Markers(markerFactory(popCurrentSpan)))
-        .withMessage(s&quot;${source.enclosing.value} exception&quot;))
-  }
+  override def throwingStatement(throwable: Throwable, source: Source): Option[(Level, Statement)] =
+    Some {
+      (
+        Level.ERROR,
+        Statement()
+          .withThrowable(throwable)
+          .withMarkers(Markers(markerFactory(popCurrentSpan)))
+          .withMessage(s&quot;${source.enclosing.value} exception&quot;)
+      )
+    }
 
   override def exitStatement(resultValue: B, source: Source): Option[Statement] = Some {
     val span = popCurrentSpan
@@ -349,7 +302,7 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo)
   }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)
-  private def popCurrentSpan: SpanInfo = threadLocalStack.get().pop()
+  private def popCurrentSpan: SpanInfo                  = threadLocalStack.get().pop()
 }
 
 object HoneycombFlowBehavior {
@@ -357,7 +310,7 @@ object HoneycombFlowBehavior {
 }</code></pre>
 <p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.0/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.8/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -374,7 +327,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
   <ul>
     <li><a href="../usage/flow.html#usage" class="header">Usage</a></li>
     <li><a href="../usage/flow.html#flow-behavior" class="header">Flow Behavior</a></li>
-    <li><a href="../usage/flow.html#integrating-with-tracing" class="header">Integrating with Tracing</a></li>
+    <li><a href="../usage/flow.html#integration" class="header">Integration</a></li>
   </ul></li>
 </ul>
 </div>
@@ -442,7 +395,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.8', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
