@@ -20,7 +20,7 @@ jobs:
       name: "Push documentation to ghpages"
       env: ISOLATED=true
       scala: 2.13.1
-      script: sbt "docs/makeSite docs/ghpagesPushSite"
+      script: sbt ";docs/makeSite; docs/ghpagesPushSite"
     - stage: deploy
       name: "Deploy to Bintray"
       script: sbt ++$TRAVIS_SCALA_VERSION releaseEarly
