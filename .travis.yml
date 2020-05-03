@@ -10,22 +10,15 @@ scala:
 jobs:
   include:
     - stage: check
+      env: ISOLATED=true
+      scala: 2.13.1
       script: sbt scalafmtCheckAll || { echo "[error] Unformatted code found. Please run 'scalafmtAll' and commit the reformatted code."; false; }
       name: "Code style check (fixed with `sbt scalafmtAll`)"
     - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please run 'scalafmtSbt' and commit the reformatted code."; false; }
       name: "Build code style check (fixed with `sbt scalafmtSbt`)"
-    - env: CMD="unidoc"
-      name: "Create all API docs"
-    - env: CMD="docs/paradox"
-      name: "Create site with Paradox"
-    - env: CMD="docs/paradoxValidateInternalLinks"
-      name: "Validate internal Links"
-    - stage: test
-      name: "Coverage and tests"
-      env: CMD="coverage test"
     - stage: docs
       name: "Push documentation to ghpages"
-      env: ISOLATED=false
+      env: ISOLATED=true
       scala: 2.13.1
       script: sbt "docs/makeSite docs/ghpagesPushSite"
     - stage: deploy
