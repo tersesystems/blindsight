@@ -31,7 +31,10 @@ jobs:
     - sbt ";docs/makeSite; docs/ghpagesPushSite"
   - stage: deploy
     name: Deploy to Bintray
-    script: sbt ++$TRAVIS_SCALA_VERSION releaseEarly
+    script: 
+    - openssl aes-256-cbc -K $encrypted_adee94ab05d2_key -iv $encrypted_adee94ab05d2_iv
+      -in .travis/secrets.tar.enc -out .travis/local.secrets.tar -d
+    - sbt ++$TRAVIS_SCALA_VERSION releaseEarly
 stages:
 - name: check
   if: NOT tag =~ ^v
@@ -56,6 +59,3 @@ env:
   - secure: n6KtG78xN8jDw/WkLFngVE1iIgF6TJ01sh+0Hi1abqoXL9Hc6qipeRRyiFVgTgMMZ36opb1KcniPjsA9Ap96C+gptr0H5Upw1oz+YzGX8vSEK4ad4o73nJCnaKF+IR9zmDULOzaLC4snQg27kOWzHxf4OVMT0vs3JbAQd5lRtsswxQVtACS5XQD1NxYus94R3zoSspqDVMA0DooV0UvNtluof+UzvdROiQjkxiJdrC2qPSWV1U8nrZK1HcUx0C5xirBAWffrAbXSSZl5/wbBViWiT1ri6PaXs+L370r/Tk7ULavXRvKNXJqiEqkMBgFpe93dNBv86C3bbLKfLYqSSWs2mJ9hfm836UicObZGu6AoW2bqbuB0r6kSV5Zhn1wS9pRA+99zsIG/GIMoiVrBh7N3LK6X/DxPU5pmkTBvVv+7KWnzZTUbZ+ajUaPW4LUpxeWVvqMeqMvkBTSuN/jWead68/eSrEA4MFwCOxpI7eAvBe2N/EGsOjCwRDHK7nBs/ireA5PWOWKiOy5Al5H2Oo+DZFMW5GJZ+iRTVwR02khjcb56cRKmXV/bRW2u5tY4sL4DaGTLSJ7npZ3ln4odBeoqM7f8D4BAjAc8yKyo9L0Xv1i96CSAtr/z0y/P1Zz95RMXMXTVZQZb8IL/GueXBiUHkqoE02mZMMEHf+BWSeE=
   - secure: gnGkMY2NK9rS3UpFV61JhoNIDiuneChdO4W4JHnUMWse/t0QuVaQ07RjA998hx/z3Du+/qM6mm5HNJgck3h2GojoyIrKgWPCWsazkjs8Wv3cdGqEFTste9W2AiDm2ZhscV/m58dcSnMhIajqTldmH3ppnJ9Sgt8dCetZDZ7vvSATbgMwyHLUj66L5136jKK4IQiwyygNEdCugKbcF+kn0rf8MZQO/2X6gPuOh8MTkrtwPDlX0MqDVu3xt8jyj4XN0Ay4W56TtffuS0FSuMTyT3Z0K6f1O9Hailz87EQtDG+GziwteiEOSyBrZcToTocUvSxtow8SDvCddwIIhsnlJy2KkYvj/6F7D+Km1CgPa+51DcBKvLtq5v6Ix15U75oyTV49sUJYzbL7s+/TVqWG5D0iLYSjcURLVOg6Rn3zbJDm2lLBgYa+qCFGeZirtAos6MRktLXVD1uCFFsIJ+dTdQzr7biTw3knu532Wt8D3/H0bF0pM/NstvHZJ4ShV85mXw1fwKOpjIQJUG/cYJxph/j3fk7UzmFvMmWSnQlSzqlbvyuDOCJfXGkW7wqRFV5ZynBpPweAGOB3sh3pMoK1Yn5w1kgmXUeOXqLxesicKzvksbJzG1We6kBpeDi99ltIJzB1sxWYRu7eHuUv+FkNaZMQtMrNcP1kGT7lzZfy8wo=
   - secure: lnReOlQtpMsas9K7EX7lSH8wOWIOM8ASePjVY/Troh6Qr4EF60bcze4F8nZvTVEVymgDjl5DE7KC+z/KlVsSSJcTHsgts9jzhfi5hdMkgo1rG9+k/OR+LHnOnt9AMchRe/MVZP87OWmGNow+tcqWBr5FdWTzr7mZkluzKkmpFYZZCTQGeSwj4vsLUUuT93tYS09x7zeGNTfV3IdhKblHdl6ZyWFuAtkVenSkbc9vjNMgTu7FPlOo6jvueulYhT8SwJdO9FGPdS9SzZhQXMhrVUYCsLSo8w2tEwFy4vBy9+YYJRsgmJWBXeI6HXSoqIMASSJfTly1itO7qmsg8usJ+6y08vaFYCTr32ITIEBkIRKiQB9O32uQGCOJaPESLgvnJ49Db+8uaoBHl4vB3h6XMNHKFI1O0WLZHMglaPryM/f2HwUH3nppFP0mB9rErl6Hs0e85PylylzlTpN51YV8lzkWxKMVBKm8Us0FN1CvIA2hGBx/Zcr24cVZwjqvnm9vPNM4GSTD7tk3/vjWcuaSd1H3+Z8NdetQi0IvIMViwbdcTo5PRdjD1iwr/QNAKLLi0o+kdqPHMpV3q4UlGUDKYmpdkH1ULyUaKMWTbIYbHbn4ZWVNth8o7x7LRIyS5UGNS0b5R+G2b7KxthuFb4hJFniOQD/ay/8fivu4TfJCTHc=
-before_install:
-- openssl aes-256-cbc -K $encrypted_adee94ab05d2_key -iv $encrypted_adee94ab05d2_iv
-  -in .travis/secrets.tar.enc -out .travis/local.secrets.tar -d
