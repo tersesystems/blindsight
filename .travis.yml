@@ -16,6 +16,16 @@ jobs:
   - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please
       run 'scalafmtSbt' and commit the reformatted code."; false; }
     name: Build code style check (fixed with `sbt scalafmtSbt`)
+  - stage: deploy
+    name: Deploy to Bintray
+    env: ISOLATED=false
+    script:
+      - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
+        -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+      - tar xv -C .travis -f .travis/secrets.tar;
+      - mkdir -p $HOME/.sbt/gpg && cp .travis/local.pubring.asc $HOME/.sbt/gpg/pubring.asc
+        && cp .travis/local.secring.asc $HOME/.sbt/gpg/secring.asc
+      - sbt ++$TRAVIS_SCALA_VERSION releaseEarly
   - stage: docs
     name: Push documentation to ghpages
     env: ISOLATED=true
@@ -30,22 +40,14 @@ jobs:
     - eval "$(ssh-agent -s)"
     - ssh-add .travis/local.travis-deploy-key
     - sbt ";docs/makeSite; docs/ghpagesPushSite"
-  - stage: deploy
-    name: Deploy to Bintray
-    script:
-    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
-      -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
-    - tar xv -C .travis -f .travis/secrets.tar;
-    - mkdir -p $HOME/.sbt/gpg && cp .travis/local.pubring.asc $HOME/.sbt/gpg/pubring.asc
-      && cp .travis/local.secring.asc $HOME/.sbt/gpg/secring.asc
-    - sbt ++$TRAVIS_SCALA_VERSION releaseEarly
+
 stages:
 - name: check
   if: NOT tag =~ ^v
 - test
-- name: docs
-  if: tag =~ ^v
 - name: deploy
+  if: tag =~ ^v
+- name: docs
   if: tag =~ ^v
 before_cache:
 - rm -fv $HOME/.ivy2/.sbt.ivy.lock
