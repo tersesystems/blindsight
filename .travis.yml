@@ -23,14 +23,15 @@ jobs:
     script:
     - git config --global user.name "$USER"
     - git config --global user.email "$TRAVIS_BUILD_NUMBER@$TRAVIS_COMMIT"
-    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv -in project/travis-deploy-key.enc -out project/travis-deploy-key -d
+    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
+      -in project/travis-deploy-key.enc -out project/travis-deploy-key -d
     - chmod 600 project/travis-deploy-key
     - eval "$(ssh-agent -s)"
     - ssh-add project/travis-deploy-key
     - sbt ";docs/makeSite; docs/ghpagesPushSite"
   - stage: deploy
     name: Deploy to Bintray
-    script:    
+    script:
     - sbt ++$TRAVIS_SCALA_VERSION releaseEarly
 stages:
 - name: check
@@ -51,3 +52,8 @@ cache:
   - "$HOME/.ivy2/cache"
   - "$HOME/.sbt/boot"
   - "$HOME/.sbt/launchers"
+env:
+  global:
+  - secure: DZYw+QOsfr4vc7l0n9suvem8xrwqCCCSRT6s1qu7Vn50yazL77cH5GjXie7LoVjcwXXqVRdWeDB1MjBjZAYlzeOCu7+PCxbtfdavtradX8Cskk8fmVrbTZYzIAb0Mu7gsAioNeVefVrmw6NUoR7BK65MIR/n5HtfkztyERjmBitgeppofTosV/H6eKxkif7Nrwb+Wao6dIDAqETxApp/yQUoJ/Cmncwc1PbtF9EEMo5O0isiZmcLxxeayuHhY72U2QmH931nk2a1AwKbqJRK7p3jdw3vsKX0khuGmTQgpMwhFSMB1AKt4EGN7T1ZW+5X/ZlHCB7UBhUgeSb/nevKVUiImW/bnAJ+atn2B4JFK6FAPgLkvIvYt7eWlRNvRjsCLbh/m2YEjXiC36+3hjM9Bhm5E7lvpa4N0JX/za+SRfxxgAH39NcnXlXGOG6T8FZ9cqInGCcdtX4DeZNjppqTJiK6Kc1zU5pLxoPJ2cNX/8eN7rHvJ3EXdZ8ZFDZ7ZJgW1jNFaUirFeupy37h2GVr+jmeX0GrSenaoK6x4IPApx0SvOWRsdIkDKVV5WmZ9xnBFBO5wdJYU5QiyTD+sPQZtzbhrdBN4ys60+rgHAmESxTi9O1oVlddVKAXXTxR6fkwwrJqKdQgCbvGSkkC7rR3+eWybDJb07ZChpwP8ju1b3E=
+  - secure: ISCHsb5t51DSWSsM4oKvPIPr9VFN4eim4rdSnb766FNaulvcfC7bcXrAdWUO8QtxcSyMPfQIbBJZmt40DGFViv5xh6VzJOA5loLWcXWAL5JBDzAP3PW+5bPmaGWlPBop5mUKQjvoVLGK7sfMJNaQr+7uIAFiCBKMV9aV4oSHq4PFv/EZivxYhcq8JycZSkAjsUWJ1L/afCjzrdCoQDZV5S0OGj9qYgGUdtLqn5i5xdM2JbRL18cBSQadBhMGJmZPM3zZtcnAtWIJMCphkjRzEeR7YrGkJOjBOac3cWLwR6PNttYz/bw6IZF4vZzEPFBVN2gTRsHyPa1AnzJjMwNU+wCY7BgiaMY3wmqP4SkrbJpzhfjuR9fLMT7g2kgTcJG0qkFTNJxzfhcmTTeYKMrN1TIDswyp7zPxXocEL3spy0Xv1C7ADg7usAtvXZPO4cqwzEIcUZNe3IBZStE761wVO1dUsR4VBGE2e7/hwmHUPCt0N6PzLOt3sb7YudquzN6ASJS8v5izCG8MbTAlznzDkOYyqcVHhvEWdoKQLCfJEK6xiPkynTa7YaE5DQdolfD8jMDYGgXRq1RYIX8CD2CfC5lSy84VpI1OVPdYBRoz54wOYXnQnok1yB7bPMr5NSpLyMcyAWLtsqZcMMrQElM9JssSvhsheR5oVqFEGgK0gEo=
+  - secure: IFxmXdzJaouB42gTpomEeqDIk+zdZAQ4/9tNx91PTChy/TnYvqGYJsZnDIbCDlXzgOhzJlNum+DYwQVAEfhC8XUJn1IQfO+mj46XwKzIi3eLbmOGd3tiOG6kNJVPiWn4K+zYat+UriVA/O+SLXMGQLQ/kWDz/HRdwMlystGRbdr9vfRA875wNa/o4vP4VFHPb6g10KM/+c/px4X8pJKGPWZkKuk+EWNyhkxeXn+RQOdLlxxDAzZmI/hSsA66KrU0+ibbluVxnHU2HxLY2+xzgvsY/UBogak2kM6AIH1/8GFfQbVTRbADrUhlKoWvhjZfKjHm9dRugckF5M0s1ak0p70cf6dQPK0F2o15956f2Ps1q9k3DZZhtMxqAINQYWqUvWDOXO44gPBfIA2SHu43ySDHPwpC6bn6NKEsRjBOX1zyr6CW4r96n9blzR1F/5vzlgXMoCfpW2K8Y6wttx1/0rC9bBJ5/pr6ntWBPmEP4vIftg2W88bJlIFpy5iGAwuZCXyy2S3/Yk5ShzrpRvjlBL9BouQ3vkgXAq0ZjmYzO1Gon5ZRr1MbLFBkgoeWVoa7CYQVHr01Uqf81sShpZnB1xYGhdrspjcsS7lluOE+xyIStT5h4FN1e5cbXXc/etIVt0msO+9SUwuwiI2AsH/YOZCEEFu3+4KzWR/plloRv+k=
