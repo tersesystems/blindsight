@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.29
+0.1.30
 </div>
 </div>
 <div class="nav-toc">
@@ -89,7 +89,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.29
+0.1.30
 </div>
 </div>
 <div class="nav-toc">
@@ -146,23 +146,23 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>Add the following resolver:</p>
 <pre class="prettyprint"><code class="language-scala">resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
 </code></pre>
-<p>And then add the given dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-logstash" % "0.1.29"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+<p>And then add the given dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-logstash" % "0.1.30"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
   &lt;scala.binary.version&gt;2.11&lt;/scala.binary.version&gt;
 &lt;/properties&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
   &lt;artifactId&gt;blindsight-logstash_${scala.binary.version}&lt;/artifactId&gt;
-  &lt;version&gt;0.1.29&lt;/version&gt;
+  &lt;version&gt;0.1.30&lt;/version&gt;
 &lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">versions += [
   ScalaBinary: "2.11"
 ]
 dependencies {
-  compile group: 'com.tersesystems.blindsight', name: "blindsight-logstash_${versions.ScalaBinary}", version: '0.1.29'
+  compile group: 'com.tersesystems.blindsight', name: "blindsight-logstash_${versions.ScalaBinary}", version: '0.1.30'
 }</code></pre></dd></dl>
 <p>See <a href="https://github.com/tersesystems/blindsight#blindsight">Github</a> for the latest version.</p>
 <p>It is recommended (but not required) to use <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend. Please see the documentation for what modules are appropriate for your use case.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.29/docs/src/main/paradox/setup/logback.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.30/docs/src/main/paradox/setup/logback.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -232,7 +232,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.29', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.30', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
