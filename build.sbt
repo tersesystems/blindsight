@@ -9,8 +9,8 @@ ThisBuild / crossScalaVersions := Seq(scala211, scala212, scala213)
 
 ThisBuild / scalafmtOnCompile := true
 
-ThisBuild / pgpPublicRing := file("./.travis/local.pubring.asc")
-ThisBuild / pgpSecretRing := file("./.travis/local.secring.asc")
+ThisBuild / pgpPublicRing := file(".travis/local.pubring.asc")
+ThisBuild / pgpSecretRing := file(".travis/local.secring.asc")
 ThisBuild / releaseEarlyWith := BintrayPublisher
 ThisBuild / bintrayOrganization := Some("tersesystems")
 
