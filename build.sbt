@@ -9,7 +9,7 @@ ThisBuild / crossScalaVersions := Seq(scala211, scala212, scala213)
 
 ThisBuild / scalafmtOnCompile := true
 
-// These settings seem not to work for sbt-release-early, so .travis.yml copies to 
+// These settings seem not to work for sbt-release-early, so .travis.yml copies to
 // .sbt/gpg/pubring.asc / secring.asc as a fallback
 ThisBuild / pgpPublicRing := file(".travis/local.pubring.asc")
 ThisBuild / pgpSecretRing := file(".travis/local.secring.asc")
