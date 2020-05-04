@@ -23,11 +23,11 @@ jobs:
     script:
     - git config --global user.name "$USER"
     - git config --global user.email "$TRAVIS_BUILD_NUMBER@$TRAVIS_COMMIT"
-    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
-      -in project/travis-deploy-key.enc -out project/travis-deploy-key -d
-    - chmod 600 project/travis-deploy-key
+    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+    - tar xv -C .travis -f .travis/secrets.tar;
+    - chmod 600 .travis/travis-deploy-key
     - eval "$(ssh-agent -s)"
-    - ssh-add project/travis-deploy-key
+    - ssh-add .travis/travis-deploy-key
     - sbt ";docs/makeSite; docs/ghpagesPushSite"
   - stage: deploy
     name: Deploy to Bintray
