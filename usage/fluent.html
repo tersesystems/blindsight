@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.26
+0.1.27
 </div>
 </div>
 <div class="nav-toc">
@@ -89,7 +89,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.26
+0.1.27
 </div>
 </div>
 <div class="nav-toc">
@@ -146,12 +146,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>The fluent API has an immediate advantage in that there&rsquo;s less overloading in the API, and there&rsquo;s more room to chain. With type classes, it&rsquo;s possible to set up much richer <a href="https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/">structured logging</a>.</p>
 <h2><a href="#accessing-fluent-logger" name="accessing-fluent-logger" class="anchor"><span class="anchor-link"></span></a>Accessing Fluent Logger</h2>
 <p>The easiest way of getting a fluent logger is to use the <a href="/blindsight/api/com/tersesystems/blindsight/LoggerFactory.html" title="com.tersesystems.blindsight.LoggerFactory"><code>LoggerFactory</code></a> and then call the <code>fluent</code> method:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.26/docs/src/test/scala/example/fluent/FluentMain.scala#L54-L57" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.fluent.FluentLogger
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.27/docs/src/test/scala/example/fluent/FluentMain.scala#L54-L57" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.fluent.FluentLogger
 
 val logger                     = com.tersesystems.blindsight.LoggerFactory.getLogger(getClass)
 val fluentLogger: FluentLogger = logger.fluent</code></pre>
 <p>The fluent logger builds up the logging statement by calling <code>marker</code>, <code>argument</code>, <code>message</code>, <code>cause</code>, and then finally <code>log()</code> or <code>logWithPlaceholders()</code> to execute the statement. You may call each of these methods repeatedly, and they build up markers, arguments, or a concatenated message (note that exceptions are, well, an exception). You may call them in any order. If you call <code>log()</code> then the statement is executed exactly as written. If you call <code>logWithPlaceholders()</code> then the number of arguments is counted and &ldquo;{}&rdquo; format placeholders are appended to the statement&rsquo;s message so that all arguments are visible.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.26/docs/src/test/scala/example/fluent/FluentMain.scala#L71-L77" target="_blank" title="Go to snippet source"></a><code class="language-scala">fluentLogger.info
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.27/docs/src/test/scala/example/fluent/FluentMain.scala#L71-L77" target="_blank" title="Go to snippet source"></a><code class="language-scala">fluentLogger.info
   .marker(someMarker)
   .message(&quot;some message {}&quot;)
   .argument(args)
@@ -160,7 +160,7 @@ val fluentLogger: FluentLogger = logger.fluent</code></pre>
   .log()</code></pre>
 <h2><a href="#markers" name="markers" class="anchor"><span class="anchor-link"></span></a>Markers</h2>
 <p>You can log with a marker alone and then log:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.26/docs/src/test/scala/example/fluent/FluentMain.scala#L61-L64" target="_blank" title="Go to snippet source"></a><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.27/docs/src/test/scala/example/fluent/FluentMain.scala#L61-L64" target="_blank" title="Go to snippet source"></a><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
 val someMarker = LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;)
 
 fluentLogger.info.marker(someMarker).log()</code></pre>
@@ -212,7 +212,7 @@ fluentLogger.message(&quot;I was talking to {}&quot;).argument(person).log()
 </code></pre>
 <p>Technically, an exception is the last argument in a logging statement. Exception does <strong>not</strong> compose, and if you call <code>exception</code> repeatedly, the last exception will be set. </p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.26/docs/src/main/paradox/usage/fluent.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.27/docs/src/main/paradox/usage/fluent.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -299,7 +299,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.26', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.27', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
