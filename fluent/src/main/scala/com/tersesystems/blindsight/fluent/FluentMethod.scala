@@ -49,10 +49,10 @@ object FluentMethod {
     }
 
     final case class BuilderImpl(
-        mkrs: Markers,
-        m: Message,
-        args: Arguments,
-        e: Option[Throwable]
+                                  mkrs: Markers,
+                                  m: Message,
+                                  args: Argument,
+                                  e: Option[Throwable]
     ) extends FluentMethod.Builder {
 
       override def marker[T: ToMarkers](instance: => T): FluentMethod.Builder = {
@@ -65,8 +65,8 @@ object FluentMethod {
         copy(m = m + message)
       }
 
-      override def argument[T: ToArguments](instance: => T): FluentMethod.Builder = {
-        val arguments = implicitly[ToArguments[T]].toArguments(instance)
+      override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
+        val arguments = implicitly[ToArgument[T]].toArgument(instance)
         copy(args = args + arguments)
       }
 
@@ -85,10 +85,10 @@ object FluentMethod {
     }
 
     object BuilderImpl {
-      def empty: BuilderImpl = BuilderImpl(Markers.empty, Message.empty, Arguments.empty, None)
+      def empty: BuilderImpl = BuilderImpl(Markers.empty, Message.empty, Argument.empty, None)
     }
 
-    override def argument[T: ToArguments](instance: => T): FluentMethod.Builder = {
+    override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
       BuilderImpl.empty.argument(instance)
     }
 

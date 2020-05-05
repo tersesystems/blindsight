@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.api.{Arguments, AsArguments, Markers, ToArguments, ToMarkers}
+import com.tersesystems.blindsight.api.{Argument, AsArguments, Markers, ToArgument, ToMarkers}
 import com.tersesystems.blindsight.slf4j.{
   SLF4JLogger,
   SLF4JLoggerAPI,
@@ -65,7 +65,7 @@ object Slf4jMain {
     // case class tostring renders CC number
     unchecked.info("this is risky unchecked {}", creditCard: Any)
 
-    unchecked.info("this is unchecked {} {}", Arguments(42, 53))
+    unchecked.info("this is unchecked {} {}", Argument(42, 53))
     unchecked.info(
       m1,
       "unchecked with argument and marker {}, creditCard = {}",
@@ -74,16 +74,16 @@ object Slf4jMain {
 
     val strict: SLF4JLogger[StrictSLF4JMethod] = logger.strict
 
-    strict.info("arg {}, arg {}, arg 3 {}", Arguments(1, "2", false))
+    strict.info("arg {}, arg {}, arg 3 {}", Argument(1, "2", false))
 
     strict.error("this is an error", e)
-    strict.error("this is an error with argument {}", Arguments("a" -> "b", e))
+    strict.error("this is an error with argument {}", Argument("a" -> "b", e))
     strict.error(
       "this is an error with concat arguments {} {}",
-      Arguments("a" -> "b") + Arguments("c" -> "d")
+      Argument("a" -> "b") + Argument("c" -> "d")
     )
     //strict.info("won't compile, must define ToArguments[CreditCard]", creditCard)
-    strict.info("this is strict {} {}", Arguments(42, 53))
+    strict.info("this is strict {} {}", Argument(42, 53))
     strict.info(
       "this is strict with a seq first is [{}], second is [{}]",
       Map("a" -> "b", "c" -> "d")
@@ -94,13 +94,13 @@ object Slf4jMain {
       "argumentKey" -> "argumentValue"
     )
 
-    implicit val dateToArgument: ToArguments[Date] = ToArguments[java.util.Date] { date =>
-      new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(date.toInstant)))
+    implicit val dateToArgument: ToArgument[Date] = ToArgument[java.util.Date] { date =>
+      new Argument(Seq(DateTimeFormatter.ISO_INSTANT.format(date.toInstant)))
     }
 
-    implicit val instantToArgument: ToArguments[java.time.Instant] =
-      ToArguments[java.time.Instant] { instant =>
-        new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(instant)))
+    implicit val instantToArgument: ToArgument[java.time.Instant] =
+      ToArgument[java.time.Instant] { instant =>
+        new Argument(Seq(DateTimeFormatter.ISO_INSTANT.format(instant)))
       }
 
     logger.info("date is {}", new java.util.Date())

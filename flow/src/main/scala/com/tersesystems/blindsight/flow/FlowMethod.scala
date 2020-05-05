@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.api.ToArguments
+import com.tersesystems.blindsight.api.ToArgument
 import com.tersesystems.blindsight.slf4j.SLF4JPredicate
 import org.slf4j.event.Level
 import sourcecode.{Args, Enclosing, File, Line}
@@ -31,7 +31,7 @@ import scala.util.{Failure, Success, Try}
  */
 trait FlowMethod {
 
-  def apply[B: ToArguments](
+  def apply[B: ToArgument](
       block: => B
   )(
       implicit line: Line,
@@ -55,7 +55,7 @@ object FlowMethod {
     private val predicate: SLF4JPredicate = logger.predicate(level)
     private val parameterList             = logger.parameterList(level)
 
-    override def apply[B: ToArguments](
+    override def apply[B: ToArgument](
         attempt: => B
     )(
         implicit line: Line,
@@ -72,7 +72,7 @@ object FlowMethod {
       tryExecution(attempt)
     }
 
-    protected def tryExecution[B: ToArguments](
+    protected def tryExecution[B: ToArgument](
         attempt: => B
     )(
         implicit line: Line,
@@ -106,7 +106,7 @@ object FlowMethod {
 
   class Conditional(test: => Boolean, level: Level, logger: ExtendedFlowLogger)
       extends Impl(level, logger) {
-    override def apply[B: ToArguments](
+    override def apply[B: ToArgument](
         attempt: => B
     )(
         implicit line: Line,

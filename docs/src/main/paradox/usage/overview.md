@@ -85,7 +85,7 @@ Blindsight keeps the same concept these parameters, but creates specific types; 
 import com.tersesystems.blindsight.api._
 val markers: Markers = Markers(marker1, marker2)
 val message: Message = Message("some message")
-val arguments: Arguments = Arguments("arg1", 42, 1337)
+val arguments: Argument = Argument("arg1", 42, 1337)
 ```
 
 Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type.  So @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) has a @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) type class, @scaladoc[Message](com.tersesystems.blindsight.api.Message) has @scaladoc[ToMessage](com.tersesystems.blindsight.api.ToMessage), and so on.
@@ -153,7 +153,7 @@ The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides acce
 import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.flow._
 
-implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = ...
+implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = ...
 
 def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2

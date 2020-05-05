@@ -37,7 +37,7 @@ You can also convert your own objects into appropriate markers.
 
 ```scala
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.api.{Arguments, Markers, ToMarkers}
+import com.tersesystems.blindsight.api.{Argument, Markers, ToMarkers}
 import com.tersesystems.blindsight.slf4j._
 import org.slf4j.MarkerFactory
 

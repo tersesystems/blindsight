@@ -11,7 +11,7 @@ import org.slf4j.event.Level
  * @see https://github.com/qos-ch/slf4j/blob/master/slf4j-ext/src/main/java/org/slf4j/ext/XLogger.java
  * @tparam B the return type.
  */
-class XLoggerFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
+class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
   override def entryMarkers(source: FlowBehavior.Source): Markers = XLoggerFlowBehavior.entryMarkers
   override def exitMarkers(source: FlowBehavior.Source): Markers  = XLoggerFlowBehavior.exitMarkers
 

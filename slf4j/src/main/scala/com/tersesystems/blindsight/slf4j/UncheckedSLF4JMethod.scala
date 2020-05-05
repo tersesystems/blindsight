@@ -35,7 +35,7 @@ trait UncheckedSLF4JMethod {
 
   def apply(
       message: => Message,
-      args: Arguments
+      args: Argument
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
   def apply(
@@ -57,7 +57,7 @@ trait UncheckedSLF4JMethod {
   def apply(
       markers: Marker,
       message: => Message,
-      args: Arguments
+      args: Argument
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
   def apply(
@@ -125,7 +125,7 @@ object UncheckedSLF4JMethod {
 
     override def apply(
         format: => Message,
-        args: Arguments
+        args: Argument
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val markers: Markers = collateMarkers
       if (markers.nonEmpty) {
@@ -186,7 +186,7 @@ object UncheckedSLF4JMethod {
       }
     }
 
-    override def apply(marker: Marker, msg: => Message, args: Arguments)(
+    override def apply(marker: Marker, msg: => Message, args: Argument)(
         implicit line: Line,
         file: File,
         enclosing: Enclosing
@@ -263,7 +263,7 @@ object UncheckedSLF4JMethod {
 
     override def apply(
         msg: => Message,
-        args: Arguments
+        args: Argument
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
       parameterList.messageArgs(msg.toString, args.asArray)
     }
@@ -293,7 +293,7 @@ object UncheckedSLF4JMethod {
     override def apply(
         marker: Marker,
         msg: => Message,
-        args: Arguments
+        args: Argument
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
       parameterList.markerMessageArgs(marker, msg.toString, args.asArray)
     }

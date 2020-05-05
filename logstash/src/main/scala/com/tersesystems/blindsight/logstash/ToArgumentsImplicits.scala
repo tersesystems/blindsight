@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api.{Arguments, ToArguments}
+import com.tersesystems.blindsight.api.{Argument, ToArgument}
 import net.logstash.logback.argument.StructuredArguments._
 import net.logstash.logback.argument.{StructuredArgument, StructuredArguments}
 import sourcecode.{Args, Enclosing, File, Line}
@@ -27,44 +27,44 @@ import scala.collection.JavaConverters._
  * them into StructuredArgument and add them as Arguments.
  */
 trait LogstashToArgumentsImplicits {
-  implicit val argToArguments: ToArguments[StructuredArgument] = ToArguments { instance =>
-    new Arguments(Seq(instance))
+  implicit val argToArguments: ToArgument[StructuredArgument] = ToArgument { instance =>
+    new Argument(Seq(instance))
   }
 
-  implicit val kvStringToArguments: ToArguments[(String, String)] = ToArguments {
+  implicit val kvStringToArguments: ToArgument[(String, String)] = ToArgument {
     case (k, v) =>
-      Arguments(StructuredArguments.keyValue(k, v))
+      Argument(StructuredArguments.keyValue(k, v))
   }
 
-  implicit val kvBooleanToArguments: ToArguments[(String, Boolean)] = ToArguments {
+  implicit val kvBooleanToArguments: ToArgument[(String, Boolean)] = ToArgument {
     case (k, v) =>
-      Arguments(StructuredArguments.keyValue(k, v))
+      Argument(StructuredArguments.keyValue(k, v))
   }
 
-  implicit def numericToArguments[T: Numeric]: ToArguments[(String, T)] = ToArguments {
+  implicit def numericToArguments[T: Numeric]: ToArgument[(String, T)] = ToArgument {
     case (k, v) =>
-      Arguments(StructuredArguments.keyValue(k, v))
+      Argument(StructuredArguments.keyValue(k, v))
   }
 
-  implicit def arrayToArguments[T <: java.lang.Object]: ToArguments[(String, Seq[T])] =
-    ToArguments {
+  implicit def arrayToArguments[T <: java.lang.Object]: ToArgument[(String, Seq[T])] =
+    ToArgument {
       case (k, v) =>
-        Arguments(StructuredArguments.array(k, v: _*))
+        Argument(StructuredArguments.array(k, v: _*))
     }
 
-  implicit def mapToArguments[T]: ToArguments[Map[String, T]] = ToArguments { inputMap =>
+  implicit def mapToArguments[T]: ToArgument[Map[String, T]] = ToArgument { inputMap =>
     // Maps are problematic as they export in "{a=b}" format, and not the logfmt "a=b" format used by
     // other systems.  So let's break this down in to kv pairs instead.
-    inputMap.foldLeft(Arguments.empty) { (acc, el) =>
-      acc + Arguments(StructuredArguments.keyValue(el._1, el._2))
+    inputMap.foldLeft(Argument.empty) { (acc, el) =>
+      acc + Argument(StructuredArguments.keyValue(el._1, el._2))
     }
   }
 
-  implicit def stringMapToArguments[T]: ToArguments[(String, Map[String, T])] =
-    ToArguments {
+  implicit def stringMapToArguments[T]: ToArgument[(String, Map[String, T])] =
+    ToArgument {
       case (k, instance) =>
         import net.logstash.logback.argument._
-        Arguments(StructuredArguments.kv(k, instance))
+        Argument(StructuredArguments.kv(k, instance))
     }
 
 }
@@ -75,20 +75,20 @@ trait LogstashToArgumentsImplicits {
  */
 trait SourceCodeToArgumentsImplicits extends LogstashToArgumentsImplicits {
 
-  implicit val fileToArguments: ToArguments[File] = ToArguments { file =>
-    Arguments(kv("source.file", file.value))
+  implicit val fileToArguments: ToArgument[File] = ToArgument { file =>
+    Argument(kv("source.file", file.value))
   }
 
-  implicit val lineToToArguments: ToArguments[Line] = ToArguments { line =>
-    Arguments(kv("source.line", line.value))
+  implicit val lineToToArguments: ToArgument[Line] = ToArgument { line =>
+    Argument(kv("source.line", line.value))
   }
 
-  implicit val enclosingToArguments: ToArguments[Enclosing] = ToArguments { enclosing =>
-    Arguments(kv("source.enclosing", enclosing.value))
+  implicit val enclosingToArguments: ToArgument[Enclosing] = ToArgument { enclosing =>
+    Argument(kv("source.enclosing", enclosing.value))
   }
 
-  implicit val argsToArguments: ToArguments[Args] = ToArguments[Args] { sourceArgs =>
-    Arguments {
+  implicit val argsToArguments: ToArgument[Args] = ToArgument[Args] { sourceArgs =>
+    Argument {
       val args: Map[String, Any] =
         sourceArgs.value.flatMap(_.map(a => a.source -> a.value)).toMap
       kv("source.arguments", StructuredArguments.entries(args.asJava))

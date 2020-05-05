@@ -1,6 +1,6 @@
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api.{Arguments, Message, ToStatement}
+import com.tersesystems.blindsight.api.{Argument, Message, ToStatement}
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.logstash.Implicits._
@@ -67,7 +67,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
-        logger.info("a=b", Arguments("1" -> "2", e))
+        logger.info("a=b", Argument("1" -> "2", e))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")

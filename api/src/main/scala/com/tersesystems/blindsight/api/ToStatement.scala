@@ -40,7 +40,7 @@ trait LowPriorityToStatementImplicits {
 
   implicit val markersToStatement: ToStatement[Markers] =
     ToStatement(instance => instance.toStatement)
-  implicit val argumentsToStatement: ToStatement[Arguments] =
+  implicit val argumentsToStatement: ToStatement[Argument] =
     ToStatement(instance => instance.toStatement)
   implicit val messageToStatement: ToStatement[Message] =
     ToStatement(instance => instance.toStatement)

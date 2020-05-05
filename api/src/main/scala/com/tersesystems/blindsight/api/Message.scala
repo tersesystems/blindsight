@@ -40,7 +40,7 @@ final class Message(private val raw: String) extends AnyVal {
 
   override def toString: String = raw
 
-  def withPlaceHolders(args: Arguments): Message = {
+  def withPlaceHolders(args: Argument): Message = {
     new Message(raw + args.placeholders)
   }
 

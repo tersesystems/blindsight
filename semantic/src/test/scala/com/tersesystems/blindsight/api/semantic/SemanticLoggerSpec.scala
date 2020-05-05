@@ -19,7 +19,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         Statement(
           Markers.empty,
           Message("payloadModel:"),
-          Arguments(instance.payloadId.toString),
+          Argument(instance.payloadId.toString),
           None
         )
       }
@@ -46,7 +46,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         Statement(
           markers = Markers("secretToken" -> instance.userSecretToken),
           message = Message("herp"        -> "derp"),
-          arguments = Arguments(instance.payloadId.toString),
+          arguments = Argument(instance.payloadId.toString),
           None
         )
       }
