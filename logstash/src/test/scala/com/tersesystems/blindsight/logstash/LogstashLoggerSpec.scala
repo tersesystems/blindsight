@@ -105,7 +105,6 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         event.getThrowableProxy.getMessage must be("derp")
       }
 
-
       "work with when" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)

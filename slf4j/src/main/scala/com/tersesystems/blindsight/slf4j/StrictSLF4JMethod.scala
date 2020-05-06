@@ -542,7 +542,7 @@ object StrictSLF4JMethod {
       if (test) method.apply(markers, message, throwable)
     }
 
-    override def apply[M: ToMarkers,A: ToArgument](
+    override def apply[M: ToMarkers, A: ToArgument](
         markers: M,
         message: Message,
         arg: A,
