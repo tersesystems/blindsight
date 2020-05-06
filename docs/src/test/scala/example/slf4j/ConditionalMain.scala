@@ -30,6 +30,7 @@ object ConditionalMain {
     }
     val logger = LoggerFactory.getLogger(getClass).onCondition(test)
 
+    val e = new RuntimeException
     logger.info("hello world, I render fine at {}", System.currentTimeMillis())
     logger.info("hello world, I do not render at all at {}", System.currentTimeMillis())
     logger.info("hello world, I render fine at {}", System.currentTimeMillis())

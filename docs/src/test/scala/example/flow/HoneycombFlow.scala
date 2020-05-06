@@ -23,7 +23,6 @@ import com.tersesystems.blindsight.flow.{FlowBehavior, FlowMethod}
 import com.tersesystems.blindsight.logstash.Implicits._
 import com.tersesystems.logback.tracing.{SpanInfo, SpanMarkerFactory}
 import com.tersesystems.logback.uniqueid.RandomUUIDIdGenerator
-import net.logstash.logback.argument.StructuredArguments._
 import org.slf4j.event.Level
 import sourcecode.Enclosing
 
@@ -81,7 +80,7 @@ object HoneycombFlow {
     } finally {
       // The root span has to be logged _last_, after the child spans.
       logger.info(
-        HoneycombFlowBehavior.markerFactory(rootSpan),
+        Markers(HoneycombFlowBehavior.markerFactory(rootSpan)),
         s"${enclosing.value} exit, duration ${rootSpan.duration()}"
       )
     }
