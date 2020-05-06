@@ -47,9 +47,7 @@ object Slf4jMain {
       logger.debug("this is a test")
     }
 
-    logger.info.when(System.currentTimeMillis() % 2 == 0) { log =>
-      log("I am divisable by two")
-    }
+    logger.info.when(System.currentTimeMillis() % 2 == 0) { log => log("I am divisable by two") }
 
     logger.info("hello world")
 

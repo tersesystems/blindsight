@@ -75,54 +75,56 @@ trait StrictSLF4JMethod {
       throwable: Throwable
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
+  // cannot use ToMarkers here, because doesn't know if marker or message
   def apply(
       markers: Markers
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(
-      markers: Markers,
+  def apply[M: ToMarkers](
+      markers: M,
       message: Message
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
+  // Cannot use ToMarkers here, because gets confused between markers and message
   def apply(
       markers: Markers,
       throwable: Throwable
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(
-      markers: Markers,
+  def apply[M: ToMarkers](
+      markers: M,
       message: Message,
       throwable: Throwable
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply[A: ToArgument](
-      markers: Markers,
+  def apply[M: ToMarkers, A: ToArgument](
+      markers: M,
       message: Message,
       arg: A
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply[A: ToArgument](
-      markers: Markers,
+  def apply[M: ToMarkers, A: ToArgument](
+      markers: M,
       message: Message,
       arg: A,
       throwable: Throwable
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply[A1: ToArgument, A2: ToArgument](
-      markers: Markers,
+  def apply[M: ToMarkers, A1: ToArgument, A2: ToArgument](
+      markers: M,
       message: Message,
       arg1: A1,
       arg2: A2
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(
-      markers: Markers,
+  def apply[M: ToMarkers](
+      markers: M,
       message: Message,
       args: Arguments
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(
-      markers: Markers,
+  def apply[M: ToMarkers](
+      markers: M,
       message: Message,
       args: Arguments,
       throwable: Throwable
@@ -298,8 +300,8 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply(
-        marker: Markers,
+    override def apply[M: ToMarkers](
+        marker: M,
         message1: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = collateMarkers(marker)
@@ -308,8 +310,8 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply[A: ToArgument](
-        markers: Markers,
+    override def apply[M: ToMarkers, A: ToArgument](
+        markers: M,
         message1: Message,
         arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
@@ -319,8 +321,8 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply(
-        markers: Markers,
+    override def apply[M: ToMarkers](
+        markers: M,
         message: Message,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
@@ -330,8 +332,8 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply[A1: ToArgument, A2: ToArgument](
-        markers: Markers,
+    override def apply[M: ToMarkers, A1: ToArgument, A2: ToArgument](
+        markers: M,
         message: Message,
         arg1: A1,
         arg2: A2
@@ -347,8 +349,8 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply[A: ToArgument](
-        markers: Markers,
+    override def apply[M: ToMarkers, A: ToArgument](
+        markers: M,
         message: Message,
         arg: A,
         throwable: Throwable
@@ -364,8 +366,8 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply(
-        markers: Markers,
+    override def apply[M: ToMarkers](
+        markers: M,
         message: Message,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
@@ -375,8 +377,8 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply(
-        markers: Markers,
+    override def apply[M: ToMarkers](
+        markers: M,
         message: Message,
         args: Arguments,
         throwable: Throwable
@@ -487,15 +489,15 @@ object StrictSLF4JMethod {
       if (test) method.apply(message, args, throwable)
     }
 
-    override def apply(
-        markers: Markers,
+    override def apply[M: ToMarkers](
+        markers: M,
         message: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(markers, message)
     }
 
-    override def apply[A1: ToArgument, A2: ToArgument](
-        markers: Markers,
+    override def apply[M: ToMarkers, A1: ToArgument, A2: ToArgument](
+        markers: M,
         message: Message,
         arg1: A1,
         arg2: A2
@@ -516,32 +518,32 @@ object StrictSLF4JMethod {
       if (test) method.apply(markers, throwable)
     }
 
-    override def apply(
-        markers: Markers,
+    override def apply[M: ToMarkers](
+        markers: M,
         message: Message,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(markers, message, args)
     }
 
-    override def apply[A: ToArgument](
-        markers: Markers,
+    override def apply[M: ToMarkers, A: ToArgument](
+        markers: M,
         message: Message,
         arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(markers, message, arg)
     }
 
-    override def apply(
-        markers: Markers,
+    override def apply[M: ToMarkers](
+        markers: M,
         message: Message,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(markers, message, throwable)
     }
 
-    override def apply[A: ToArgument](
-        markers: Markers,
+    override def apply[M: ToMarkers,A: ToArgument](
+        markers: M,
         message: Message,
         arg: A,
         throwable: Throwable
@@ -549,8 +551,8 @@ object StrictSLF4JMethod {
       if (test) method.apply(markers, message, arg, throwable)
     }
 
-    override def apply(
-        markers: Markers,
+    override def apply[M: ToMarkers](
+        markers: M,
         message: Message,
         args: Arguments,
         throwable: Throwable
