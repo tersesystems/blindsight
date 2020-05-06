@@ -65,7 +65,7 @@ object FluentSimple {
     // #fluent-markers
 
     val args: Argument = Argument("some arguments")
-    val exception       = new RuntimeException("ex")
+    val exception      = new RuntimeException("ex")
 
     // #fluent-statement
     fluentLogger.info

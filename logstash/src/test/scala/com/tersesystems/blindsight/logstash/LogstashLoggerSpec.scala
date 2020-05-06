@@ -67,7 +67,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
-        logger.info("a=b", Argument("1" -> "2", e))
+        logger.info("a=b", "1" -> "2", e)
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")

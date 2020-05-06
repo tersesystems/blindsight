@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.api.{Argument, AsArguments, Markers, ToArgument, ToMarkers}
+import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.slf4j.{
   SLF4JLogger,
   SLF4JLoggerAPI,
@@ -63,27 +63,27 @@ object Slf4jMain {
     val creditCard = CreditCard("4111111111111")
 
     // case class tostring renders CC number
-    unchecked.info("this is risky unchecked {}", creditCard: Any)
+    unchecked.info("this is risky unchecked {}", creditCard)
 
-    unchecked.info("this is unchecked {} {}", Argument(42, 53))
+    unchecked.info("this is unchecked {} {}", Arguments(42, 53))
     unchecked.info(
       m1,
       "unchecked with argument and marker {}, creditCard = {}",
-      Seq(42, creditCard): _*
+      Arguments(42, creditCard.toString)
     )
 
     val strict: SLF4JLogger[StrictSLF4JMethod] = logger.strict
 
-    strict.info("arg {}, arg {}, arg 3 {}", Argument(1, "2", false))
+    strict.info("arg {}, arg {}, arg 3 {}", Arguments(1, "2", false))
 
     strict.error("this is an error", e)
-    strict.error("this is an error with argument {}", Argument("a" -> "b", e))
+    strict.error("this is an error with argument {}", "a" -> "b", e)
     strict.error(
-      "this is an error with concat arguments {} {}",
-      Argument("a" -> "b") + Argument("c" -> "d")
+      "this is an error with two arguments {} {}",
+      "a" -> "b", "c" -> "d"
     )
     //strict.info("won't compile, must define ToArguments[CreditCard]", creditCard)
-    strict.info("this is strict {} {}", Argument(42, 53))
+    strict.info("this is strict {} {}", Arguments(42, 53))
     strict.info(
       "this is strict with a seq first is [{}], second is [{}]",
       Map("a" -> "b", "c" -> "d")

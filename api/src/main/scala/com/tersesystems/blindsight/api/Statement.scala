@@ -27,14 +27,14 @@ package com.tersesystems.blindsight.api
  * @param throwable the throwable, if any.
  */
 final case class Statement(
-                            markers: Markers,
-                            message: Message,
-                            arguments: Argument,
-                            throwable: Option[Throwable]
+    markers: Markers,
+    message: Message,
+    arguments: Arguments,
+    throwable: Option[Throwable]
 ) {
 
-  def withArguments[T: ToArgument](args: T): Statement = {
-    copy(arguments = implicitly[ToArgument[T]].toArgument(args))
+  def withArguments(args: Arguments): Statement = {
+    copy(arguments = args)
   }
 
   def withMarkers[T: ToMarkers](markers: T): Statement = {
@@ -51,5 +51,5 @@ final case class Statement(
 }
 
 object Statement {
-  def apply(): Statement = Statement(Markers.empty, Message.empty, Argument.empty, None)
+  def apply(): Statement = Statement(Markers.empty, Message.empty, Arguments.empty, None)
 }

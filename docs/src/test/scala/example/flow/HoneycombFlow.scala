@@ -17,7 +17,7 @@
 package example.flow
 
 import com.tersesystems.blindsight.LoggerFactory
-import com.tersesystems.blindsight.api.{Argument, Markers, Statement, ToArgument}
+import com.tersesystems.blindsight.api.{Argument, Arguments, Markers, Statement, ToArgument}
 import com.tersesystems.blindsight.flow.FlowBehavior.Source
 import com.tersesystems.blindsight.flow.{FlowBehavior, FlowMethod}
 import com.tersesystems.blindsight.logstash.Implicits._
@@ -91,7 +91,7 @@ object HoneycombFlow {
 
   object Person {
     implicit val personToArguments: ToArgument[Person] = ToArgument { person =>
-      Argument("person" -> Map("name" -> person.name, "age" -> person.age))
+      Argument("person" -> Map("name" -> Argument(person.name), "age" -> Argument(person.age)))
     }
   }
 }
@@ -128,7 +128,7 @@ class HoneycombFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends 
     Statement()
       .withMarkers(Markers(markerFactory(span)))
       .withMessage(s"${source.enclosing.value} exit, duration ${span.duration()}")
-      .withArguments(resultValue)
+      .withArguments(Arguments(resultValue))
   }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)

@@ -43,16 +43,16 @@ abstract class ParameterList(val level: Level, val logger: org.slf4j.Logger) {
     statement match {
       case Statement(markers, message, args, None) =>
         if (markers.isEmpty) {
-          messageArgs(message.toString, args.asArray)
+          messageArgs(message.toString, args.toArray)
         } else {
-          markerMessageArgs(markers.marker, message.toString, args.asArray)
+          markerMessageArgs(markers.marker, message.toString, args.toArray)
         }
 
       case Statement(markers, message, args, Some(exception)) =>
         if (markers.isEmpty) {
-          messageArgs(message.toString, args.asArray :+ exception)
+          messageArgs(message.toString, args.toArray :+ exception)
         } else {
-          markerMessageArgs(markers.marker, message.toString, args.asArray :+ exception)
+          markerMessageArgs(markers.marker, message.toString, args.toArray :+ exception)
         }
     }
 }

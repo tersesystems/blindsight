@@ -19,15 +19,6 @@ package com.tersesystems.blindsight.api
 /**
  * This is a type class used to convert given types to `Argument`.
  *
- * `ToArguments` uses a contravariant argument here so that a base
- * class can be used, rather than defining every type.  This has
- * advantages, notably when it comes to `ToArgument[Throwable]`,
- * but does mean that the lowest bound will be applied if in scope.
- *
- * Practically speaking, this means if you defined `ToArgument[Any]`,
- * then everything is going to use that, even if there's a more
- * specific type available.
- *
  * {{{
  * case class Person(name: String, age: Int)
  * implicit val personToArgument: ToArgument[Person] = ToArgument { person =>
@@ -38,47 +29,33 @@ package com.tersesystems.blindsight.api
  *
  * @tparam T the type to convert to Arguments
  */
-trait ToArgument[-T] {
-  def toArgument(instance: => T): Argument
+trait ToArgument[T] {
+  def toArgument(instance: T): Argument
 }
 
 trait LowPriorityToArgumentImplicits {
 
   implicit val argumentToArgument: ToArgument[Argument] = ToArgument(identity)
 
-  implicit val unitToArguments: ToArgument[Unit] = ToArgument { _ => Argument.empty }
+  implicit val unitToArguments: ToArgument[Unit] = ToArgument { unit => new Argument(unit) }
 
-  implicit val stringToArgument: ToArgument[String] = ToArgument { string =>
-    new Argument(Seq(string))
-  }
+  implicit val stringToArgument: ToArgument[String] = ToArgument { string => new Argument(string) }
 
-  implicit val booleanToArgument: ToArgument[Boolean] = ToArgument { bool =>
-    new Argument(Seq(bool))
-  }
+  implicit val booleanToArgument: ToArgument[Boolean] = ToArgument { bool => new Argument(bool) }
 
-  implicit val shortToArgument: ToArgument[Short] = ToArgument { short =>
-    new Argument(Seq(short))
-  }
+  implicit val shortToArgument: ToArgument[Short] = ToArgument { short => new Argument(short) }
 
-  implicit val intToArgument: ToArgument[Int] = ToArgument { int => new Argument(Seq(int)) }
+  implicit val intToArgument: ToArgument[Int] = ToArgument { int => new Argument(int) }
 
-  implicit val longToArgument: ToArgument[Long] = ToArgument { long => new Argument(Seq(long)) }
+  implicit val longToArgument: ToArgument[Long] = ToArgument { long => new Argument(long) }
 
-  implicit val floatToArgument: ToArgument[Float] = ToArgument { float =>
-    new Argument(Seq(float))
-  }
+  implicit val floatToArgument: ToArgument[Float] = ToArgument { float => new Argument(float) }
 
-  implicit val doubleToArgument: ToArgument[Double] = ToArgument { double =>
-    new Argument(Seq(double))
-  }
-
-  implicit val throwableToArgument: ToArgument[Throwable] = ToArgument { e =>
-    new Argument(Seq(e))
-  }
+  implicit val doubleToArgument: ToArgument[Double] = ToArgument { double => new Argument(double) }
 }
 
 object ToArgument extends LowPriorityToArgumentImplicits {
   def apply[T: NotNothing](f: T => Argument): ToArgument[T] = new ToArgument[T] {
-    override def toArgument(instance: => T): Argument = f(instance)
+    override def toArgument(instance: T): Argument = f(instance)
   }
 }
