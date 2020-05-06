@@ -69,7 +69,8 @@ object Slf4jMain {
     unchecked.info(
       m1,
       "unchecked with argument and marker {}, creditCard = {}",
-      Arguments(42, creditCard.toString)
+      42,
+      creditCard
     )
 
     val strict: SLF4JLogger[StrictSLF4JMethod] = logger.strict
@@ -80,7 +81,8 @@ object Slf4jMain {
     strict.error("this is an error with argument {}", "a" -> "b", e)
     strict.error(
       "this is an error with two arguments {} {}",
-      "a" -> "b", "c" -> "d"
+      "a" -> "b",
+      "c" -> "d"
     )
     //strict.info("won't compile, must define ToArguments[CreditCard]", creditCard)
     strict.info("this is strict {} {}", Arguments(42, 53))

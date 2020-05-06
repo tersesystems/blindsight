@@ -25,7 +25,7 @@ class LogstashArgumentsSpec extends AnyWordSpec with Matchers {
       import ToArgumentsImplicits._
 
       val actual   = Map("name" -> Argument("Will"), "age" -> Argument(12))
-      val expected = entries(Map("name" -> "Will", "age" -> "age").asJava)
+      val expected = entries(Map("name" -> "Will", "age" -> 12).asJava)
 
       val structuredArgument = Argument(actual).value
       structuredArgument must be(expected)

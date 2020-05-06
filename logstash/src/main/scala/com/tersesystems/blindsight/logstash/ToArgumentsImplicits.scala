@@ -60,16 +60,18 @@ trait LogstashToArgumentsImplicits {
   }
 
   implicit def stringSeqToArgument[T: ToArgument]: ToArgument[(String, Seq[T])] =
-    ToArgument { case (k, v) =>
-      Argument(StructuredArguments.array(k, v.map(Argument(_).value)))
+    ToArgument {
+      case (k, v) =>
+        Argument(StructuredArguments.array(k, v.map(Argument(_).value)))
     }
 
   implicit def stringMapToArgument[T: ToArgument]: ToArgument[(String, Map[String, T])] =
     ToArgument {
       case (k, v) =>
         import net.logstash.logback.argument._
-        val maps = v.map { case (k, v) =>
-          k -> implicitly[ToArgument[T]].toArgument(v).value
+        val maps = v.map {
+          case (k, v) =>
+            k -> implicitly[ToArgument[T]].toArgument(v).value
         }
         Argument(StructuredArguments.kv(k, maps))
     }

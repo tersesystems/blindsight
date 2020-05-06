@@ -17,7 +17,7 @@
 package com.tersesystems.blindsight.api
 
 final class Argument(val value: Any) {
-  def arguments: Arguments = new Arguments(Seq(this))
+  def arguments: Arguments   = new Arguments(Seq(this))
   def toStatement: Statement = Statement().withArguments(arguments)
 }
 

@@ -178,6 +178,39 @@ object StrictSLF4JMethod {
       }
     }
 
+    override def apply(
+        message: => Message,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArg1(m.marker, message.toString, throwable)
+        }
+      } else {
+        if (executePredicate()) {
+          messageArg1(message.toString, throwable)
+        }
+      }
+    }
+
+    override def apply[A: ToArgument](
+        message: => Message,
+        arg: A,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArg1Arg2(m.marker, message.toString, Argument(arg), throwable)
+        }
+      } else {
+        if (executePredicate()) {
+          messageArg1Arg2(message.toString, Argument(arg), throwable)
+        }
+      }
+    }
+
     override def apply[A1: ToArgument, A2: ToArgument](
         message: => Message,
         arg1: A1,
@@ -196,6 +229,26 @@ object StrictSLF4JMethod {
       } else {
         if (executePredicate()) {
           messageArg1Arg2(message.toString, Argument(arg1).value, Argument(arg2).value)
+        }
+      }
+    }
+
+    override def apply[A1: ToArgument, A2: ToArgument](
+      message: => Message,
+      arg1: A1,
+      arg2: A2,
+      throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          val seq: Seq[Any] = Seq(Argument(arg1).value, Argument(arg2).value, throwable)
+          markerMessageArgs(m.marker, message.toString, seq)
+        }
+      } else {
+        if (executePredicate()) {
+          val seq: Seq[Any] = Seq(Argument(arg1).value, Argument(arg2).value, throwable)
+          messageArgs(message.toString, seq)
         }
       }
     }
@@ -246,10 +299,12 @@ object StrictSLF4JMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = collateMarkers(markers)
       if (executePredicate(m.marker)) {
-        markerMessageArg1Arg2(m.marker,
-                              message.toString,
-                              Argument(arg1).value,
-                              Argument(arg2).value)
+        markerMessageArg1Arg2(
+          m.marker,
+          message.toString,
+          Argument(arg1).value,
+          Argument(arg2).value
+        )
       }
     }
 
@@ -284,24 +339,6 @@ object StrictSLF4JMethod {
     override def toString: String = {
       s"${getClass.getName}(logger=${logger})"
     }
-
-    override def apply(
-        message: => Message,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
-
-    override def apply[A: ToArgument](
-        message: => Message,
-        arg: A,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
-
-    override def apply[A1: ToArgument, A2: ToArgument](
-        message: => Message,
-        arg1: A1,
-        arg2: A2,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply(
         message: => Message,
@@ -420,55 +457,55 @@ object StrictSLF4JMethod {
     }
 
     override def apply(
-       message: => Message,
-       throwable: Throwable
-     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
+        message: => Message,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply[A: ToArgument](
-     message: => Message,
-     arg: A,
-     throwable: Throwable
-   )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
+        message: => Message,
+        arg: A,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply[A1: ToArgument, A2: ToArgument](
-      message: => Message,
-      arg1: A1,
-      arg2: A2,
-      throwable: Throwable
+        message: => Message,
+        arg1: A1,
+        arg2: A2,
+        throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply(
-      message: => Message,
-      args: Arguments,
-      throwable: Throwable
+        message: => Message,
+        args: Arguments,
+        throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply[M: ToMarkers](
-      markers: M,
-      message: => Message,
-      throwable: Throwable
+        markers: M,
+        message: => Message,
+        throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply[M: ToMarkers, A: ToArgument](
-       markers: M,
-       message: => Message,
-       arg: A,
-       throwable: Throwable
-     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
+        markers: M,
+        message: => Message,
+        arg: A,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply[M: ToMarkers, A1: ToArgument, A2: ToArgument](
-      markers: M,
-      message: => Message,
-      arg1: A1,
-      arg2: A2,
-      throwable: Throwable
+        markers: M,
+        message: => Message,
+        arg1: A1,
+        arg2: A2,
+        throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def apply[M: ToMarkers](
-      markers: M,
-      message: => Message,
-      args: Arguments,
-      throwable: Throwable
+        markers: M,
+        message: => Message,
+        args: Arguments,
+        throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = ???
 
     override def toString: String = {
