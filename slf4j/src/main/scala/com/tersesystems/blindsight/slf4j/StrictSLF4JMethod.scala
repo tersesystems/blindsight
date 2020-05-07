@@ -27,7 +27,7 @@ trait StrictSLF4JMethod {
   def level: Level
 
   /**
-   * Runs with a block function that is only executioned when condition is true.
+   * Runs with a block function that is only called when condition is true.
    *
    * @param condition the call by name boolean that must return true
    * @param block the block executed when condition is true.
@@ -35,24 +35,99 @@ trait StrictSLF4JMethod {
   def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit
 
   def apply(
-      message: => Message
+      message: Message
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply[A: ToArguments](
-      message: => Message,
-      args: A
+  def apply(
+      throwable: Throwable
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply[M: ToMarkers](
-      markers: M,
-      message: => Message
+  def apply(
+      message: Message,
+      throwable: Throwable
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply[M: ToMarkers, A: ToArguments](
-      markers: M,
-      message: => Message,
-      args: A
+  def apply[A: ToArgument](
+      message: Message,
+      arg: A
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[A: ToArgument](
+      message: Message,
+      arg: A,
+      throwable: Throwable
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[A1: ToArgument, A2: ToArgument](
+      message: Message,
+      arg1: A1,
+      arg2: A2
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      message: Message,
+      args: Arguments
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      message: Message,
+      args: Arguments,
+      throwable: Throwable
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Markers
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Markers,
+      message: Message
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Markers,
+      throwable: Throwable
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Markers,
+      message: Message,
+      throwable: Throwable
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[A: ToArgument](
+      markers: Markers,
+      message: Message,
+      arg: A
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[A: ToArgument](
+      markers: Markers,
+      message: Message,
+      arg: A,
+      throwable: Throwable
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply[A1: ToArgument, A2: ToArgument](
+      markers: Markers,
+      message: Message,
+      arg1: A1,
+      arg2: A2
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Markers,
+      message: Message,
+      args: Arguments
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Markers,
+      message: Message,
+      args: Arguments,
+      throwable: Throwable
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
 }
 
 object StrictSLF4JMethod {
@@ -71,7 +146,7 @@ object StrictSLF4JMethod {
     import parameterList._
 
     override def apply(
-        msg: => Message
+        msg: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = collateMarkers
       if (m.nonEmpty) {
@@ -85,27 +160,147 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply[A: ToArguments](
-        message1: => Message,
-        args: A
+    override def apply(
+        throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m: Markers = collateMarkers
       if (m.nonEmpty) {
         if (executePredicate(m.marker)) {
-          val arguments = implicitly[ToArguments[A]].toArguments(args)
-          markerMessageArgs(m.marker, message1.toString, arguments.asArray)
+          markerMessageArg1(m.marker, "", throwable)
         }
       } else {
         if (executePredicate()) {
-          val arguments = implicitly[ToArguments[A]].toArguments(args)
-          messageArgs(message1.toString, arguments.asArray)
+          messageArg1("", throwable)
         }
       }
     }
 
-    override def apply[M: ToMarkers](
-        marker: M,
-        message1: => Message
+    override def apply[A: ToArgument](
+        message: Message,
+        arg: A
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArg1(m.marker, message.toString, Argument(arg).value)
+        }
+      } else {
+        if (executePredicate()) {
+          messageArg1(message.toString, Argument(arg).value)
+        }
+      }
+    }
+
+    override def apply(
+        message: Message,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArg1(m.marker, message.toString, throwable)
+        }
+      } else {
+        if (executePredicate()) {
+          messageArg1(message.toString, throwable)
+        }
+      }
+    }
+
+    override def apply[A: ToArgument](
+        message: Message,
+        arg: A,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArg1Arg2(m.marker, message.toString, Argument(arg).value, throwable)
+        }
+      } else {
+        if (executePredicate()) {
+          messageArg1Arg2(message.toString, Argument(arg).value, throwable)
+        }
+      }
+    }
+
+    override def apply[A1: ToArgument, A2: ToArgument](
+        message: Message,
+        arg1: A1,
+        arg2: A2
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArg1Arg2(
+            m.marker,
+            message.toString,
+            Argument(arg1).value,
+            Argument(arg2).value
+          )
+        }
+      } else {
+        if (executePredicate()) {
+          messageArg1Arg2(message.toString, Argument(arg1).value, Argument(arg2).value)
+        }
+      }
+    }
+
+    override def apply(
+        message: Message,
+        args: Arguments
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArgs(m.marker, message.toString, args.toArray)
+        }
+      } else {
+        if (executePredicate()) {
+          messageArgs(message.toString, args.toArray)
+        }
+      }
+    }
+
+    override def apply(
+        message: Message,
+        args: Arguments,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m: Markers = collateMarkers
+      if (m.nonEmpty) {
+        if (executePredicate(m.marker)) {
+          markerMessageArgs(m.marker, message.toString, args.toArray :+ throwable)
+        }
+      } else {
+        if (executePredicate()) {
+          messageArgs(message.toString, args.toArray :+ throwable)
+        }
+      }
+    }
+
+    override def apply(
+        markers: Markers
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers(markers)
+      if (executePredicate(m.marker)) {
+        markerMessage(m.marker, "")
+      }
+    }
+
+    override def apply(
+        markers: Markers,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers(markers)
+      if (executePredicate(m.marker)) {
+        markerMessageArg1(m.marker, "", throwable)
+      }
+    }
+
+    override def apply(
+        marker: Markers,
+        message1: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = collateMarkers(marker)
       if (executePredicate(m.marker)) {
@@ -113,15 +308,82 @@ object StrictSLF4JMethod {
       }
     }
 
-    override def apply[M: ToMarkers, A: ToArguments](
-        marker: M,
-        message1: => Message,
-        args: A
+    override def apply[A: ToArgument](
+        markers: Markers,
+        message1: Message,
+        arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val m = collateMarkers(marker)
+      val m = collateMarkers(markers)
       if (executePredicate(m.marker)) {
-        val arguments = implicitly[ToArguments[A]].toArguments(args)
-        markerMessageArgs(m.marker, message1.toString, arguments.asArray)
+        markerMessageArg1(m.marker, message1.toString, Argument(arg).value)
+      }
+    }
+
+    override def apply(
+        markers: Markers,
+        message: Message,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers(markers)
+      if (executePredicate(m.marker)) {
+        markerMessageArg1(m.marker, message.toString, throwable)
+      }
+    }
+
+    override def apply[A1: ToArgument, A2: ToArgument](
+        markers: Markers,
+        message: Message,
+        arg1: A1,
+        arg2: A2
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers(markers)
+      if (executePredicate(m.marker)) {
+        markerMessageArg1Arg2(
+          m.marker,
+          message.toString,
+          Argument(arg1).value,
+          Argument(arg2).value
+        )
+      }
+    }
+
+    override def apply[A: ToArgument](
+        markers: Markers,
+        message: Message,
+        arg: A,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers(markers)
+      if (executePredicate(m.marker)) {
+        markerMessageArg1Arg2(
+          m.marker,
+          message.toString,
+          Argument(arg).value,
+          throwable
+        )
+      }
+    }
+
+    override def apply(
+        markers: Markers,
+        message: Message,
+        args: Arguments
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers(markers)
+      if (executePredicate(m.marker)) {
+        markerMessageArgs(m.marker, message.toString, args.toArray)
+      }
+    }
+
+    override def apply(
+        markers: Markers,
+        message: Message,
+        args: Arguments,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      val m = collateMarkers(markers)
+      if (executePredicate(m.marker)) {
+        markerMessageArgs(m.marker, message.toString, args.toArray :+ throwable)
       }
     }
 
@@ -143,7 +405,7 @@ object StrictSLF4JMethod {
     }
 
     override def toString: String = {
-      s"${getClass.getName}(logger=${logger})"
+      s"${getClass.getName}(logger=$logger)"
     }
   }
 
@@ -169,35 +431,135 @@ object StrictSLF4JMethod {
     }
 
     override def apply(
-        message: => Message
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(throwable)
+    }
+
+    override def apply(
+        message: Message,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(message, throwable)
+    }
+
+    override def apply(
+        message: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(message)
     }
 
-    override def apply[A: ToArguments](
-        message: => Message,
-        args: A
+    override def apply[A: ToArgument](
+        message: Message,
+        arg: A
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(message, arg)
+    }
+
+    override def apply[A1: ToArgument, A2: ToArgument](
+        message: Message,
+        arg1: A1,
+        arg2: A2
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(message, arg1, arg2)
+    }
+
+    override def apply[A: ToArgument](
+        message: Message,
+        arg: A,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(message, arg, throwable)
+    }
+
+    override def apply(
+        message: Message,
+        args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(message, args)
     }
 
-    override def apply[M: ToMarkers](
-        markers: M,
-        message: => Message
+    override def apply(
+        message: Message,
+        args: Arguments,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(message, args, throwable)
+    }
+
+    override def apply(
+        markers: Markers,
+        message: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(markers, message)
     }
 
-    override def apply[M: ToMarkers, A: ToArguments](
-        markers: M,
-        message: => Message,
-        args: A
+    override def apply[A1: ToArgument, A2: ToArgument](
+        markers: Markers,
+        message: Message,
+        arg1: A1,
+        arg2: A2
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(markers, message, arg1, arg2)
+    }
+
+    override def apply(
+        markers: Markers
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(markers)
+    }
+
+    override def apply(
+        markers: Markers,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(markers, throwable)
+    }
+
+    override def apply(
+        markers: Markers,
+        message: Message,
+        args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (test) method.apply(markers, message, args)
     }
 
+    override def apply[A: ToArgument](
+        markers: Markers,
+        message: Message,
+        arg: A
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(markers, message, arg)
+    }
+
+    override def apply(
+        markers: Markers,
+        message: Message,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(markers, message, throwable)
+    }
+
+    override def apply[A: ToArgument](
+        markers: Markers,
+        message: Message,
+        arg: A,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(markers, message, arg, throwable)
+    }
+
+    override def apply(
+        markers: Markers,
+        message: Message,
+        args: Arguments,
+        throwable: Throwable
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (test) method.apply(markers, message, args, throwable)
+    }
+
     override def toString: String = {
-      s"${getClass.getName}(logger=${logger})"
+      s"${getClass.getName}(logger=$logger)"
     }
   }
 }

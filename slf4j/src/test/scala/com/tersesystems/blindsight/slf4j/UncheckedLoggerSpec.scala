@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.api.{Markers, Message}
+import com.tersesystems.blindsight.api.{Arguments, Markers, Message}
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -72,7 +72,7 @@ class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTe
 
       "call with message and several arguments" in {
         val logger = new TestLogger(loggerContext.getLogger("testing"))
-        logger.debug("hello world", 42, 1, "322")
+        logger.debug("hello world", Arguments(42, 1, "322"))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("hello world")
@@ -113,7 +113,7 @@ class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTe
 
         val marker = MarkerFactory.getDetachedMarker("MARKER")
 
-        logger.debug(marker, "hello world", 42, 1, "332")
+        logger.debug(marker, "hello world", Arguments(42, 1, "332"))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("hello world")
@@ -207,7 +207,7 @@ class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTe
 
         // No explicit marker...
         val marker2 = MarkerFactory.getDetachedMarker("MARKER2")
-        loggerWithStateMarker.debug(marker2, "hello world", 42, 1, "332")
+        loggerWithStateMarker.debug(marker2, "hello world", Arguments(42, 1, "332"))
 
         val event  = listAppender.list.get(0)
         val marker = event.getMarker

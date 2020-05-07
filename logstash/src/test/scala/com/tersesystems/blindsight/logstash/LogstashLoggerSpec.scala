@@ -1,6 +1,6 @@
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api.{Arguments, Message, ToStatement}
+import com.tersesystems.blindsight.api.{Argument, Arguments, Markers, Message, ToStatement}
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.logstash.Implicits._
@@ -34,7 +34,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a info message with marker" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.info("1" -> "2", "a=b")
+        logger.info(Markers("1" -> "2"), "a=b")
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
@@ -67,12 +67,46 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
-        logger.info("a=b", Arguments("1" -> "2", e))
+        logger.info("a=b", "1" -> "2", e)
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
         val array: Array[AnyRef] = event.getArgumentArray
         array(0) must be(StructuredArguments.kv("1", "2"))
+        event.getThrowableProxy.getMessage must be("derp")
+      }
+
+      "work with a info message with marker, argument and exception" in {
+        val underlying     = loggerContext.getLogger(this.getClass)
+        val logger: Logger = LoggerFactory.getLogger(underlying)
+        val e              = new Exception("derp")
+        logger.info(Markers("markerKey" -> "markerValue"), "a=b", "1" -> "2", e)
+
+        val event = listAppender.list.get(0)
+        event.getMarker.contains(LogstashMarkers.append("markerKey", "markerValue")) must be(true)
+        event.getMessage must equal("a=b")
+        val array: Array[AnyRef] = event.getArgumentArray
+        array(0) must be(StructuredArguments.kv("1", "2"))
+        event.getThrowableProxy.getMessage must be("derp")
+      }
+
+      "work with a info message with marker, arguments and exception" in {
+        val underlying     = loggerContext.getLogger(this.getClass)
+        val logger: Logger = LoggerFactory.getLogger(underlying)
+        val e              = new Exception("derp")
+        logger.info(
+          Markers("markerKey" -> "markerValue"),
+          "a=b",
+          Arguments("1" -> "2", "3" -> "4"),
+          e
+        )
+
+        val event = listAppender.list.get(0)
+        event.getMessage must equal("a=b")
+        event.getMarker.contains(LogstashMarkers.append("markerKey", "markerValue")) must be(true)
+        val array: Array[AnyRef] = event.getArgumentArray
+        array(0) must be(StructuredArguments.kv("1", "2"))
+        array(1) must be(StructuredArguments.kv("3", "4"))
         event.getThrowableProxy.getMessage must be("derp")
       }
 

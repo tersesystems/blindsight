@@ -29,7 +29,7 @@ object UserLoggedInEvent {
   implicit val toStatement: ToStatement[UserLoggedInEvent] = ToStatement { instance =>
     Statement()
       .withMessage(instance.toString)
-      .withArguments(Map("name" -> instance.name, "ipAddr" -> instance.ipAddr))
+      .withArguments(Arguments(Map("name" -> instance.name, "ipAddr" -> instance.ipAddr)))
   }
 }
 
@@ -39,7 +39,7 @@ object UserLoggedOutEvent {
   implicit val toStatement: ToStatement[UserLoggedOutEvent] = ToStatement { instance =>
     Statement()
       .withMessage(instance.toString)
-      .withArguments(Map("name" -> instance.name, "reason" -> instance.reason))
+      .withArguments(Arguments(Map("name" -> instance.name, "reason" -> instance.reason)))
   }
 }
 
@@ -49,6 +49,6 @@ object UserIsUpLateEvent {
   implicit val toStatement: ToStatement[UserIsUpLateEvent] = ToStatement { instance =>
     Statement()
       .withMessage(instance.toString)
-      .withArguments(Map("name" -> instance.name, "excuse" -> instance.excuse))
+      .withArguments(Arguments(Map("name" -> instance.name, "excuse" -> instance.excuse)))
   }
 }

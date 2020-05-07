@@ -1,6 +1,6 @@
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.api.{Markers, Statement, ToArguments}
+import com.tersesystems.blindsight.api.{Markers, Statement, ToArgument}
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.slf4j.SLF4JLogger
 import org.scalatest.matchers.must.Matchers
@@ -99,7 +99,7 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 }
 
 trait LowPriorityBehavior {
-  implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = new FlowBehavior[B] {
+  implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new FlowBehavior[B] {
     override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
       Some(Statement().withMessage("entry"))
     override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =

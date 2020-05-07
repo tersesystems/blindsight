@@ -65,9 +65,8 @@ object FluentMethod {
         copy(m = m + message)
       }
 
-      override def argument[T: ToArguments](instance: => T): FluentMethod.Builder = {
-        val arguments = implicitly[ToArguments[T]].toArguments(instance)
-        copy(args = args + arguments)
+      override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
+        copy(args = args + Argument(instance))
       }
 
       override def cause(e: Throwable): FluentMethod.Builder = copy(e = Some(e))
@@ -88,7 +87,7 @@ object FluentMethod {
       def empty: BuilderImpl = BuilderImpl(Markers.empty, Message.empty, Arguments.empty, None)
     }
 
-    override def argument[T: ToArguments](instance: => T): FluentMethod.Builder = {
+    override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
       BuilderImpl.empty.argument(instance)
     }
 

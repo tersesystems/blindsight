@@ -17,7 +17,7 @@
 package example.fluent
 
 import com.tersesystems.blindsight.LoggerFactory
-import com.tersesystems.blindsight.api.{Arguments, Statement}
+import com.tersesystems.blindsight.api.{Argument, Statement}
 import com.tersesystems.blindsight.logstash.Implicits._
 
 object FluentMain {
@@ -64,8 +64,8 @@ object FluentSimple {
     fluentLogger.info.marker(someMarker).log()
     // #fluent-markers
 
-    val args: Arguments = Arguments("some arguments")
-    val exception       = new RuntimeException("ex")
+    val args: Argument = Argument("some arguments")
+    val exception      = new RuntimeException("ex")
 
     // #fluent-statement
     fluentLogger.info

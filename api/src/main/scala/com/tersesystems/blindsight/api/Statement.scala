@@ -33,8 +33,8 @@ final case class Statement(
     throwable: Option[Throwable]
 ) {
 
-  def withArguments[T: ToArguments](args: T): Statement = {
-    copy(arguments = implicitly[ToArguments[T]].toArguments(args))
+  def withArguments(args: Arguments): Statement = {
+    copy(arguments = args)
   }
 
   def withMarkers[T: ToMarkers](markers: T): Statement = {

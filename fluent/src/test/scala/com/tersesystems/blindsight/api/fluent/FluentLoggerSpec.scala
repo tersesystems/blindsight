@@ -2,7 +2,7 @@ package com.tersesystems.blindsight.api.fluent
 
 import java.util.UUID
 
-import com.tersesystems.blindsight.api.{Arguments, Markers, ToArguments}
+import com.tersesystems.blindsight.api.{Argument, Markers, ToArgument}
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.slf4j.SLF4JLogger
@@ -21,8 +21,8 @@ class FluentLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
 
   "work with everything" in {
 
-    implicit val payloadToArguments: ToArguments[PayloadModel] = ToArguments { instance =>
-      Arguments(instance.payloadId.toString)
+    implicit val payloadToArguments: ToArgument[PayloadModel] = ToArgument { instance =>
+      Argument(instance.payloadId.toString)
     }
 
     val underlying                 = loggerContext.getLogger("logger")

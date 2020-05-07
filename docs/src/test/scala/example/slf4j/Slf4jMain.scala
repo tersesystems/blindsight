@@ -21,13 +21,10 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.api.{Arguments, AsArguments, Markers, ToArguments, ToMarkers}
-import com.tersesystems.blindsight.slf4j.{
-  SLF4JLogger,
-  SLF4JLoggerAPI,
-  StrictSLF4JMethod,
-  UncheckedSLF4JMethod
-}
+import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.slf4j._
+import net.logstash.logback.marker.{Markers => LogstashMarkers}
+//import com.tersesystems.blindsight.logstash.Implicits._
 import org.slf4j.MarkerFactory
 
 object Slf4jMain {
@@ -56,57 +53,53 @@ object Slf4jMain {
 
     val m1 = MarkerFactory.getMarker("M1")
 
-    import com.tersesystems.blindsight.logstash.Implicits._
-    val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = logger.unchecked
-    val e                                            = new Exception("derp")
+    val unchecked = logger.unchecked
+    val e         = new Exception("derp")
     unchecked.error("Exception occured", e)
     val creditCard = CreditCard("4111111111111")
 
     // case class tostring renders CC number
-    unchecked.info("this is risky unchecked {}", creditCard: Any)
+    unchecked.info("this is risky unchecked {}", creditCard)
 
     unchecked.info("this is unchecked {} {}", Arguments(42, 53))
     unchecked.info(
       m1,
       "unchecked with argument and marker {}, creditCard = {}",
-      Seq(42, creditCard): _*
+      42,
+      creditCard
     )
 
     val strict: SLF4JLogger[StrictSLF4JMethod] = logger.strict
 
+    strict.info("this is strict {} {}", 42, 53)
     strict.info("arg {}, arg {}, arg 3 {}", Arguments(1, "2", false))
 
     strict.error("this is an error", e)
-    strict.error("this is an error with argument {}", Arguments("a" -> "b", e))
+    strict.error("this is an error with argument {}", "arg1", e)
     strict.error(
-      "this is an error with concat arguments {} {}",
-      Arguments("a" -> "b") + Arguments("c" -> "d")
+      "this is an error with two arguments {} {}",
+      "arg1",
+      "arg2"
     )
     //strict.info("won't compile, must define ToArguments[CreditCard]", creditCard)
-    strict.info("this is strict {} {}", Arguments(42, 53))
+
     strict.info(
-      "this is strict with a seq first is [{}], second is [{}]",
-      Map("a" -> "b", "c" -> "d")
-    )
-    strict.info(
-      "markerKey" -> "markerValue",
+      Markers(LogstashMarkers.append("key", "value")),
       "marker and argument {}",
-      "argumentKey" -> "argumentValue"
+      "argumentKey=argumentValue"
     )
 
-    implicit val dateToArgument: ToArguments[Date] = ToArguments[java.util.Date] { date =>
-      new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(date.toInstant)))
+    implicit val dateToArgument: ToArgument[Date] = ToArgument[java.util.Date] { date =>
+      new Argument(Seq(DateTimeFormatter.ISO_INSTANT.format(date.toInstant)))
     }
 
-    implicit val instantToArgument: ToArguments[java.time.Instant] =
-      ToArguments[java.time.Instant] { instant =>
-        new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(instant)))
+    implicit val instantToArgument: ToArgument[java.time.Instant] =
+      ToArgument[java.time.Instant] { instant =>
+        new Argument(Seq(DateTimeFormatter.ISO_INSTANT.format(instant)))
       }
 
     logger.info("date is {}", new java.util.Date())
     logger.info("instant is {}", Instant.now())
-
-    logger.info("a b {}", "a" -> "b")
 
     val m2   = MarkerFactory.getMarker("M2")
     val base = logger.withMarker(m1).withMarker(m2)

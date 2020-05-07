@@ -2,7 +2,7 @@ package com.tersesystems.blindsight.flow
 
 import java.io.File
 
-import com.tersesystems.blindsight.api.{Arguments, Statement, ToArguments}
+import com.tersesystems.blindsight.api.{Argument, Arguments, Statement, ToArgument}
 import org.slf4j.event.Level
 
 /**
@@ -10,7 +10,7 @@ import org.slf4j.event.Level
  *
  * @tparam B the type of the result.
  */
-class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
+class SimpleFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
 
   override def entryStatement(source: FlowBehavior.Source): Option[Statement] = None
 
@@ -18,7 +18,7 @@ class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
       throwable: Throwable,
       source: FlowBehavior.Source
   ): Option[(Level, Statement)] = {
-    val args = Arguments(findArgs(source)) + Arguments(throwable) + Arguments(findPos(source))
+    val args = Arguments(findArgs(source), throwable.getMessage, findPos(source))
     Some(
       Level.ERROR,
       Statement()
@@ -29,7 +29,7 @@ class SimpleFlowBehavior[B: ToArguments] extends FlowBehavior[B] {
   }
 
   override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] = {
-    val args = Arguments(findArgs(source)) + Arguments(resultValue) + Arguments(findPos(source))
+    val args = Arguments(findArgs(source), resultValue, findPos(source))
     Some(
       Statement()
         .withMarkers(exitMarkers(source))

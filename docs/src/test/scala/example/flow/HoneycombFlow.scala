@@ -17,13 +17,12 @@
 package example.flow
 
 import com.tersesystems.blindsight.LoggerFactory
-import com.tersesystems.blindsight.api.{Arguments, Markers, Statement, ToArguments}
+import com.tersesystems.blindsight.api.{Argument, Arguments, Markers, Statement, ToArgument}
 import com.tersesystems.blindsight.flow.FlowBehavior.Source
 import com.tersesystems.blindsight.flow.{FlowBehavior, FlowMethod}
 import com.tersesystems.blindsight.logstash.Implicits._
 import com.tersesystems.logback.tracing.{SpanInfo, SpanMarkerFactory}
 import com.tersesystems.logback.uniqueid.RandomUUIDIdGenerator
-import net.logstash.logback.argument.StructuredArguments._
 import org.slf4j.event.Level
 import sourcecode.Enclosing
 
@@ -48,7 +47,7 @@ object HoneycombFlow {
       .setServiceName("blindsight-example")
   }
 
-  implicit def flowMapping[B: ToArguments](
+  implicit def flowMapping[B: ToArgument](
       implicit spanInfo: SpanInfo
   ): HoneycombFlowBehavior[B] = {
     new HoneycombFlowBehavior[B]
@@ -81,7 +80,7 @@ object HoneycombFlow {
     } finally {
       // The root span has to be logged _last_, after the child spans.
       logger.info(
-        HoneycombFlowBehavior.markerFactory(rootSpan),
+        Markers(HoneycombFlowBehavior.markerFactory(rootSpan)),
         s"${enclosing.value} exit, duration ${rootSpan.duration()}"
       )
     }
@@ -90,13 +89,13 @@ object HoneycombFlow {
   case class Person(name: String, age: Int)
 
   object Person {
-    implicit val personToArguments: ToArguments[Person] = ToArguments { person =>
-      Arguments("person" -> Map("name" -> person.name, "age" -> person.age))
+    implicit val personToArguments: ToArgument[Person] = ToArgument { person =>
+      Argument("person" -> Map("name" -> Argument(person.name), "age" -> Argument(person.age)))
     }
   }
 }
 
-class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
+class HoneycombFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
   import HoneycombFlowBehavior.markerFactory
 
   // Create a thread local stack of span info.
@@ -128,7 +127,7 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends
     Statement()
       .withMarkers(Markers(markerFactory(span)))
       .withMessage(s"${source.enclosing.value} exit, duration ${span.duration()}")
-      .withArguments(resultValue)
+      .withArguments(Arguments(resultValue))
   }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)

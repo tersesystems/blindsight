@@ -8,10 +8,8 @@ The biggest difference is that methods take a type class instance of @scaladoc[M
 
 You can pass in something that is not a marker, and provided you have a @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) in implicit scope, you can get it auto-converted.
 
-There is an automatic implicit conversion from `org.slf4j.Marker` to @scaladoc[Markers](com.tersesystems.blindsight.api.Markers):
-
 ```scala
-val marker: org.slf4j.Marker = MarkerFactory.getDetachedMarker("SOME_MARKER")
+val marker: Markers = MarkerFactory.getDetachedMarker("SOME_MARKER")
 logger.info(markers, "message with marker")
 ```
 
@@ -37,7 +35,7 @@ You can also convert your own objects into appropriate markers.
 
 ```scala
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.api.{Arguments, Markers, ToMarkers}
+import com.tersesystems.blindsight.api.{Argument, Markers, ToMarkers}
 import com.tersesystems.blindsight.slf4j._
 import org.slf4j.MarkerFactory
 
@@ -66,25 +64,27 @@ object Slf4jMain {
 ```scala
 
 import com.tersesystems.blindsight.logstash.Implicits._
-logger.info("markerKey" -> "markerValue", "marker and argument")
+logger.info(Markers("markerKey" -> "markerValue"), "marker and argument")
 ```
+
+Generally, you should not need to use markers explicitly in messages, as they can be used with [context](context.md) more effectively.
 
 ## Arguments 
 
-Arguments in Blindsight occupy one variable.  In constrast to the SLF4J API, which takes an `Any`.  There **must** be a type class instance of @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) in scope.  This is to prevent awkward `toString` matches on object instances, and ensure that structured logging is taking place. 
+Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an `Any`.  There **must** be a type class instance of @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) in scope.  This is to prevent awkward `toString` matches on object instances, and ensure that structured logging is taking place. 
 
 ```scala
-// Will not compile, because no ToArguments[SomeRandomObject] is found in implicit scope!
+// Will not compile, because no ToArgument[SomeRandomObject] is found in implicit scope!
 logger.info("one argument {}", new SomeRandomObject()) 
 ```
 
-Default @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) are determined for the primitives (`String`, `Int`, etc):
+Default @scaladoc[ToArgument](com.tersesystems.blindsight.api.ToArgument) are determined for the primitives (`String`, `Int`, etc):
 
 ```scala
 logger.info("one argument {}", 42) // works, because default
 ```
 
-If you have several arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments) instance:
+If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments) instance:
 
 ```scala
 logger.info("arg {}, arg {}, arg {}", Arguments(1, "2", false))
@@ -121,41 +121,24 @@ Not everything is defined as an implicit out of the box, but it's easy to define
 ```scala
 import java.time.format.DateTimeFormatter
 
-implicit val dateToArgument: ToArguments[Date] = ToArguments[java.util.Date] { date =>
-  new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(date.toInstant)))
+implicit val dateToArgument: ToArgument[Date] = ToArgument[java.util.Date] { date =>
+  new Argument(DateTimeFormatter.ISO_INSTANT.format(date.toInstant))
 }
 
-implicit val instantToArgument: ToArguments[java.time.Instant] = ToArguments[java.time.Instant] { instant =>
-  new Arguments(Seq(DateTimeFormatter.ISO_INSTANT.format(instant)))
+implicit val instantToArgument: ToArgument[java.time.Instant] = ToArgument[java.time.Instant] { instant =>
+  new Argument(DateTimeFormatter.ISO_INSTANT.format(instant))
 }
 
 logger.info("date is {}", new java.util.Date())
 logger.info("instant is {}", Instant.now())
 ```
 
-Exceptions must be the last argument in the @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments).  For example:
+Exceptions come after arguments, and are not included in the list.  For example:
 
 ```scala
 val e = new Exception("something is horribly wrong")
-logger.error("this is an error with argument {}", Arguments("a" -> "b", e))
+logger.error("this is an error with argument {}", Arguments("a" -> "b"), e)
 ```
-
-Note that @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) is a contravariant type class.  This means that the *lowest* type class match will take priority.  This is useful when it comes time to passing things like exceptions:
-
-```scala
-val exception: IllegalStateException = new IllegalStateException("Cannot divide by zero")
-logger.error("Some error", exception) // does not compile under invariant type class
-```
-
-but this does lead to some [unintuitive behavior](https://groups.google.com/forum/#!topic/scala-language/ZE83TvSWpT4) in type class resolving that [even the Scala team question](https://www.scala-lang.org/old/node/4626).
-
-Getting at the underlying array can be done with `asArray`:
-
-```scala
-val argArray: Array[_] = arguments.asArray
-```
-
-But this is really for the underlying SLF4J logger and shouldn't need to be touched directly.
 
 ## Unchecked API
 
@@ -173,6 +156,12 @@ val creditCard = CreditCard("4111111111111")
 
  // case class tostring renders CC number, which is unsafe!
 unchecked.info("this is risky unchecked {}", creditCard)
+```
+
+Where there are several arguments, the @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments) must be used rather than `Seq` or `Array`, as it is very awkward to use `Seq` and `Array` with varadic input:
+
+```scala
+unchecked.info("this is risky unchecked {}, {}, {}", Arguments("1", 2, true))
 ```
 
 In the unchecked API, you can set `-Dblindsight.anywarn=true` as a system property, and output will be written to `System.out.error` when calls to `Any` are made.

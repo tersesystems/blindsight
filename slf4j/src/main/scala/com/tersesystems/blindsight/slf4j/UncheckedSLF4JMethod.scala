@@ -30,44 +30,44 @@ trait UncheckedSLF4JMethod {
   def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit
 
   def apply(
-      instance: => Message
+      instance: String
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
   def apply(
-      message: => Message,
-      args: Arguments
+      message: String,
+      arg: Any
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
   def apply(
-      message: => Message,
+      message: String,
       arg1: Any,
       arg2: Any
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
   def apply(
-      message: => Message,
-      args: Any*
-  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
-
-  def apply(
-      markers: Marker,
-      message: => Message
-  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
-
-  def apply(
-      markers: Marker,
-      message: => Message,
+      message: String,
       args: Arguments
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
   def apply(
       markers: Marker,
-      message: => Message,
+      message: String
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Marker,
+      message: String,
+      arg: Any
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
+  def apply(
+      markers: Marker,
+      message: String,
       arg1: Any,
       arg2: Any
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(markers: Marker, message: => Message, args: Any*)(
+  def apply(markers: Marker, message: String, args: Arguments)(
       implicit line: Line,
       file: File,
       enclosing: Enclosing
@@ -109,38 +109,38 @@ object UncheckedSLF4JMethod {
     import parameterList._
 
     override def apply(
-        msg: => Message
+        msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val markers = collateMarkers
       if (markers.nonEmpty) {
         if (executePredicate(markers.marker)) {
-          markerMessage(markers.marker, msg.toString)
+          markerMessage(markers.marker, msg)
         }
       } else {
         if (executePredicate()) {
-          message(msg.toString)
+          message(msg)
         }
       }
     }
 
     override def apply(
-        format: => Message,
-        args: Arguments
+        format: String,
+        arg: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val markers: Markers = collateMarkers
       if (markers.nonEmpty) {
         if (executePredicate(markers.marker)) {
-          markerMessageArgs(markers.marker, format.toString, args.asArray)
+          markerMessageArg1(markers.marker, format, arg)
         }
       } else {
         if (executePredicate()) {
-          messageArgs(format.toString, args.asArray)
+          messageArg1(format, arg)
         }
       }
     }
 
     override def apply(
-        format: => Message,
+        format: String,
         arg1: Any,
         arg2: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
@@ -150,54 +150,54 @@ object UncheckedSLF4JMethod {
       val markers: Markers = collateMarkers
       if (markers.nonEmpty) {
         if (executePredicate(markers.marker)) {
-          markerMessageArg1Arg2(markers.marker, format.toString, arg1, arg2)
+          markerMessageArg1Arg2(markers.marker, format, arg1, arg2)
         }
       } else {
         if (executePredicate()) {
-          messageArg1Arg2(format.toString, arg1, arg2)
+          messageArg1Arg2(format, arg1, arg2)
         }
       }
     }
 
     override def apply(
-        format: => Message,
-        args: Any*
+        format: String,
+        args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       warnIfChecked("Use apply(format, Arguments(args)) as Any* cannot be type checked")
       val markers = collateMarkers
       if (markers.nonEmpty) {
         if (executePredicate(markers.marker)) {
-          markerMessageArgs(markers.marker, format.toString, args)
+          markerMessageArgs(markers.marker, format, args.toArray)
         }
       } else {
         if (executePredicate()) {
-          messageArgs(format.toString, args)
+          messageArgs(format, args.toArray)
         }
       }
     }
 
     override def apply(
         marker: Marker,
-        msg: => Message
+        msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val markers = collateMarkers(marker)
       if (executePredicate(markers.marker)) {
-        markerMessage(markers.marker, msg.toString)
+        markerMessage(markers.marker, msg)
       }
     }
 
-    override def apply(marker: Marker, msg: => Message, args: Arguments)(
+    override def apply(marker: Marker, msg: String, arg: Any)(
         implicit line: Line,
         file: File,
         enclosing: Enclosing
     ): Unit = {
       val markers = collateMarkers(marker)
       if (executePredicate(markers.marker)) {
-        markerMessageArgs(markers.marker, msg.toString, args.asArray)
+        markerMessageArg1(markers.marker, msg, arg)
       }
     }
 
-    override def apply(marker: Marker, format: => Message, arg1: Any, arg2: Any)(
+    override def apply(marker: Marker, format: String, arg1: Any, arg2: Any)(
         implicit line: Line,
         file: File,
         enclosing: Enclosing
@@ -207,21 +207,21 @@ object UncheckedSLF4JMethod {
       )
       val markers = collateMarkers(marker)
       if (executePredicate(markers.marker)) {
-        markerMessageArg1Arg2(markers.marker, format.toString, arg1, arg2)
+        markerMessageArg1Arg2(markers.marker, format, arg1, arg2)
       }
     }
 
     override def apply(
         marker: Marker,
-        format: => Message,
-        args: Any*
+        format: String,
+        args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       warnIfChecked(
         s"Use apply(marker, format, Arguments(args)) as Any* cannot be type checked: ${file}:${line}"
       )
       val markers = collateMarkers(marker)
       if (executePredicate(markers.marker)) {
-        markerMessageArgs(markers.marker, format.toString, args)
+        markerMessageArgs(markers.marker, format, args.toArray)
       }
     }
 
@@ -256,62 +256,62 @@ object UncheckedSLF4JMethod {
     private def parameterList = logger.parameterList(level)
 
     override def apply(
-        msg: => Message
+        msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.message(msg.toString)
+      parameterList.message(msg)
     }
 
     override def apply(
-        msg: => Message,
-        args: Arguments
+        msg: String,
+        arg: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.messageArgs(msg.toString, args.asArray)
+      parameterList.messageArg1(msg, arg)
     }
 
     override def apply(
-        msg: => Message,
+        msg: String,
         arg1: Any,
         arg2: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.messageArg1Arg2(msg.toString, arg1: Any, arg2)
+      parameterList.messageArg1Arg2(msg, arg1: Any, arg2)
     }
 
     override def apply(
-        msg: => Message,
-        args: Any*
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.messageArgs(msg.toString, args)
-    }
-
-    override def apply(
-        marker: Marker,
-        msg: => Message
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.markerMessage(marker, msg.toString)
-    }
-
-    override def apply(
-        marker: Marker,
-        msg: => Message,
+        msg: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.markerMessageArgs(marker, msg.toString, args.asArray)
+      parameterList.messageArgs(msg, args.toArray)
     }
 
-    override def apply(marker: Marker, msg: => Message, arg1: Any, arg2: Any)(
+    override def apply(
+        marker: Marker,
+        msg: String
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
+      parameterList.markerMessage(marker, msg)
+    }
+
+    override def apply(
+        marker: Marker,
+        msg: String,
+        arg: Any
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
+      parameterList.markerMessageArg1(marker, msg.toString, arg)
+    }
+
+    override def apply(marker: Marker, msg: String, arg1: Any, arg2: Any)(
         implicit line: Line,
         file: File,
         enclosing: Enclosing
     ): Unit = if (test) {
-      parameterList.markerMessageArg1Arg2(marker, msg.toString, arg1, arg2)
+      parameterList.markerMessageArg1Arg2(marker, msg, arg1, arg2)
     }
 
     override def apply(
         marker: Marker,
-        msg: => Message,
-        args: Any*
+        msg: String,
+        args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.markerMessageArgs(marker, msg.toString, args)
+      parameterList.markerMessageArgs(marker, msg, args.toArray)
     }
 
     override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {

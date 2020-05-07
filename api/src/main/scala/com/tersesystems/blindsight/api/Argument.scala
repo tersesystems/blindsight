@@ -16,6 +16,15 @@
 
 package com.tersesystems.blindsight.api
 
+final class Argument(val value: Any) {
+  def arguments: Arguments   = new Arguments(Seq(this))
+  def toStatement: Statement = Statement().withArguments(arguments)
+}
+
+object Argument {
+  def apply[A: ToArgument](instance: A): Argument = implicitly[ToArgument[A]].toArgument(instance)
+}
+
 /**
  * This is the representation of arguments in an SLF4J logging statement.
  *
@@ -33,43 +42,34 @@ package com.tersesystems.blindsight.api
  * There is no special treatment of exceptions; as in SLF4J, the exception must be the
  * last element of arguments to be treated as the Throwable.
  */
-final class Arguments(private val elements: Seq[Any]) {
+final class Arguments(private val elements: Seq[Argument]) {
+
+  def add[T: ToArgument](instance: T): Arguments = {
+    new Arguments(elements :+ Argument(instance))
+  }
+
+  def +[T: ToArgument](instance: T): Arguments = add(instance)
 
   def placeholders: String = " {}" * elements.size
 
-  def asArray: Array[Any] = elements.toArray
+  def toSeq: Seq[Any] = elements.map(_.value)
 
-  def size: Int = elements.size
+  def toArray: Array[Any] = toSeq.toArray
+}
 
-  def nonEmpty: Boolean = elements.nonEmpty
+final class AsArgument(val argument: Argument)
 
-  def isEmpty: Boolean = elements.isEmpty
-
-  def add[T: ToArguments](instance: T): Arguments = {
-    val args = implicitly[ToArguments[T]].toArguments(instance)
-    new Arguments(elements ++ args.elements)
+object AsArgument {
+  implicit def toAsArgument[A: ToArgument](a: A): AsArgument = {
+    val arguments = implicitly[ToArgument[A]].toArgument(a)
+    new AsArgument(arguments)
   }
-
-  def +[T: ToArguments](instance: T): Arguments = add(instance)
-
-  def append(asArguments: Seq[AsArguments]): Arguments = {
-    val args = Arguments(asArguments: _*)
-    new Arguments(elements ++ args.elements)
-  }
-
-  def ++(asArguments: Seq[AsArguments]): Arguments = append(asArguments)
-
-  def toStatement: Statement = Statement().withArguments(this)
 }
 
 object Arguments {
   def empty: Arguments = new Arguments(Seq.empty)
 
-  def apply(els: AsArguments*): Arguments = {
-    els.foldLeft(Arguments.empty)((acc, el) => acc + el.arguments)
-  }
-
-  def apply(iterable: Iterable[AsArguments]): Arguments = {
-    iterable.iterator.foldLeft(Arguments.empty)((acc, el) => acc + el.arguments)
+  def apply(els: AsArgument*): Arguments = {
+    els.foldLeft(Arguments.empty)((acc, el) => acc + el.argument)
   }
 }
