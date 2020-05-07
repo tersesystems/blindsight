@@ -86,7 +86,7 @@ class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTe
 
         val marker = MarkerFactory.getDetachedMarker("MARKER")
 
-        logger.debug(marker, "hello world", Seq(42))
+        logger.debug(marker, "hello world", 42)
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("hello world")

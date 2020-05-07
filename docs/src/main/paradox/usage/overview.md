@@ -79,16 +79,43 @@ logger.info(marker, message, arguments);
 
 All of these together make a logging statement.
 
-Blindsight keeps the same concept these parameters, but creates specific types; @scaladoc[Markers](com.tersesystems.blindsight.api.Markers), @scaladoc[Message](com.tersesystems.blindsight.api.Message), and @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments), with a @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) that encompasses all the above.
+Blindsight keeps the same concept these parameters, but creates specific types; @scaladoc[Markers](com.tersesystems.blindsight.api.Markers), @scaladoc[Message](com.tersesystems.blindsight.api.Message), and @scaladoc[Argument](com.tersesystems.blindsight.api.Argument), with a @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) that encompasses all the above.
 
 ```scala
 import com.tersesystems.blindsight.api._
 val markers: Markers = Markers(marker1, marker2)
 val message: Message = Message("some message")
-val arguments: Argument = Argument("arg1", 42, 1337)
+val argument1: Argument = Argument("arg1")
+
+logger.info(markers, message, argument1);
 ```
 
-Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type.  So @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) has a @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) type class, @scaladoc[Message](com.tersesystems.blindsight.api.Message) has @scaladoc[ToMessage](com.tersesystems.blindsight.api.ToMessage), and so on.
+Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type.  So @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) has a @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) type class, @scaladoc[Message](com.tersesystems.blindsight.api.Message) has @scaladoc[ToMessage](com.tersesystems.blindsight.api.ToMessage), and @scaladoc[Argument](com.tersesystems.blindsight.api.Argument) has @scaladoc[ToArgument](com.tersesystems.blindsight.api.ToArgument).
+
+There is an implicit conversion from `String` to Message:
+
+```scala
+logger.info("this is a message");
+```
+
+And the API takes `ToArgument` for automatic conversion:
+
+```scala
+logger.info("this is a message", "arg1", "arg2");
+```
+
+The @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments) class aggregates multiple arguments together when there are more than two arguments.  The `Arguments()` method takes a varadic list of arguments that can be hetrogeneous.
+
+```scala
+val arguments: Arguments = Arguments("arg1", 42, true)
+logger.info(markers, message, arguments);
+```
+
+Exceptions must be at the end of the statement, and are not aggregated with arguments.  This is to encourage type safety and make it impossible to include an exception as an argument by accident.
+
+```scala
+logger.info("Message with arguments and exceptions", arguments, exception);
+```
 
 You can use type class instances to extend Blindsight's functionality.  For example, you can pass a feature flag into `isDebugEnabled` and it will convert it into a `Markers`:
 
@@ -107,7 +134,7 @@ object Slf4jMain {
     val featureFlag = FeatureFlag("flag.enabled")
     // this is not a marker, but is converted via type class.
     if (logger.isDebugEnabled(featureFlag)) {
-      logger.debug(featureFlag, "this is a test")
+      logger.debug("this is a test")
     }
   }
 }
