@@ -27,16 +27,25 @@ import scala.collection.JavaConverters._
  * You should not need to use this as an end user, but it is very useful for extending loggers.
  */
 abstract class ParameterList(val level: Level, val logger: org.slf4j.Logger) {
+
   def executePredicate(): Boolean
+
   def executePredicate(marker: Marker): Boolean
 
   def message(msg: String): Unit
+
   def messageArg1(msg: String, arg: Any): Unit
+
   def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit
+
   def messageArgs(msg: String, args: Seq[_]): Unit
+
   def markerMessage(marker: Marker, msg: String): Unit
+
   def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit
+
   def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit
+
   def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit
 
   def executeStatement(statement: Statement): Unit =

@@ -2,7 +2,7 @@ package com.tersesystems.blindsight.flow
 
 import java.io.File
 
-import com.tersesystems.blindsight.api.{Argument, Arguments, Statement, ToArgument}
+import com.tersesystems.blindsight.api._
 import org.slf4j.event.Level
 
 /**

@@ -16,8 +16,21 @@
 
 package com.tersesystems.blindsight.api
 
+/**
+ * This class represents an argument associated with the logging statement.
+ *
+ * An argument is usually generated from a type class instance using `apply`.
+ *
+ * {{{
+ * val argument: Argument = Argument("a")
+ * }}}
+ *
+ * @param value the raw argument.
+ */
 final class Argument(val value: Any) {
-  def arguments: Arguments   = new Arguments(Seq(this))
+
+  def arguments: Arguments = new Arguments(Seq(this))
+
   def toStatement: Statement = Statement().withArguments(arguments)
 }
 
@@ -32,11 +45,8 @@ object Argument {
  * `++` for sequences.
  *
  * {{{
- * val argsA: Arguments = Arguments("a")
- * val argsPlus: Arguments = argsA + "b"
- * val argsPlusPlus: Arguments = argsPlus ++ Seq(1, "c")
- * val messageWithPlaceHolders = Message("some message").withPlaceHolders(argsPlusPlus)
- * logger.info(messageWithPlaceHolders, argsPlusPlus)
+ * val argument: Argument = Argument("a")
+ * val arguments: Arguments = Arguments(argsA, argsB)
  * }}}
  *
  * There is no special treatment of exceptions; as in SLF4J, the exception must be the
@@ -57,19 +67,10 @@ final class Arguments(private val elements: Seq[Argument]) {
   def toArray: Array[Any] = toSeq.toArray
 }
 
-final class AsArgument(val argument: Argument)
-
-object AsArgument {
-  implicit def toAsArgument[A: ToArgument](a: A): AsArgument = {
-    val arguments = implicitly[ToArgument[A]].toArgument(a)
-    new AsArgument(arguments)
-  }
-}
-
 object Arguments {
   def empty: Arguments = new Arguments(Seq.empty)
 
-  def apply(els: AsArgument*): Arguments = {
-    els.foldLeft(Arguments.empty)((acc, el) => acc + el.argument)
+  def apply(els: Argument*): Arguments = {
+    els.foldLeft(Arguments.empty)((acc, el) => acc + el)
   }
 }

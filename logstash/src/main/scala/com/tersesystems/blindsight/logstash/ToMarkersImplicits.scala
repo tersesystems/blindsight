@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api.{Markers, ToMarkers}
+import com.tersesystems.blindsight.api.{AsMarkers, Markers, ToArgument, ToMarkers}
 import net.logstash.logback.argument.StructuredArguments
 import net.logstash.logback.marker.Markers._
 import net.logstash.logback.marker.LogstashMarker
@@ -42,18 +42,6 @@ trait LogstashToMarkersImplicits {
     case (k, v) => Markers(append(k, v))
   }
 
-  implicit def arrayToMarkers[T <: java.lang.Object]: ToMarkers[(String, Seq[T])] = ToMarkers {
-    case (k, v) => Markers(appendArray(k, v: _*))
-  }
-
-  implicit def mapToMarkers[T]: ToMarkers[Map[String, T]] = ToMarkers { map =>
-    Markers(appendEntries(map.asJava))
-  }
-
-  implicit def stringMapToMarkers[T]: ToMarkers[(String, Map[String, T])] =
-    ToMarkers {
-      case (k, instance) => Markers(append(k, instance))
-    }
 }
 
 /**

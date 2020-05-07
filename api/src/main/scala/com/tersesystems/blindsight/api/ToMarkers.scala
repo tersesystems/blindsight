@@ -46,7 +46,12 @@ trait ToMarkers[T] {
 
 trait LowPriorityToMarkersImplicits {
   implicit val markersToMarkers: ToMarkers[Markers] = ToMarkers(identity)
-  implicit val markerToMarkers: ToMarkers[Marker]   = ToMarkers(Markers(_))
+
+  implicit val markerToMarkers: ToMarkers[Marker] = ToMarkers(Markers(_))
+
+  implicit val iterableToMarkers: ToMarkers[Iterable[Markers]] = ToMarkers { iterable =>
+    iterable.foldLeft(Markers.empty) { case (acc, el) => acc + el }
+  }
 }
 
 object ToMarkers extends LowPriorityToMarkersImplicits {

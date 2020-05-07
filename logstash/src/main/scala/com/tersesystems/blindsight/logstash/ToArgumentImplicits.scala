@@ -16,10 +16,9 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api
-import com.tersesystems.blindsight.api.{Argument, AsArgument, ToArgument}
+import com.tersesystems.blindsight.api._
+import net.logstash.logback.argument._
 import net.logstash.logback.argument.StructuredArguments._
-import net.logstash.logback.argument.{StructuredArgument, StructuredArguments}
 import sourcecode.{Args, Enclosing, File, Line}
 
 import scala.collection.JavaConverters._
@@ -48,34 +47,6 @@ trait LogstashToArgumentsImplicits {
     case (k, v) =>
       Argument(StructuredArguments.keyValue(k, v))
   }
-
-  implicit def mapToArgument[T: ToArgument]: ToArgument[Map[String, T]] = ToArgument { inputMap =>
-    import java.util
-    val args: util.Map[String, Any] = inputMap.map {
-      case (k, argumentValue) =>
-        val v = implicitly[ToArgument[T]].toArgument(argumentValue).value
-        k -> v
-    }.asJava
-    Argument(StructuredArguments.entries(args))
-  }
-
-  implicit def stringSeqToArgument[T: ToArgument]: ToArgument[(String, Seq[T])] =
-    ToArgument {
-      case (k, v) =>
-        Argument(StructuredArguments.array(k, v.map(Argument(_).value)))
-    }
-
-  implicit def stringMapToArgument[T: ToArgument]: ToArgument[(String, Map[String, T])] =
-    ToArgument {
-      case (k, v) =>
-        import net.logstash.logback.argument._
-        val maps = v.map {
-          case (k, v) =>
-            k -> implicitly[ToArgument[T]].toArgument(v).value
-        }
-        Argument(StructuredArguments.kv(k, maps))
-    }
-
 }
 
 /**

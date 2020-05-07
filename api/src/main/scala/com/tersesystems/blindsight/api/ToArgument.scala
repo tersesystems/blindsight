@@ -19,14 +19,6 @@ package com.tersesystems.blindsight.api
 /**
  * This is a type class used to convert given types to `Argument`.
  *
- * {{{
- * case class Person(name: String, age: Int)
- * implicit val personToArgument: ToArgument[Person] = ToArgument { person =>
- *   import net.logstash.logback.argument.StructuredArguments._
- *   new Argument(keyValue("person", person.name))
- * }
- * }}}
- *
  * @tparam T the type to convert to Arguments
  */
 trait ToArgument[T] {
