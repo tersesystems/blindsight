@@ -67,6 +67,12 @@ logger.withMarker(userIdMarker).info("Logging with user id added as a context ma
 val contextMarkers: Markers = logger.markers
 ```
 
+## Example
+
+There's an example application at [https://github.com/tersesystems/play-blindsight](https://github.com/tersesystems/play-blindsight) that integrates with Honeycomb Tracing using the flow logger:
+
+![trace.png](trace.png)
+
 ## Documentation 
 
 See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
