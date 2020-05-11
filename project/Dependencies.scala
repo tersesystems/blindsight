@@ -1,14 +1,13 @@
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.1"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.2"
   val scalamock = "org.scalamock" %% "scalamock" % "4.4.0"
 
   val terseLogback = "0.16.1"
 
-  lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
-
-  lazy val sourcecode         = "com.lihaoyi"                  %% "sourcecode"           % "0.1.9"
+  lazy val slf4jApi           = "org.slf4j" % "slf4j-api" % "1.7.30"
+  lazy val sourcecode         = "com.lihaoyi"                  %% "sourcecode"           % "0.2.1"
   lazy val jacksonModuleScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.10.4"
   lazy val janino             = "org.codehaus.janino"          % "janino"                % "3.0.11"
   lazy val jansi              = "org.fusesource.jansi"         % "jansi"                 % "1.17.1"
