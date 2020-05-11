@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>Arguments - Blindsight 0.1.35 - com.tersesystems.blindsight.api.Arguments</title>
-          <meta name="description" content="Arguments - Blindsight 0.1.35 - com.tersesystems.blindsight.api.Arguments" />
-          <meta name="keywords" content="Arguments Blindsight 0.1.35 com.tersesystems.blindsight.api.Arguments" />
+          <title>Arguments - Blindsight 0.1.36 - com.tersesystems.blindsight.api.Arguments</title>
+          <meta name="description" content="Arguments - Blindsight 0.1.36 - com.tersesystems.blindsight.api.Arguments" />
+          <meta name="keywords" content="Arguments Blindsight 0.1.36 com.tersesystems.blindsight.api.Arguments" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -58,7 +58,7 @@
 <span class="kw">val</span> messageWithPlaceHolders = Message(<span class="lit">"some message"</span>).withPlaceHolders(argsPlusPlus)
 logger.info(messageWithPlaceHolders, argsPlusPlus)</pre><p>There is no special treatment of exceptions; as in SLF4J, the exception must be the
 last element of arguments to be treated as the Throwable.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/tersesystems/blindsight/tree/v0.1.35/api/src/main/scala/com/tersesystems/blindsight/api/Arguments.scala#L1" target="_blank">Arguments.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/api/src/main/scala/com/tersesystems/blindsight/api/Argument.scala#L1" target="_blank">Argument.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -103,7 +103,7 @@ last element of arguments to be treated as the Throwable.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.tersesystems.blindsight.api.Arguments#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(elements:Seq[Any]):com.tersesystems.blindsight.api.Arguments"></a>
+      <a id="&lt;init&gt;(elements:Seq[com.tersesystems.blindsight.api.Argument]):com.tersesystems.blindsight.api.Arguments"></a>
       <a id="&lt;init&gt;:Arguments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -111,10 +111,10 @@ last element of arguments to be treated as the Throwable.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Arguments</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span>
+        <span class="name">Arguments</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="Argument.html" class="extype" name="com.tersesystems.blindsight.api.Argument">Argument</a>]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@&lt;init&gt;(elements:Seq[Any]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@&lt;init&gt;(elements:Seq[com.tersesystems.blindsight.api.Argument]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -163,35 +163,18 @@ last element of arguments to be treated as the Throwable.
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.tersesystems.blindsight.api.Arguments#+" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="+[T](instance:T)(implicitevidence$2:com.tersesystems.blindsight.api.ToArguments[T]):com.tersesystems.blindsight.api.Arguments"></a>
-      <a id="+[T](T)(ToArguments[T]):Arguments"></a>
+      <a id="+[T](instance:T)(implicitevidence$3:com.tersesystems.blindsight.api.ToArgument[T]):com.tersesystems.blindsight.api.Arguments"></a>
+      <a id="+[T](T)(ToArgument[T]):Arguments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $plus" class="name">+</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="instance">instance: <span class="extype" name="com.tersesystems.blindsight.api.Arguments.+.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="ToArguments.html" class="extype" name="com.tersesystems.blindsight.api.ToArguments">ToArguments</a>[<span class="extype" name="com.tersesystems.blindsight.api.Arguments.+.T">T</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
+        <span title="gt4s: $plus" class="name">+</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="instance">instance: <span class="extype" name="com.tersesystems.blindsight.api.Arguments.+.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.api.Arguments.+.T">T</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@+[T](instance:T)(implicitevidence$2:com.tersesystems.blindsight.api.ToArguments[T]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="com.tersesystems.blindsight.api.Arguments#++" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="++(asArguments:Seq[com.tersesystems.blindsight.api.AsArguments]):com.tersesystems.blindsight.api.Arguments"></a>
-      <a id="++(Seq[AsArguments]):Arguments"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $plus$plus" class="name">++</span><span class="params">(<span name="asArguments">asArguments: <span class="extype" name="scala.Seq">Seq</span>[<a href="AsArguments.html" class="extype" name="com.tersesystems.blindsight.api.AsArguments">AsArguments</a>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@++(asArguments:Seq[com.tersesystems.blindsight.api.AsArguments]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@+[T](instance:T)(implicitevidence$3:com.tersesystems.blindsight.api.ToArgument[T]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -238,52 +221,18 @@ last element of arguments to be treated as the Throwable.
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.tersesystems.blindsight.api.Arguments#add" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="add[T](instance:T)(implicitevidence$1:com.tersesystems.blindsight.api.ToArguments[T]):com.tersesystems.blindsight.api.Arguments"></a>
-      <a id="add[T](T)(ToArguments[T]):Arguments"></a>
+      <a id="add[T](instance:T)(implicitevidence$2:com.tersesystems.blindsight.api.ToArgument[T]):com.tersesystems.blindsight.api.Arguments"></a>
+      <a id="add[T](T)(ToArgument[T]):Arguments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">add</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="instance">instance: <span class="extype" name="com.tersesystems.blindsight.api.Arguments.add.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="ToArguments.html" class="extype" name="com.tersesystems.blindsight.api.ToArguments">ToArguments</a>[<span class="extype" name="com.tersesystems.blindsight.api.Arguments.add.T">T</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
+        <span class="name">add</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="instance">instance: <span class="extype" name="com.tersesystems.blindsight.api.Arguments.add.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.api.Arguments.add.T">T</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@add[T](instance:T)(implicitevidence$1:com.tersesystems.blindsight.api.ToArguments[T]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="com.tersesystems.blindsight.api.Arguments#append" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="append(asArguments:Seq[com.tersesystems.blindsight.api.AsArguments]):com.tersesystems.blindsight.api.Arguments"></a>
-      <a id="append(Seq[AsArguments]):Arguments"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">append</span><span class="params">(<span name="asArguments">asArguments: <span class="extype" name="scala.Seq">Seq</span>[<a href="AsArguments.html" class="extype" name="com.tersesystems.blindsight.api.AsArguments">AsArguments</a>]</span>)</span><span class="result">: <a href="" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@append(asArguments:Seq[com.tersesystems.blindsight.api.AsArguments]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="com.tersesystems.blindsight.api.Arguments#asArray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asArray:Array[Any]"></a>
-      <a id="asArray:Array[Any]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Array" class="extype" target="_top">Array</a>[<span class="extype" name="scala.Any">Any</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@asArray:Array[Any]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@add[T](instance:T)(implicitevidence$2:com.tersesystems.blindsight.api.ToArgument[T]):com.tersesystems.blindsight.api.Arguments" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -527,23 +476,6 @@ last element of arguments to be treated as the Throwable.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.tersesystems.blindsight.api.Arguments#isEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isEmpty:Boolean"></a>
-      <a id="isEmpty:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isEmpty</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@isEmpty:Boolean" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -578,23 +510,6 @@ last element of arguments to be treated as the Throwable.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.tersesystems.blindsight.api.Arguments#nonEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="nonEmpty:Boolean"></a>
-      <a id="nonEmpty:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">nonEmpty</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@nonEmpty:Boolean" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -646,23 +561,6 @@ last element of arguments to be treated as the Throwable.
       </a>
     </span>
       
-    </li><li name="com.tersesystems.blindsight.api.Arguments#size" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="size:Int"></a>
-      <a id="size:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">size</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Int" class="extype" target="_top">Int</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@size:Int" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -680,19 +578,36 @@ last element of arguments to be treated as the Throwable.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.tersesystems.blindsight.api.Arguments#toStatement" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toStatement:com.tersesystems.blindsight.api.Statement"></a>
-      <a id="toStatement:Statement"></a>
+    </li><li name="com.tersesystems.blindsight.api.Arguments#toArray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="toArray:Array[Any]"></a>
+      <a id="toArray:Array[Any]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toStatement</span><span class="result">: <a href="Statement.html" class="extype" name="com.tersesystems.blindsight.api.Statement">Statement</a></span>
+        <span class="name">toArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Array" class="extype" target="_top">Array</a>[<span class="extype" name="scala.Any">Any</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@toStatement:com.tersesystems.blindsight.api.Statement" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@toArray:Array[Any]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.tersesystems.blindsight.api.Arguments#toSeq" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="toSeq:Seq[Any]"></a>
+      <a id="toSeq:Seq[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toSeq</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Any">Any</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.Arguments@toSeq:Seq[Any]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

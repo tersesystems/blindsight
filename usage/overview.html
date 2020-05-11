@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.35
+0.1.36
 </div>
 </div>
 <div class="nav-toc">
@@ -89,7 +89,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.35
+0.1.36
 </div>
 </div>
 <div class="nav-toc">
@@ -191,13 +191,28 @@ Object[] arguments = ...
 logger.info(marker, message, arguments);
 </code></pre>
 <p>All of these together make a logging statement.</p>
-<p>Blindsight keeps the same concept these parameters, but creates specific types; <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a>, with a <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> that encompasses all the above.</p>
+<p>Blindsight keeps the same concept these parameters, but creates specific types; <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/api/Argument.html" title="com.tersesystems.blindsight.api.Argument"><code>Argument</code></a>, with a <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> that encompasses all the above.</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
 val markers: Markers = Markers(marker1, marker2)
 val message: Message = Message(&quot;some message&quot;)
-val arguments: Arguments = Arguments(&quot;arg1&quot;, 42, 1337)
+val argument1: Argument = Argument(&quot;arg1&quot;)
+
+logger.info(markers, message, argument1);
 </code></pre>
-<p>Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type. So <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> has a <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a> type class, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a> has <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMessage.html" title="com.tersesystems.blindsight.api.ToMessage"><code>ToMessage</code></a>, and so on.</p>
+<p>Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type. So <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> has a <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a> type class, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a> has <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMessage.html" title="com.tersesystems.blindsight.api.ToMessage"><code>ToMessage</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/api/Argument.html" title="com.tersesystems.blindsight.api.Argument"><code>Argument</code></a> has <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArgument.html" title="com.tersesystems.blindsight.api.ToArgument"><code>ToArgument</code></a>.</p>
+<p>There is an implicit conversion from <code>String</code> to Message:</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;this is a message&quot;);
+</code></pre>
+<p>And the API takes <code>ToArgument</code> for automatic conversion:</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;this is a message&quot;, &quot;arg1&quot;, &quot;arg2&quot;);
+</code></pre>
+<p>The <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a> class aggregates multiple arguments together when there are more than two arguments. The <code>Arguments()</code> method takes a varadic list of arguments that can be hetrogeneous.</p>
+<pre class="prettyprint"><code class="language-scala">val arguments: Arguments = Arguments(&quot;arg1&quot;, 42, true)
+logger.info(markers, message, arguments);
+</code></pre>
+<p>Exceptions must be at the end of the statement, and are not aggregated with arguments. This is to encourage type safety and make it impossible to include an exception as an argument by accident.</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;Message with arguments and exceptions&quot;, arguments, exception);
+</code></pre>
 <p>You can use type class instances to extend Blindsight&rsquo;s functionality. For example, you can pass a feature flag into <code>isDebugEnabled</code> and it will convert it into a <code>Markers</code>:</p>
 <pre class="prettyprint"><code class="language-scala">object Slf4jMain {
   final case class FeatureFlag(flagName: String)
@@ -213,7 +228,7 @@ val arguments: Arguments = Arguments(&quot;arg1&quot;, 42, 1337)
     val featureFlag = FeatureFlag(&quot;flag.enabled&quot;)
     // this is not a marker, but is converted via type class.
     if (logger.isDebugEnabled(featureFlag)) {
-      logger.debug(featureFlag, &quot;this is a test&quot;)
+      logger.debug(&quot;this is a test&quot;)
     }
   }
 }
@@ -243,7 +258,7 @@ semanticLogger.info(userEvent)
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.flow._
 
-implicit def flowBehavior[B: ToArguments]: FlowBehavior[B] = ...
+implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = ...
 
 def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
@@ -286,6 +301,7 @@ conditionalLogger.info(&quot;Only logs when condition is true&quot;)
   info(&quot;log&quot;)
 }
 </code></pre>
+<p>Using <code>when</code> is preferable to using call-by-name semantics in expensive logging statements. Call-by-name arguments still create short lived objects that take up memory and must be cleaned up by <a href="https://www.infoq.com/presentations/jvm-60-memory/">garbage collection</a> and will do so in every log statement. Using <code>when</code> will at least create only one function block, rather than many of them.</p>
 <p>See <a href="conditional.html">Conditional Logging</a> for more details.</p>
 <h2><a href="#contextual-logging" name="contextual-logging" class="anchor"><span class="anchor-link"></span></a>Contextual Logging</h2>
 <p>Blindsight builds up context with markers. You can use <code>withMarkers</code> to add markers that don&rsquo;t have to explicitly added to a statement.</p>
@@ -312,7 +328,7 @@ val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append(&quot;user&quo
 <p>This is the default behavior, and you can override <code>sourceInfoMarker</code> in your own implementation to return whatever you like.</p>
 <p>See <a href="sourcecode.html">Source Code</a> for more details.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.35/docs/src/main/paradox/usage/overview.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/overview.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -403,7 +419,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.35', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

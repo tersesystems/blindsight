@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>api - Blindsight 0.1.35 - com.tersesystems.blindsight.api</title>
-          <meta name="description" content="api - Blindsight 0.1.35 - com.tersesystems.blindsight.api" />
-          <meta name="keywords" content="api Blindsight 0.1.35 com.tersesystems.blindsight.api" />
+          <title>api - Blindsight 0.1.36 - com.tersesystems.blindsight.api</title>
+          <meta name="description" content="api - Blindsight 0.1.36 - com.tersesystems.blindsight.api" />
+          <meta name="keywords" content="api Blindsight 0.1.36 com.tersesystems.blindsight.api" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -66,7 +66,24 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.tersesystems.blindsight.api.Arguments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="com.tersesystems.blindsight.api.Argument" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArgumentextendsAnyRef"></a>
+      <a id="Argument:Argument"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Argument.html"><span class="name">Argument</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@ArgumentextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.tersesystems.blindsight.api.Arguments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ArgumentsextendsAnyRef"></a>
       <a id="Arguments:Arguments"></a>
       <h4 class="signature">
@@ -90,36 +107,36 @@
 logger.info(messageWithPlaceHolders, argsPlusPlus)</pre><p>There is no special treatment of exceptions; as in SLF4J, the exception must be the
 last element of arguments to be treated as the Throwable.
 </p></div></div>
-    </li><li name="com.tersesystems.blindsight.api.AsArguments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AsArgumentsextendsAnyVal"></a>
-      <a id="AsArguments:AsArguments"></a>
+    </li><li name="com.tersesystems.blindsight.api.AsArgument" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AsArgumentextendsAnyRef"></a>
+      <a id="AsArgument:AsArgument"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="AsArguments.html"><span class="name">AsArguments</span></a><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
+        <a href="AsArgument.html"><span class="name">AsArgument</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@AsArgumentsextendsAnyVal" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@AsArgumentextendsAnyRef" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
-    </li><li name="com.tersesystems.blindsight.api.LowPriorityToArgumentsImplicits" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="LowPriorityToArgumentsImplicitsextendsAnyRef"></a>
-      <a id="LowPriorityToArgumentsImplicits:LowPriorityToArgumentsImplicits"></a>
+    </li><li name="com.tersesystems.blindsight.api.LowPriorityToArgumentImplicits" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityToArgumentImplicitsextendsAnyRef"></a>
+      <a id="LowPriorityToArgumentImplicits:LowPriorityToArgumentImplicits"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="LowPriorityToArgumentsImplicits.html"><span class="name">LowPriorityToArgumentsImplicits</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="LowPriorityToArgumentImplicits.html"><span class="name">LowPriorityToArgumentImplicits</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@LowPriorityToArgumentsImplicitsextendsAnyRef" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@LowPriorityToArgumentImplicitsextendsAnyRef" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -277,31 +294,26 @@ logger.info(message)</pre></div></div>
 for semantic logging, which converts objects to <code>Statement</code>, but is
 generally helpful in packaging as well.
 </p></div><dl class="paramcmts block"><dt class="param">markers</dt><dd class="cmt"><p>the markers associated with a statement.</p></dd><dt class="param">message</dt><dd class="cmt"><p>the message</p></dd><dt class="param">arguments</dt><dd class="cmt"><p>the arguments</p></dd><dt class="param">throwable</dt><dd class="cmt"><p>the throwable, if any.</p></dd></dl></div>
-    </li><li name="com.tersesystems.blindsight.api.ToArguments" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="ToArguments[-T]extendsAnyRef"></a>
-      <a id="ToArguments[-T]:ToArguments[T]"></a>
+    </li><li name="com.tersesystems.blindsight.api.ToArgument" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="ToArgument[T]extendsAnyRef"></a>
+      <a id="ToArgument[T]:ToArgument[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ToArguments.html"><span class="name">ToArguments</span></a><span class="tparams">[<span name="T">-T</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="ToArgument.html"><span class="name">ToArgument</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@ToArguments[-T]extendsAnyRef" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@ToArgument[T]extendsAnyRef" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">This is a type class used to convert given types to <code>Arguments</code>.</p><div class="fullcomment"><div class="comment cmt"><p>This is a type class used to convert given types to <code>Arguments</code>.</p><p><code>ToArguments</code> uses a contravariant argument here so that a base
-class can be used, rather than defining every type.  This has
-advantages, notably when it comes to <code>ToArguments[Throwable]</code>,
-but does mean that the lowest bound will be applied if in scope.</p><p>Practically speaking, this means if you defined <code>ToArguments[Any]</code>,
-then everything is going to use that, even if there's a more
-specific type available.</p><pre><span class="kw">case</span> <span class="kw">class</span> Person(name: <span class="std">String</span>, age: <span class="std">Int</span>)
-<span class="kw">implicit</span> <span class="kw">val</span> personToArguments: ToArguments[Person] = ToArguments { person <span class="kw">=&gt;</span>
+      <p class="shortcomment cmt">This is a type class used to convert given types to <code>Argument</code>.</p><div class="fullcomment"><div class="comment cmt"><p>This is a type class used to convert given types to <code>Argument</code>.</p><pre><span class="kw">case</span> <span class="kw">class</span> Person(name: <span class="std">String</span>, age: <span class="std">Int</span>)
+<span class="kw">implicit</span> <span class="kw">val</span> personToArgument: ToArgument[Person] = ToArgument { person <span class="kw">=&gt;</span>
   <span class="kw">import</span> net.logstash.logback.argument.StructuredArguments._
-  <span class="kw">new</span> Arguments(<span class="std">Seq</span>(keyValue(<span class="lit">"person"</span>, person.name)))
+  <span class="kw">new</span> Argument(keyValue(<span class="lit">"person"</span>, person.name))
 }</pre></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the type to convert to Arguments</p></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.api.ToMarkers" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="ToMarkers[T]extendsAnyRef"></a>
@@ -379,7 +391,24 @@ the logstash package provides many useful mappings to Markers.</p><pre><span cla
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="com.tersesystems.blindsight.api.Arguments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.tersesystems.blindsight.api.Argument" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Argument"></a>
+      <a id="Argument:Argument"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Argument$.html"><span class="name">Argument</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@Argument" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.tersesystems.blindsight.api.Arguments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Arguments"></a>
       <a id="Arguments:Arguments"></a>
       <h4 class="signature">
@@ -396,19 +425,19 @@ the logstash package provides many useful mappings to Markers.</p><pre><span cla
       </a>
     </span>
       
-    </li><li name="com.tersesystems.blindsight.api.AsArguments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AsArguments"></a>
-      <a id="AsArguments:AsArguments"></a>
+    </li><li name="com.tersesystems.blindsight.api.AsArgument" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AsArgument"></a>
+      <a id="AsArgument:AsArgument"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="AsArguments$.html"><span class="name">AsArguments</span></a>
+        <a href="AsArgument$.html"><span class="name">AsArgument</span></a>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@AsArguments" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@AsArgument" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -498,19 +527,19 @@ the logstash package provides many useful mappings to Markers.</p><pre><span cla
       </a>
     </span>
       
-    </li><li name="com.tersesystems.blindsight.api.ToArguments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ToArguments"></a>
-      <a id="ToArguments:ToArguments"></a>
+    </li><li name="com.tersesystems.blindsight.api.ToArgument" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ToArgument"></a>
+      <a id="ToArgument:ToArgument"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="ToArguments$.html"><span class="name">ToArguments</span></a><span class="result"> extends <a href="LowPriorityToArgumentsImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToArgumentsImplicits">LowPriorityToArgumentsImplicits</a></span>
+        <a href="ToArgument$.html"><span class="name">ToArgument</span></a><span class="result"> extends <a href="LowPriorityToArgumentImplicits.html" class="extype" name="com.tersesystems.blindsight.api.LowPriorityToArgumentImplicits">LowPriorityToArgumentImplicits</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@ToArguments" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.api.package@ToArgument" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.35
+0.1.36
 </div>
 </div>
 <div class="nav-toc">
@@ -89,7 +89,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.35
+0.1.36
 </div>
 </div>
 <div class="nav-toc">
@@ -165,14 +165,16 @@ bothConditionsLogger.info(&quot;Only logs when both conditions are true&quot;)
   info(&quot;log&quot;)
 }
 </code></pre>
-<p>This is useful when constructing and executing a logging statement is expensive in itself, and allows for finer grained control. </p>
+<p>This is useful when constructing and executing a logging statement is expensive in itself, and allows for finer grained control.</p><div class="callout note "><div class="callout-title">Note</div>
+<p>Using <code>when</code> is preferable to using call-by-name semantics in expensive logging statements. Call-by-name arguments still create short lived objects that take up memory and must be cleaned up by <a href="https://www.infoq.com/presentations/jvm-60-memory/">garbage collection</a>. Using <code>when</code> will at least create only one function block, rather than many of them.</p>
+<p>If you are concerned about the costs of logging overall, you can create a condition that returns false in cases of high JVM memory pressure, ideally through <a href="http://openjdk.java.net/jeps/331">JEP 331</a> or <a href="https://blogs.oracle.com/javamagazine/java-flight-recorder-and-jfr-event-streaming-in-java-14">JFR event streaming</a>, or use Log4J2&rsquo;s <a href="https://logging.apache.org/log4j/2.x/manual/garbagefree.html">garbage-free logging</a>.</p></div>
 <p>You can, of course, partially apply <code>when</code> to return a function:</p>
 <pre class="prettyprint"><code class="language-scala">val infoFunction = logger.info.when(1 == 1)(_)
 infoFunction(info =&gt; info(&quot;when true&quot;))
 </code></pre>
-<p>But it is generally easier to pass a conditional logger around rather than a logging function.</p>
+<p>It is generally easier to pass a conditional logger around rather than a logging function.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.35/docs/src/main/paradox/usage/conditional.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/conditional.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -256,7 +258,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.35', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

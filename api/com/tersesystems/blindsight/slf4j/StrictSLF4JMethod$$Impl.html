@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>Impl - Blindsight 0.1.35 - com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl</title>
-          <meta name="description" content="Impl - Blindsight 0.1.35 - com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl" />
-          <meta name="keywords" content="Impl Blindsight 0.1.35 com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl" />
+          <title>Impl - Blindsight 0.1.36 - com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl</title>
+          <meta name="description" content="Impl - Blindsight 0.1.36 - com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl" />
+          <meta name="keywords" content="Impl Blindsight 0.1.36 com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -50,7 +50,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Strict method implementation.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/tersesystems/blindsight/tree/v0.1.35/slf4j/src/main/scala/com/tersesystems/blindsight/slf4j/StrictSLF4JMethod.scala#L1" target="_blank">StrictSLF4JMethod.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/slf4j/src/main/scala/com/tersesystems/blindsight/slf4j/StrictSLF4JMethod.scala#L1" target="_blank">StrictSLF4JMethod.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -217,69 +217,290 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[M,A](marker:M,message1:=&gt;com.tersesystems.blindsight.api.Message,args:A)(implicitevidence$7:com.tersesystems.blindsight.api.ToMarkers[M],implicitevidence$8:com.tersesystems.blindsight.api.ToArguments[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
-      <a id="apply[M,A](M,⇒Message,A)(ToMarkers[M],ToArguments[A],Line,File,Enclosing):Unit"></a>
+      <a id="apply(markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Markers,Message,Arguments,Throwable)(Line,File,Enclosing):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="M">M</span>, <span name="A">A</span>]</span><span class="params">(<span name="marker">marker: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.M">M</span></span>, <span name="message1">message1: ⇒ <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="args">args: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToMarkers.html" class="extype" name="com.tersesystems.blindsight.api.ToMarkers">ToMarkers</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.M">M</span>]</span>, <span name="arg1">arg1: <a href="../api/ToArguments.html" class="extype" name="com.tersesystems.blindsight.api.ToArguments">ToArguments</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">apply</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="args">args: <a href="../api/Arguments.html" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[M,A](marker:M,message1:=&gt;com.tersesystems.blindsight.api.Message,args:A)(implicitevidence$7:com.tersesystems.blindsight.api.ToMarkers[M],implicitevidence$8:com.tersesystems.blindsight.api.ToArguments[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[M](marker:M,message1:=&gt;com.tersesystems.blindsight.api.Message)(implicitevidence$6:com.tersesystems.blindsight.api.ToMarkers[M],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
-      <a id="apply[M](M,⇒Message)(ToMarkers[M],Line,File,Enclosing):Unit"></a>
+      <a id="apply(markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Markers,Message,Arguments)(Line,File,Enclosing):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="M">M</span>]</span><span class="params">(<span name="marker">marker: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.M">M</span></span>, <span name="message1">message1: ⇒ <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToMarkers.html" class="extype" name="com.tersesystems.blindsight.api.ToMarkers">ToMarkers</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.M">M</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">apply</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="args">args: <a href="../api/Arguments.html" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[M](marker:M,message1:=&gt;com.tersesystems.blindsight.api.Message)(implicitevidence$6:com.tersesystems.blindsight.api.ToMarkers[M],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[A](message1:=&gt;com.tersesystems.blindsight.api.Message,args:A)(implicitevidence$5:com.tersesystems.blindsight.api.ToArguments[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
-      <a id="apply[A](⇒Message,A)(ToArguments[A],Line,File,Enclosing):Unit"></a>
+      <a id="apply[A](markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,arg:A,throwable:Throwable)(implicitevidence$16:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply[A](Markers,Message,A,Throwable)(ToArgument[A],Line,File,Enclosing):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="message1">message1: ⇒ <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="args">args: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToArguments.html" class="extype" name="com.tersesystems.blindsight.api.ToArguments">ToArguments</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="arg">arg: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[A](message1:=&gt;com.tersesystems.blindsight.api.Message,args:A)(implicitevidence$5:com.tersesystems.blindsight.api.ToArguments[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[A](markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,arg:A,throwable:Throwable)(implicitevidence$16:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
     </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(msg:=&gt;com.tersesystems.blindsight.api.Message)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
-      <a id="apply(⇒Message)(Line,File,Enclosing):Unit"></a>
+      <a id="apply[A1,A2](markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,arg1:A1,arg2:A2)(implicitevidence$14:com.tersesystems.blindsight.api.ToArgument[A1],implicitevidence$15:com.tersesystems.blindsight.api.ToArgument[A2],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply[A1,A2](Markers,Message,A1,A2)(ToArgument[A1],ToArgument[A2],Line,File,Enclosing):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="msg">msg: ⇒ <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">apply</span><span class="tparams">[<span name="A1">A1</span>, <span name="A2">A2</span>]</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="arg1">arg1: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A1">A1</span></span>, <span name="arg2">arg2: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A2">A2</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A1">A1</span>]</span>, <span name="arg1">arg1: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A2">A2</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(msg:=&gt;com.tersesystems.blindsight.api.Message)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[A1,A2](markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,arg1:A1,arg2:A2)(implicitevidence$14:com.tersesystems.blindsight.api.ToArgument[A1],implicitevidence$15:com.tersesystems.blindsight.api.ToArgument[A2],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Markers,Message,Throwable)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(markers:com.tersesystems.blindsight.api.Markers,message:com.tersesystems.blindsight.api.Message,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[A](markers:com.tersesystems.blindsight.api.Markers,message1:com.tersesystems.blindsight.api.Message,arg:A)(implicitevidence$13:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply[A](Markers,Message,A)(ToArgument[A],Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="message1">message1: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="arg">arg: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[A](markers:com.tersesystems.blindsight.api.Markers,message1:com.tersesystems.blindsight.api.Message,arg:A)(implicitevidence$13:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(marker:com.tersesystems.blindsight.api.Markers,message1:com.tersesystems.blindsight.api.Message)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Markers,Message)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="marker">marker: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="message1">message1: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(marker:com.tersesystems.blindsight.api.Markers,message1:com.tersesystems.blindsight.api.Message)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(markers:com.tersesystems.blindsight.api.Markers,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Markers,Throwable)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(markers:com.tersesystems.blindsight.api.Markers,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(markers:com.tersesystems.blindsight.api.Markers)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Markers)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="markers">markers: <a href="../api/Markers.html" class="extype" name="com.tersesystems.blindsight.api.Markers">Markers</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(markers:com.tersesystems.blindsight.api.Markers)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Message,Arguments,Throwable)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="args">args: <a href="../api/Arguments.html" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Message,Arguments)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="args">args: <a href="../api/Arguments.html" class="extype" name="com.tersesystems.blindsight.api.Arguments">Arguments</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(message:com.tersesystems.blindsight.api.Message,args:com.tersesystems.blindsight.api.Arguments)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[A1,A2](message:com.tersesystems.blindsight.api.Message,arg1:A1,arg2:A2)(implicitevidence$11:com.tersesystems.blindsight.api.ToArgument[A1],implicitevidence$12:com.tersesystems.blindsight.api.ToArgument[A2],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply[A1,A2](Message,A1,A2)(ToArgument[A1],ToArgument[A2],Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A1">A1</span>, <span name="A2">A2</span>]</span><span class="params">(<span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="arg1">arg1: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A1">A1</span></span>, <span name="arg2">arg2: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A2">A2</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A1">A1</span>]</span>, <span name="arg1">arg1: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A2">A2</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[A1,A2](message:com.tersesystems.blindsight.api.Message,arg1:A1,arg2:A2)(implicitevidence$11:com.tersesystems.blindsight.api.ToArgument[A1],implicitevidence$12:com.tersesystems.blindsight.api.ToArgument[A2],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[A](message:com.tersesystems.blindsight.api.Message,arg:A,throwable:Throwable)(implicitevidence$10:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply[A](Message,A,Throwable)(ToArgument[A],Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="arg">arg: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[A](message:com.tersesystems.blindsight.api.Message,arg:A,throwable:Throwable)(implicitevidence$10:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(message:com.tersesystems.blindsight.api.Message,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Message,Throwable)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(message:com.tersesystems.blindsight.api.Message,throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[A](message:com.tersesystems.blindsight.api.Message,arg:A)(implicitevidence$9:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply[A](Message,A)(ToArgument[A],Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="message">message: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>, <span name="arg">arg: <span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../api/ToArgument.html" class="extype" name="com.tersesystems.blindsight.api.ToArgument">ToArgument</a>[<span class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl.apply.A">A</span>]</span>, <span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply[A](message:com.tersesystems.blindsight.api.Message,arg:A)(implicitevidence$9:com.tersesystems.blindsight.api.ToArgument[A],implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Throwable)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(throwable:Throwable)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
+    </li><li name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(msg:com.tersesystems.blindsight.api.Message)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit"></a>
+      <a id="apply(Message)(Line,File,Enclosing):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="msg">msg: <a href="../api/Message.html" class="extype" name="com.tersesystems.blindsight.api.Message">Message</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="line">line: <span class="extype" name="sourcecode.Line">Line</span></span>, <span name="file">file: <span class="extype" name="sourcecode.File">File</span></span>, <span name="enclosing">enclosing: <span class="extype" name="sourcecode.Enclosing">Enclosing</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.12/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.tersesystems.blindsight.slf4j.StrictSLF4JMethod$$Impl@apply(msg:com.tersesystems.blindsight.api.Message)(implicitline:sourcecode.Line,implicitfile:sourcecode.File,implicitenclosing:sourcecode.Enclosing):Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -764,7 +985,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Runs with a block function that is only executioned when condition is true.</p><div class="fullcomment"><div class="comment cmt"><p>Runs with a block function that is only executioned when condition is true.
+      <p class="shortcomment cmt">Runs with a block function that is only called when condition is true.</p><div class="fullcomment"><div class="comment cmt"><p>Runs with a block function that is only called when condition is true.
 </p></div><dl class="paramcmts block"><dt class="param">condition</dt><dd class="cmt"><p>the call by name boolean that must return true</p></dd><dt class="param">block</dt><dd class="cmt"><p>the block executed when condition is true.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.Impl">Impl</a> → <a href="StrictSLF4JMethod.html" class="extype" name="com.tersesystems.blindsight.slf4j.StrictSLF4JMethod">StrictSLF4JMethod</a></dd></dl></div>
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>

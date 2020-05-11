@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.35
+0.1.36
 </div>
 </div>
 <div class="nav-toc">
@@ -89,7 +89,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.35
+0.1.36
 </div>
 </div>
 <div class="nav-toc">
@@ -152,20 +152,20 @@ val flowLogger: FlowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.35/docs/src/test/scala/example/flow/SimpleFlow.scala#L40-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/flow/SimpleFlow.scala#L40-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.35/docs/src/test/scala/example/flow/SimpleFlow.scala#L46-L57" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/flow/SimpleFlow.scala#L46-L57" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
   Person(name = &quot;Will&quot;, age = arg1 + arg2)
 }
 
 case class Person(name: String, age: Int)
 
 object Person {
-  implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
+  implicit val personToArguments: ToArgument[Person] = ToArgument { person =&gt;
     import com.tersesystems.blindsight.logstash.Implicits._
-    Arguments(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age))
+    Argument(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; Argument(person.name), &quot;age&quot; -&gt; Argument(person.age)))
   }
 }</code></pre>
 <p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging is not enabled (whether through conditional logging, explicit filtering, or threshold), then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p>
@@ -206,8 +206,10 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 &lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
   compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: 'latest.version'
 }</code></pre></dd></dl>
+<p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
+<p><img src="trace.png" alt="trace.png" /></p>
 <p>You can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.35/docs/src/test/scala/example/flow/HoneycombFlow.scala#L40-L140" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/flow/HoneycombFlow.scala#L39-L139" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -218,7 +220,7 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
       .setServiceName(&quot;blindsight-example&quot;)
   }
 
-  implicit def flowMapping[B: ToArguments](
+  implicit def flowMapping[B: ToArgument](
       implicit spanInfo: SpanInfo
   ): HoneycombFlowBehavior[B] = {
     new HoneycombFlowBehavior[B]
@@ -251,7 +253,7 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
     } finally {
       // The root span has to be logged _last_, after the child spans.
       logger.info(
-        HoneycombFlowBehavior.markerFactory(rootSpan),
+        Markers(HoneycombFlowBehavior.markerFactory(rootSpan)),
         s&quot;${enclosing.value} exit, duration ${rootSpan.duration()}&quot;
       )
     }
@@ -260,13 +262,13 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
   case class Person(name: String, age: Int)
 
   object Person {
-    implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
-      Arguments(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; person.name, &quot;age&quot; -&gt; person.age))
+    implicit val personToArguments: ToArgument[Person] = ToArgument { person =&gt;
+      Argument(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; Argument(person.name), &quot;age&quot; -&gt; Argument(person.age)))
     }
   }
 }
 
-class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
+class HoneycombFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
   import HoneycombFlowBehavior.markerFactory
 
   // Create a thread local stack of span info.
@@ -298,7 +300,7 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends
     Statement()
       .withMarkers(Markers(markerFactory(span)))
       .withMessage(s&quot;${source.enclosing.value} exit, duration ${span.duration()}&quot;)
-      .withArguments(resultValue)
+      .withArguments(Arguments(resultValue))
   }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)
@@ -308,9 +310,8 @@ class HoneycombFlowBehavior[B: ToArguments](implicit spanInfo: SpanInfo) extends
 object HoneycombFlowBehavior {
   val markerFactory = new SpanMarkerFactory
 }</code></pre>
-<p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.35/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -395,7 +396,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.35', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
