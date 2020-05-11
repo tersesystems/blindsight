@@ -80,8 +80,10 @@ and the following dependencies:
   version="latest.version"
 }
 
+See [play-blindsight](http://github.com/wsargent/play-blindsight) for a worked example.
+
+![trace.png](trace.png)
+
 You can produce Honeycomb manual traces with the following:
 
 @@snip [HoneycombFlow.scala](../../../test/scala/example/flow/HoneycombFlow.scala) { #honeycomb_flow_example }
-
-See [play-blindsight](http://github.com/wsargent/play-blindsight) for a worked example.
