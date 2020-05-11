@@ -249,6 +249,8 @@ logger.info.when(booleanCondition) { info =>
 }
 ```
 
+Using `when` is preferable to using call-by-name semantics in expensive logging statements.  Call-by-name arguments still create short lived objects that take up memory and must be cleaned up by [garbage collection](https://www.infoq.com/presentations/jvm-60-memory/) and will do so in every log statement.  Using `when` will at least create only one function block, rather than many of them.
+
 See @ref:[Conditional Logging](conditional.md) for more details.
 
 ## Contextual Logging

@@ -67,7 +67,7 @@ import com.tersesystems.blindsight.logstash.Implicits._
 logger.info(Markers("markerKey" -> "markerValue"), "marker and argument")
 ```
 
-Generally, you should not need to use markers explicitly in messages, as they can be used with [context](context.md) more effectively.
+Generally, you should not need to use markers explicitly in messages, as they can be used with @ref:[context](context.md) more effectively.
 
 ## Arguments 
 
