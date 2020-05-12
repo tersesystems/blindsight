@@ -148,7 +148,6 @@ lazy val logstash = (project in file("logstash"))
   .settings(
     name := "blindsight-logstash",
     libraryDependencies += logbackClassic,
-    libraryDependencies += jacksonModuleScala,
     libraryDependencies += logstashLogbackEncoder,
     autoAPIMappings := true
   )

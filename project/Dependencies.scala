@@ -8,12 +8,11 @@ object Dependencies {
 
   lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
 
-  lazy val sourcecode         = "com.lihaoyi"                  %% "sourcecode"           % "0.2.1"
-  lazy val jacksonModuleScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.10.3"
-  lazy val janino             = "org.codehaus.janino"          % "janino"                % "3.0.11"
-  lazy val jansi              = "org.fusesource.jansi"         % "jansi"                 % "1.17.1"
-  lazy val logbackBudget      = "com.tersesystems.logback"     % "logback-budget"        % terseLogback
-  lazy val logbackTurboMarker = "com.tersesystems.logback"     % "logback-turbomarker"   % terseLogback
+  lazy val sourcecode         = "com.lihaoyi"              %% "sourcecode"         % "0.2.1"
+  lazy val janino             = "org.codehaus.janino"      % "janino"              % "3.0.11"
+  lazy val jansi              = "org.fusesource.jansi"     % "jansi"               % "1.17.1"
+  lazy val logbackBudget      = "com.tersesystems.logback" % "logback-budget"      % terseLogback
+  lazy val logbackTurboMarker = "com.tersesystems.logback" % "logback-turbomarker" % terseLogback
   lazy val logbackTypesafeConfig =
     "com.tersesystems.logback" % "logback-typesafe-config" % terseLogback
   lazy val logbackExceptionMapping =
