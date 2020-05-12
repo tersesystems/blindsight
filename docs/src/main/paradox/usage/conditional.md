@@ -4,6 +4,16 @@ No matter how fast your logging is, it's always faster not to log a statement at
 
 Blindsight has conditional logging on two levels; on the logger itself, and on the method.  Conditional logging does not take into account any internal state of the logger, i.e. marker state, logger names, etc.  It takes a boolean call by name, and that's it.
 
+@@@ note
+
+Using conditional logging is preferable to using call-by-name semantics in expensive logging statements.  Call-by-name arguments still create short lived objects that take up memory in a [thread local allocation buffer](https://alidg.me/blog/2019/6/21/tlab-jvm) and must be cleaned up by [garbage collection](https://www.infoq.com/presentations/jvm-60-memory/).  Using `when` will at least create only one function block, rather than many of them.
+
+If you are concerned about the costs of logging overall and are using JDK 11, you can create a condition that returns false in cases of high JVM memory pressure, ideally through a [JEP 331](http://openjdk.java.net/jeps/331) enabled sampler like [heapsampler](https://github.com/odnoklassniki/jvmti-tools/#heapsampler) -- if that's not available, you can use [JFR event streaming](https://blogs.oracle.com/javamagazine/java-flight-recorder-and-jfr-event-streaming-in-java-14) as a feedback mechanism, so you can check the [TLAB allocation rates](https://shipilev.net/jvm/anatomy-quarks/4-tlab-allocation/).
+
+If you are on a pre-11 JVM, then run Yourkit as a [Java Agent](https://www.yourkit.com/docs/java/help/agent.jsp) and enable [object counting](https://www.yourkit.com/docs/java/help/allocations.jsp).  This is low-overhead and can be run in production, but requires some extra work to close the loop. 
+
+@@@
+
 ## On Condition
 
 All loggers have an `onCondition` method that returns a conditional logger of the same type.
@@ -41,14 +51,6 @@ logger.info.when(booleanCondition) { info =>
 ```
 
 This is useful when constructing and executing a logging statement is expensive in itself, and allows for finer grained control.
-
-@@@ note
-
-Using `when` is preferable to using call-by-name semantics in expensive logging statements.  Call-by-name arguments still create short lived objects that take up memory and must be cleaned up by [garbage collection](https://www.infoq.com/presentations/jvm-60-memory/).  Using `when` will at least create only one function block, rather than many of them.
-
-If you are concerned about the costs of logging overall, you can create a condition that returns false in cases of high JVM memory pressure, ideally through [JEP 331](http://openjdk.java.net/jeps/331) or [JFR event streaming](https://blogs.oracle.com/javamagazine/java-flight-recorder-and-jfr-event-streaming-in-java-14), or use Log4J2's [garbage-free logging](https://logging.apache.org/log4j/2.x/manual/garbagefree.html).
-
-@@@
 
 You can, of course, partially apply `when` to return a function:
 
