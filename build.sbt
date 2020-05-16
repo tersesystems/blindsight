@@ -52,7 +52,8 @@ lazy val docs = (project in file("docs"))
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies += logbackTracing,
     libraryDependencies += logbackUniqueId,
-    libraryDependencies += "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.1",
+    libraryDependencies += cronScheduler,
+    libraryDependencies += scalaJava8Compat,
     scmInfo := Some(
       ScmInfo(
         url("https://github.com/tersesystems/blindsight"),

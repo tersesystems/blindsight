@@ -38,6 +38,8 @@ It is generally easier to pass a conditional logger around rather than a logging
 
 You can rate limit your logging, or manage logging with a circuit breaker, so that error messages are suppressed when the circuit breaker is open.
 
+@@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #circuitbreaker-conditional }
+
 ## Conditional on Memory Pressure
 
 Using conditional logging is preferable to using call-by-name semantics in expensive logging statements.  Call-by-name arguments still create short lived objects that take up memory in a [thread local allocation buffer](https://alidg.me/blog/2019/6/21/tlab-jvm) and must be cleaned up by [garbage collection](https://www.infoq.com/presentations/jvm-60-memory/).  Using `when` will at least create only one function block, rather than many of them.
@@ -60,10 +62,12 @@ By combining conditionals with feature flags, you can use [targeted diagnostic l
 
 Conditional logging can also be used for time and date limited logging statements.  This can be a more flexible way of dealing and rollouts, where we can say "log verbose debugging statements for the next ten minutes" or "suppress logging completely from 10 pm to 8 am."
 
-This works best with a `scala.concurrent.duration.Deadline`:
+This works best with a @scaladoc[Deadline](scala.concurrent.duration.Deadline):
 
 @@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #deadline-conditional }
 
-For periodic scheduling, you can use [CronScheduler](https://github.com/TimeAndSpaceIO/CronScheduler) in conjunction with an @javadoc[java.util.concurrent.AtomicBoolean].  You can use `ScheduledExecutorService`, but be aware that `ScheduledExecutorService` is not good at handling a periodic schedule as it can suffer from [extended drift, especially when system time is corrected](https://medium.com/@leventov/cronscheduler-a-reliable-java-scheduler-for-external-interactions-cb7ce4a4f2cd).
+For periodic scheduling, you can use [CronScheduler](https://github.com/TimeAndSpaceIO/CronScheduler) in conjunction with an @javadoc[AtomicBoolean](java.util.concurrent.atomic.AtomicBoolean).  You can use @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService), but be aware that @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService) is not good at handling a periodic schedule as it can suffer from [extended drift, especially when system time is corrected](https://medium.com/@leventov/cronscheduler-a-reliable-java-scheduler-for-external-interactions-cb7ce4a4f2cd).
+
+@@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #periodic-conditional }
 
 The key to using logging in conjunction with a periodic conditional schedule is that you always log on an operation, and can alter the periodic schedule at runtime, without restarting the service.  By doing this, you are turning up the observability of an operation for a specific period, as opposed to simply running a logging statement on a periodic basis.
