@@ -81,9 +81,7 @@ object SimpleConditionalExample {
     cron.scheduleAtFixedRateSkippingToLatest(0, 1, TimeUnit.MINUTES, new CronTask {
       override def run(scheduledRunTimeMillis: Long): Unit = latch.set(true)
     })
-    logger.debug.when(latch.getAndSet(false)) { debug =>
-      debug("Only run once per minute max")
-    }
+    logger.debug.when(latch.getAndSet(false)) { debug => debug("Only run once per minute max") }
     // #periodic-conditional
 
   }
