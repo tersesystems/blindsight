@@ -74,7 +74,7 @@ object SimpleConditionalExample {
     // #periodic-conditional
     import java.util.concurrent.atomic.AtomicBoolean
 
-    val latch = new AtomicBoolean()
+    val latch    = new AtomicBoolean()
     val periodic = new Periodic()
     periodic.schedule(java.time.Duration.ofMinutes(1), new CronTask {
       override def run(scheduledRunTimeMillis: Long): Unit = latch.set(true)
@@ -86,7 +86,7 @@ object SimpleConditionalExample {
 
   }
 
-  val latch      = new AtomicBoolean()
+  val latch = new AtomicBoolean()
 
   def isLowPressure: Boolean = true
 
