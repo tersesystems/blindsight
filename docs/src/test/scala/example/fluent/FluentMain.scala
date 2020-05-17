@@ -18,7 +18,6 @@ package example.fluent
 
 import com.tersesystems.blindsight.LoggerFactory
 import com.tersesystems.blindsight.api.{Argument, Statement}
-import com.tersesystems.blindsight.logstash.Implicits._
 
 object FluentMain {
   private val fluent = LoggerFactory.getLogger.fluent
@@ -27,22 +26,25 @@ object FluentMain {
     val statement = Statement().withMessage("hello world")
     fluent.info(statement)
 
+    import com.tersesystems.blindsight.api.AST._
+    import com.tersesystems.blindsight.api.DSL._
+    import com.tersesystems.blindsight.logstash.Implicits._
     fluent.info
-      .marker("string" -> "steve")
-      .marker("array" -> Seq("one", "two", "three"))
-      .marker("number" -> 42)
-      .marker("boolean" -> true)
+      .marker(bodj("string" -> "steve"))
+      .marker(bodj("array" -> Seq("one", "two", "three")))
+      .marker(bodj("number" -> 42))
+      .marker(bodj("boolean" -> true))
       .message("herp")
       .message("derp")
       .message("{}")
-      .argument("arg1" -> "value1")
+      .argument(bodj("arg1" -> "value1"))
       .message("{}")
-      .argument("numericArg" -> 42)
+      .argument(bodj("numericArg" -> 42))
       .message("and then some more text")
       .message("{}")
-      .argument("booleanArg" -> false)
-      .argument(Map("a" -> "b"))
-      .argument("sequenceArg" -> Seq("a", "b", "c"))
+      .argument(bodj("booleanArg" -> false))
+      .argument(bodj("a" -> "b"))
+      .argument(bodj("sequenceArg" -> Seq("a", "b", "c")))
       .log()
   }
 }
@@ -59,7 +61,8 @@ object FluentSimple {
 
     // #fluent-markers
     import net.logstash.logback.marker.{Markers => LogstashMarkers}
-    val someMarker = LogstashMarkers.append("user", "will")
+    import org.slf4j.Marker
+    val someMarker: Marker = LogstashMarkers.append("user", "will")
 
     fluentLogger.info.marker(someMarker).log()
     // #fluent-markers
