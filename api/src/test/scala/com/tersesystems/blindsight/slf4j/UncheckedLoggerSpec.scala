@@ -24,6 +24,8 @@ import org.slf4j.MarkerFactory
 
 class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
+  override def resourceName: String = "/logback-test-slf4j.xml"
+
   class TestLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
       extends SLF4JLogger.Unchecked(underlying, markers)
 

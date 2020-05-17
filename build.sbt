@@ -75,75 +75,34 @@ lazy val docs = (project in file("docs"))
     addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
   )
   .settings(disablePublishing)
-  .dependsOn(all, logstash)
+  .dependsOn(api, logstash)
 
 lazy val fixtures = (project in file("fixtures"))
   .settings(
-    libraryDependencies += "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.1" % Test,
-    libraryDependencies += logbackClassic           % Test,
-    libraryDependencies += logstashLogbackEncoder   % Test,
-    libraryDependencies += scalaTest                % Test
+    libraryDependencies += scalaJava8Compat       % Test,
+    libraryDependencies += logbackClassic         % Test,
+    libraryDependencies += logstashLogbackEncoder % Test,
+    libraryDependencies += scalaTest              % Test
   )
   .settings(disablePublishing)
   .settings(disableDocs)
 
-lazy val api = (project in file("api")).settings(
-  name := "blindsight-api",
-  libraryDependencies += slf4jApi,
-  libraryDependencies += sourcecode,
-  autoAPIMappings := true
-)
-
-lazy val slf4j = (project in file("slf4j"))
+// API that provides a logger with everything
+lazy val api = (project in file("api"))
   .settings(
-    name := "blindsight-slf4j",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.1" % Test,
-    libraryDependencies += logbackClassic           % Test,
-    libraryDependencies += logstashLogbackEncoder   % Test,
-    libraryDependencies += scalaTest                % Test,
-    autoAPIMappings := true
-  )
-  .dependsOn(api, fixtures % "test->test")
-
-lazy val semantic = (project in file("semantic"))
-  .settings(
-    name := "blindsight-semantic",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.1" % Test,
-    libraryDependencies += logbackClassic           % Test,
-    libraryDependencies += scalaTest                % Test,
-    autoAPIMappings := true
-  )
-  .dependsOn(slf4j, api)
-  .dependsOn(fixtures % "test->test")
-
-lazy val flow = (project in file("flow"))
-  .settings(
-    name := "blindsight-flow",
+    name := "blindsight-api",
+    libraryDependencies += logbackClassic         % Test,
+    libraryDependencies += logstashLogbackEncoder % Test,
+    libraryDependencies += scalaTest              % Test,
+    libraryDependencies += slf4jApi,
+    libraryDependencies += sourcecode,
+    libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
     libraryDependencies += logstashLogbackEncoder % Test,
     libraryDependencies += scalaTest              % Test,
     autoAPIMappings := true
   )
-  .dependsOn(slf4j, fixtures % "test->test")
-
-lazy val fluent = (project in file("fluent"))
-  .settings(
-    name := "blindsight-fluent",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.1" % Test,
-    libraryDependencies += logbackClassic           % Test,
-    libraryDependencies += logstashLogbackEncoder   % Test,
-    libraryDependencies += scalaTest                % Test,
-    autoAPIMappings := true
-  )
-  .dependsOn(slf4j, api)
   .dependsOn(fixtures % "test->test")
-
-// API that provides a logger with everything
-lazy val all = (project in file("all"))
-  .settings(
-    name := "blindsight"
-  )
-  .dependsOn(api, slf4j, semantic, fluent, flow)
 
 lazy val logstash = (project in file("logstash"))
   .settings(
@@ -152,14 +111,14 @@ lazy val logstash = (project in file("logstash"))
     libraryDependencies += logstashLogbackEncoder,
     autoAPIMappings := true
   )
-  .dependsOn(all, fixtures % "test->test")
+  .dependsOn(api, fixtures % "test->test")
 
 // serviceloader implementation with only SLF4J dependencies.
 lazy val generic = (project in file("generic"))
   .settings(
     name := "blindsight-generic"
   )
-  .dependsOn(all)
+  .dependsOn(api)
 
 lazy val root = (project in file("."))
   .settings(
@@ -167,4 +126,4 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(docs, fixtures, api, slf4j, semantic, fluent, flow, logstash, all, generic)
+  .aggregate(api, docs, fixtures, logstash, generic)
