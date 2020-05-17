@@ -38,9 +38,11 @@ trait OneContextPerTest extends TestSuiteMixin {
 
   def newContextForTest(testData: TestData): LoggerContext = createLoggerContext()
 
+  def resourceName: String = "/logback-test.xml"
+
   def createLoggerContext(): LoggerContext = {
     val context      = new LoggerContext
-    val resource     = getClass.getResource("/logback-test.xml")
+    val resource     = getClass.getResource(resourceName)
     val configurator = new JoranConfigurator
     configurator.setContext(context)
     configurator.doConfigure(resource)
