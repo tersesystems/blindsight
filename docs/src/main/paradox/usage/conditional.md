@@ -68,6 +68,12 @@ This works best with a @scaladoc[Deadline](scala.concurrent.duration.Deadline):
 
 For periodic scheduling, you can use [CronScheduler](https://github.com/TimeAndSpaceIO/CronScheduler) in conjunction with an @javadoc[AtomicBoolean](java.util.concurrent.atomic.AtomicBoolean).  You can use @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService), but be aware that @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService) is not good at handling a periodic schedule as it can suffer from [extended drift, especially when system time is corrected](https://medium.com/@leventov/cronscheduler-a-reliable-java-scheduler-for-external-interactions-cb7ce4a4f2cd).
 
+To use CronScheduler, first define a periodic scheduler in Java:
+
+@@snip [Periodic.java](../../../test/scala/example/conditional/Periodic.java) { #periodic-cron }
+
+Then access it from Scala:
+
 @@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #periodic-conditional }
 
 The key to using logging in conjunction with a periodic conditional schedule is that you always log on an operation, and can alter the periodic schedule at runtime, without restarting the service.  By doing this, you are turning up the observability of an operation for a specific period, as opposed to simply running a logging statement on a periodic basis.

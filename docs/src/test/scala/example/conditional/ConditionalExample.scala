@@ -1,7 +1,10 @@
 package example.conditional
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import com.tersesystems.blindsight.LoggerFactory
 import com.tersesystems.blindsight.api.Argument
+import io.timeandspace.cronscheduler.CronTask
 
 object SimpleConditionalExample {
   def main(args: Array[String]): Unit = {
@@ -69,22 +72,21 @@ object SimpleConditionalExample {
     // #deadline-conditional
 
     // #periodic-conditional
-    import java.time.Duration
-    import java.util.concurrent.TimeUnit
-    import io.timeandspace.cronscheduler.CronScheduler
     import java.util.concurrent.atomic.AtomicBoolean
-    import io.timeandspace.cronscheduler.CronTask
 
-    val latch      = new AtomicBoolean()
-    val syncPeriod = Duration.ofMinutes(1)
-    val cron       = CronScheduler.create(syncPeriod)
-    cron.scheduleAtFixedRateSkippingToLatest(0, 1, TimeUnit.MINUTES, new CronTask {
+    val latch = new AtomicBoolean()
+    val periodic = new Periodic()
+    periodic.schedule(java.time.Duration.ofMinutes(1), new CronTask {
       override def run(scheduledRunTimeMillis: Long): Unit = latch.set(true)
     })
+
     logger.debug.when(latch.getAndSet(false)) { debug => debug("Only run once per minute max") }
+    periodic.shutdown() // on app shutdown
     // #periodic-conditional
 
   }
+
+  val latch      = new AtomicBoolean()
 
   def isLowPressure: Boolean = true
 
