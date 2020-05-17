@@ -79,10 +79,10 @@ lazy val docs = (project in file("docs"))
 
 lazy val fixtures = (project in file("fixtures"))
   .settings(
-    libraryDependencies += scalaJava8Compat % Test,
-    libraryDependencies += logbackClassic           % Test,
-    libraryDependencies += logstashLogbackEncoder   % Test,
-    libraryDependencies += scalaTest                % Test
+    libraryDependencies += scalaJava8Compat       % Test,
+    libraryDependencies += logbackClassic         % Test,
+    libraryDependencies += logstashLogbackEncoder % Test,
+    libraryDependencies += scalaTest              % Test
   )
   .settings(disablePublishing)
   .settings(disableDocs)
@@ -96,13 +96,13 @@ lazy val api = (project in file("api"))
     libraryDependencies += scalaTest              % Test,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
-
-    libraryDependencies += scalaJava8Compat     % Test,
-    libraryDependencies += logbackClassic           % Test,
-    libraryDependencies += logstashLogbackEncoder   % Test,
-    libraryDependencies += scalaTest                % Test,
+    libraryDependencies += scalaJava8Compat       % Test,
+    libraryDependencies += logbackClassic         % Test,
+    libraryDependencies += logstashLogbackEncoder % Test,
+    libraryDependencies += scalaTest              % Test,
     autoAPIMappings := true
-  ).dependsOn(fixtures % "test->test")
+  )
+  .dependsOn(fixtures % "test->test")
 
 lazy val logstash = (project in file("logstash"))
   .settings(
