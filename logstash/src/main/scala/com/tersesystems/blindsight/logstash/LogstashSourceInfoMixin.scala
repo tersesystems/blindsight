@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.logstash
 
 import com.tersesystems.blindsight.api.Markers
+import com.tersesystems.blindsight.api.AST._
 import com.tersesystems.blindsight.api.mixins.SourceInfoMixin
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -32,6 +33,7 @@ trait LogstashSourceInfoMixin extends SourceInfoMixin {
       enclosing: Enclosing
   ): Markers = {
     import Implicits._
-    Markers(line) + Markers(file) + Markers(enclosing)
+
+    Markers(bodj(line)) + Markers(bodj(line)) + Markers(bodj(enclosing))
   }
 }

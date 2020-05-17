@@ -16,6 +16,33 @@
 
 package com.tersesystems.blindsight.logstash
 
-trait Implicits extends ToMarkersImplicits with ToArgumentsImplicits
+import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.api.AST._
+import net.logstash.logback.argument.{StructuredArgument, StructuredArguments}
+import net.logstash.logback.marker.{Markers => LogstashMarkers}
+
+trait ToArgumentsImplicits {
+  implicit val structuredArgToArguments: ToArgument[StructuredArgument] = ToArgument { instance =>
+    new Argument(instance)
+  }
+
+  implicit val bvalueToArgument: ToArgument[BObject] = ToArgument { bobj =>
+    import BObjectConverters._
+    Argument(StructuredArguments.e(asJava(bobj)))
+  }
+}
+
+object ToArgumentsImplicits extends ToArgumentsImplicits
+
+trait ToMarkersImplicits {
+  implicit val bvalueToMarker: ToMarkers[BObject] = ToMarkers { bobj: BObject =>
+    import BObjectConverters._
+    Markers(LogstashMarkers.appendEntries(asJava(bobj)))
+  }
+}
+
+object ToMarkersImplicits extends ToMarkersImplicits
+
+trait Implicits extends ToMarkersImplicits with ToArgumentsImplicits with SourceCodeImplicits
 
 object Implicits extends Implicits

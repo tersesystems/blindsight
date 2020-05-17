@@ -4,6 +4,8 @@ import com.tersesystems.blindsight.api.{Argument, Arguments, Markers, Message, T
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.logstash.Implicits._
+import com.tersesystems.blindsight.api.AST._
+import com.tersesystems.blindsight.api.DSL._
 import com.tersesystems.blindsight.semantic.SemanticLogger
 import com.tersesystems.blindsight._
 import net.logstash.logback.argument.StructuredArguments
@@ -34,7 +36,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a info message with marker" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.info(Markers("1" -> "2"), "a=b")
+        logger.info(Markers(bodj("1" -> "2")), "a=b")
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
@@ -44,7 +46,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a info message with argument" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.info("a=b", "1" -> "2")
+        logger.info("a=b", bodj("1" -> "2"))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
@@ -67,7 +69,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
-        logger.info("a=b", "1" -> "2", e)
+        logger.info("a=b", bodj("1" -> "2"), e)
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
@@ -80,7 +82,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
-        logger.info(Markers("markerKey" -> "markerValue"), "a=b", "1" -> "2", e)
+        logger.info(Markers(bodj("markerKey" -> "markerValue")), "a=b", bodj("1" -> "2"), e)
 
         val event = listAppender.list.get(0)
         event.getMarker.contains(LogstashMarkers.append("markerKey", "markerValue")) must be(true)
@@ -95,9 +97,9 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
         logger.info(
-          Markers("markerKey" -> "markerValue"),
+          Markers(bodj("markerKey" -> "markerValue")),
           "a=b",
-          Arguments("1" -> "2", "3" -> "4"),
+          bodj("1" -> "2", "3" -> "4"),
           e
         )
 
@@ -135,7 +137,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a state marker" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.withMarker("a" -> "b").info("I have a marker")
+        logger.withMarker(bodj("a" -> "b")).info("I have a marker")
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("I have a marker")
@@ -171,7 +173,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying                 = loggerContext.getLogger(this.getClass)
         val logger: Logger             = LoggerFactory.getLogger(underlying)
         val fluentLogger: FluentLogger = logger.fluent
-        fluentLogger.withMarker("a" -> "b").info.message("I have a marker").log()
+        fluentLogger.withMarker(bodj("a" -> "b")).info.message("I have a marker").log()
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("I have a marker")
@@ -210,7 +212,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val logger: Logger                          = LoggerFactory.getLogger(underlying)
         val semanticLogger: SemanticLogger[Message] = logger.semantic[Message]
 
-        semanticLogger.withMarker("a" -> "b").info(Message("I have a marker"))
+        semanticLogger.withMarker(bodj("a" -> "b")).info(Message("I have a marker"))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("I have a marker")

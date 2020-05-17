@@ -16,6 +16,7 @@
 
 package example.semantic
 
+import com.tersesystems.blindsight.api.AST.bodj
 import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.logstash.Implicits._
 
@@ -27,9 +28,10 @@ final case class UserLoggedInEvent(name: String, ipAddr: String) extends UserEve
 
 object UserLoggedInEvent {
   implicit val toStatement: ToStatement[UserLoggedInEvent] = ToStatement { instance =>
+    import DSL._
     Statement()
       .withMessage(instance.toString)
-      .withArguments(Arguments(Map("name" -> instance.name, "ipAddr" -> instance.ipAddr)))
+      .withArguments(Arguments(bodj("name" -> instance.name, "ipAddr" -> instance.ipAddr)))
   }
 }
 
@@ -37,9 +39,11 @@ final case class UserLoggedOutEvent(name: String, reason: String) extends UserEv
 
 object UserLoggedOutEvent {
   implicit val toStatement: ToStatement[UserLoggedOutEvent] = ToStatement { instance =>
+    import DSL._
+
     Statement()
       .withMessage(instance.toString)
-      .withArguments(Arguments(Map("name" -> instance.name, "reason" -> instance.reason)))
+      .withArguments(Arguments(bodj("name" -> instance.name, "reason" -> instance.reason)))
   }
 }
 
@@ -47,8 +51,10 @@ final case class UserIsUpLateEvent(name: String, excuse: String) extends UserEve
 
 object UserIsUpLateEvent {
   implicit val toStatement: ToStatement[UserIsUpLateEvent] = ToStatement { instance =>
+    import DSL._
+
     Statement()
       .withMessage(instance.toString)
-      .withArguments(Arguments(Map("name" -> instance.name, "excuse" -> instance.excuse)))
+      .withArguments(Arguments(bodj("name" -> instance.name, "excuse" -> instance.excuse)))
   }
 }

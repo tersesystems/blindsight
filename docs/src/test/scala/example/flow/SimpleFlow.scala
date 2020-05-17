@@ -51,8 +51,14 @@ object SimpleFlow {
 
   object Person {
     implicit val personToArguments: ToArgument[Person] = ToArgument { person =>
+      import com.tersesystems.blindsight.api.AST._
+      import com.tersesystems.blindsight.api.DSL._
       import com.tersesystems.blindsight.logstash.Implicits._
-      Argument("person" -> Map("name" -> Argument(person.name), "age" -> Argument(person.age)))
+
+      val personObj: BObject = "person" -> (
+        ("name" -> person.name) ~ ("age" -> person.age)
+      )
+      Argument(personObj)
     }
   }
   // #flow_person_definition
