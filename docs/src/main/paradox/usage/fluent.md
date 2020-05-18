@@ -22,22 +22,6 @@ You can log with a marker alone and then log:
 
 This will write out an empty string as the message, and a logstash marker.
 
-You can also write out anything that has a  @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) implementation, i.e. the Logstash implicits lets you do this:
-
-```scala
-import com.tersesystems.blindsight
-import com.tersesystems.blindsight.ToMarkers
-import com.tersesystems.blindsight.logstash.Implicits._
-
-
-// Shown explicitly here but this is all in Implicits._
-implicit def arrayToMarkers[T]: ToMarkers[(String, Seq[T])] = blindsight.ToMarkers {
-  case (k, v) => Markers(LogstashMarkers.appendArray(k, v: _*))
-}
-
-fluentLogger.marker("array" -> Seq("one", "two", "three")).log()
-```
-
 All markers are in a @scaladoc[Markers](com.tersesystems.blindsight.Markers) instance internally, but are not accessible from the builder.
 
 ## Message

@@ -38,8 +38,4 @@ object MarkersResolver {
       throw new ServiceNotFoundException("No markers resolver found!")
     }
   }
-
-  class Empty extends MarkersResolver {
-    override def resolve(bobject: BObject): Markers = Markers.empty
-  }
 }

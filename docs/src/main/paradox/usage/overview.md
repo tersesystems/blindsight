@@ -195,29 +195,17 @@ See @ref:[Flow API](flow.md) for more details.
 
 ## Structured Logging
 
-Blindsight provides structured logging using type class mapping, which maps between tuples, arrays, and JSON nodes to [Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields), if you are using Logback as the SLF4J implementation.  This makes structured logging easy and intuitive.
-
-Type class mapping is available through the `blindsight-logstash` library using @ref:[logback](../setup/logback.md), and must be brought into lexical scope using the @scaladoc[Implicits](com.tersesystems.blindsight.logstash.Implicits$) singleton object:
+Blindsight provides structured logging using a DSL which converts to [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  This makes structured logging easy and intuitive, and provides structured output in both line based and JSON based formats.
 
 ```scala
-import com.tersesystems.blindsight.logstash.Implicits._
+logger.info("some message", bodj("a" -> "b"))
 ```
 
-This provides a number of type class mappings like:
+In line format:
 
-```scala
-implicit val tupleStringToMarkers: ToMarkers[(String, String)] = ToMarkers {
-  case (k, v) => Markers(LogstashMarkers.append(k, v))
-}
-```
+XXX TODO
 
-When you write out a logstash marker using a tuple in the position of a marker, it will compile:
-
-```scala
-logger.info("a" -> "b", "some message")
-```
-
-And when you are using the [`LogstashEncoder`](https://www.javadoc.io/doc/net.logstash.logback/logstash-logback-encoder/latest/net/logstash/logback/encoder/LogstashEncoder.html) that writes out structured logs as JSON, you'll get the following:
+And in JSON:
 
 ```json
 {

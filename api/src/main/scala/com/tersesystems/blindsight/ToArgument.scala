@@ -65,3 +65,21 @@ object ToArgument extends LowPriorityToArgumentImplicits {
     override def toArgument(instance: T): Argument = f(instance)
   }
 }
+
+/**
+ * This trait allows a type that has a `ToArgument` type class instance to render as an `Argument`.
+ *
+ * This is especially useful in the SLF4J API, which does not take a `ToMarkers` instance.
+ *
+ * {{{
+ * import ArgumentEnrichment._
+ * val argument: Argument = myInstance.asArgument
+ * }}}
+ */
+trait ArgumentEnrichment {
+  implicit class RichToArgument[A: ToArgument](instance: A) {
+    def asArgument: Argument = implicitly[ToArgument[A]].toArgument(instance)
+  }
+}
+
+object ArgumentEnrichment extends ArgumentEnrichment
