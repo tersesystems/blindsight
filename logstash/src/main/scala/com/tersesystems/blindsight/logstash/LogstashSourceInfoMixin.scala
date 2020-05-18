@@ -16,9 +16,9 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api.Markers
-import com.tersesystems.blindsight.api.AST._
-import com.tersesystems.blindsight.api.mixins.SourceInfoMixin
+import com.tersesystems.blindsight.AST._
+import com.tersesystems.blindsight.Markers
+import com.tersesystems.blindsight.mixins.SourceInfoMixin
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 

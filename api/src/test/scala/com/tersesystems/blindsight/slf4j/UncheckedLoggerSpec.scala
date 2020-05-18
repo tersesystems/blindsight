@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.api.{Arguments, Markers, Message}
+import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec

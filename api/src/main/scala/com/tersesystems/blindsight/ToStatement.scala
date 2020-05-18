@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api
+package com.tersesystems.blindsight
 
 /**
  * Type class for mapping to a `Statement`.

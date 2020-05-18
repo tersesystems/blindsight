@@ -1,14 +1,12 @@
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api.{Argument, Arguments, Markers, Message, ToStatement}
+import com.tersesystems.blindsight.AST._
+import com.tersesystems.blindsight.DSL._
+import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.logstash.Implicits._
-import com.tersesystems.blindsight.api.AST._
-import com.tersesystems.blindsight.api.DSL._
 import com.tersesystems.blindsight.semantic.SemanticLogger
-import com.tersesystems.blindsight._
-import net.logstash.logback.argument.StructuredArguments
 import net.logstash.logback.argument.StructuredArguments.entries
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 import org.scalatest.matchers.must.Matchers

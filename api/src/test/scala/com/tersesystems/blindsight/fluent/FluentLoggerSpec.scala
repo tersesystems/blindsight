@@ -1,11 +1,10 @@
-package com.tersesystems.blindsight.api.fluent
+package com.tersesystems.blindsight.fluent
 
 import java.util.UUID
 
-import com.tersesystems.blindsight.api.{Argument, Markers, ToArgument}
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
-import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.slf4j.SLF4JLogger
+import com.tersesystems.blindsight.{Argument, Markers, ToArgument}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.MarkerFactory

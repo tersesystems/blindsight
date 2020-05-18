@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.api.{Markers, ParameterList, ToMarkers}
+import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
 import org.slf4j.event.Level
 
 /**

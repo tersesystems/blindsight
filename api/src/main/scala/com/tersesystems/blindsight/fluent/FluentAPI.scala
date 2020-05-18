@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.fluent
 
-import com.tersesystems.blindsight.api.{ToArgument, ToMarkers, ToMessage}
+import com.tersesystems.blindsight.{ToArgument, ToMarkers, ToMessage}
 
 trait FluentAPI {
   def marker[T: ToMarkers](instance: => T): FluentMethod.Builder

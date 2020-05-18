@@ -16,8 +16,8 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.api.mixins._
+import com.tersesystems.blindsight.mixins._
+import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 

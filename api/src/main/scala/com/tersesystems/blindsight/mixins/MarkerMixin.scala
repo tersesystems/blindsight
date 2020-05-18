@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api.mixins
+package com.tersesystems.blindsight.mixins
 
-import com.tersesystems.blindsight.api.{Markers, ToMarkers}
+import com.tersesystems.blindsight.{Markers, ToMarkers}
 
 /**
- * A marker mixin that returns a new instance of the logger with the marker always applied.
- *
- * @tparam StatementType the type class instance of ToStatement.
+ * A logger mixin that accumulates marker state.
  */
-trait SemanticMarkerMixin[StatementType] {
-  type Self[T]
+trait MarkerMixin {
+  type Self
 
   /**
-   * @param instance a type class instance of ToMarkers
+   * Returns a logger which will always render with the given marker.
+   *
+   * @param instance a type class instance of `ToMarkers`
    * @tparam T the instance type.
-   * @return a new logger instance with the marker.
+   * @return a new instance of the logger that has this marker.
    */
-  def withMarker[T: ToMarkers](instance: => T): Self[StatementType]
+  def withMarker[T: ToMarkers](instance: T): Self
 
   /**
-   * @return the accumulated markers, may be `Markers.empty`.
+   * Returns the accumulated markers of this logger.
+   *
+   * @return the accumulated markers, may be Markers.empty.
    */
   def markers: Markers
 }

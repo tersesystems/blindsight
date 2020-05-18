@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.{Markers, ParameterList, Statement, ToStatement}
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 

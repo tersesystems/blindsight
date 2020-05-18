@@ -82,7 +82,8 @@ All of these together make a logging statement.
 Blindsight keeps the same concept these parameters, but creates specific types; @scaladoc[Markers](com.tersesystems.blindsight.api.Markers), @scaladoc[Message](com.tersesystems.blindsight.api.Message), and @scaladoc[Argument](com.tersesystems.blindsight.api.Argument), with a @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) that encompasses all the above.
 
 ```scala
-import com.tersesystems.blindsight.api._
+
+
 val markers: Markers = Markers(marker1, marker2)
 val message: Message = Message("some message")
 val argument1: Argument = Argument("arg1")
@@ -160,7 +161,7 @@ See @ref:[Fluent API](fluent.md) for details.
 The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a [semantic, strongly typed logging](https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md) API.  A @scaladoc[SemanticLogger](com.tersesystems.blindsight.semantic.SemanticLogger) is accessible through `logger.semantic`:
 
 ```scala
-import com.tersesystems.blindsight.api._
+
 import com.tersesystems.blindsight.semantic.SemanticLogger
 
 val semanticLogger: SemanticLogger[UserEvent] = logger.semantic[UserEvent]
@@ -177,7 +178,8 @@ See @ref:[Semantic API](semantic.md) for details.
 The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a control flow based logging wrapper.  A @scaladoc[FlowLogger](com.tersesystems.blindsight.flow.FlowLogger) is accessible through `logger.flow`:
 
 ```scala
-import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight.ToArgument
+
 import com.tersesystems.blindsight.flow._
 
 implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = ...

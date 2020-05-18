@@ -16,9 +16,9 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.api.mixins._
+import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
+import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 

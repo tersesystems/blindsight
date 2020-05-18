@@ -14,7 +14,7 @@ logger.info("I am an SLF4J-like logger")
 [Structured logging](https://tersesystems.github.io/blindsight/usage/structured.html):
 
 ```scala
-import com.tersesystems.blindsight.api._
+
 import com.tersesystems.blindsight.logstash.Implicits._
 
 val markers = Markers("array" -> Seq("one", "two", "three"))
@@ -59,7 +59,7 @@ logger.info.when(booleanCondition) { info => info("when true") }
 And [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html):
 
 ```scala
-import com.tersesystems.blindsight.api._
+
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 
 val userIdMarker = LogstashMarkers.append("userId", userId)

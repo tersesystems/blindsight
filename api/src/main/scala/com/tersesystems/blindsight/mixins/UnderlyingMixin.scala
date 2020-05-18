@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api.mixins
-
-import org.slf4j.event.Level
+package com.tersesystems.blindsight.mixins
 
 /**
- * A mixin that gives the predicate instance for this level.
- *
- * @tparam Predicate the predicate type.
+ * A mixin that provides the underlying SLF4J loggern.
  */
-trait PredicateMixin[Predicate] {
-
-  /**
-   * Returns the predicate instance for this level.
-   *
-   * @param level the SLF4J level.
-   * @return the predicate instance.
-   */
-  def predicate(level: Level): Predicate
+trait UnderlyingMixin {
+  def underlying: org.slf4j.Logger
 }

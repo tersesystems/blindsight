@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api.mixins
+package com.tersesystems.blindsight.mixins
 
-import com.tersesystems.blindsight.api.ParameterList
 import org.slf4j.event.Level
 
 /**
- * An SLI mixin that returns parameter lists.
+ * A mixin that gives the predicate instance for this level.
+ *
+ * @tparam Predicate the predicate type.
  */
-trait ParameterListMixin {
-  def parameterList(level: Level): ParameterList
+trait PredicateMixin[Predicate] {
+
+  /**
+   * Returns the predicate instance for this level.
+   *
+   * @param level the SLF4J level.
+   * @return the predicate instance.
+   */
+  def predicate(level: Level): Predicate
 }

@@ -16,18 +16,11 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.api.{Markers, ParameterList, ToMarkers}
-import com.tersesystems.blindsight.api.mixins.{
-  MarkerMixin,
-  OnConditionMixin,
-  ParameterListMixin,
-  PredicateMixin,
-  SourceInfoMixin,
-  UnderlyingMixin
-}
+import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j.{ExtendedSLF4JLogger, SLF4JLoggerAPI, SLF4JPredicate}
+import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
 import org.slf4j.event.Level
-import org.slf4j.event.Level.{DEBUG, ERROR, INFO, TRACE, WARN}
+import org.slf4j.event.Level._
 import sourcecode.{Enclosing, File, Line}
 
 /**

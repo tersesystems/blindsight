@@ -1,10 +1,9 @@
-package com.tersesystems.blindsight.api.semantic
+package com.tersesystems.blindsight.semantic
 
 import java.util.UUID
 
-import com.tersesystems.blindsight.api._
+import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
-import com.tersesystems.blindsight.semantic.SemanticLogger
 import com.tersesystems.blindsight.slf4j.SLF4JLogger
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec

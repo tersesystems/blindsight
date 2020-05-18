@@ -1,6 +1,6 @@
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.api.{Markers, Statement}
+import com.tersesystems.blindsight.{Markers, Statement}
 import org.slf4j.event.Level
 
 /**

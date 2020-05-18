@@ -2,8 +2,7 @@ package example.conditional
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.tersesystems.blindsight.LoggerFactory
-import com.tersesystems.blindsight.api.Argument
+import com.tersesystems.blindsight.{Argument, LoggerFactory}
 import io.timeandspace.cronscheduler.CronTask
 
 object SimpleConditionalExample {

@@ -16,8 +16,9 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.api.AST._
+import com.tersesystems.blindsight
+import com.tersesystems.blindsight.AST._
+import com.tersesystems.blindsight._
 import net.logstash.logback.argument.{StructuredArgument, StructuredArguments}
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 
@@ -35,7 +36,7 @@ trait ToArgumentsImplicits {
 object ToArgumentsImplicits extends ToArgumentsImplicits
 
 trait ToMarkersImplicits {
-  implicit val bvalueToMarker: ToMarkers[BObject] = ToMarkers { bobj: BObject =>
+  implicit val bvalueToMarker: ToMarkers[BObject] = blindsight.ToMarkers { bobj: BObject =>
     import BObjectConverters._
     Markers(LogstashMarkers.appendEntries(asJava(bobj)))
   }

@@ -16,11 +16,10 @@
 
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.flow.FlowLogger
 import com.tersesystems.blindsight.fluent.FluentLogger
-import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight.semantic.SemanticLogger
+import com.tersesystems.blindsight.slf4j._
 
 trait Logger extends SLF4JLogger[StrictSLF4JMethod] {
   override type Self = Logger
