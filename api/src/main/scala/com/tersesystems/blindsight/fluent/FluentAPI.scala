@@ -18,9 +18,17 @@ package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight.{ToArgument, ToMarkers, ToMessage}
 
+/**
+ * This trait is used for a fluent API builder.  It defers calling the arguments
+ * until the `build` method is called, so everything here is call-by-name.
+ */
 trait FluentAPI {
+
   def marker[T: ToMarkers](instance: => T): FluentMethod.Builder
+
   def message[T: ToMessage](instance: => T): FluentMethod.Builder
+
   def argument[T: ToArgument](instance: => T): FluentMethod.Builder
+
   def cause(e: Throwable): FluentMethod.Builder
 }
