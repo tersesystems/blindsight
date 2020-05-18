@@ -57,3 +57,21 @@ object ToMarkers extends LowPriorityToMarkersImplicits {
     override def toMarkers(instance: T): Markers = f(instance)
   }
 }
+
+/**
+ * This trait allows a type that has a `ToMarkers` type class instance to render as a `Markers`.
+ *
+ * This is especially useful in the SLF4J API, which does not take a `ToMarkers` instance.
+ *
+ * {{{
+ * import MarkersEnrichment._
+ * val markers: Markers = myInstance.asMarkers
+ * }}}
+ */
+trait MarkersEnrichment {
+  implicit class RichToMarkers[M: ToMarkers](instance: M) {
+    def asMarkers: Markers = implicitly[ToMarkers[M]].toMarkers(instance)
+  }
+}
+
+object MarkersEnrichment extends MarkersEnrichment

@@ -6,7 +6,7 @@ The biggest difference is that methods take a type class instance of @scaladoc[M
 
 ## Markers
 
-You can pass in something that is not a marker, and provided you have a @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) in implicit scope, you can get it auto-converted.
+You can pass in something that is not a marker, and provided you have a @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) in implicit scope, you can get it auto-converted through type annotation.  The various logging statement will only take a `Markers`.
 
 ```scala
 val marker: Markers = MarkerFactory.getDetachedMarker("SOME_MARKER")
@@ -62,9 +62,9 @@ object Slf4jMain {
 @ref:[Logstash Markers](structured.md) are encouraged here, as they can make marker specification much easier:
 
 ```scala
-
-import com.tersesystems.blindsight.logstash.Implicits._
-logger.info(Markers("markerKey" -> "markerValue"), "marker and argument")
+import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.MarkersEnrichment._
+logger.info(bobj("markerKey" -> "markerValue").asMarkers, "marker and argument")
 ```
 
 Generally, you should not need to use markers explicitly in messages, as they can be used with @ref:[context](context.md) more effectively.
@@ -94,26 +94,6 @@ comes out as:
 
 ```
 FgEddUhGnXE6O0Qbm7EAAA 17:36:55.142 [INFO ] e.s.Slf4jMain$ -  arg 1, arg 2, arg false
-```
-
-Logstash `StructuredArguments` are covered if you import the `blindsight-logstash` library.  Using Logstash markers means that key value pairs can be created from tuples. 
-
-```scala
-import com.tersesystems.blindsight.logstash.Implicits._
-
-logger.info("marker and argument {}", "argumentKey" -> "argumentValue")
-
-// Maps are autoconverted
-logger.info(
-  "first is [{}], second is [{}]",
-  Map("a" -> "b", "c" -> "d")
-)
-
-// Otherwise, wrapping in Arguments() is the way to go
-logger.info(
-  "first is [{}], second is [{}]",
-  Arguments("a" -> "b", "c" -> "d")
-)
 ```
 
 Not everything is defined as an implicit out of the box, but it's easy to define defaults.  For example, for dates you may want to define some defaults:

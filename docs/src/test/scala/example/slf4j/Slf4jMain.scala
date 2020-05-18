@@ -23,7 +23,6 @@ import java.util.Date
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.slf4j._
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
-//import com.tersesystems.blindsight.logstash.Implicits._
 import org.slf4j.MarkerFactory
 
 object Slf4jMain {
@@ -45,6 +44,10 @@ object Slf4jMain {
     if (logger.isDebugEnabled(featureFlag)) {
       logger.debug("this is a test")
     }
+
+    // Cannot use ToMarkers here
+    import MarkersEnrichment._
+    logger.debug(featureFlag.asMarkers, "markers must be explicit here to prevent API confusion")
 
     logger.info.when(System.currentTimeMillis() % 2 == 0) { log => log("I am divisable by two") }
 
