@@ -16,9 +16,8 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.slf4j.{SLF4JLogger, StrictSLF4JMethod, UncheckedSLF4JMethod}
-import com.tersesystems.blindsight.{Logger, LoggerFactory, LoggerResolver, slf4j}
+import com.tersesystems.blindsight.{Logger, LoggerFactory, LoggerResolver, Markers}
 import org.slf4j.event.Level
 
 /**

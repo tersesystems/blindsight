@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api
+package com.tersesystems.blindsight
 
 import org.slf4j.{Marker, MarkerFactory}
 

@@ -16,8 +16,7 @@
 
 package example.fluent
 
-import com.tersesystems.blindsight.LoggerFactory
-import com.tersesystems.blindsight.api.{Argument, Statement}
+import com.tersesystems.blindsight._
 
 object FluentMain {
   private val fluent = LoggerFactory.getLogger.fluent
@@ -26,8 +25,8 @@ object FluentMain {
     val statement = Statement().withMessage("hello world")
     fluent.info(statement)
 
-    import com.tersesystems.blindsight.api.AST._
-    import com.tersesystems.blindsight.api.DSL._
+    import com.tersesystems.blindsight.AST._
+    import com.tersesystems.blindsight.DSL._
     import com.tersesystems.blindsight.logstash.Implicits._
     fluent.info
       .marker(bodj("string" -> "steve"))

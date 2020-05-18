@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.api.{NotNothing, ToStatement}
+import com.tersesystems.blindsight.{NotNothing, ToStatement}
 
 trait SemanticLoggerComponent[StatementType, P, M[_]] {
   type Predicate = P

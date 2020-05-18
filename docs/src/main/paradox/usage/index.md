@@ -29,7 +29,7 @@ But there's a lot more, of course.
 You can do @ref:[structured Logging](structured.md) using the Scala collection library:
 
 ```scala
-import com.tersesystems.blindsight.api._
+
 import com.tersesystems.blindsight.logstash.Implicits._
 
 val markers = Markers("array" -> Seq("one", "two", "three"))

@@ -18,8 +18,7 @@ package example.flow
 
 // #flow_example
 object SimpleFlow {
-  import com.tersesystems.blindsight.{Logger, LoggerFactory}
-  import com.tersesystems.blindsight.api.{Argument, ToArgument}
+  import com.tersesystems.blindsight._
   import com.tersesystems.blindsight.flow._
 
   private implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior
@@ -51,8 +50,8 @@ object SimpleFlow {
 
   object Person {
     implicit val personToArguments: ToArgument[Person] = ToArgument { person =>
-      import com.tersesystems.blindsight.api.AST._
-      import com.tersesystems.blindsight.api.DSL._
+      import com.tersesystems.blindsight.AST._
+      import com.tersesystems.blindsight.DSL._
       import com.tersesystems.blindsight.logstash.Implicits._
 
       val personObj: BObject = "person" -> (

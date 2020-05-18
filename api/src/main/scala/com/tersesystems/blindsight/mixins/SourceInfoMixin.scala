@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api.mixins
+package com.tersesystems.blindsight.mixins
 
-import com.tersesystems.blindsight.api.Markers
+import com.tersesystems.blindsight.Markers
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 

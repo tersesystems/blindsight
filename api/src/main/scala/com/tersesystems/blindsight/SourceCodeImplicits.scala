@@ -1,4 +1,4 @@
-package com.tersesystems.blindsight.api
+package com.tersesystems.blindsight
 
 import sourcecode._
 

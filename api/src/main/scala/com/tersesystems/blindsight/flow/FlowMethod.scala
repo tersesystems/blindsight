@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.api.ToArgument
+import com.tersesystems.blindsight.ToArgument
 import com.tersesystems.blindsight.slf4j.SLF4JPredicate
 import org.slf4j.event.Level
 import sourcecode.{Args, Enclosing, File, Line}

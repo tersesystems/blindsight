@@ -16,9 +16,9 @@
 
 package com.tersesystems.blindsight.fluent
 
-import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.api.mixins._
+import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j.{ExtendedSLF4JLogger, SLF4JLoggerAPI, SLF4JPredicate}
+import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
 import org.slf4j.Logger
 import org.slf4j.event.Level
 import org.slf4j.event.Level._

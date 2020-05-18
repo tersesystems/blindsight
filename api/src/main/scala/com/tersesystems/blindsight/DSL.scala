@@ -1,6 +1,6 @@
-package com.tersesystems.blindsight.api
+package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.api.AST._
+import com.tersesystems.blindsight.AST._
 
 import scala.language.implicitConversions
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api
+package com.tersesystems.blindsight
 
 final class Argument(val value: Any) {
   def arguments: Arguments   = new Arguments(Seq(this))

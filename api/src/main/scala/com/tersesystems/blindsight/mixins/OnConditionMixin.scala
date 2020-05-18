@@ -14,29 +14,20 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api.mixins
-
-import com.tersesystems.blindsight.api.{Markers, ToMarkers}
+package com.tersesystems.blindsight.mixins
 
 /**
- * A logger mixin that accumulates marker state.
+ * A conditional logger mixin.
  */
-trait MarkerMixin {
+trait OnConditionMixin {
   type Self
 
   /**
-   * Returns a logger which will always render with the given marker.
+   * Returns a new instance of the logger that will only log if the
+   * condition is met.
    *
-   * @param instance a type class instance of `ToMarkers`
-   * @tparam T the instance type.
-   * @return a new instance of the logger that has this marker.
+   * @param test the call by name boolean that is a prerequisite for logging.
+   * @return the new conditional logger instance.
    */
-  def withMarker[T: ToMarkers](instance: T): Self
-
-  /**
-   * Returns the accumulated markers of this logger.
-   *
-   * @return the accumulated markers, may be Markers.empty.
-   */
-  def markers: Markers
+  def onCondition(test: => Boolean): Self
 }

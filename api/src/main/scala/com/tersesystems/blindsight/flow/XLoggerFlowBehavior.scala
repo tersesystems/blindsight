@@ -1,8 +1,8 @@
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.api._
-import org.slf4j.{Marker, MarkerFactory}
+import com.tersesystems.blindsight._
 import org.slf4j.event.Level
+import org.slf4j.{Marker, MarkerFactory}
 
 /**
  * A flow behavior that implements the <a href="http://www.slf4j.org/extensions.html#extended_logger">extended

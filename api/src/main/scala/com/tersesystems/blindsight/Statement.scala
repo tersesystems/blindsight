@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api
+package com.tersesystems.blindsight
 
 /**
  * A statement represents a total logging statement.  This is most useful

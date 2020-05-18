@@ -1,4 +1,3 @@
-import Dependencies._
 import de.heikoseeberger.sbtheader.HeaderPlugin
 import sbt.Keys._
 import sbt._

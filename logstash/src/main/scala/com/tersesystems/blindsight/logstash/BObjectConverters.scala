@@ -1,8 +1,9 @@
 package com.tersesystems.blindsight.logstash
 
 object BObjectConverters {
+  import com.tersesystems.blindsight.AST._
+
   import scala.collection.JavaConverters._
-  import com.tersesystems.blindsight.api.AST._
 
   def asJava(bobj: BObject): java.util.Map[String, Any] = {
     bobj.obj

@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.api._
 import com.tersesystems.blindsight.slf4j._
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 //import com.tersesystems.blindsight.logstash.Implicits._

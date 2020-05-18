@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api
+package com.tersesystems.blindsight
 
 /**
  * This class represents the message portion of a logging statement.

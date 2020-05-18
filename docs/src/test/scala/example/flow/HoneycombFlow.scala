@@ -16,14 +16,11 @@
 
 package example.flow
 
-import com.tersesystems.blindsight.LoggerFactory
-import com.tersesystems.blindsight.api.{Argument, Arguments, Markers, Statement, ToArgument}
+import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.flow.FlowBehavior
 import com.tersesystems.blindsight.flow.FlowBehavior.Source
-import com.tersesystems.blindsight.flow.{FlowBehavior, FlowMethod}
-import com.tersesystems.blindsight.logstash.Implicits._
 import com.tersesystems.logback.tracing.{SpanInfo, SpanMarkerFactory}
 import com.tersesystems.logback.uniqueid.RandomUUIDIdGenerator
-import example.flow.SimpleFlow.Person
 import org.slf4j.event.Level
 import sourcecode.Enclosing
 
@@ -91,8 +88,8 @@ object HoneycombFlow {
 
   object Person {
     implicit val personToArguments: ToArgument[Person] = ToArgument { person =>
-      import com.tersesystems.blindsight.api.AST._
-      import com.tersesystems.blindsight.api.DSL._
+      import com.tersesystems.blindsight.AST._
+      import com.tersesystems.blindsight.DSL._
       import com.tersesystems.blindsight.logstash.Implicits._
 
       val personObj: BObject = "person" -> (

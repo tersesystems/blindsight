@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight.api.mixins
+package com.tersesystems.blindsight.mixins
+
+import com.tersesystems.blindsight.ParameterList
+import org.slf4j.event.Level
 
 /**
- * A mixin that provides the underlying SLF4J loggern.
+ * An SLI mixin that returns parameter lists.
  */
-trait UnderlyingMixin {
-  def underlying: org.slf4j.Logger
+trait ParameterListMixin {
+  def parameterList(level: Level): ParameterList
 }
