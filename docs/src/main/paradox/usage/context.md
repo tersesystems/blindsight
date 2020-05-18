@@ -6,7 +6,7 @@ This is very useful when you are logging [events](https://www.honeycomb.io/blog/
 
 Blindsight does not use MDC for managing context, and does not touch thread local storage.  Instead, it uses markers and builds up those markers for use in structured logging.  This is especially useful for events.
 
-The assumption is that you will be using the @ref:[structured logging](structured.md) and [Terse Logback](https://tersesystems.github.io/terse-logback).  You should also read through how to create your own [markers](https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/) for use in logging.
+The assumption is that you will be using the @ref:[structured logging](dsl.md) and [Terse Logback](https://tersesystems.github.io/terse-logback).  You should also read through how to create your own [markers](https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/) for use in logging.
 
 ## Marker Context
 

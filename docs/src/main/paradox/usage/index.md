@@ -2,11 +2,12 @@
 
 * [Overview](overview.md)
 * [Logger Resolvers](resolvers.md)
+* [Structured DSL](dsl.md)
+* [Markers and Arguments](typeclass.md)
 * [SLF4J API](slf4j.md)
 * [Fluent API](fluent.md)
 * [Semantic API](semantic.md)
 * [Flow API](flow.md)
-* [Structured Logging](structured.md)
 * [Conditional Logging](conditional.md)
 * [Contextual Logging](context.md)
 * [Source Code](sourcecode.md)
@@ -26,7 +27,7 @@ But there's a lot more, of course.
 
 ## Examples
 
-You can do @ref:[structured Logging](structured.md) using an internal DSL:
+You can do @ref:[structured Logging](dsl.md) using an internal DSL:
 
 ```scala
 case class Winner(id: Long, numbers: List[Int])
@@ -76,24 +77,5 @@ logger.info.when(booleanCondition) { info => info("when true") }
 ```scala
 logger.withMarker("userId" -> userId).info("Logging with user id added as a context marker!")
 ```
-
-## Principles
-
-Blindsight has some organizing principles that inform the design.
-
-* Loggers depend directly and solely on the SLF4J API, which can always be accessed directly.
-* APIs can be extended or replaced for domain specific logging.
-* Knowing **when** and **when not** to log is more important than "how fast" you log.
-* Loggers can be resolved from user defined context, not simply by name or by class.
-* Structured logging is baked in, uses standard Scala idioms, and can be overridden.
-
-Likewise, there are things that Blindsight eschews:
-
-* No effects; logging is always a side effect.
-* No constraints or configuration on SLF4J implementation.
-* No FP library requirements; no need for scalaz, cats, zio etc.
-* No formatting on the front end; messages should not contain JSON/XML.
-
-For more details, see the links below:
 
 @@toc { depth=1 }
