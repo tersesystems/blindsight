@@ -26,6 +26,7 @@ import net.logstash.logback.marker.{Markers => LogstashMarkers}
 import org.slf4j.MarkerFactory
 
 object Slf4jMain {
+  val logger = LoggerFactory.getLogger(getClass)
 
   final case class FeatureFlag(flagName: String)
 
@@ -38,8 +39,6 @@ object Slf4jMain {
   case class CreditCard(number: String)
 
   def main(args: Array[String]): Unit = {
-    val logger = LoggerFactory.getLogger(getClass)
-
     val featureFlag = FeatureFlag("flag.enabled")
     if (logger.isDebugEnabled(featureFlag)) {
       logger.debug("this is a test")
