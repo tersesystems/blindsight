@@ -23,10 +23,15 @@ import com.tersesystems.blindsight.AST.BObject
  *
  * {{{
  * case class Person(name: String, age: Int)
- * implicit val personToArgument: ToArgument[Person] = ToArgument { person =>
- *   import net.logstash.logback.argument.StructuredArguments._
- *   new Argument(keyValue("person", person.name))
- * }
+ *  implicit val personToArguments: ToArgument[Person] = ToArgument { person =>
+ *    import com.tersesystems.blindsight.AST._
+ *    import com.tersesystems.blindsight.DSL._
+ *
+ *    val personObj: BObject = "person" -> (
+ *      ("name" -> person.name) ~ ("age" -> person.age)
+ *    )
+ *    Argument(personObj)
+ *  }
  * }}}
  *
  * @tparam T the type to convert to Arguments
