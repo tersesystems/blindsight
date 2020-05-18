@@ -93,10 +93,6 @@ object AST {
     override def hashCode: Int = obj.toSet[BField].hashCode
   }
 
-  object bodj {
-    def apply(fs: BField*): BObject = BObject(fs.toList)
-  }
-
   final case class BArray(arr: List[BValue]) extends BValue {
     type Values = List[Any]
     def values                         = arr.map(_.values)
@@ -127,4 +123,8 @@ object AST {
     }
     def unapply(f: BField): OptionStringBValue = new OptionStringBValue(f)
   }
+}
+
+object bodj {
+  def apply(fs: AST.BField*): AST.BObject = AST.BObject(fs.toList)
 }

@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight
 
+import com.tersesystems.blindsight.AST.BObject
 import org.slf4j.Marker
 
 /**
@@ -32,9 +33,8 @@ import org.slf4j.Marker
  * {{{
  * case class Person(name: String, age: Int)
  * implicit val personToMarkers: ToMarkers[Person] = ToMarkers { person =>
- *   import net.logstash.logback.marker.{Markers => LogstashMarkers}
- *   val personMarker = LogstashMarkers.append("name", person.name)
- *   Markers(personMarker)
+ *   val personObj = bobj("name" -> person.name)
+ *   Markers(personObj)
  * }
  * }}}
  *
@@ -46,7 +46,10 @@ trait ToMarkers[T] {
 
 trait LowPriorityToMarkersImplicits {
   implicit val markersToMarkers: ToMarkers[Markers] = ToMarkers(identity)
-  implicit val markerToMarkers: ToMarkers[Marker]   = ToMarkers(Markers(_))
+
+  implicit val markerToMarkers: ToMarkers[Marker] = ToMarkers(Markers(_))
+
+  implicit val bobjectToMarkers: ToMarkers[BObject] = ToMarkers { bobj => MarkersResolver(bobj) }
 }
 
 object ToMarkers extends LowPriorityToMarkersImplicits {

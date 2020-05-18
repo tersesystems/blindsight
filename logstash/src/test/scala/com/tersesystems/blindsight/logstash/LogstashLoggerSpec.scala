@@ -1,11 +1,9 @@
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.AST._
 import com.tersesystems.blindsight.DSL._
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.fluent.FluentLogger
-import com.tersesystems.blindsight.logstash.Implicits._
 import com.tersesystems.blindsight.semantic.SemanticLogger
 import net.logstash.logback.argument.StructuredArguments.entries
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
@@ -15,6 +13,8 @@ import org.scalatest.wordspec.AnyWordSpec
 import scala.collection.JavaConverters._
 
 class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
+
+  override def resourceName: String = "/logback-test-logstash.xml"
 
   import com.tersesystems.blindsight.LoggerResolver
   implicit val logbackLoggerToLoggerResolver: LoggerResolver[ch.qos.logback.classic.Logger] = {

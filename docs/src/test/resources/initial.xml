@@ -23,9 +23,6 @@
     <newRule pattern="*/typesafeConfig"
              actionClass="com.tersesystems.logback.typesafeconfig.TypesafeConfigAction"/>
 
-    <newRule pattern="*/budgetRule"
-             actionClass="com.tersesystems.logback.budget.BudgetRuleAction"/>
-
     <typesafeConfig>
         <object name="highlightMap" path="highlight" scope="context"/>
     </typesafeConfig>

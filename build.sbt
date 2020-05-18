@@ -50,10 +50,13 @@ lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .settings(
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
-    libraryDependencies += logbackTracing,
-    libraryDependencies += logbackUniqueId,
     libraryDependencies += cronScheduler,
     libraryDependencies += scalaJava8Compat,
+    libraryDependencies += logbackTracing                  % Test,
+    libraryDependencies += logbackUniqueId                 % Test,
+    libraryDependencies += logbackTypesafeConfig           % Test,
+    libraryDependencies += logbackExceptionMapping         % Test,
+    libraryDependencies += logbackExceptionMappingProvider % Test,
     scmInfo := Some(
       ScmInfo(
         url("https://github.com/tersesystems/blindsight"),

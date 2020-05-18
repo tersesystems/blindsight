@@ -16,9 +16,7 @@
 
 package example.semantic
 
-import com.tersesystems.blindsight.AST._
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.logstash.Implicits._
 
 sealed trait UserEvent {
   def name: String

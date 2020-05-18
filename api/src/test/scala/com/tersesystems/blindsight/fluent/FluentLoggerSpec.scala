@@ -11,6 +11,8 @@ import org.slf4j.MarkerFactory
 
 class FluentLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
+  def resourceName: String = "/logback-test-list.xml"
+
   class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
       extends SLF4JLogger.Unchecked(underlying, markers)
 
