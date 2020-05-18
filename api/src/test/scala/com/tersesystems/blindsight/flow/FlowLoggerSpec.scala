@@ -11,6 +11,8 @@ import scala.util.Try
 
 class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
+  def resourceName: String = "/logback-test-list.xml"
+
   "flow logger" should {
     "print entry and exit statements" in {
       val underlying       = loggerContext.getLogger("logger")

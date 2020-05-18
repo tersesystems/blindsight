@@ -52,7 +52,6 @@ object SimpleFlow {
     implicit val personToArguments: ToArgument[Person] = ToArgument { person =>
       import com.tersesystems.blindsight.AST._
       import com.tersesystems.blindsight.DSL._
-      import com.tersesystems.blindsight.logstash.Implicits._
 
       val personObj: BObject = "person" -> (
         ("name" -> person.name) ~ ("age" -> person.age)

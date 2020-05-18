@@ -25,9 +25,7 @@ object FluentMain {
     val statement = Statement().withMessage("hello world")
     fluent.info(statement)
 
-    import com.tersesystems.blindsight.AST._
     import com.tersesystems.blindsight.DSL._
-    import com.tersesystems.blindsight.logstash.Implicits._
     fluent.info
       .marker(bodj("string" -> "steve"))
       .marker(bodj("array" -> Seq("one", "two", "three")))

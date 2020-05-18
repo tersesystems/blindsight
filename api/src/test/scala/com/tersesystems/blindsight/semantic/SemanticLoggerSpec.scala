@@ -11,6 +11,8 @@ import org.slf4j.MarkerFactory
 
 class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
+  def resourceName: String = "/logback-test-list.xml"
+
   "a logger" when {
 
     "run against statement" in {

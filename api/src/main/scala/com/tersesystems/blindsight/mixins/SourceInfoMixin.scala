@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight.mixins
 
+import com.tersesystems.blindsight.bodj
 import com.tersesystems.blindsight.Markers
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -39,6 +40,9 @@ trait SourceInfoMixin {
       line: Line,
       file: File,
       enclosing: Enclosing
-  ): Markers
+  ): Markers = {
+    import com.tersesystems.blindsight.SourceCodeImplicits._
+    Markers(bodj(line)) + Markers(bodj(line)) + Markers(bodj(enclosing))
+  }
 
 }

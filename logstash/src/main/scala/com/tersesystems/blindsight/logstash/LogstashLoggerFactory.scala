@@ -16,8 +16,9 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.slf4j.{SLF4JLogger, StrictSLF4JMethod, UncheckedSLF4JMethod}
-import com.tersesystems.blindsight.{Logger, LoggerFactory, LoggerResolver, Markers}
+import com.tersesystems.blindsight.mixins.SourceInfoMixin
+import com.tersesystems.blindsight.slf4j._
+import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 
 /**
@@ -42,7 +43,7 @@ object LogstashLogger {
       underlying: org.slf4j.Logger,
       markers: Markers
   ) extends SLF4JLogger.Base[StrictSLF4JMethod](underlying, markers)
-      with LogstashSourceInfoMixin {
+      with SourceInfoMixin {
     override protected def newInstance(
         underlying: org.slf4j.Logger,
         markerState: Markers
@@ -51,7 +52,7 @@ object LogstashLogger {
     override protected def newMethod(level: Level) = new StrictSLF4JMethod.Impl(level, this)
 
     override def onCondition(test: => Boolean): SLF4JLogger[StrictSLF4JMethod] = {
-      new SLF4JLogger.Strict.Conditional(test, this) with LogstashSourceInfoMixin
+      new SLF4JLogger.Strict.Conditional(test, this) with SourceInfoMixin
     }
   }
 
@@ -59,7 +60,7 @@ object LogstashLogger {
       underlying: org.slf4j.Logger,
       markers: Markers
   ) extends SLF4JLogger.Base[UncheckedSLF4JMethod](underlying, markers)
-      with LogstashSourceInfoMixin {
+      with SourceInfoMixin {
     override protected def newInstance(
         underlying: org.slf4j.Logger,
         markerState: Markers
@@ -68,7 +69,7 @@ object LogstashLogger {
     override protected def newMethod(level: Level) = new UncheckedSLF4JMethod.Impl(level, this)
 
     override def onCondition(test: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] = {
-      new SLF4JLogger.Unchecked.Conditional(test, this) with LogstashSourceInfoMixin
+      new SLF4JLogger.Unchecked.Conditional(test, this) with SourceInfoMixin
     }
   }
 }
