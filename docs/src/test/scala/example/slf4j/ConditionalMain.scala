@@ -25,7 +25,7 @@ object ConditionalMain {
   def main(args: Array[String]): Unit = {
     val latch = new AtomicBoolean(true)
     def test: Boolean = {
-      println("test called at " + System.currentTimeMillis())
+      //println("test called at " + System.currentTimeMillis())
       latch.getAndSet(!latch.get())
     }
     val logger = LoggerFactory.getLogger(getClass).onCondition(test)
@@ -38,7 +38,7 @@ object ConditionalMain {
 
     var counter: Int = 0
     def mod4 = {
-      println("mod4 called at " + System.currentTimeMillis())
+      //println("mod4 called at " + System.currentTimeMillis())
       counter = (counter + 1) % 2
       counter == 1
     }
