@@ -219,7 +219,7 @@ And in JSON:
 }
 ```
 
-See @ref:[Structured Logging](structured.md) for more details.
+See @ref:[Structured Logging](dsl.md) for more details.
 
 ## Conditional Logging
 

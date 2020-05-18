@@ -1,12 +1,8 @@
-# Structured Logging
+# Structured DSL
 
-Structured logging is the basis for logging rich events.  Blindsight provides support for structured logging through @scaladoc[ToMarker](com.tersesystems.blindsight.ToMarker) and @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) type classes, and also supports an internal DSL that produces "structured objects" for ad-hoc structured representation.
+Structured logging is the basis for logging rich events.  Blindsight comes with an internal DSL which lets you work with Scala types intuitively while ensuring that you cannot produce an invalid structure.  Internally, the DSL is rendered using @scaladoc[MarkersResolver](com.tersesystems.blindsight.MarkersResolver) and @scaladoc[ArgumentResolver](com.tersesystems.blindsight.ArgumentResolver) to [Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields), using the ServiceLoader pattern.  This approach produces ideomatic structured output for both line oriented encoders and JSON encoders.
 
 The default implementation is provided with `blindsight-logstash` module, through @scaladoc[LogstashArgumentResolver](com.tersesystems.blindsight.logstash.LogstashArgumentResolver) and @scaladoc[LogstashMarkersResolver](com.tersesystems.blindsight.logstash.LogstashMarkersResolver).  You must configure a JSON encoder to render JSON output.  See [Terse Logback](https://tersesystems.github.io/terse-logback/) and the [Terse Logback Showcase](https://github.com/tersesystems/terse-logback-showcase) for examples of how to configure logstash-logback-encoder for JSON. 
-
-## DSL
-
-Blindsight comes with an internal DSL which lets you work with Scala types intuitively while ensuring that you cannot produce an invalid structure.  Internally, the DSL is rendered using @scaladoc[MarkersResolver](com.tersesystems.blindsight.MarkersResolver) and @scaladoc[ArgumentResolver](com.tersesystems.blindsight.ArgumentResolver) to [Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields), using the ServiceLoader pattern.  This approach produces ideomatic structured output for both line oriented encoders and JSON encoders.
 
 @@@ note
 
@@ -14,7 +10,7 @@ The generic implementation at `blindsight-generic` does not come with resolvers,
 
 @@@
 
-## DSL
+## Constructing DSL
 
 Primitive types map to primitives.  Any seq produces JSON array.
 
@@ -102,42 +98,4 @@ in JSON:
     ]
   }
 }
-```
-
-## Custom Mappings
-
-You can also extend arguments and markers using your own type class instances, without going through the DSL.  This is especially useful when you already have structured logging, and want to pass it through without changes.
-
-For example, if you are working with json4s or play-json, you can convert to Jackson JsonNode using a type class:
-
-```scala
-import com.fasterxml.jackson.databind.JsonNode
-
-trait ToJsonNode[T] {
-  def jsonNode(instance: T): JsonNode
-}
-
-object ToJsonNode {
-  import org.json4s._
-
-  implicit val json4sToJsonNode: ToJsonNode[JValue] = new ToJsonNode[JValue] {
-    import org.json4s.jackson.JsonMethods._
-    override def jsonNode(instance: JValue): JsonNode = asJsonNode(instance)
-  }
-}
-```
-
-And then set up your own type mappings as follows:
-
-```scala
-implicit def jsonToArgument[T: ToJsonNode]: ToArgument[(String, T)] = ToArgument {
-  case (k, instance) =>
-    val node = implicitly[ToJsonNode[T]].jsonNode(instance)
-    Argument(StructuredArguments.keyValue(k, node)) // or raw(k, node.toPrettyString)
-}
-
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
-
-logger.info("This message has json {}", parse(""" { "numbers" : [1, 2, 3, 4] } """))
 ```
