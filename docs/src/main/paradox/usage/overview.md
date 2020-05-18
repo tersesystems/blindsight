@@ -50,7 +50,7 @@ The default logger provides an SLF4J-like API:
 logger.info("I am an SLF4J-like logger")
 ```
 
-This converts to a @scaladoc[Message](com.tersesystems.blindsight.api.Message) class, and logs only if the level of the SLF4J logger is set to at least `INFO`.  Very roughly:
+This converts to a @scaladoc[Message](com.tersesystems.blindsight.Message) class, and logs only if the level of the SLF4J logger is set to at least `INFO`.  Very roughly:
 
 ```scala
 val infoMethod: InfoMethod = logger.info
@@ -66,7 +66,7 @@ class InfoMethod {
 }
 ```
 
-First, let's explain @scaladoc[Message](com.tersesystems.blindsight.api.Message) and its compatriots.
+First, let's explain @scaladoc[Message](com.tersesystems.blindsight.Message) and its compatriots.
 
 A single logging statement in SLF4J consists of a set of parameters in combination:
 
@@ -79,7 +79,7 @@ logger.info(marker, message, arguments);
 
 All of these together make a logging statement.
 
-Blindsight keeps the same concept these parameters, but creates specific types; @scaladoc[Markers](com.tersesystems.blindsight.api.Markers), @scaladoc[Message](com.tersesystems.blindsight.api.Message), and @scaladoc[Argument](com.tersesystems.blindsight.api.Argument), with a @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) that encompasses all the above.
+Blindsight keeps the same concept these parameters, but creates specific types; @scaladoc[Markers](com.tersesystems.blindsight.Markers), @scaladoc[Message](com.tersesystems.blindsight.Message), and @scaladoc[Argument](com.tersesystems.blindsight.Argument), with a @scaladoc[Statement](com.tersesystems.blindsight.Statement) that encompasses all the above.
 
 ```scala
 
@@ -91,7 +91,7 @@ val argument1: Argument = Argument("arg1")
 logger.info(markers, message, argument1);
 ```
 
-Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type.  So @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) has a @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) type class, @scaladoc[Message](com.tersesystems.blindsight.api.Message) has @scaladoc[ToMessage](com.tersesystems.blindsight.api.ToMessage), and @scaladoc[Argument](com.tersesystems.blindsight.api.Argument) has @scaladoc[ToArgument](com.tersesystems.blindsight.api.ToArgument).
+Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type.  So @scaladoc[Markers](com.tersesystems.blindsight.Markers) has a @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) type class, @scaladoc[Message](com.tersesystems.blindsight.Message) has @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage), and @scaladoc[Argument](com.tersesystems.blindsight.Argument) has @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument).
 
 There is an implicit conversion from `String` to Message:
 
@@ -105,7 +105,7 @@ And the API takes `ToArgument` for automatic conversion:
 logger.info("this is a message", "arg1", "arg2");
 ```
 
-The @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments) class aggregates multiple arguments together when there are more than two arguments.  The `Arguments()` method takes a varadic list of arguments that can be hetrogeneous.
+The @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) class aggregates multiple arguments together when there are more than two arguments.  The `Arguments()` method takes a varadic list of arguments that can be hetrogeneous.
 
 ```scala
 val arguments: Arguments = Arguments("arg1", 42, true)
@@ -189,7 +189,7 @@ def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
 }
 ```
 
-The flow API is used to render the entry and exit of a given method.  It is tied together with a flow behavior which provides the relevant @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) on entry and exit.  This can also be used for timers and hierarchical tracing.
+The flow API is used to render the entry and exit of a given method.  It is tied together with a flow behavior which provides the relevant @scaladoc[Statement](com.tersesystems.blindsight.Statement) on entry and exit.  This can also be used for timers and hierarchical tracing.
 
 See @ref:[Flow API](flow.md) for more details.
 
@@ -268,7 +268,7 @@ See @ref:[Context](context.md) for more details.
 
 ## Source Code
 
-SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/lihaoyi/sourcecode) macros, using the @scaladoc[SourceInfoMixin](com.tersesystems.blindsight.api.mixins.SourceInfoMixin) on the logger.
+SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/lihaoyi/sourcecode) macros, using the @scaladoc[SourceInfoMixin](com.tersesystems.blindsight.mixins.SourceInfoMixin) on the logger.
 
 When using `blindsight-generic`, this returns `Markers.empty`, but when using `blindsight-logstash`, this adds `source.line`, `source.file` and `source.enclosing` to the JSON logs automatically:
 

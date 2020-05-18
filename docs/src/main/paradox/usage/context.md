@@ -46,7 +46,7 @@ val anotherMarker = ...
 entryLogger.info(anotherMarker, "a message")
 ```
 
-Managing context is from this point a question of whether you want to pass around @scaladoc[Markers](com.tersesystems.blindsight.api.Markers), or pass around a @scaladoc[Logger](com.tersesystems.blindsight.Logger), useful for [constructing events](https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/). 
+Managing context is from this point a question of whether you want to pass around @scaladoc[Markers](com.tersesystems.blindsight.Markers), or pass around a @scaladoc[Logger](com.tersesystems.blindsight.Logger), useful for [constructing events](https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/). 
 
 ## Mapped Diagnostic Context
 

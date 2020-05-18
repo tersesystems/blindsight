@@ -1,6 +1,6 @@
 # Fluent API
 
-A [fluent builder interface](https://www.martinfowler.com/bliki/FluentInterface.html) is an API that relies heavily on method chaining to build up an expression.  The Blindsight fluent API works with @scaladoc[Markers](com.tersesystems.blindsight.api.Markers), @scaladoc[Message](com.tersesystems.blindsight.api.Message), and @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments), and uses type classes to map appropriately, using the @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers), @scaladoc[ToMessage](com.tersesystems.blindsight.api.ToMessage) and @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) type classes, respectively. 
+A [fluent builder interface](https://www.martinfowler.com/bliki/FluentInterface.html) is an API that relies heavily on method chaining to build up an expression.  The Blindsight fluent API works with @scaladoc[Markers](com.tersesystems.blindsight.Markers), @scaladoc[Message](com.tersesystems.blindsight.Message), and @scaladoc[Arguments](com.tersesystems.blindsight.Arguments), and uses type classes to map appropriately, using the @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage) and @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments) type classes, respectively. 
 
 The fluent API has an immediate advantage in that there's less overloading in the API, and there's more room to chain.  With type classes, it's possible to set up much richer [structured logging](https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/).
 
@@ -22,7 +22,7 @@ You can log with a marker alone and then log:
 
 This will write out an empty string as the message, and a logstash marker.
 
-You can also write out anything that has a  @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) implementation, i.e. the Logstash implicits lets you do this:
+You can also write out anything that has a  @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) implementation, i.e. the Logstash implicits lets you do this:
 
 ```scala
 import com.tersesystems.blindsight
@@ -38,7 +38,7 @@ implicit def arrayToMarkers[T]: ToMarkers[(String, Seq[T])] = blindsight.ToMarke
 fluentLogger.marker("array" -> Seq("one", "two", "three")).log()
 ```
 
-All markers are in a @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) instance internally, but are not accessible from the builder.
+All markers are in a @scaladoc[Markers](com.tersesystems.blindsight.Markers) instance internally, but are not accessible from the builder.
 
 ## Message
 
@@ -73,7 +73,7 @@ Arguments can be added with `argument`.  You do not need to define a message, bu
 fluentLogger.argument(someArgument).logWithPlaceholders()
 ```
 
-Custom formatting is done with @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments).
+Custom formatting is done with @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments).
 
 ```scala
 case class Person(name: String)
