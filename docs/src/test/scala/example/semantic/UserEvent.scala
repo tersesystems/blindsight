@@ -28,7 +28,7 @@ object UserLoggedInEvent {
   implicit val toStatement: ToStatement[UserLoggedInEvent] = ToStatement { instance =>
     import com.tersesystems.blindsight.DSL._
     Statement()
-      .withMessage(instance.toString)
+      .withMessage("UserLoggedInEvent message with args {}")
       .withArguments(Arguments(bodj("name" -> instance.name, "ipAddr" -> instance.ipAddr)))
   }
 }
@@ -40,7 +40,7 @@ object UserLoggedOutEvent {
     import com.tersesystems.blindsight.DSL._
 
     Statement()
-      .withMessage(instance.toString)
+      .withMessage("UserLoggedOutEvent message with args {}")
       .withArguments(
         Arguments(bodj("name" -> instance.name, "reason" -> instance.reason))
       )

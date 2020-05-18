@@ -7,17 +7,18 @@ Blindsight is a Scala logging API that allows for [structured logging](https://t
 To use a Blindsight Logger:
 
 ```scala
-val logger = com.tersesystems.blindsight.LoggerFactory.getLogger
+import com.tersesystems.blindsight._
+
+val logger = LoggerFactory.getLogger
 logger.info("I am an SLF4J-like logger")
 ```
 
 [Structured logging](https://tersesystems.github.io/blindsight/usage/structured.html):
 
 ```scala
+import com.tersesystems.blindsight._
 
-import com.tersesystems.blindsight.logstash.Implicits._
-
-val markers = Markers("array" -> Seq("one", "two", "three"))
+val markers = Markers(bobj("array" -> Seq("one", "two", "three")))
 logger.info(markers, "Logs with an array as marker")
 ```
 
@@ -43,6 +44,8 @@ logger.semantic[String Refined Url].info(refineMV(Url)("https://tersesystems.com
 [Flow logging](https://tersesystems.github.io/blindsight/usage/flow.html):
 
 ```scala
+import com.tersesystems.blindsight.flow._
+
 implicit def flowBehavior[B]: FlowBehavior[B] = ???
 
 val result = logger.flow.trace(arg1 + arg2)
@@ -60,10 +63,9 @@ And [context aware logging](https://tersesystems.github.io/blindsight/usage/cont
 
 ```scala
 
-import net.logstash.logback.marker.{Markers => LogstashMarkers}
+import com.tersesystems.blindsight.flow._
 
-val userIdMarker = LogstashMarkers.append("userId", userId)
-logger.withMarker(userIdMarker).info("Logging with user id added as a context marker!")
+logger.withMarker(bobj("userId" -> userId)).info("Logging with user id added as a context marker!")
 val contextMarkers: Markers = logger.markers
 ```
 

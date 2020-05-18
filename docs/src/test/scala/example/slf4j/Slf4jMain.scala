@@ -89,12 +89,12 @@ object Slf4jMain {
     )
 
     implicit val dateToArgument: ToArgument[Date] = ToArgument[java.util.Date] { date =>
-      new Argument(Seq(DateTimeFormatter.ISO_INSTANT.format(date.toInstant)))
+      new Argument(DateTimeFormatter.ISO_INSTANT.format(date.toInstant))
     }
 
     implicit val instantToArgument: ToArgument[java.time.Instant] =
       ToArgument[java.time.Instant] { instant =>
-        new Argument(Seq(DateTimeFormatter.ISO_INSTANT.format(instant)))
+        new Argument(DateTimeFormatter.ISO_INSTANT.format(instant))
       }
 
     logger.info("date is {}", new java.util.Date())
