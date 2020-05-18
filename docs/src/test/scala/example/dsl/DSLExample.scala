@@ -1,20 +1,18 @@
 package example.dsl
 
+// #dsl-example
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.AST._
 import com.tersesystems.blindsight.DSL._
 import com.tersesystems.blindsight.LoggerFactory
 
 object DSLExample {
+  private val logger = LoggerFactory.getLogger
 
   def main(args: Array[String]): Unit = {
-
-    val logger = LoggerFactory.getLogger
-
     val winners =
       List(Winner(23, List(2, 45, 34, 23, 3, 5)), Winner(54, List(52, 3, 12, 11, 18, 22)))
     val lotto = Lotto(5, List(2, 45, 34, 23, 7, 5, 3), winners, None)
-
     logger.info("message {}", lotto)
   }
 
@@ -43,3 +41,4 @@ object DSLExample {
     implicit val toArgument: ToArgument[Lotto] = ToArgument { lotto => Argument(lotto.asBObject) }
   }
 }
+// #dsl-example

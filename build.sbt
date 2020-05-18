@@ -94,15 +94,12 @@ lazy val fixtures = (project in file("fixtures"))
 lazy val api = (project in file("api"))
   .settings(
     name := "blindsight-api",
-    libraryDependencies += logbackClassic         % Test,
-    libraryDependencies += logstashLogbackEncoder % Test,
-    libraryDependencies += scalaTest              % Test,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
+    libraryDependencies += scalaTest              % Test,
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
     libraryDependencies += logstashLogbackEncoder % Test,
-    libraryDependencies += scalaTest              % Test,
     autoAPIMappings := true
   )
   .dependsOn(fixtures % "test->test")

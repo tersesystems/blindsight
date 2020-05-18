@@ -203,7 +203,9 @@ logger.info("some message", bodj("a" -> "b"))
 
 In line format:
 
-XXX TODO
+```json
+2020-04-05T23:09:08.436Z example.Main$ some message a=b
+```
 
 And in JSON:
 
