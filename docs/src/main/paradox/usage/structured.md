@@ -8,7 +8,7 @@ See [Terse Logback](https://tersesystems.github.io/terse-logback/) and the [Ters
 
 @@@
 
-You can set up structured logging using Logstash Markers and StructuredArguments, but you don't have to.   Blindsight comes with bindings of @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) and @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) to [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  This lets you be far more expressive in constructing markers and arguments, and lets you pack far more information in.
+You can set up structured logging using Logstash Markers and StructuredArguments, but you don't have to.   Blindsight comes with bindings of @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) and @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments) to [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  This lets you be far more expressive in constructing markers and arguments, and lets you pack far more information in.
 
 For example, Logstash Markers has the concept of a "key=value" pair that gets written out to JSON using `append`.  We can create a type class to represent that as a tuple:
 

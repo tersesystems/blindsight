@@ -2,11 +2,11 @@
 
 The default Logger API has the same logger methods and (roughly) the type signature as SLF4J.
 
-The biggest difference is that methods take a type class instance of @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) and @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments), if you have them defined.
+The biggest difference is that methods take a type class instance of @scaladoc[Markers](com.tersesystems.blindsight.Markers) and @scaladoc[Arguments](com.tersesystems.blindsight.Arguments), if you have them defined.
 
 ## Markers
 
-You can pass in something that is not a marker, and provided you have a @scaladoc[ToMarkers](com.tersesystems.blindsight.api.ToMarkers) in implicit scope, you can get it auto-converted.
+You can pass in something that is not a marker, and provided you have a @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) in implicit scope, you can get it auto-converted.
 
 ```scala
 val marker: Markers = MarkerFactory.getDetachedMarker("SOME_MARKER")
@@ -21,7 +21,7 @@ val markersOnePlusTwo: Markers = markers1 + markers2
 
 @@@ note
 
-You should **not** try to manipulate the marker through `marker.add` or `marker.remove`.  It's better to treat a `org.slf4j.Marker` instance as completely immutable, and manage any composition through @scaladoc[Markers](com.tersesystems.blindsight.api.Markers).
+You should **not** try to manipulate the marker through `marker.add` or `marker.remove`.  It's better to treat a `org.slf4j.Marker` instance as completely immutable, and manage any composition through @scaladoc[Markers](com.tersesystems.blindsight.Markers).
 
 @@@
 
@@ -71,20 +71,20 @@ Generally, you should not need to use markers explicitly in messages, as they ca
 
 ## Arguments 
 
-Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an `Any`.  There **must** be a type class instance of @scaladoc[ToArguments](com.tersesystems.blindsight.api.ToArguments) in scope.  This is to prevent awkward `toString` matches on object instances, and ensure that structured logging is taking place. 
+Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an `Any`.  There **must** be a type class instance of @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments) in scope.  This is to prevent awkward `toString` matches on object instances, and ensure that structured logging is taking place. 
 
 ```scala
 // Will not compile, because no ToArgument[SomeRandomObject] is found in implicit scope!
 logger.info("one argument {}", new SomeRandomObject()) 
 ```
 
-Default @scaladoc[ToArgument](com.tersesystems.blindsight.api.ToArgument) are determined for the primitives (`String`, `Int`, etc):
+Default @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) are determined for the primitives (`String`, `Int`, etc):
 
 ```scala
 logger.info("one argument {}", 42) // works, because default
 ```
 
-If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments) instance:
+If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) instance:
 
 ```scala
 logger.info("arg {}, arg {}, arg {}", Arguments(1, "2", false))
@@ -158,7 +158,7 @@ val creditCard = CreditCard("4111111111111")
 unchecked.info("this is risky unchecked {}", creditCard)
 ```
 
-Where there are several arguments, the @scaladoc[Arguments](com.tersesystems.blindsight.api.Arguments) must be used rather than `Seq` or `Array`, as it is very awkward to use `Seq` and `Array` with varadic input:
+Where there are several arguments, the @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) must be used rather than `Seq` or `Array`, as it is very awkward to use `Seq` and `Array` with varadic input:
 
 ```scala
 unchecked.info("this is risky unchecked {}, {}, {}", Arguments("1", 2, true))
