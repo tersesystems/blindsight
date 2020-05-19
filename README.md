@@ -103,15 +103,13 @@ logger.info.when(booleanCondition) { info => info("when true") }
 And [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html):
 
 ```scala
-import com.tersesystems.blindsight.flow._
-
 logger.withMarker(bobj("userId" -> userId)).info("Logging with user id added as a context marker!")
 val contextMarkers: Markers = logger.markers
 ```
 
 ## Example
 
-There's an example application at [https://github.com/tersesystems/play-blindsight](https://github.com/tersesystems/play-blindsight) that integrates with Honeycomb Tracing using the flow logger:
+There's an example application at [https://github.com/wsargent/play-blindsight](https://github.com/wsargent/play-blindsight) that integrates with Honeycomb Tracing using the flow logger:
 
 ![trace.png](trace.png)
 
