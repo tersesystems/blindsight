@@ -1,8 +1,8 @@
 # Fluent API
 
-A [fluent builder interface](https://www.martinfowler.com/bliki/FluentInterface.html) is an API that relies heavily on method chaining to build up an expression.  The Blindsight fluent API works with @scaladoc[Markers](com.tersesystems.blindsight.Markers), @scaladoc[Message](com.tersesystems.blindsight.Message), and @scaladoc[Arguments](com.tersesystems.blindsight.Arguments), and uses type classes to map appropriately, using the @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage) and @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments) type classes, respectively. 
+A [fluent builder interface](https://www.martinfowler.com/bliki/FluentInterface.html) is an API that relies heavily on method chaining to build up an expression. 
 
-The fluent API has an immediate advantage in that there's less overloading in the API, and there's more room to chain.  With type classes, it's possible to set up much richer [structured logging](https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/).
+The fluent API has an immediate advantage in that there's less overloading in the API, and there's more room to chain.
 
 ## Accessing Fluent Logger
 

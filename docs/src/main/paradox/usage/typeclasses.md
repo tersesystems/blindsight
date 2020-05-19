@@ -1,6 +1,8 @@
 # Type Classes
 
+The important types in Blindsight are @scaladoc[Markers](com.tersesystems.blindsight.Markers), @scaladoc[Argument](com.tersesystems.blindsight.Argument), and  @scaladoc[Message](com.tersesystems.blindsight.Message).
 
+ Where possible, the APIs map automatically, using the @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage) and @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) type classes, respectively. 
 
 ## Markers
 
@@ -57,9 +59,23 @@ object Slf4jMain {
 }
 ```
 
-## Arguments
+## Argument and Arguments
 
-Not everything is defined as an implicit out of the box, but it's easy to define defaults.  For example, for dates you may want to define some defaults:
+The argument @scaladoc[Argument](com.tersesystems.blindsight.Argument).
+
+Default @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) are determined for the primitives (`String`, `Int`, etc):
+
+```scala
+logger.info("one argument {}", 42) // works, because default
+```
+
+If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) instance:
+
+```scala
+logger.info("arg {}, arg {}, arg {}", Arguments(1, "2", false))
+```
+
+You can define your own argument type classes:
 
 ```scala
 import java.time.format.DateTimeFormatter
@@ -76,6 +92,11 @@ logger.info("date is {}", new java.util.Date())
 logger.info("instant is {}", Instant.now())
 ```
 
+There is a plural of @scaladoc[Argument](com.tersesystems.blindsight.Argument), @scaladoc[Arguments](com.tersesystems.blindsight.Arguments).
+
+## Message
+
+TODO
 
 ## Custom JSON Mappings
 

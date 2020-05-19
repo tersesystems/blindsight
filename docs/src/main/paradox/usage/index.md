@@ -3,7 +3,7 @@
 * [Overview](overview.md)
 * [Logger Resolvers](resolvers.md)
 * [Structured DSL](dsl.md)
-* [Markers and Arguments](typeclass.md)
+* [Type Classes](typeclasses.md)
 * [SLF4J API](slf4j.md)
 * [Fluent API](fluent.md)
 * [Semantic API](semantic.md)
@@ -11,6 +11,7 @@
 * [Conditional Logging](conditional.md)
 * [Contextual Logging](context.md)
 * [Source Code](sourcecode.md)
+* [Principles](principles.md)
 
 @@@
 
