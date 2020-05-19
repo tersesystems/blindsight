@@ -2,7 +2,7 @@
 
 The easiest way to get at a logger is to use @scaladoc[LoggerFactory](com.tersesystems.blindsight.LoggerFactory$).  This looks like the SLF4J version, but is more flexible because it uses a @scaladoc[LoggerResolver](com.tersesystems.blindsight.LoggerResolver) type class under the hood.
 
-@@snip [ResolverMain.scala](../../../test/scala/example/resolvers/ResolverMain.scala) { #simple-resolver }
+@@snip [ResolverMain.scala](../../../test/scala/example/resolvers/ResolverMain.scala) { #class-resolver }
 
 There is also a macro based version which finds the enclosing class name and hands it to you:
 

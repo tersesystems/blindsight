@@ -8,7 +8,7 @@ object ResolverMain {
     // #class-resolver
     import com.tersesystems.blindsight.LoggerFactory
 
-    val loggerFromName = LoggerFactory.getLogger("some.Logger")
+    val loggerFromName  = LoggerFactory.getLogger("some.Logger")
     val loggerFromClass = LoggerFactory.getLogger(getClass)
     // #class-resolver
 
