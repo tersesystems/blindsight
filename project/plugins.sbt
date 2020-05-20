@@ -23,3 +23,5 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 // https://github.com/jvican/sbt-release-early
 addSbtPlugin("ch.epfl.scala" % "sbt-release-early" % "2.1.1")
+
+addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
