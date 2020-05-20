@@ -47,7 +47,6 @@ val disablePublishing = Seq[Setting[_]](
   skip in publish := true
 )
 
-
 // sbt ghpagesPushSite to publish to ghpages
 // previewAuto to see the site in action.
 // https://www.scala-sbt.org/sbt-site/getting-started.html#previewing-the-site
