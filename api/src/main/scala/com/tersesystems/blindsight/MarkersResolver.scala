@@ -20,6 +20,15 @@ import java.util.ServiceLoader
 
 import com.tersesystems.blindsight.AST.BObject
 
+/**
+ * Resolves a [[BObject]] to [[Markers]].
+ *
+ * {{{
+ * val markers: Markers = MarkersResolver(bobj("foo" -> "bar"))
+ * }}}
+ *
+ * This is a service interface trait, which should be implemented the service loader pattern.
+ */
 trait MarkersResolver {
   def resolve(bobject: BObject): Markers
 }
