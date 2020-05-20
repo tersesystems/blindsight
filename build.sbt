@@ -54,8 +54,8 @@ lazy val docs = (project in file("docs"))
   .settings(
     crossScalaVersions := Nil, // docs don't need to run on 2.11
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
-    libraryDependencies += cronScheduler,
-    libraryDependencies += scalaJava8Compat,
+    libraryDependencies += cronScheduler                   % Test,
+    libraryDependencies += scalaJava8Compat                % Test,
     libraryDependencies += logbackTracing                  % Test,
     libraryDependencies += refined                         % Test,
     libraryDependencies += logbackUniqueId                 % Test,
