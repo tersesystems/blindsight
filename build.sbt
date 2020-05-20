@@ -1,11 +1,15 @@
 import Dependencies._
 import sbt.Keys.libraryDependencies
 
-lazy val scala213 = "2.13.1"
-lazy val scala212 = "2.12.11"
-lazy val scala211 = "2.11.12"
-ThisBuild / scalaVersion := scala211
-ThisBuild / crossScalaVersions := Seq(scala211, scala212, scala213)
+// Sanity check for sbt-travisci
+Global / onLoad := (Global / onLoad).value.andThen { s =>
+  val v = scala213.value
+  if (!CrossVersion.isScalaApiCompatible(v))
+    throw new MessageOnlyException(
+      s"Key scala213 doesn't define a scala version. Check .travis.yml is setup right. Version: $v"
+    )
+  s
+}
 
 ThisBuild / scalafmtOnCompile := true
 
@@ -50,9 +54,10 @@ lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .settings(
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
-    libraryDependencies += cronScheduler,
-    libraryDependencies += scalaJava8Compat,
+    libraryDependencies += cronScheduler                   % Test,
+    libraryDependencies += scalaJava8Compat                % Test,
     libraryDependencies += logbackTracing                  % Test,
+    libraryDependencies += refined(scalaVersion.value)     % Test,
     libraryDependencies += logbackUniqueId                 % Test,
     libraryDependencies += logbackTypesafeConfig           % Test,
     libraryDependencies += logbackExceptionMapping         % Test,

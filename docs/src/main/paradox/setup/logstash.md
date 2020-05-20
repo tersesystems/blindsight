@@ -1,6 +1,8 @@
 # Logback with Logstash 
 
-The recommended option for Logback is to use `blindsight-logstash`, which includes source information (line, file, enclosing) as @ref:[logstash markers](../usage/dsl.md) on the logger and provides a mapping for `Arguments` and `Markers`.
+The recommended option for Logback is to use `blindsight-logstash`.
+ 
+Structured Logging is provided through the @ref:[DSL](../usage/dsl.md) on the logger and provides a mapping for @scaladoc[Argument](com.tersesystems.blindsight.Argument) and @scaladoc[Markers](com.tersesystems.blindsight.Markers) through [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  Source information (line, file, enclosing) is rendered as logstash markers.
 
 Add the following resolver:
  

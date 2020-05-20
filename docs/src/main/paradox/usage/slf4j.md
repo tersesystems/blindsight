@@ -25,7 +25,7 @@ Generally, you should not need to use markers explicitly in messages, as they ca
 
 ## Arguments 
 
-Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an `Any`.  There **must** be a type class instance of @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments) in scope.  This is to prevent awkward `toString` matches on object instances, and ensure that structured logging is taking place. 
+Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an `Any`.  There **must** be a type class instance of @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) in scope.  This is to prevent awkward `toString` matches on object instances, and ensure that structured logging is taking place. 
 
 ```scala
 // Will not compile, because no ToArgument[SomeRandomObject] is found in implicit scope!

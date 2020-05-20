@@ -36,7 +36,7 @@ val bobject: BObject = ("name" -> "joe") ~ ("age" -> 35)
 val bobject: BObject = ("name" -> "joe") ~~ ("age" -> 35)
 ```
 
-Using the DSL works very well with `ToArguments` and `ToMarkers`, because there is a type class instance for `BObject`.  Here's a fully worked example:
+Using the DSL works very well with @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) and @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), because there is a type class instance for `BObject`.  Here's a fully worked example:
 
 @@snip [DSLExample.scala](../../../test/scala/example/dsl/DSLExample.scala) { #dsl-example }
 

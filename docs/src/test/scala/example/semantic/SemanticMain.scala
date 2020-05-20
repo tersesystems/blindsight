@@ -18,10 +18,73 @@ package example.semantic
 
 import java.time.LocalTime
 
-import com.tersesystems.blindsight.LoggerFactory
+import com.tersesystems.blindsight.{Arguments, LoggerFactory, Statement, ToStatement, bodj}
 import com.tersesystems.blindsight.semantic.SemanticLogger
 
+// #semantic-main
 object SemanticMain {
+
+  sealed trait UserEvent {
+    def name: String
+  }
+
+  final case class UserLoggedInEvent(name: String, ipAddr: String) extends UserEvent
+
+  object UserLoggedInEvent {
+    implicit val toStatement: ToStatement[UserLoggedInEvent] = ToStatement { instance =>
+      import com.tersesystems.blindsight.DSL._
+      Statement()
+        .withMessage("UserLoggedInEvent message with args {}")
+        .withArguments(
+          Arguments(
+            bodj(
+              "user-logged-out-event" ->
+                ("name"     -> instance.name) ~
+                  ("ipAddr" -> instance.ipAddr)
+            )
+          )
+        )
+    }
+  }
+
+  final case class UserLoggedOutEvent(name: String, reason: String) extends UserEvent
+
+  object UserLoggedOutEvent {
+    implicit val toStatement: ToStatement[UserLoggedOutEvent] = ToStatement { instance =>
+      import com.tersesystems.blindsight.DSL._
+      Statement()
+        .withMessage("UserLoggedOutEvent message with args {}")
+        .withArguments(
+          Arguments(
+            bodj(
+              "user-logged-out-event" ->
+                ("name"     -> instance.name) ~
+                  ("reason" -> instance.reason)
+            )
+          )
+        )
+    }
+  }
+
+  final case class UserIsUpLateEvent(name: String, excuse: String) extends UserEvent
+
+  object UserIsUpLateEvent {
+    implicit val toStatement: ToStatement[UserIsUpLateEvent] = ToStatement { instance =>
+      import com.tersesystems.blindsight.DSL._
+
+      Statement()
+        .withMessage(instance.toString)
+        .withArguments(
+          Arguments(
+            bodj(
+              "user-is-up-late-event" ->
+                ("name"     -> instance.name) ~
+                  ("excuse" -> instance.excuse)
+            )
+          )
+        )
+    }
+  }
 
   def main(args: Array[String]): Unit = {
 
@@ -40,3 +103,4 @@ object SemanticMain {
     onlyLoggedInEventLogger.info(UserLoggedInEvent("mike", "10.0.0.1"))
   }
 }
+// #semantic-main

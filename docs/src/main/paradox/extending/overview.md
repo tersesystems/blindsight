@@ -78,33 +78,7 @@ object SLF4JLogger {
 
 You can see there's very little to the logger itself.  The method API itself is as you'd expect:
 
-```scala
-trait StrictSLF4JMethod {
-  def level: Level
-
-  def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit
-
-  def apply(
-      message: => Message
-  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
-
-  def apply[A: ToArguments](
-      message: => Message,
-      args: A
-  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
-
-  def apply[M: ToMarkers](
-      markers: M,
-      message: => Message
-  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
-
-  def apply[M: ToMarkers, A: ToArguments](
-      markers: M,
-      message: => Message,
-      args: A
-  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
-}
-```
+TODO
 
 And from there, the method implementation does the work of resolving type class instances and calling through to SLF4J with the appropriate parameters.
 
