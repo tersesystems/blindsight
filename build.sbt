@@ -1,10 +1,10 @@
 import Dependencies._
 import sbt.Keys.libraryDependencies
 
-lazy val scala213 = "2.13.1"
+lazy val scala213 = "2.13.2"
 lazy val scala212 = "2.12.11"
 lazy val scala211 = "2.11.12"
-ThisBuild / scalaVersion := scala211
+ThisBuild / scalaVersion := scala213
 ThisBuild / crossScalaVersions := Seq(scala211, scala212, scala213)
 
 ThisBuild / scalafmtOnCompile := true
@@ -49,10 +49,12 @@ val disablePublishing = Seq[Setting[_]](
 lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .settings(
+    crossScalaVersions := Nil, // docs don't need to run on 2.11
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies += cronScheduler,
     libraryDependencies += scalaJava8Compat,
     libraryDependencies += logbackTracing                  % Test,
+    libraryDependencies += refined                         % Test,
     libraryDependencies += logbackUniqueId                 % Test,
     libraryDependencies += logbackTypesafeConfig           % Test,
     libraryDependencies += logbackExceptionMapping         % Test,

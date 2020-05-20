@@ -18,7 +18,7 @@ The flow logger takes a block of execution, and returns the result transparently
 
 @@snip [Flow.scala](../../../test/scala/example/flow/SimpleFlow.scala) { #flow_method }
 
-The result should have a type class instance of @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments), so that it can be considered in logging.  For example, if the return type is `Person`, then you must have a `ToArguments[Person]` in scope:
+The result should have a type class instance of @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument), so that it can be considered in logging.  For example, if the return type is `Person`, then you must have a `ToArguments[Person]` in scope:
 
 @@snip [Flow.scala](../../../test/scala/example/flow/SimpleFlow.scala) { #flow_person_definition }
 

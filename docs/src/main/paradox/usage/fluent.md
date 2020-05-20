@@ -57,13 +57,13 @@ Arguments can be added with `argument`.  You do not need to define a message, bu
 fluentLogger.argument(someArgument).logWithPlaceholders()
 ```
 
-Custom formatting is done with @scaladoc[ToArguments](com.tersesystems.blindsight.ToArguments).
+Custom formatting is done with @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument).
 
 ```scala
 case class Person(name: String)
 
-implicit val personToArguments: ToArguments[Person] = ToArguments { person =>
-  Arguments(s"${person.name}")
+implicit val personToArgument: ToArgument[Person] = ToArgument { person =>
+  Argument(bobj("person" -> person.name))
 }
 
 val person = Person("Felix")

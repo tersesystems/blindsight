@@ -57,6 +57,7 @@ final class Arguments(private val elements: Seq[Argument]) {
   def toArray: Array[Any] = toSeq.toArray
 }
 
+// this is a cheap way to set up a hetrogenous list of arguments
 final class AsArgument(val argument: Argument)
 
 object AsArgument {

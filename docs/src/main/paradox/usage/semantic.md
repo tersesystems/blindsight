@@ -6,65 +6,7 @@ The semantic API works against @scaladoc[Statement](com.tersesystems.blindsight.
 
 Here is an example:
 
-```scala
-import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.semantic._
-import net.logstash.logback.argument.StructuredArguments.kv
-
-object SemanticMain {
-
-  trait UserEvent {
-    def name: String
-  }
-
-  final case class UserLoggedInEvent(name: String, ipAddr: String) extends UserEvent
-
-  object UserLoggedInEvent {
-    implicit val toMessage: ToMessage[UserLoggedInEvent] = ToMessage { instance =>
-      Message(instance.toString)
-    }
-
-    implicit val toArguments: ToArguments[UserLoggedInEvent] = ToArguments { instance =>
-      Arguments(
-        kv("name", instance.name),
-        kv("ipAddr", instance.ipAddr)
-      )
-    }
-
-    implicit val toStatement: ToStatement[UserLoggedInEvent] = ToStatement { instance =>
-      Statement().withMessage(instance).withArguments(instance)
-    }
-  }
-
-  final case class UserLoggedOutEvent(name: String, reason: String) extends UserEvent
-
-  object UserLoggedOutEvent {
-    implicit val toMessage: ToMessage[UserLoggedOutEvent] = ToMessage { instance =>
-      Message(instance.toString)
-    }
-
-    implicit val toArguments: ToArguments[UserLoggedOutEvent] = ToArguments { instance =>
-      Arguments(
-        kv("name", instance.name),
-        kv("reason", instance.reason)
-      )
-    }
-
-    implicit val toStatement: ToStatement[UserLoggedOutEvent] = ToStatement { instance =>
-      Statement().withMessage(instance).withArguments(instance)
-    }
-  }
-
-  def main(args: Array[String]): Unit = {
-    val userEventLogger: SemanticLogger[UserEvent] = LoggerFactory.getLogger.semantic[UserEvent] 
-    userEventLogger.info(UserLoggedInEvent("steve", "127.0.0.1"))
-    userEventLogger.info(UserLoggedOutEvent("steve", "timeout"))
-
-    val onlyLoggedInEventLogger: SemanticLogger[UserLoggedInEvent] = userEventLogger.refine[UserLoggedInEvent]
-    onlyLoggedInEventLogger.info(UserLoggedInEvent("mike", "10.0.0.1")) // won't work with logged out event
-  }
-}
-```
+@@snip [SemanticMain.scala](../../../test/scala/example/semantic/SemanticMain.scala) { #semantic-main }
 
 in plain text:
 
@@ -100,24 +42,5 @@ Semantic Logging works very well with [refinement types](https://github.com/ftho
 
 For example, you can add compile time limitations on the kinds of messages that are passed in:
 
-```scala
-import eu.timepit.refined.api.Refined
-import eu.timepit.refined.collection.NonEmpty
-import eu.timepit.refined.string._
-import eu.timepit.refined._
-
-implicit def stringToStatement[R]: ToStatement[Refined[String, R]] = ToStatement { str =>
-  Statement().withMessage(str.value)
-}
-
-val notEmptyLogger: SemanticLogger[String Refined NonEmpty] = logger.semantic[String Refined NonEmpty]
-notEmptyLogger.info(refineMV[NonEmpty]("this is a statement"))
-// will not compile
-//notEmptyLogger.info(refineMV(""))
-
-val urlLogger: SemanticLogger[String Refined Url] = logger.semantic[String Refined Url]
-urlLogger.info(refineMV[Url]("http://google.com"))
-// will not compile
-//urlLogger.info(refineMV("this is a statement"))
-``` 
+@@snip [RefinedMain.scala](../../../test/scala/example/semantic/RefinedMain.scala) { #refined-main }
 
