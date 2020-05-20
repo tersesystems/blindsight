@@ -5,9 +5,12 @@ scala:
   - 2.11.12
   - 2.12.11
   - 2.13.1
+
+# Use strict aggregation (sbt-doge plz) to exclude docs
+script: sbt +++$TRAVIS_SCALA_VERSION test
+
 jobs:
   include:
-  - script: sbt +++$TRAVIS_SCALA_VERSION test
   - stage: check
     env: ISOLATED=true
     scala: 2.13.1
