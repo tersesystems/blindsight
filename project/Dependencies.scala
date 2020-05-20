@@ -20,11 +20,16 @@ object Dependencies {
     "com.tersesystems.logback" % "logback-exception-mapping" % terseLogback
   lazy val logbackExceptionMappingProvider =
     "com.tersesystems.logback" % "logback-exception-mapping-providers" % terseLogback
+
+  def refined(scalaVersion: String): ModuleID = scalaVersion match {
+    case s if s.startsWith("2.11") => "eu.timepit" %% "refined" % "0.9.12"
+    case _ => "eu.timepit" %% "refined" % "0.9.14"
+  }
+
   lazy val logbackUniqueId        = "com.tersesystems.logback" % "logback-uniqueid-appender" % terseLogback
   lazy val logbackTracing         = "com.tersesystems.logback" % "logback-tracing"           % terseLogback
   lazy val logbackClassic         = "ch.qos.logback"           % "logback-classic"           % "1.2.3"
   lazy val logstashLogbackEncoder = "net.logstash.logback"     % "logstash-logback-encoder"  % "6.3"
   lazy val cronScheduler          = "io.timeandspace"          % "cron-scheduler"            % "0.1"
-  lazy val refined                = "eu.timepit"               %% "refined"                  % "0.9.14"
   lazy val scalaJava8Compat       = "org.scala-lang.modules"   %% "scala-java8-compat"       % "0.9.1"
 }

@@ -9,6 +9,12 @@ scala:
 # Use strict aggregation (sbt-doge plz) to exclude docs
 script: sbt +++$TRAVIS_SCALA_VERSION test
 
+before_install:
+  - curl --version # for debug purpose
+  - curl -L -v --retry 5 -o jabba-install.sh https://git.io/jabba
+  - bash jabba-install.sh && . ~/.jabba/jabba.sh
+install: jabba install $(jabba ls-remote "adopt@~1.$TRAVIS_JDK.0-0" --latest=patch) && jabba use "$_" && java -Xmx32m -version
+
 jobs:
   include:
   - stage: check
@@ -69,3 +75,5 @@ env:
   - secure: hulqCGsekvtgSBL//Lua1y/6v8pCXE9LfilZDOsIMfX832URdiQazLsYVeZrAk+EIikEBP2qs6bkE2fGluhe2x9DHqPMpWF0oUfBMuD+iBKWjTPTFo10UwiJHeqaB8Jx7gFZxtUVsw9w85JlnHNOmdC96q+MpP2cqPWWacJgp2Dtq4zAJx2P60C2gXfIMBzDrvZCpw27VTw51M+qqKchTMnfUnmOPY4lZG9w1TXcdB/7KF+E5fj2NRGBwbT7LmLk7YA4mVp20ohGzpDc0BLcPQP0SPhqLpXVJEB3PWAwmigoDHYPj9VLBKoXP/lp2d30H0YzEJVFU4N8kCQZj559J7zUF8T+90xNjabUBAjq8UFa0Ry7iF+wQD53Cfqthrr2KND2WaQmCOUUQvUywvJN05U9R0GoRZiDukXPZGihVON5j++JvskZ74sx0Hl+q1ay0Nt19nFRQzkulKukeYslmq4B4H8JA4o9oY8qKvJ+ruYIj+ihg66A99+YbcFQLPhL5R1el/taFaRgx1ELV9wkTbFJpLKFMPir/FLDMTpa+94ss/vuv54heTSoLmYegTymlapMu2iGRbsYYHminsBBn+iFzuH71e+5MOVCWiUOji6fuCRlxNCMmOvC8iYHmVazep4hOMi8iXDrvvGuRSj9af9ETMwP8NrqDNw74Zlo7PM=
   - secure: XmthqKHFZtlHwggRIcDKS3K8vbDprr83jjbWNHSe+BTjuAgLtkujk21S3k6NLj1MOBHK02+uNtQB4a15jvUB1ac990ziUMb6ls0wg7LoEMFqUiXdT9ojqPDB68C4EvkBrlwKhoA5o/2qDB7oRhnjivXe+a/C3c5OUihyii+s569VnQmnY6WbL7HF+r9xoNxKHQGt1ObgLy5VfD3G1WgsagJg3A1mlmdM101+VUC3MaB3nLVy6BLP4xwIs8te6A+AdXyy/sQVFEN1ErcYQPDDPtQhHOb84H2iJaalYrRhgg7ZatHq0CQpQSrUcdFwnh9N+iFbximBA2ZVNT/WRzF4JsIrY/1YAuAEf/eolUA6MYfYxYJjCi7dWLTcNBTDQVTfnrHg5JnaXF/9itAPMBvJ3owC0f0NbXMovk7ihIYAzyTVu0j6LuMObz71yr6L2hPnmFb1cR48hzYrHzfkd94TbLu0RekIN7OZhT4yp6P1y7m1LM2vzIN3FqUtUaH9slHcAV+TQ+gacf+ePAcgw7kcvbiM5wlWvkyGsZUPp/0CZ3wdmdfgPO/yBuXsEShcHbSSp/T4iZ0e1JQACbHbR6Brydr7E6wHik6FYggJJFmOIQOt1x6JOvZAPipYFMZEFGneD/QBgLUAf2Kf3EhqopPznCLq6b8bEkXPglWCNz1WR30=
   - secure: MCpXtgrCcv0VdBHtVtvYHcroIBoLLHO6utw7GXKxPFseqP3cZ7RKiT+lpvkxuWvSnzSP0k4g0IkDjgrwSB1WQBc1S3u4QoIhcOj/t4YkbHdC6qxHrLLsNbyFbMnmfuSRsjMCzWITJfR1Ysd7ETB7bvtMFWRYKdiSi5/rX6+cZOX4bCMmC2TNAEXLqdnLSNhGhv8sKArGJC7foupcECdCvdQm2NU4K/8tTc6k6NzFiMQWhOLstYP02xAs9OlZ9JMJqinF5zwDXB7HF3pekfRsmoIiEksoOmKacJAF0n0CIuyW8AUUtGppaP0kHkQlJO+cSuRW0pl1ED/q63/kjJi/uGAqKX+bp5Pxi2lVRaDos2DfG09Ym2mT+HA6E5RzQcRSCF9V3tAoEjkit4hp8LWrjTqZ68NP47zkllNd4GzZ9NzIJIyuyoJ2Az+0OI17yIWDpesxw4pQLZwwEC50W8wjPmg3NBbfJvOjZhpyrnMFr0EyHhxMzwoWDPKZ94LXF4YcO/uMK1iOvbPpYhkf1lm2G6lQQYZ2wEMoEvfGbf358chyw9zxl9uI6/dsOZPek1a24VjtaWNKI79t3D9o/ZvU3KA/ViXstniQfOwZayEM3cjkQoGnYKKgzmG7PFxcm8eQzZPvt0UefyuxBAuulejYcMcIHGKr07w8pcfcmPrhYSY=
+  matrix:
+    - TRAVIS_JDK=8
