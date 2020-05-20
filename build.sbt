@@ -1,6 +1,7 @@
 import Dependencies._
 import sbt.Keys.libraryDependencies
 
+// Sanity check for sbt-travisci
 Global / onLoad := (Global / onLoad).value.andThen { s =>
   val v = scala213.value
   if (!CrossVersion.isScalaApiCompatible(v))
