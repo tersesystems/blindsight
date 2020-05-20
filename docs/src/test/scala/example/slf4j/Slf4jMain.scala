@@ -44,6 +44,9 @@ object Slf4jMain {
       logger.debug("this is a test")
     }
 
+    val marker = MarkerFactory.getDetachedMarker("foo")
+    logger.info(Markers(marker), "hello")
+
     // Cannot use ToMarkers here
     import MarkersEnrichment._
     logger.debug(featureFlag.asMarkers, "markers must be explicit here to prevent API confusion")

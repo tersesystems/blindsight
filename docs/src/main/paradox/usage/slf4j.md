@@ -6,7 +6,14 @@ The biggest difference is that methods take a type class instance of @scaladoc[M
 
 ## Markers
 
-@ref:[DSL](dsl.md) are encouraged here, as they can make marker specification much easier:
+Markers work the same way, but must be an instance of @scaladoc[Markers](com.tersesystems.blindsight.Markers).
+
+```scala
+val marker = MarkerFactory.getDetachedMarker("foo")
+logger.info(Markers(marker), "hello")
+```
+
+Using the @ref:[DSL](dsl.md) with marker enrichment is encouraged here, as it can make marker specification much easier:
 
 ```scala
 import com.tersesystems.blindsight._

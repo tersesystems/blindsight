@@ -1,4 +1,4 @@
-# Logback
+# Logback with Logstash 
 
 The recommended option for Logback is to use `blindsight-logstash`, which includes source information (line, file, enclosing) as @ref:[logstash markers](../usage/dsl.md) on the logger and provides a mapping for `Arguments` and `Markers`.
 
