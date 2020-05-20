@@ -7,6 +7,7 @@ scala:
 - 2.11.12
 jobs:
   include:
+  - script: sbt +++$TRAVIS_SCALA_VERSION test
   - stage: check
     env: ISOLATED=true
     scala: 2.13.1
@@ -16,9 +17,6 @@ jobs:
   - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please
       run 'scalafmtSbt' and commit the reformatted code."; false; }
     name: Build code style check (fixed with `sbt scalafmtSbt`)
-  - stage: test
-    name: Test with strict aggregation (sbt-doge plz)
-    script: sbt +++$TRAVIS_SCALA_VERSION test
   - stage: deploy
     name: Deploy to Bintray
     script:
