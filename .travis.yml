@@ -16,6 +16,9 @@ jobs:
   - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please
       run 'scalafmtSbt' and commit the reformatted code."; false; }
     name: Build code style check (fixed with `sbt scalafmtSbt`)
+  - stage: test
+    name: Test with strict aggregation (sbt-doge plz)
+    script: sbt +++$TRAVIS_SCALA_VERSION test
   - stage: deploy
     name: Deploy to Bintray
     script:
