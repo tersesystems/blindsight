@@ -23,7 +23,7 @@ package com.tersesystems.blindsight
  * of `Message + Message`.
  *
  * There is an implicit conversion of string to message, but for general purpose,
- * `ToMessage` should be used to convert objects.
+ * [[ToMessage]] should be used to convert objects.
  *
  * {{{
  * val message = Message("foo")

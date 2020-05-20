@@ -20,7 +20,7 @@ import com.tersesystems.blindsight.AST.BObject
 import org.slf4j.Marker
 
 /**
- * This is a type class used to convert given types to `Markers`.
+ * This is a type class used to convert given types to [[Markers]].
  *
  * Markers are very useful for structured logging, because they can be
  * converted into key/value pairs without altering the structure of a

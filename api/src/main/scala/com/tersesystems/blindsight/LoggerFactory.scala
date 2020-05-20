@@ -18,7 +18,7 @@ package com.tersesystems.blindsight
 
 /**
  * The logger factory is a trait that returns a Blindsight logger, using a
- * type class instance of `LoggerResolver`.
+ * type class instance of [[LoggerResolver]].
  */
 trait LoggerFactory {
 
