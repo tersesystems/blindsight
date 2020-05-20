@@ -52,7 +52,8 @@ val disablePublishing = Seq[Setting[_]](
 lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .settings(
-    crossScalaVersions := Nil, // docs don't need to run on 2.11
+    scalaVersion := scala213.value,
+    crossScalaVersions := Nil, // docs don't need to run on 2.11, exclude from crossbuild
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies += cronScheduler                   % Test,
     libraryDependencies += scalaJava8Compat                % Test,
