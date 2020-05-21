@@ -46,7 +46,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         // XXX Make a builder out of Statement
         Statement(
           markers = Markers("secretToken" -> instance.userSecretToken),
-          message = Message("herp"        -> "derp"),
+          message = Message("herp" -> "derp"),
           arguments = Arguments(instance.payloadId.toString),
           None
         )

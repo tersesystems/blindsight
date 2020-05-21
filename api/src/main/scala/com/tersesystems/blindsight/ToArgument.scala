@@ -61,9 +61,10 @@ trait LowPriorityToArgumentImplicits {
 }
 
 object ToArgument extends LowPriorityToArgumentImplicits {
-  def apply[T: NotNothing](f: T => Argument): ToArgument[T] = new ToArgument[T] {
-    override def toArgument(instance: T): Argument = f(instance)
-  }
+  def apply[T: NotNothing](f: T => Argument): ToArgument[T] =
+    new ToArgument[T] {
+      override def toArgument(instance: T): Argument = f(instance)
+    }
 }
 
 /**

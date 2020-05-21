@@ -101,17 +101,18 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 }
 
 trait LowPriorityBehavior {
-  implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new FlowBehavior[B] {
-    override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
-      Some(Statement().withMessage("entry"))
-    override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =
-      Some(Statement().withMessage("exit"))
-    override def throwingStatement(
-        exc: Throwable,
-        source: FlowBehavior.Source
-    ): Option[(Level, Statement)] =
-      Some(Level.ERROR, Statement().withMessage("throwing"))
-  }
+  implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] =
+    new FlowBehavior[B] {
+      override def entryStatement(source: FlowBehavior.Source): Option[Statement] =
+        Some(Statement().withMessage("entry"))
+      override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] =
+        Some(Statement().withMessage("exit"))
+      override def throwingStatement(
+          exc: Throwable,
+          source: FlowBehavior.Source
+      ): Option[(Level, Statement)] =
+        Some(Level.ERROR, Statement().withMessage("throwing"))
+    }
 }
 
 object LowPriorityBehavior extends LowPriorityBehavior

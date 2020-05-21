@@ -75,9 +75,12 @@ object SimpleConditionalExample {
 
     val latch    = new AtomicBoolean()
     val periodic = new Periodic()
-    periodic.schedule(java.time.Duration.ofMinutes(1), new CronTask {
-      override def run(scheduledRunTimeMillis: Long): Unit = latch.set(true)
-    })
+    periodic.schedule(
+      java.time.Duration.ofMinutes(1),
+      new CronTask {
+        override def run(scheduledRunTimeMillis: Long): Unit = latch.set(true)
+      }
+    )
 
     logger.debug.when(latch.getAndSet(false)) { debug => debug("Only run once per minute max") }
     periodic.shutdown() // on app shutdown

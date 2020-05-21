@@ -67,8 +67,8 @@ object LoggerFactory {
     loggerFactory.getLogger
   }
 
-  private def classNameFromSource(
-      implicit enc: sourcecode.Enclosing,
+  private def classNameFromSource(implicit
+      enc: sourcecode.Enclosing,
       name: sourcecode.Name
   ): String = {
     val value = enc.value.stripSuffix(s".${name.value}")

@@ -45,7 +45,8 @@ trait LowPriorityToMessageImplicits {
 }
 
 object ToMessage extends LowPriorityToMessageImplicits {
-  def apply[T: NotNothing](f: T => Message): ToMessage[T] = new ToMessage[T] {
-    override def toMessage(instance: => T): Message = f(instance)
-  }
+  def apply[T: NotNothing](f: T => Message): ToMessage[T] =
+    new ToMessage[T] {
+      override def toMessage(instance: => T): Message = f(instance)
+    }
 }

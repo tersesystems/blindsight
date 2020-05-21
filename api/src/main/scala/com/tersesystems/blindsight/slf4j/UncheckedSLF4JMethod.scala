@@ -67,8 +67,8 @@ trait UncheckedSLF4JMethod {
       arg2: Any
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(markers: Marker, message: String, args: Arguments)(
-      implicit line: Line,
+  def apply(markers: Marker, message: String, args: Arguments)(implicit
+      line: Line,
       file: File,
       enclosing: Enclosing
   ): Unit
@@ -186,8 +186,8 @@ object UncheckedSLF4JMethod {
       }
     }
 
-    override def apply(marker: Marker, msg: String, arg: Any)(
-        implicit line: Line,
+    override def apply(marker: Marker, msg: String, arg: Any)(implicit
+        line: Line,
         file: File,
         enclosing: Enclosing
     ): Unit = {
@@ -197,8 +197,8 @@ object UncheckedSLF4JMethod {
       }
     }
 
-    override def apply(marker: Marker, format: String, arg1: Any, arg2: Any)(
-        implicit line: Line,
+    override def apply(marker: Marker, format: String, arg1: Any, arg2: Any)(implicit
+        line: Line,
         file: File,
         enclosing: Enclosing
     ): Unit = {
@@ -257,62 +257,70 @@ object UncheckedSLF4JMethod {
 
     override def apply(
         msg: String
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.message(msg)
-    }
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      if (test) {
+        parameterList.message(msg)
+      }
 
     override def apply(
         msg: String,
         arg: Any
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.messageArg1(msg, arg)
-    }
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      if (test) {
+        parameterList.messageArg1(msg, arg)
+      }
 
     override def apply(
         msg: String,
         arg1: Any,
         arg2: Any
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.messageArg1Arg2(msg, arg1: Any, arg2)
-    }
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      if (test) {
+        parameterList.messageArg1Arg2(msg, arg1: Any, arg2)
+      }
 
     override def apply(
         msg: String,
         args: Arguments
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.messageArgs(msg, args.toArray)
-    }
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      if (test) {
+        parameterList.messageArgs(msg, args.toArray)
+      }
 
     override def apply(
         marker: Marker,
         msg: String
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.markerMessage(marker, msg)
-    }
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      if (test) {
+        parameterList.markerMessage(marker, msg)
+      }
 
     override def apply(
         marker: Marker,
         msg: String,
         arg: Any
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.markerMessageArg1(marker, msg.toString, arg)
-    }
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      if (test) {
+        parameterList.markerMessageArg1(marker, msg.toString, arg)
+      }
 
-    override def apply(marker: Marker, msg: String, arg1: Any, arg2: Any)(
-        implicit line: Line,
+    override def apply(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
+        line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit = if (test) {
-      parameterList.markerMessageArg1Arg2(marker, msg, arg1, arg2)
-    }
+    ): Unit =
+      if (test) {
+        parameterList.markerMessageArg1Arg2(marker, msg, arg1, arg2)
+      }
 
     override def apply(
         marker: Marker,
         msg: String,
         args: Arguments
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = if (test) {
-      parameterList.markerMessageArgs(marker, msg, args.toArray)
-    }
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      if (test) {
+        parameterList.markerMessageArgs(marker, msg, args.toArray)
+      }
 
     override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {
       if (test && condition) {

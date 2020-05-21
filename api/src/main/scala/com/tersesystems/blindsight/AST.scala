@@ -26,35 +26,39 @@ object AST {
 
     def values: Values
 
-    def children: List[BValue] = this match {
-      case BObject(l) => l map (_._2)
-      case BArray(l)  => l
-      case _          => Nil
-    }
+    def children: List[BValue] =
+      this match {
+        case BObject(l) => l map (_._2)
+        case BArray(l)  => l
+        case _          => Nil
+      }
 
     def apply(i: Int): BValue = BNothing
 
     def ++(other: BValue) = {
-      def append(value1: BValue, value2: BValue): BValue = (value1, value2) match {
-        case (BNothing, x)            => x
-        case (x, BNothing)            => x
-        case (BArray(xs), BArray(ys)) => BArray(xs ::: ys)
-        case (BArray(xs), v: BValue)  => BArray(xs ::: List(v))
-        case (v: BValue, BArray(xs))  => BArray(v :: xs)
-        case (x, y)                   => BArray(x :: y :: Nil)
-      }
+      def append(value1: BValue, value2: BValue): BValue =
+        (value1, value2) match {
+          case (BNothing, x)            => x
+          case (x, BNothing)            => x
+          case (BArray(xs), BArray(ys)) => BArray(xs ::: ys)
+          case (BArray(xs), v: BValue)  => BArray(xs ::: List(v))
+          case (v: BValue, BArray(xs))  => BArray(v :: xs)
+          case (x, y)                   => BArray(x :: y :: Nil)
+        }
       append(this, other)
     }
 
-    def toOption: Option[BValue] = this match {
-      case BNothing | BNull => None
-      case json             => Some(json)
-    }
+    def toOption: Option[BValue] =
+      this match {
+        case BNothing | BNull => None
+        case json             => Some(json)
+      }
 
-    def toSome: Option[BValue] = this match {
-      case BNothing => None
-      case json     => Some(json)
-    }
+    def toSome: Option[BValue] =
+      this match {
+        case BNothing => None
+        case json     => Some(json)
+      }
   }
 
   case object BNothing extends BValue {
@@ -101,10 +105,11 @@ object AST {
     type Values = Map[String, Any]
     def values: Map[String, Any] = obj.iterator.map { case (n, v) => (n, v.values) }.toMap
 
-    override def equals(that: Any): Boolean = that match {
-      case o: BObject => obj.toSet == o.obj.toSet
-      case _          => false
-    }
+    override def equals(that: Any): Boolean =
+      that match {
+        case o: BObject => obj.toSet == o.obj.toSet
+        case _          => false
+      }
 
     override def hashCode: Int = obj.toSet[BField].hashCode
   }
@@ -121,10 +126,11 @@ object AST {
     type Values = Set[BValue]
     def values: Set[BValue] = set
 
-    override def equals(o: Any): Boolean = o match {
-      case o: BSet => o.values == values
-      case _       => false
-    }
+    override def equals(o: Any): Boolean =
+      o match {
+        case o: BSet => o.values == values
+        case _       => false
+      }
 
     def intersect(o: BSet): BSet  = BSet(o.values.intersect(values))
     def union(o: BSet): BSet      = BSet(o.values.union(values))

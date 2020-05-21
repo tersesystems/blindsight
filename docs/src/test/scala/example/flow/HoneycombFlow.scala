@@ -45,8 +45,8 @@ object HoneycombFlow {
       .setServiceName("blindsight-example")
   }
 
-  implicit def flowMapping[B: ToArgument](
-      implicit spanInfo: SpanInfo
+  implicit def flowMapping[B: ToArgument](implicit
+      spanInfo: SpanInfo
   ): HoneycombFlowBehavior[B] = {
     new HoneycombFlowBehavior[B]
   }
@@ -126,13 +126,14 @@ class HoneycombFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends 
       )
     }
 
-  override def exitStatement(resultValue: B, source: Source): Option[Statement] = Some {
-    val span = popCurrentSpan
-    Statement()
-      .withMarkers(Markers(markerFactory(span)))
-      .withMessage(s"${source.enclosing.value} exit, duration ${span.duration()}")
-      .withArguments(Arguments(resultValue))
-  }
+  override def exitStatement(resultValue: B, source: Source): Option[Statement] =
+    Some {
+      val span = popCurrentSpan
+      Statement()
+        .withMarkers(Markers(markerFactory(span)))
+        .withMessage(s"${source.enclosing.value} exit, duration ${span.duration()}")
+        .withArguments(Arguments(resultValue))
+    }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)
   private def popCurrentSpan: SpanInfo                  = threadLocalStack.get().pop()
