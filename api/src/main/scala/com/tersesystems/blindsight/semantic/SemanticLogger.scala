@@ -26,6 +26,12 @@ import sourcecode.{Enclosing, File, Line}
  * The semantic logger trait takes a statement as a type.  Types can be refined from the
  * general to the specific.
  *
+ * {{{
+ * val userEventLogger: SemanticLogger[UserEvent] = LoggerFactory.getLogger.semantic[UserEvent]
+ * userEventLogger.info(UserLoggedInEvent("steve", "127.0.0.1"))
+ * userEventLogger.info(UserLoggedOutEvent("steve", "timeout"))
+ * }}}
+ *
  * @tparam StatementType the type class instance of [[com.tersesystems.blindsight.ToStatement]].
  */
 trait SemanticLogger[StatementType]

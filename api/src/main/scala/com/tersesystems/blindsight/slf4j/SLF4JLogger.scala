@@ -26,6 +26,14 @@ import scala.reflect.ClassTag
 /**
  * Public SLF4J Logger interface.  This is intended for the end user.
  *
+ * {{{
+ * val markers = Markers(bobj("key" -> "value"))
+ * val message = "message arg1={} arg2={} arg3={}"
+ * val arguments: Arguments = Arguments("arg1", 42, true)
+ * val e = new RuntimeException("whoops")
+ * logger.info(markers, message, arguments, e);
+ * }}}
+ *
  * @tparam M the type of method.
  */
 trait SLF4JLogger[M]

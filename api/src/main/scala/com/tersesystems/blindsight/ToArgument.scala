@@ -58,6 +58,9 @@ trait LowPriorityToArgumentImplicits {
   implicit val bobjectToArgument: ToArgument[BObject] = ToArgument { bobject =>
     ArgumentResolver(bobject)
   }
+
+  // Note that an exception is **not** a valid argument, and exceptions are
+  // handled explicitly as [[java.lang.Throwable]] in the APIs.
 }
 
 object ToArgument extends LowPriorityToArgumentImplicits {

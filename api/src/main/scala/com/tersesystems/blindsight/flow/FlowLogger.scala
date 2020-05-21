@@ -34,6 +34,10 @@ import sourcecode.{Enclosing, File, Line}
  * the result is returned or execution rethrown.  If the logging level is not enabled or logging
  * execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a
  * `Try` block.
+ *
+ * {{{
+ *
+ * }}}
  */
 trait FlowLogger
     extends SLF4JLoggerAPI[SLF4JPredicate, FlowMethod]
