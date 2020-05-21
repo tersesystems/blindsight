@@ -8,9 +8,9 @@ object Common extends AutoPlugin {
 
   def javaCompileSettings = {
     if (scala.util.Properties.isJavaAtLeast("9")) {
-      Seq("--release 8")
+      Seq("--release", "8")
     } else {
-      Seq("-source 1.8", "-target 1.8")
+      Seq("-source", "1.8", "-target", "1.8")
     }
   }
 
