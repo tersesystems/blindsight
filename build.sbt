@@ -97,7 +97,7 @@ lazy val fixtures = (project in file("fixtures"))
 
 // API that provides a logger with everything
 lazy val api = (project in file("api"))
-  .settings(AutomaticModuleName.settings("blindsight.api"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
   .settings(
     name := "blindsight-api",
     libraryDependencies += slf4jApi,
@@ -111,7 +111,7 @@ lazy val api = (project in file("api"))
   .dependsOn(fixtures % "test->test")
 
 lazy val logstash = (project in file("logstash"))
-  .settings(AutomaticModuleName.settings("blindsight.logstash"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
     name := "blindsight-logstash",
     libraryDependencies += logbackClassic,
@@ -122,7 +122,7 @@ lazy val logstash = (project in file("logstash"))
 
 // serviceloader implementation with only SLF4J dependencies.
 lazy val generic = (project in file("generic"))
-  .settings(AutomaticModuleName.settings("blindsight.generic"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic"
   )
