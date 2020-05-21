@@ -182,7 +182,7 @@ import com.tersesystems.blindsight.ToArgument
 
 import com.tersesystems.blindsight.flow._
 
-implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = ...
+implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior 
 
 def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2

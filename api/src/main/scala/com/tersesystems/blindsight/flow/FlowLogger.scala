@@ -36,7 +36,13 @@ import sourcecode.{Enclosing, File, Line}
  * `Try` block.
  *
  * {{{
+ * import com.tersesystems.blindsight._
+ * import com.tersesystems.blindsight.flow._
  *
+ * implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior
+ * val logger = LoggerFactory.getLogger
+ * val flowLogger: FlowLogger = logger.flow
+ * val resultIsThree: Int = flowLogger.trace(1 + 2)
  * }}}
  */
 trait FlowLogger

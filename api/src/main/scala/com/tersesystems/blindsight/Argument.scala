@@ -32,10 +32,11 @@ final class Argument(val value: Any) {
   def toStatement: Statement = Statement().withArguments(arguments)
 }
 
-/**
- * Converts an instance into an argument.
- */
 object Argument {
+
+  /**
+   * Converts an instance into an argument.
+   */
   def apply[A: ToArgument](instance: A): Argument = implicitly[ToArgument[A]].toArgument(instance)
 }
 
