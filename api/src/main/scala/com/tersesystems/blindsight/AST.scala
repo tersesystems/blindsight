@@ -16,6 +16,21 @@
 
 package com.tersesystems.blindsight
 
+/**
+ * The abstract syntax tree.  This is used to represent valid structured data, without
+ * requiring it to be in a particular format, i.e. JSON, logfmt, or XML.  Instead, either
+ * [[MarkersResolver]] or [[ArgumentResolver]] is used to convert from AST to [[Markers]]
+ * or [[Argument]], respectively.
+ *
+ * A tree is typically constructed by using the [[DSL]].
+ *
+ * {{{
+ * import com.tersesystems.blindsight.AST._
+ * import com.tersesystems.blindsight.DSL._
+ *
+ * val o: BObject = bobj("foo" -> "bar")
+ * }}}
+ */
 object AST {
   type BField = (String, BValue)
 

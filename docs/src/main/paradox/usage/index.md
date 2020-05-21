@@ -62,7 +62,8 @@ logger.semantic[UserEvent].info(userEvent)
 @ref:[Flow Logging](flow.md):
 
 ```scala
-val result = logger.flow.trace(arg1 + arg2)
+implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior 
+val resultIsThree: Int = logger.flow.trace(1 + 2)
 ```
 
 @ref:[Conditional Logging](conditional.md):

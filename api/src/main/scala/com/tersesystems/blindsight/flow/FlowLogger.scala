@@ -34,6 +34,16 @@ import sourcecode.{Enclosing, File, Line}
  * the result is returned or execution rethrown.  If the logging level is not enabled or logging
  * execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a
  * `Try` block.
+ *
+ * {{{
+ * import com.tersesystems.blindsight._
+ * import com.tersesystems.blindsight.flow._
+ *
+ * implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior
+ * val logger = LoggerFactory.getLogger
+ * val flowLogger: FlowLogger = logger.flow
+ * val resultIsThree: Int = flowLogger.trace(1 + 2)
+ * }}}
  */
 trait FlowLogger
     extends SLF4JLoggerAPI[SLF4JPredicate, FlowMethod]

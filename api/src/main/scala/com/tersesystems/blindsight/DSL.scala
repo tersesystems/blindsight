@@ -20,48 +20,17 @@ import com.tersesystems.blindsight.AST._
 
 import scala.language.implicitConversions
 
-// "Inspired" by JSON4S.
-
-trait BigDecimalMode { self: DSLImplicits =>
-  implicit def double2BValue(x: Double): BValue         = BDecimal(x)
-  implicit def float2BValue(x: Float): BValue           = BDecimal(x.toDouble)
-  implicit def bigdecimal2BValue(x: BigDecimal): BValue = BDecimal(x)
-}
-object BigDecimalMode extends DSLImplicits with BigDecimalMode
-
-trait DoubleMode { self: DSLImplicits =>
-  implicit def double2BValue(x: Double): BValue         = BDouble(x)
-  implicit def float2BValue(x: Float): BValue           = BDouble(x.toDouble)
-  implicit def bigdecimal2BValue(x: BigDecimal): BValue = BDouble(x.doubleValue)
-}
-object DoubleMode extends DSLImplicits with DoubleMode
-
-trait DSLImplicits {
-  implicit def short2BValue(x: Short): BValue   = BInt(x.toInt)
-  implicit def byte2BValue(x: Byte): BValue     = BInt(x.toInt)
-  implicit def char2BValue(x: Char): BValue     = BInt(x.toInt)
-  implicit def int2BValue(x: Int): BValue       = BInt(x)
-  implicit def long2BValue(x: Long): BValue     = BInt(x)
-  implicit def bigint2BValue(x: BigInt): BValue = BInt(x)
-  implicit def double2BValue(x: Double): BValue
-  implicit def float2BValue(x: Float): BValue
-  implicit def bigdecimal2BValue(x: BigDecimal): BValue
-  implicit def boolean2BValue(x: Boolean): BValue = BBool(x)
-  implicit def string2BValue(x: String): BValue   = BString(x)
-}
-
 /**
- * A DSL to produce valid tree of values.
- * Example:<pre>
- * import DSL._
+ * A DSL to produce valid [[AST]] of values.
+ *
+ * This is "inspired" by JSON4S code.
+ *
+ * {{{
+ * import com.tersesystems.blindsight.AST._
+ * import com.tersesystems.blindsight.DSL._
  * ("name", "joe") ~ ("age", 15) == BObject(BField("name",BString("joe")) :: BField("age",BInt(15)) :: Nil)
- * </pre>
+ * }}}
  */
-object DSL extends DSL with DoubleMode {
-  object WithDouble     extends DSL with DoubleMode
-  object WithBigDecimal extends DSL with BigDecimalMode
-}
-
 trait DSL extends DSLImplicits {
   implicit def seq2BValue[A](s: Iterable[A])(implicit ev: A => BValue): BArray =
     BArray(s.toList.map { a =>
@@ -106,4 +75,37 @@ trait DSL extends DSLImplicits {
     def ~~(right: (String, BValue)): BObject = this.~(right)
     def ~~(right: BObject): BObject          = this.~(right)
   }
+}
+
+object DSL extends DSL with DoubleMode {
+  object WithDouble     extends DSL with DoubleMode
+  object WithBigDecimal extends DSL with BigDecimalMode
+}
+
+trait BigDecimalMode { self: DSLImplicits =>
+  implicit def double2BValue(x: Double): BValue         = BDecimal(x)
+  implicit def float2BValue(x: Float): BValue           = BDecimal(x.toDouble)
+  implicit def bigdecimal2BValue(x: BigDecimal): BValue = BDecimal(x)
+}
+object BigDecimalMode extends DSLImplicits with BigDecimalMode
+
+trait DoubleMode { self: DSLImplicits =>
+  implicit def double2BValue(x: Double): BValue         = BDouble(x)
+  implicit def float2BValue(x: Float): BValue           = BDouble(x.toDouble)
+  implicit def bigdecimal2BValue(x: BigDecimal): BValue = BDouble(x.doubleValue)
+}
+object DoubleMode extends DSLImplicits with DoubleMode
+
+trait DSLImplicits {
+  implicit def short2BValue(x: Short): BValue   = BInt(x.toInt)
+  implicit def byte2BValue(x: Byte): BValue     = BInt(x.toInt)
+  implicit def char2BValue(x: Char): BValue     = BInt(x.toInt)
+  implicit def int2BValue(x: Int): BValue       = BInt(x)
+  implicit def long2BValue(x: Long): BValue     = BInt(x)
+  implicit def bigint2BValue(x: BigInt): BValue = BInt(x)
+  implicit def double2BValue(x: Double): BValue
+  implicit def float2BValue(x: Float): BValue
+  implicit def bigdecimal2BValue(x: BigDecimal): BValue
+  implicit def boolean2BValue(x: Boolean): BValue = BBool(x)
+  implicit def string2BValue(x: String): BValue   = BString(x)
 }

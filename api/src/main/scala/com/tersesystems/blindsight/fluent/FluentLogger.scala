@@ -26,6 +26,11 @@ import sourcecode.{Enclosing, File, Line}
 
 /**
  * The fluent logger trait.
+ *
+ * {{{
+ * val fluentLogger: FluentLogger = LoggerFactory.getLogger.fluent
+ * fluentLogger.info.message("I am a fluent logger").log()
+ * }}}
  */
 trait FluentLogger
     extends SLF4JLoggerAPI[SLF4JPredicate, FluentMethod]

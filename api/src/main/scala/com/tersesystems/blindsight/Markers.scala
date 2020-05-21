@@ -21,6 +21,9 @@ import org.slf4j.{Marker, MarkerFactory}
 /**
  * This class represents the markers that are associated with the logging statement.
  *
+ * Normally this is used in a [[ToArgument]] type class instance, and you
+ * should not have to use it in a logging statement directly.
+ *
  * Markers represents all added `org.slf4j.Marker` instances together in an immutable Set,
  * and only at the end wrapped into a marker with `markers.marker`.  This generated marker
  * uses the internal hashcode and contains all the markers in the set as direct children.

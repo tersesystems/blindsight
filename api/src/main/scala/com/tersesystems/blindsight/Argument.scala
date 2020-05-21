@@ -16,31 +16,42 @@
 
 package com.tersesystems.blindsight
 
+/**
+ * This class represents an argument to a logging statement.
+ *
+ * Normally this is used in a [[ToArgument]] type class instance, and you
+ * should not have to use it in a logging statement directly.
+ *
+ * Note that an exception is **not** a valid argument, and exceptions are
+ * handled explicitly as [[java.lang.Throwable]] in the APIs.
+ *
+ * @param value the argument value.
+ */
 final class Argument(val value: Any) {
   def arguments: Arguments   = new Arguments(Seq(this))
   def toStatement: Statement = Statement().withArguments(arguments)
 }
 
 object Argument {
+
+  /**
+   * Converts an instance into an argument.
+   */
   def apply[A: ToArgument](instance: A): Argument = implicitly[ToArgument[A]].toArgument(instance)
 }
 
 /**
- * This is the representation of arguments in an SLF4J logging statement.
+ * This is the representation of arguments in an SLF4J logging statement.  It is used to
+ * prevent the use of varadic arguments in the SLF4J API, which is a problem for type safety
+ * and also causes problems with `: _*` type ascryption and confused IDEs.
  *
  * Arguments present as an immutable API, which can be composed together using `+` and
  * `++` for sequences.
  *
  * {{{
- * val argsA: Arguments = Arguments("a")
- * val argsPlus: Arguments = argsA + "b"
- * val argsPlusPlus: Arguments = argsPlus ++ Seq(1, "c")
- * val messageWithPlaceHolders = Message("some message").withPlaceHolders(argsPlusPlus)
- * logger.info(messageWithPlaceHolders, argsPlusPlus)
+ * val argsA: Arguments = Arguments("a", 1)
+ * val argsPlus: Arguments = argsA + true
  * }}}
- *
- * There is no special treatment of exceptions; as in SLF4J, the exception must be the
- * last element of arguments to be treated as the Throwable.
  */
 final class Arguments(private val elements: Seq[Argument]) {
 
