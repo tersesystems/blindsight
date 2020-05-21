@@ -24,6 +24,9 @@ import org.slf4j.event.Level
 import org.slf4j.event.Level._
 import sourcecode.{Enclosing, File, Line}
 
+/**
+ * The fluent logger trait.
+ */
 trait FluentLogger
     extends SLF4JLoggerAPI[SLF4JPredicate, FluentMethod]
     with MarkerMixin
@@ -33,6 +36,9 @@ trait FluentLogger
   override type Predicate = SLF4JPredicate
 }
 
+/**
+ * The implementation trait.
+ */
 trait ExtendedFluentLogger
     extends FluentLogger
     with PredicateMixin[SLF4JPredicate]

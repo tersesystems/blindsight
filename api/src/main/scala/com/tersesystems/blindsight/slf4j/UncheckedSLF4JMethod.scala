@@ -22,7 +22,17 @@ import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
 /**
- * The logger method
+ * The unchecked logger method.
+ *
+ * This is as close to the `org.slf4j.Logger` API as we can get it.
+ *
+ * Note that arguments are `Any`, but varargs are still replaced by [[Arguments]].
+ * This is because it's very difficult to get IDEs and Scala to cleanly know the
+ * difference between a varadic list and a single element Seq/List, and so it's
+ * still safer to require a wrapper.
+ *
+ * Note that using this trait will cause warnings when you use it, as it is basically
+ * an escape hatch.
  */
 trait UncheckedSLF4JMethod {
   def level: Level

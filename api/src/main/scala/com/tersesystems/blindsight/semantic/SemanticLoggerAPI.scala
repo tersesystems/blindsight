@@ -36,6 +36,13 @@ trait SemanticRefineMixin[StatementType] {
   def refine[T <: StatementType: ToStatement: NotNothing]: Self[T]
 }
 
+/**
+ * The semantic logger API.
+ *
+ * @tparam StatementType the type class instance of [[com.tersesystems.blindsight.ToStatement]].
+ * @tparam P the predicate type.
+ * @tparam M the method type.
+ */
 trait SemanticLoggerAPI[StatementType, P, M[_]]
     extends SemanticLoggerComponent[StatementType, P, M]
     with SemanticLoggerAPI.Trace[StatementType, P, M]

@@ -66,4 +66,7 @@ object Markers {
   def empty: Markers = new Markers(Set.empty)
 
   def apply[T: ToMarkers](instance: => T): Markers = implicitly[ToMarkers[T]].toMarkers(instance)
+
+  // termination point for markerToMarkers so it's not recursive
+  def apply(element: Marker): Markers = new Markers(Set(element))
 }

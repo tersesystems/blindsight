@@ -23,7 +23,10 @@ import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
 /**
- * This trait defines an SLF4J compatible logger with all five levels of logging.
+ * The semantic logger trait takes a statement as a type.  Types can be refined from the
+ * general to the specific.
+ *
+ * @tparam StatementType the type class instance of [[com.tersesystems.blindsight.ToStatement]].
  */
 trait SemanticLogger[StatementType]
     extends SemanticLoggerAPI[StatementType, SLF4JPredicate, SemanticMethod]
