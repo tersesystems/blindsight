@@ -20,6 +20,8 @@ import com.tersesystems.blindsight.AST._
 
 import scala.language.implicitConversions
 
+// "Inspired" by JSON4S.
+
 trait BigDecimalMode { self: DSLImplicits =>
   implicit def double2BValue(x: Double): BValue         = BDecimal(x)
   implicit def float2BValue(x: Float): BValue           = BDecimal(x.toDouble)
@@ -51,7 +53,7 @@ trait DSLImplicits {
 /**
  * A DSL to produce valid tree of values.
  * Example:<pre>
- * import BlindsightDSL._
+ * import DSL._
  * ("name", "joe") ~ ("age", 15) == BObject(BField("name",BString("joe")) :: BField("age",BInt(15)) :: Nil)
  * </pre>
  */
@@ -96,7 +98,6 @@ trait DSL extends DSLImplicits {
     }
     def ~~[B](right: (String, B))(implicit ev: B => BValue): BObject = this.~(right)
     def ~~(right: BObject): BObject                                  = this.~(right)
-
   }
 
   class JsonListAssoc(left: List[BField]) {

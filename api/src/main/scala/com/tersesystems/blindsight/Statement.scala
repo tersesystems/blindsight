@@ -18,7 +18,7 @@ package com.tersesystems.blindsight
 
 /**
  * A statement represents a total logging statement.  This is most useful
- * for semantic logging, which converts objects to `Statement`, but is
+ * for semantic logging, which converts objects to [[Statement]], but is
  * generally helpful in packaging as well.
  *
  * @param markers the markers associated with a statement.

@@ -26,7 +26,7 @@ import org.slf4j.{Marker, MarkerFactory}
  * uses the internal hashcode and contains all the markers in the set as direct children.
  *
  * {{{
- *
+ * val markers: Markers = Markers(marker)
  * }}}
  *
  * Markers does not directly use the SLF4J marker API, as directly mutating markers
@@ -67,6 +67,6 @@ object Markers {
 
   def apply[T: ToMarkers](instance: => T): Markers = implicitly[ToMarkers[T]].toMarkers(instance)
 
-  // XXX Can delete?
+  // termination point for markerToMarkers so it's not recursive
   def apply(element: Marker): Markers = new Markers(Set(element))
 }

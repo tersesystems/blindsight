@@ -27,7 +27,7 @@ trait MarkerMixin {
   /**
    * Returns a logger which will always render with the given marker.
    *
-   * @param instance a type class instance of `ToMarkers`
+   * @param instance a type class instance of [[ToMarkers]]
    * @tparam T the instance type.
    * @return a new instance of the logger that has this marker.
    */

@@ -20,6 +20,15 @@ import java.util.ServiceLoader
 
 import com.tersesystems.blindsight.AST.BObject
 
+/**
+ * Resolves a [[com.tersesystems.blindsight.AST.BObject]] to an [[Argument]].
+ *
+ * {{{
+ * val argument: Argument = ArgumentResolver(bobj("foo" -> "bar"))
+ * }}}
+ *
+ * This is a service interface trait, which should be implemented the service loader pattern.
+ */
 trait ArgumentResolver {
   def resolve(bobject: BObject): Argument
 }

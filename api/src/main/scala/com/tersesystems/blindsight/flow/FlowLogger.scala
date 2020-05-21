@@ -26,8 +26,8 @@ import sourcecode.{Enclosing, File, Line}
 /**
  * This trait implements a logger that is used for rendering entry/exit logging wrappers.
  *
- * The `FlowLoggerMethod` implements the bulk of the logic here, and is intended to be used with a
- * user-provided `FlowBehavior` that determines what statements and side effects happen on entry
+ * The [[FlowMethod]] implements the bulk of the logic here, and is intended to be used with a
+ * user-provided [[FlowBehavior]] that determines what statements and side effects happen on entry
  * and exit.
  *
  * If logging is enabled, then the execution is wrapped to capture the result or execution, and then

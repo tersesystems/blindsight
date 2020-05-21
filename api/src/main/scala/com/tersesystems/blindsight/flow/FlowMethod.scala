@@ -24,9 +24,9 @@ import sourcecode.{Args, Enclosing, File, Line}
 import scala.util.{Failure, Success, Try}
 
 /**
- * This trait wraps an execution block, and applies a `FlowBehavior` to it on entry, exit, and exception.
+ * This trait wraps an execution block, and applies a [[FlowBehavior]] to it on entry, exit, and exception.
  *
- * Note that the return value must have a type class instance of `ToArguments` in scope, so that
+ * Note that the return value must have a type class instance of [[ToArgument]] in scope, so that
  * the logging statement can render it appropriately.
  */
 trait FlowMethod {

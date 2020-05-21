@@ -21,7 +21,7 @@ import com.tersesystems.blindsight.{Markers, ToMarkers}
 /**
  * A marker mixin that returns a new instance of the logger with the marker always applied.
  *
- * @tparam StatementType the type class instance of ToStatement.
+ * @tparam StatementType the type class instance of [[com.tersesystems.blindsight.ToStatement]].
  */
 trait SemanticMarkerMixin[StatementType] {
   type Self[T]

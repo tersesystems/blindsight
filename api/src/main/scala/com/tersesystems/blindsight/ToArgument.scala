@@ -19,7 +19,7 @@ package com.tersesystems.blindsight
 import com.tersesystems.blindsight.AST.BObject
 
 /**
- * This is a type class used to convert given types to `Argument`.
+ * This is a type class used to convert given types to [[Argument]].
  *
  * {{{
  * case class Person(name: String, age: Int)
@@ -68,9 +68,9 @@ object ToArgument extends LowPriorityToArgumentImplicits {
 }
 
 /**
- * This trait allows a type that has a `ToArgument` type class instance to render as an `Argument`.
+ * This trait allows a type that has a [[ToArgument]] type class instance to render as an [[Argument]].
  *
- * This is especially useful in the SLF4J API, which does not take a `ToMarkers` instance.
+ * This is especially useful in the SLF4J API, which does not take a [[ToMarkers]] instance.
  *
  * {{{
  * import ArgumentEnrichment._

@@ -20,6 +20,9 @@ import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
+/**
+ * The fluent method.
+ */
 trait FluentMethod extends FluentAPI {
 
   def when(condition: => Boolean)(block: FluentMethod => Unit): Unit

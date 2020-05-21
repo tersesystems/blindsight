@@ -21,6 +21,9 @@ import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.semantic.SemanticLogger
 import com.tersesystems.blindsight.slf4j._
 
+/**
+ * The blindsight logger trait.
+ */
 trait Logger extends SLF4JLogger[StrictSLF4JMethod] {
   override type Self = Logger
 
