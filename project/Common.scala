@@ -6,6 +6,14 @@ object Common extends AutoPlugin {
   override def requires: Plugins = plugins.JvmPlugin && HeaderPlugin
   override def trigger           = allRequirements
 
+  def javaCompileSettings = {
+    if (scala.util.Properties.isJavaAtLeast("9")) {
+      Seq("--release 8")
+    } else {
+      Seq("-source 1.8", "-target 1.8")
+    }
+  }
+
   override lazy val projectSettings = {
     inTask(doc)(
       Seq(
@@ -16,6 +24,8 @@ object Common extends AutoPlugin {
         ),
         autoAPIMappings := true
       )
+    ) ++ Seq(
+      javacOptions ++= javaCompileSettings
     )
   }
 
