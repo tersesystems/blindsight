@@ -36,15 +36,17 @@ object SimpleFlow {
   }
 
   // #flow_method
-  def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
-    arg1 + arg2
-  }
+  def flowMethod(arg1: Int, arg2: Int): Int =
+    logger.flow.trace {
+      arg1 + arg2
+    }
   // #flow_method
 
   // #flow_person_definition
-  def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
-    Person(name = "Will", age = arg1 + arg2)
-  }
+  def personFlowMethod(arg1: Int, arg2: Int): Person =
+    logger.flow.trace {
+      Person(name = "Will", age = arg1 + arg2)
+    }
 
   case class Person(name: String, age: Int)
 

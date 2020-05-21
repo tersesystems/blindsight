@@ -53,9 +53,10 @@ trait LowPriorityToMarkersImplicits {
 }
 
 object ToMarkers extends LowPriorityToMarkersImplicits {
-  def apply[T: NotNothing](f: T => Markers): ToMarkers[T] = new ToMarkers[T] {
-    override def toMarkers(instance: T): Markers = f(instance)
-  }
+  def apply[T: NotNothing](f: T => Markers): ToMarkers[T] =
+    new ToMarkers[T] {
+      override def toMarkers(instance: T): Markers = f(instance)
+    }
 }
 
 /**

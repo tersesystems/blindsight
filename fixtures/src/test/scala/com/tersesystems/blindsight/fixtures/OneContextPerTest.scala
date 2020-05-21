@@ -15,9 +15,10 @@ trait OneContextPerTest extends TestSuiteMixin {
 
   private var contextPerTest: LoggerContext = _
 
-  final implicit def loggerContext: LoggerContext = synchronized {
-    contextPerTest
-  }
+  final implicit def loggerContext: LoggerContext =
+    synchronized {
+      contextPerTest
+    }
 
   abstract override def withFixture(test: NoArgTest): Outcome = {
     synchronized {

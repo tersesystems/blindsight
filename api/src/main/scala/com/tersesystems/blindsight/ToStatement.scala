@@ -47,7 +47,8 @@ trait LowPriorityToStatementImplicits {
 }
 
 object ToStatement extends LowPriorityToStatementImplicits {
-  def apply[T, S <: Statement: NotNothing](f: T => S): ToStatement[T] = new ToStatement[T] {
-    override def toStatement(instance: => T): Statement = f(instance)
-  }
+  def apply[T, S <: Statement: NotNothing](f: T => S): ToStatement[T] =
+    new ToStatement[T] {
+      override def toStatement(instance: => T): Statement = f(instance)
+    }
 }

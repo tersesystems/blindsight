@@ -62,15 +62,18 @@ object DSL extends DSL with DoubleMode {
 
 trait DSL extends DSLImplicits {
   implicit def seq2BValue[A](s: Iterable[A])(implicit ev: A => BValue): BArray =
-    BArray(s.toList.map { a => val v: BValue = a; v })
+    BArray(s.toList.map { a =>
+      val v: BValue = a; v
+    })
 
   implicit def map2BValue[A](m: Map[String, A])(implicit ev: A => BValue): BObject =
     BObject(m.toList.map { case (k, v) => BField(k, v) })
 
-  implicit def option2BValue[A](opt: Option[A])(implicit ev: A => BValue): BValue = opt match {
-    case Some(x) => x
-    case None    => BNothing
-  }
+  implicit def option2BValue[A](opt: Option[A])(implicit ev: A => BValue): BValue =
+    opt match {
+      case Some(x) => x
+      case None    => BNothing
+    }
 
   implicit def symbol2BValue(x: Symbol): BString = BString(x.name)
   implicit def pair2BValue[A](t: (String, A))(implicit ev: A => BValue): BObject =

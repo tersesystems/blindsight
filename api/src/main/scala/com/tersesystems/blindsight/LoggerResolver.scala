@@ -33,18 +33,19 @@ trait LowPriorityLoggerResolverImplicits {
     factory.getLogger(str)
   }
 
-  implicit def classToResolver[T]: LoggerResolver[Class[T]] = LoggerResolver[Class[T]] {
-    (instance: Class[T]) =>
+  implicit def classToResolver[T]: LoggerResolver[Class[T]] =
+    LoggerResolver[Class[T]] { (instance: Class[T]) =>
       val factory = org.slf4j.LoggerFactory.getILoggerFactory
       factory.getLogger(instance.getName)
-  }
+    }
 
   implicit val loggerToResolver: LoggerResolver[org.slf4j.Logger] =
     LoggerResolver[org.slf4j.Logger](identity)
 }
 
 object LoggerResolver extends LowPriorityLoggerResolverImplicits {
-  def apply[T](f: T => org.slf4j.Logger): LoggerResolver[T] = new LoggerResolver[T] {
-    override def resolveLogger(instance: T): org.slf4j.Logger = f(instance)
-  }
+  def apply[T](f: T => org.slf4j.Logger): LoggerResolver[T] =
+    new LoggerResolver[T] {
+      override def resolveLogger(instance: T): org.slf4j.Logger = f(instance)
+    }
 }

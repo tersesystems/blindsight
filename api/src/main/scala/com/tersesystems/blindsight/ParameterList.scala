@@ -62,13 +62,14 @@ object ParameterList {
   /**
    * Indexed by enum ordinal, i.e. to look up, use Level.TRACE.ordinal() as index.
    */
-  def lists(logger: org.slf4j.Logger): Array[ParameterList] = Array(
-    new ParameterList.Error(logger),
-    new ParameterList.Warn(logger),
-    new ParameterList.Info(logger),
-    new ParameterList.Debug(logger),
-    new ParameterList.Trace(logger)
-  )
+  def lists(logger: org.slf4j.Logger): Array[ParameterList] =
+    Array(
+      new ParameterList.Error(logger),
+      new ParameterList.Warn(logger),
+      new ParameterList.Info(logger),
+      new ParameterList.Debug(logger),
+      new ParameterList.Trace(logger)
+    )
 
   class Trace(logger: org.slf4j.Logger) extends ParameterList(Level.TRACE, logger) {
     override def executePredicate(): Boolean = {

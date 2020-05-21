@@ -33,8 +33,8 @@ trait FlowMethod {
 
   def apply[B: ToArgument](
       block: => B
-  )(
-      implicit line: Line,
+  )(implicit
+      line: Line,
       file: File,
       enclosing: Enclosing,
       sourceArgs: Args,
@@ -57,8 +57,8 @@ object FlowMethod {
 
     override def apply[B: ToArgument](
         attempt: => B
-    )(
-        implicit line: Line,
+    )(implicit
+        line: Line,
         file: File,
         enclosing: Enclosing,
         sourceArgs: Args,
@@ -74,8 +74,8 @@ object FlowMethod {
 
     protected def tryExecution[B: ToArgument](
         attempt: => B
-    )(
-        implicit line: Line,
+    )(implicit
+        line: Line,
         file: File,
         enclosing: Enclosing,
         sourceArgs: Args,
@@ -108,8 +108,8 @@ object FlowMethod {
       extends Impl(level, logger) {
     override def apply[B: ToArgument](
         attempt: => B
-    )(
-        implicit line: Line,
+    )(implicit
+        line: Line,
         file: File,
         enclosing: Enclosing,
         sourceArgs: Args,

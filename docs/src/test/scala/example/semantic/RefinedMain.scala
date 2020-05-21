@@ -9,9 +9,10 @@ object RefinedMain {
   import eu.timepit.refined.string._
   import eu.timepit.refined._
 
-  implicit def stringToStatement[R]: ToStatement[Refined[String, R]] = ToStatement { str =>
-    Statement().withMessage(str.value)
-  }
+  implicit def stringToStatement[R]: ToStatement[Refined[String, R]] =
+    ToStatement { str =>
+      Statement().withMessage(str.value)
+    }
 
   def main(args: Array[String]): Unit = {
     val logger = LoggerFactory.getLogger
