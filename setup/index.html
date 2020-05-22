@@ -31,25 +31,26 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="active page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -58,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -89,25 +91,26 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="active page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -116,6 +119,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -144,16 +148,16 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>Blindsight depends on SLF4J using a service loader pattern, which is typically <a href="http://logback.qos.ch/">Logback</a> or <a href="https://logging.apache.org/log4j/2.x/">Log4J 2</a>. This means you should also plug in one of the service loader implementations, provided below.</p>
 <div class="toc ">
 <ul>
-  <li><a href="../setup/logback.html" class="page">Logback</a></li>
+  <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
   <li><a href="../setup/generic.html" class="page">Generic</a></li>
 </ul>
 </div>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/setup/index.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/main/paradox/setup/index.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../setup/logback.html">Logback</a></p>
+<p><strong>Next:</strong> <a href="../setup/logstash.html">Logback with Logstash</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
@@ -219,7 +223,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36+26-baf65f69', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

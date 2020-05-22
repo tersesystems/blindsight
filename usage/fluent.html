@@ -31,25 +31,26 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="active page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -58,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -89,25 +91,26 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="active page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -116,6 +119,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -142,16 +146,16 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#fluent-api" name="fluent-api" class="anchor"><span class="anchor-link"></span></a>Fluent API</h1>
-<p>A <a href="https://www.martinfowler.com/bliki/FluentInterface.html">fluent builder interface</a> is an API that relies heavily on method chaining to build up an expression. The Blindsight fluent API works with <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a>, and uses type classes to map appropriately, using the <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMessage.html" title="com.tersesystems.blindsight.api.ToMessage"><code>ToMessage</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a> type classes, respectively. </p>
-<p>The fluent API has an immediate advantage in that there&rsquo;s less overloading in the API, and there&rsquo;s more room to chain. With type classes, it&rsquo;s possible to set up much richer <a href="https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/">structured logging</a>.</p>
+<p>A <a href="https://www.martinfowler.com/bliki/FluentInterface.html">fluent builder interface</a> is an API that relies heavily on method chaining to build up an expression. </p>
+<p>The fluent API has an immediate advantage in that there&rsquo;s less overloading in the API, and there&rsquo;s more room to chain.</p>
 <h2><a href="#accessing-fluent-logger" name="accessing-fluent-logger" class="anchor"><span class="anchor-link"></span></a>Accessing Fluent Logger</h2>
 <p>The easiest way of getting a fluent logger is to use the <a href="/blindsight/api/com/tersesystems/blindsight/LoggerFactory.html" title="com.tersesystems.blindsight.LoggerFactory"><code>LoggerFactory</code></a> and then call the <code>fluent</code> method:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/fluent/FluentMain.scala#L54-L57" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.fluent.FluentLogger
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/test/scala/example/fluent/FluentMain.scala#L53-L56" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.fluent.FluentLogger
 
 val logger                     = com.tersesystems.blindsight.LoggerFactory.getLogger(getClass)
 val fluentLogger: FluentLogger = logger.fluent</code></pre>
 <p>The fluent logger builds up the logging statement by calling <code>marker</code>, <code>argument</code>, <code>message</code>, <code>cause</code>, and then finally <code>log()</code> or <code>logWithPlaceholders()</code> to execute the statement. You may call each of these methods repeatedly, and they build up markers, arguments, or a concatenated message (note that exceptions are, well, an exception). You may call them in any order. If you call <code>log()</code> then the statement is executed exactly as written. If you call <code>logWithPlaceholders()</code> then the number of arguments is counted and &ldquo;{}&rdquo; format placeholders are appended to the statement&rsquo;s message so that all arguments are visible.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/fluent/FluentMain.scala#L71-L77" target="_blank" title="Go to snippet source"></a><code class="language-scala">fluentLogger.info
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/test/scala/example/fluent/FluentMain.scala#L71-L77" target="_blank" title="Go to snippet source"></a><code class="language-scala">fluentLogger.info
   .marker(someMarker)
   .message(&quot;some message {}&quot;)
   .argument(args)
@@ -160,23 +164,13 @@ val fluentLogger: FluentLogger = logger.fluent</code></pre>
   .log()</code></pre>
 <h2><a href="#markers" name="markers" class="anchor"><span class="anchor-link"></span></a>Markers</h2>
 <p>You can log with a marker alone and then log:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/fluent/FluentMain.scala#L61-L64" target="_blank" title="Go to snippet source"></a><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
-val someMarker = LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/test/scala/example/fluent/FluentMain.scala#L60-L64" target="_blank" title="Go to snippet source"></a><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
+import org.slf4j.Marker
+val someMarker: Marker = LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;)
 
 fluentLogger.info.marker(someMarker).log()</code></pre>
 <p>This will write out an empty string as the message, and a logstash marker.</p>
-<p>You can also write out anything that has a <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a> implementation, i.e. the Logstash implicits lets you do this:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
-import com.tersesystems.blindsight.api._
-
-// Shown explicitly here but this is all in Implicits._
-implicit def arrayToMarkers[T]: ToMarkers[(String, Seq[T])] = ToMarkers {
-  case (k, v) =&gt; Markers(LogstashMarkers.appendArray(k, v: _*))
-}
-
-fluentLogger.marker(&quot;array&quot; -&gt; Seq(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;)).log()
-</code></pre>
-<p>All markers are in a <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> instance internally, but are not accessible from the builder.</p>
+<p>All markers are in a <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> instance internally, but are not accessible from the builder.</p>
 <h2><a href="#message" name="message" class="anchor"><span class="anchor-link"></span></a>Message</h2>
 <p>A message is the part of the statement that is written out as a string. </p>
 <pre class="prettyprint"><code class="language-scala">fluentLogger.message(&quot;some message&quot;).log()
@@ -196,11 +190,11 @@ fluentLogger.message(person).log()
 <p>Arguments can be added with <code>argument</code>. You do not need to define a message, but you should call <code>logWithPlaceholders</code> in that case so the argument is visible.</p>
 <pre class="prettyprint"><code class="language-scala">fluentLogger.argument(someArgument).logWithPlaceholders()
 </code></pre>
-<p>Custom formatting is done with <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a>.</p>
+<p>Custom formatting is done with <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>.</p>
 <pre class="prettyprint"><code class="language-scala">case class Person(name: String)
 
-implicit val personToArguments: ToArguments[Person] = ToArguments { person =&gt;
-  Arguments(s&quot;${person.name}&quot;)
+implicit val personToArgument: ToArgument[Person] = ToArgument { person =&gt;
+  Argument(bobj(&quot;person&quot; -&gt; person.name))
 }
 
 val person = Person(&quot;Felix&quot;)
@@ -212,7 +206,7 @@ fluentLogger.message(&quot;I was talking to {}&quot;).argument(person).log()
 </code></pre>
 <p>Technically, an exception is the last argument in a logging statement. Exception does <strong>not</strong> compose, and if you call <code>exception</code> repeatedly, the last exception will be set. </p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/fluent.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/main/paradox/usage/fluent.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -299,7 +293,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36+26-baf65f69', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

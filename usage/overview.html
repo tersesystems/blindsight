@@ -31,25 +31,26 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="active page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -58,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -89,25 +91,26 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="active page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -116,6 +119,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -170,7 +174,7 @@ val logger = LoggerFactory.getLogger(myRequest)
 <p>The default logger provides an SLF4J-like API:</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;I am an SLF4J-like logger&quot;)
 </code></pre>
-<p>This converts to a <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a> class, and logs only if the level of the SLF4J logger is set to at least <code>INFO</code>. Very roughly:</p>
+<p>This converts to a <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a> class, and logs only if the level of the SLF4J logger is set to at least <code>INFO</code>. Very roughly:</p>
 <pre class="prettyprint"><code class="language-scala">val infoMethod: InfoMethod = logger.info
 infoMethod.apply(() =&gt; Message(&quot;I am an SLF4J-like logger&quot;))
 
@@ -183,7 +187,7 @@ class InfoMethod {
   }
 }
 </code></pre>
-<p>First, let&rsquo;s explain <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a> and its compatriots.</p>
+<p>First, let&rsquo;s explain <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a> and its compatriots.</p>
 <p>A single logging statement in SLF4J consists of a set of parameters in combination:</p>
 <pre class="prettyprint"><code class="language-java">Marker marker = ...
 String message = ...
@@ -191,22 +195,21 @@ Object[] arguments = ...
 logger.info(marker, message, arguments);
 </code></pre>
 <p>All of these together make a logging statement.</p>
-<p>Blindsight keeps the same concept these parameters, but creates specific types; <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/api/Argument.html" title="com.tersesystems.blindsight.api.Argument"><code>Argument</code></a>, with a <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> that encompasses all the above.</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
-val markers: Markers = Markers(marker1, marker2)
+<p>Blindsight keeps the same concept these parameters, but creates specific types; <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>, with a <a href="/blindsight/api/com/tersesystems/blindsight/Statement.html" title="com.tersesystems.blindsight.Statement"><code>Statement</code></a> that encompasses all the above.</p>
+<pre class="prettyprint"><code class="language-scala"><br/><br/>val markers: Markers = Markers(marker1, marker2)
 val message: Message = Message(&quot;some message&quot;)
 val argument1: Argument = Argument(&quot;arg1&quot;)
 
 logger.info(markers, message, argument1);
 </code></pre>
-<p>Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type. So <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> has a <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a> type class, <a href="/blindsight/api/com/tersesystems/blindsight/api/Message.html" title="com.tersesystems.blindsight.api.Message"><code>Message</code></a> has <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMessage.html" title="com.tersesystems.blindsight.api.ToMessage"><code>ToMessage</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/api/Argument.html" title="com.tersesystems.blindsight.api.Argument"><code>Argument</code></a> has <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArgument.html" title="com.tersesystems.blindsight.api.ToArgument"><code>ToArgument</code></a>.</p>
+<p>Where possible, Blindsight provides type class mappings to automatically convert to the appropriate type. So <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> has a <a href="/blindsight/api/com/tersesystems/blindsight/ToMarkers.html" title="com.tersesystems.blindsight.ToMarkers"><code>ToMarkers</code></a> type class, <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a> has <a href="/blindsight/api/com/tersesystems/blindsight/ToMessage.html" title="com.tersesystems.blindsight.ToMessage"><code>ToMessage</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a> has <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>.</p>
 <p>There is an implicit conversion from <code>String</code> to Message:</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;this is a message&quot;);
 </code></pre>
 <p>And the API takes <code>ToArgument</code> for automatic conversion:</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;this is a message&quot;, &quot;arg1&quot;, &quot;arg2&quot;);
 </code></pre>
-<p>The <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a> class aggregates multiple arguments together when there are more than two arguments. The <code>Arguments()</code> method takes a varadic list of arguments that can be hetrogeneous.</p>
+<p>The <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a> class aggregates multiple arguments together when there are more than two arguments. The <code>Arguments()</code> method takes a varadic list of arguments that can be hetrogeneous.</p>
 <pre class="prettyprint"><code class="language-scala">val arguments: Arguments = Arguments(&quot;arg1&quot;, 42, true)
 logger.info(markers, message, arguments);
 </code></pre>
@@ -244,8 +247,7 @@ fluentLogger.info.message(&quot;I am a fluent logger&quot;).log()
 <p>See <a href="fluent.html">Fluent API</a> for details.</p>
 <h2><a href="#semantic-api" name="semantic-api" class="anchor"><span class="anchor-link"></span></a>Semantic API</h2>
 <p>The <a href="/blindsight/api/com/tersesystems/blindsight/Logger.html" title="com.tersesystems.blindsight.Logger"><code>Logger</code></a> instance provides access to a <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md">semantic, strongly typed logging</a> API. A <a href="/blindsight/api/com/tersesystems/blindsight/semantic/SemanticLogger.html" title="com.tersesystems.blindsight.semantic.SemanticLogger"><code>SemanticLogger</code></a> is accessible through <code>logger.semantic</code>:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.semantic.SemanticLogger
+<pre class="prettyprint"><code class="language-scala"><br/>import com.tersesystems.blindsight.semantic.SemanticLogger
 
 val semanticLogger: SemanticLogger[UserEvent] = logger.semantic[UserEvent]
 val userLoggedInEvent = UserLoggedInEvent(name = &quot;steve&quot;)
@@ -255,31 +257,26 @@ semanticLogger.info(userEvent)
 <p>See <a href="semantic.html">Semantic API</a> for details.</p>
 <h2><a href="#flow-api" name="flow-api" class="anchor"><span class="anchor-link"></span></a>Flow API</h2>
 <p>The <a href="/blindsight/api/com/tersesystems/blindsight/Logger.html" title="com.tersesystems.blindsight.Logger"><code>Logger</code></a> instance provides access to a control flow based logging wrapper. A <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowLogger.html" title="com.tersesystems.blindsight.flow.FlowLogger"><code>FlowLogger</code></a> is accessible through <code>logger.flow</code>:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.ToArgument
+
 import com.tersesystems.blindsight.flow._
 
-implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = ...
+implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior 
 
 def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   arg1 + arg2
 }
 </code></pre>
-<p>The flow API is used to render the entry and exit of a given method. It is tied together with a flow behavior which provides the relevant <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> on entry and exit. This can also be used for timers and hierarchical tracing.</p>
+<p>The flow API is used to render the entry and exit of a given method. It is tied together with a flow behavior which provides the relevant <a href="/blindsight/api/com/tersesystems/blindsight/Statement.html" title="com.tersesystems.blindsight.Statement"><code>Statement</code></a> on entry and exit. This can also be used for timers and hierarchical tracing.</p>
 <p>See <a href="flow.html">Flow API</a> for more details.</p>
 <h2><a href="#structured-logging" name="structured-logging" class="anchor"><span class="anchor-link"></span></a>Structured Logging</h2>
-<p>Blindsight provides structured logging using type class mapping, which maps between tuples, arrays, and JSON nodes to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Markers and StructuredArguments</a>, if you are using Logback as the SLF4J implementation. This makes structured logging easy and intuitive.</p>
-<p>Type class mapping is available through the <code>blindsight-logstash</code> library using <a href="../setup/logback.html">logback</a>, and must be brought into lexical scope using the <a href="/blindsight/api/com/tersesystems/blindsight/logstash/Implicits$.html" title="com.tersesystems.blindsight.logstash.Implicits"><code>Implicits</code></a> singleton object:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
+<p>Blindsight provides structured logging using a DSL which converts to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Logstash Markers and StructuredArguments</a>. This makes structured logging easy and intuitive, and provides structured output in both line based and JSON based formats.</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;some message&quot;, bodj(&quot;a&quot; -&gt; &quot;b&quot;))
 </code></pre>
-<p>This provides a number of type class mappings like:</p>
-<pre class="prettyprint"><code class="language-scala">implicit val tupleStringToMarkers: ToMarkers[(String, String)] = ToMarkers {
-  case (k, v) =&gt; Markers(LogstashMarkers.append(k, v))
-}
+<p>In line format:</p>
+<pre class="prettyprint"><code class="language-json">2020-04-05T23:09:08.436Z example.Main$ some message a=b
 </code></pre>
-<p>When you write out a logstash marker using a tuple in the position of a marker, it will compile:</p>
-<pre class="prettyprint"><code class="language-scala">logger.info(&quot;a&quot; -&gt; &quot;b&quot;, &quot;some message&quot;)
-</code></pre>
-<p>And when you are using the <a href="https://www.javadoc.io/doc/net.logstash.logback/logstash-logback-encoder/latest/net/logstash/logback/encoder/LogstashEncoder.html"><code>LogstashEncoder</code></a> that writes out structured logs as JSON, you&rsquo;ll get the following:</p>
+<p>And in JSON:</p>
 <pre class="prettyprint"><code class="language-json">{
   &quot;@timestamp&quot;: &quot;2020-04-05T23:09:08.436Z&quot;,
   &quot;@version&quot;: &quot;1&quot;,
@@ -288,8 +285,9 @@ def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
   &quot;a&quot;: &quot;b&quot;
 }
 </code></pre>
-<p>See <a href="structured.html">Structured Logging</a> for more details.</p>
+<p>See <a href="dsl.html">Structured Logging</a> for more details.</p>
 <h2><a href="#conditional-logging" name="conditional-logging" class="anchor"><span class="anchor-link"></span></a>Conditional Logging</h2>
+<p>No matter how fast your logging is, it&rsquo;s always faster not to log a statement at all. Blindsight does its best to allow the system to <strong>not</strong> log as much as it makes it possible to log, allowing you to dynamically manage the CPU and memory pressure demands of logging.</p>
 <p>Most of the loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
 <p>This logger will only log if the condition is true:</p>
 <pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
@@ -301,7 +299,6 @@ conditionalLogger.info(&quot;Only logs when condition is true&quot;)
   info(&quot;log&quot;)
 }
 </code></pre>
-<p>Using <code>when</code> is preferable to using call-by-name semantics in expensive logging statements. Call-by-name arguments still create short lived objects that take up memory and must be cleaned up by <a href="https://www.infoq.com/presentations/jvm-60-memory/">garbage collection</a> and will do so in every log statement. Using <code>when</code> will at least create only one function block, rather than many of them.</p>
 <p>See <a href="conditional.html">Conditional Logging</a> for more details.</p>
 <h2><a href="#contextual-logging" name="contextual-logging" class="anchor"><span class="anchor-link"></span></a>Contextual Logging</h2>
 <p>Blindsight builds up context with markers. You can use <code>withMarkers</code> to add markers that don&rsquo;t have to explicitly added to a statement.</p>
@@ -310,7 +307,7 @@ val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append(&quot;user&quo
 </code></pre>
 <p>See <a href="context.html">Context</a> for more details.</p>
 <h2><a href="#source-code" name="source-code" class="anchor"><span class="anchor-link"></span></a>Source Code</h2>
-<p>SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive. Blindsight provides this information for free, at compile time, through <a href="https://github.com/lihaoyi/sourcecode">sourcecode</a> macros, using the <a href="/blindsight/api/com/tersesystems/blindsight/api/mixins/SourceInfoMixin.html" title="com.tersesystems.blindsight.api.mixins.SourceInfoMixin"><code>SourceInfoMixin</code></a> on the logger.</p>
+<p>SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive. Blindsight provides this information for free, at compile time, through <a href="https://github.com/lihaoyi/sourcecode">sourcecode</a> macros, using the <a href="/blindsight/api/com/tersesystems/blindsight/mixins/SourceInfoMixin.html" title="com.tersesystems.blindsight.mixins.SourceInfoMixin"><code>SourceInfoMixin</code></a> on the logger.</p>
 <p>When using <code>blindsight-generic</code>, this returns <code>Markers.empty</code>, but when using <code>blindsight-logstash</code>, this adds <code>source.line</code>, <code>source.file</code> and <code>source.enclosing</code> to the JSON logs automatically:</p>
 <pre class="prettyprint"><code class="language-json">{
   &quot;@timestamp&quot;: &quot;2020-04-12T17:58:45.410Z&quot;,
@@ -328,7 +325,7 @@ val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append(&quot;user&quo
 <p>This is the default behavior, and you can override <code>sourceInfoMarker</code> in your own implementation to return whatever you like.</p>
 <p>See <a href="sourcecode.html">Source Code</a> for more details.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/overview.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/main/paradox/usage/overview.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -419,7 +416,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36+26-baf65f69', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

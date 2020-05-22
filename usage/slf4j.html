@@ -31,25 +31,26 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="active page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -58,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -89,25 +91,26 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="active page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -116,6 +119,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -143,93 +147,31 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#slf4j-api" name="slf4j-api" class="anchor"><span class="anchor-link"></span></a>SLF4J API</h1>
 <p>The default Logger API has the same logger methods and (roughly) the type signature as SLF4J.</p>
-<p>The biggest difference is that methods take a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a>, if you have them defined.</p>
+<p>The biggest difference is that methods take a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a>, if you have them defined.</p>
 <h2><a href="#markers" name="markers" class="anchor"><span class="anchor-link"></span></a>Markers</h2>
-<p>You can pass in something that is not a marker, and provided you have a <a href="/blindsight/api/com/tersesystems/blindsight/api/ToMarkers.html" title="com.tersesystems.blindsight.api.ToMarkers"><code>ToMarkers</code></a> in implicit scope, you can get it auto-converted.</p>
-<pre class="prettyprint"><code class="language-scala">val marker: Markers = MarkerFactory.getDetachedMarker(&quot;SOME_MARKER&quot;)
-logger.info(markers, &quot;message with marker&quot;)
+<p>Markers work the same way, but must be an instance of <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a>.</p>
+<pre class="prettyprint"><code class="language-scala">val marker = MarkerFactory.getDetachedMarker(&quot;foo&quot;)
+logger.info(Markers(marker), &quot;hello&quot;)
 </code></pre>
-<p>You can also combine markers:</p>
-<pre class="prettyprint"><code class="language-scala">val markersOnePlusTwo: Markers = markers1 + markers2
-</code></pre><div class="callout note "><div class="callout-title">Note</div>
-<p>You should <strong>not</strong> try to manipulate the marker through <code>marker.add</code> or <code>marker.remove</code>. It&rsquo;s better to treat a <code>org.slf4j.Marker</code> instance as completely immutable, and manage any composition through <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>.</p></div>
-<p>Getting at the underlying marker is a <code>lazy val</code> that is computed once:</p>
-<pre class="prettyprint"><code class="language-scala">val marker: org.slf4j.Marker = markersOnePlusTwo.marker
-</code></pre>
-<p>You can also convert your own objects into appropriate markers.</p>
+<p>Using the <a href="dsl.html">DSL</a> with marker enrichment is encouraged here, as it can make marker specification much easier:</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.api.{Argument, Markers, ToMarkers}
-import com.tersesystems.blindsight.slf4j._
-import org.slf4j.MarkerFactory
-
-object Slf4jMain {
-  final case class FeatureFlag(flagName: String)
-
-  object FeatureFlag {
-    implicit val toMarkers: ToMarkers[FeatureFlag] = ToMarkers { instance =&gt;
-      Markers(MarkerFactory.getDetachedMarker(instance.flagName))
-    }
-  }
-
-  def main(args: Array[String]): Unit = {
-    val logger = LoggerFactory.getLogger(getClass)
-
-    val featureFlag = FeatureFlag(&quot;flag.enabled&quot;)
-    if (logger.isDebugEnabled(featureFlag)) {
-      logger.debug(&quot;this is a test&quot;)
-    }
-  }
-}
-</code></pre>
-<p><a href="structured.html">Logstash Markers</a> are encouraged here, as they can make marker specification much easier:</p>
-<pre class="prettyprint"><code class="language-scala"><br/>import com.tersesystems.blindsight.logstash.Implicits._
-logger.info(Markers(&quot;markerKey&quot; -&gt; &quot;markerValue&quot;), &quot;marker and argument&quot;)
+import com.tersesystems.blindsight.MarkersEnrichment._
+logger.info(bobj(&quot;markerKey&quot; -&gt; &quot;markerValue&quot;).asMarkers, &quot;marker and argument&quot;)
 </code></pre>
 <p>Generally, you should not need to use markers explicitly in messages, as they can be used with <a href="context.html">context</a> more effectively.</p>
 <h2><a href="#arguments" name="arguments" class="anchor"><span class="anchor-link"></span></a>Arguments</h2>
-<p>Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an <code>Any</code>. There <strong>must</strong> be a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a> in scope. This is to prevent awkward <code>toString</code> matches on object instances, and ensure that structured logging is taking place. </p>
+<p>Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an <code>Any</code>. There <strong>must</strong> be a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a> in scope. This is to prevent awkward <code>toString</code> matches on object instances, and ensure that structured logging is taking place. </p>
 <pre class="prettyprint"><code class="language-scala">// Will not compile, because no ToArgument[SomeRandomObject] is found in implicit scope!
 logger.info(&quot;one argument {}&quot;, new SomeRandomObject()) 
 </code></pre>
-<p>Default <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArgument.html" title="com.tersesystems.blindsight.api.ToArgument"><code>ToArgument</code></a> are determined for the primitives (<code>String</code>, <code>Int</code>, etc):</p>
+<p>Default <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a> are determined for the primitives (<code>String</code>, <code>Int</code>, etc):</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;one argument {}&quot;, 42) // works, because default
 </code></pre>
-<p>If you have more than two arguments, you will need to wrap them so they are provided as a single <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a> instance:</p>
+<p>If you have more than two arguments, you will need to wrap them so they are provided as a single <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a> instance:</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;arg {}, arg {}, arg {}&quot;, Arguments(1, &quot;2&quot;, false))
 </code></pre>
 <p>comes out as:</p>
 <pre><code>FgEddUhGnXE6O0Qbm7EAAA 17:36:55.142 [INFO ] e.s.Slf4jMain$ -  arg 1, arg 2, arg false
-</code></pre>
-<p>Logstash <code>StructuredArguments</code> are covered if you import the <code>blindsight-logstash</code> library. Using Logstash markers means that key value pairs can be created from tuples. </p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.logstash.Implicits._
-
-logger.info(&quot;marker and argument {}&quot;, &quot;argumentKey&quot; -&gt; &quot;argumentValue&quot;)
-
-// Maps are autoconverted
-logger.info(
-  &quot;first is [{}], second is [{}]&quot;,
-  Map(&quot;a&quot; -&gt; &quot;b&quot;, &quot;c&quot; -&gt; &quot;d&quot;)
-)
-
-// Otherwise, wrapping in Arguments() is the way to go
-logger.info(
-  &quot;first is [{}], second is [{}]&quot;,
-  Arguments(&quot;a&quot; -&gt; &quot;b&quot;, &quot;c&quot; -&gt; &quot;d&quot;)
-)
-</code></pre>
-<p>Not everything is defined as an implicit out of the box, but it&rsquo;s easy to define defaults. For example, for dates you may want to define some defaults:</p>
-<pre class="prettyprint"><code class="language-scala">import java.time.format.DateTimeFormatter
-
-implicit val dateToArgument: ToArgument[Date] = ToArgument[java.util.Date] { date =&gt;
-  new Argument(DateTimeFormatter.ISO_INSTANT.format(date.toInstant))
-}
-
-implicit val instantToArgument: ToArgument[java.time.Instant] = ToArgument[java.time.Instant] { instant =&gt;
-  new Argument(DateTimeFormatter.ISO_INSTANT.format(instant))
-}
-
-logger.info(&quot;date is {}&quot;, new java.util.Date())
-logger.info(&quot;instant is {}&quot;, Instant.now())
 </code></pre>
 <p>Exceptions come after arguments, and are not included in the list. For example:</p>
 <pre class="prettyprint"><code class="language-scala">val e = new Exception(&quot;something is horribly wrong&quot;)
@@ -248,12 +190,12 @@ val creditCard = CreditCard(&quot;4111111111111&quot;)
  // case class tostring renders CC number, which is unsafe!
 unchecked.info(&quot;this is risky unchecked {}&quot;, creditCard)
 </code></pre>
-<p>Where there are several arguments, the <a href="/blindsight/api/com/tersesystems/blindsight/api/Arguments.html" title="com.tersesystems.blindsight.api.Arguments"><code>Arguments</code></a> must be used rather than <code>Seq</code> or <code>Array</code>, as it is very awkward to use <code>Seq</code> and <code>Array</code> with varadic input:</p>
+<p>Where there are several arguments, the <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a> must be used rather than <code>Seq</code> or <code>Array</code>, as it is very awkward to use <code>Seq</code> and <code>Array</code> with varadic input:</p>
 <pre class="prettyprint"><code class="language-scala">unchecked.info(&quot;this is risky unchecked {}, {}, {}&quot;, Arguments(&quot;1&quot;, 2, true))
 </code></pre>
 <p>In the unchecked API, you can set <code>-Dblindsight.anywarn=true</code> as a system property, and output will be written to <code>System.out.error</code> when calls to <code>Any</code> are made.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/slf4j.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/main/paradox/usage/slf4j.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -338,7 +280,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36+26-baf65f69', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>Structured DSL · Blindsight</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='docs'/>
+<link rel="canonical" href="/blindsight/usage/dsl.html"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../js/page.js"></script>
+<script type="text/javascript" src="../js/warnOldVersion.js"></script>
+<script type="text/javascript" src="../js/groups.js"></script>
+<link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="../css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="../images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+0.1.36+26-baf65f69
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="active page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="../index.html">Blindsight</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+0.1.36+26-baf65f69
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="active page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<span id="version-warning"></span>
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+<div class="nav-breadcrumbs">
+<ul>
+  <li><a href="../index.html">Blindsight</a></li>
+  <li><a href="../usage/index.html">Usage</a></li>
+  <li>Structured DSL</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#structured-dsl" name="structured-dsl" class="anchor"><span class="anchor-link"></span></a>Structured DSL</h1>
+<p>Structured logging is the basis for logging rich events. Blindsight comes with an internal DSL which lets you work with Scala types intuitively while ensuring that you cannot produce an invalid structure. Internally, the DSL is rendered using <a href="/blindsight/api/com/tersesystems/blindsight/MarkersResolver.html" title="com.tersesystems.blindsight.MarkersResolver"><code>MarkersResolver</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/ArgumentResolver.html" title="com.tersesystems.blindsight.ArgumentResolver"><code>ArgumentResolver</code></a> to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Markers and StructuredArguments</a>, using the ServiceLoader pattern. This approach produces ideomatic structured output for both line oriented encoders and JSON encoders.</p>
+<p>The default implementation is provided with <code>blindsight-logstash</code> module, through <a href="/blindsight/api/com/tersesystems/blindsight/logstash/LogstashArgumentResolver.html" title="com.tersesystems.blindsight.logstash.LogstashArgumentResolver"><code>LogstashArgumentResolver</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/logstash/LogstashMarkersResolver.html" title="com.tersesystems.blindsight.logstash.LogstashMarkersResolver"><code>LogstashMarkersResolver</code></a>. You must configure a JSON encoder to render JSON output. See <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> and the <a href="https://github.com/tersesystems/terse-logback-showcase">Terse Logback Showcase</a> for examples of how to configure logstash-logback-encoder for JSON. </p><div class="callout note "><div class="callout-title">Note</div>
+<p>The generic implementation at <code>blindsight-generic</code> does not come with resolvers, and so you must provide your own <a href="/blindsight/api/com/tersesystems/blindsight/MarkersResolver.html" title="com.tersesystems.blindsight.MarkersResolver"><code>MarkersResolver</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/ArgumentResolver.html" title="com.tersesystems.blindsight.ArgumentResolver"><code>ArgumentResolver</code></a> implementations to enable DSL support.</p></div>
+<h2><a href="#constructing-dsl" name="constructing-dsl" class="anchor"><span class="anchor-link"></span></a>Constructing DSL</h2>
+<p>Primitive types map to primitives. Any seq produces JSON array.</p>
+<pre class="prettyprint"><code class="language-scala">val json: BArray = List(1, 2, 3)
+</code></pre>
+<ul>
+  <li>Tuple2[String, A] produces a field.</li>
+</ul>
+<pre class="prettyprint"><code class="language-scala">val field: BField = (&quot;name&quot; -&gt; &quot;joe&quot;)
+</code></pre>
+<ul>
+  <li>~ operator produces object by combining fields.</li>
+</ul>
+<pre class="prettyprint"><code class="language-scala">val bobject: BObject = (&quot;name&quot; -&gt; &quot;joe&quot;) ~ (&quot;age&quot; -&gt; 35)
+</code></pre>
+<ul>
+  <li>~~ operator works the same as ~ and is useful in situations where ~ is shadowed, eg. when using Spray or akka-http.</li>
+</ul>
+<pre class="prettyprint"><code class="language-scala">val bobject: BObject = (&quot;name&quot; -&gt; &quot;joe&quot;) ~~ (&quot;age&quot; -&gt; 35)
+</code></pre>
+<p>Using the DSL works very well with <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/ToMarkers.html" title="com.tersesystems.blindsight.ToMarkers"><code>ToMarkers</code></a>, because there is a type class instance for <code>BObject</code>. Here&rsquo;s a fully worked example:</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/test/scala/example/dsl/DSLExample.scala#L4-L43" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.AST._
+import com.tersesystems.blindsight.DSL._
+import com.tersesystems.blindsight.LoggerFactory
+
+object DSLExample {
+  private val logger = LoggerFactory.getLogger
+
+  def main(args: Array[String]): Unit = {
+    val winners =
+      List(Winner(23, List(2, 45, 34, 23, 3, 5)), Winner(54, List(52, 3, 12, 11, 18, 22)))
+    val lotto = Lotto(5, List(2, 45, 34, 23, 7, 5, 3), winners, None)
+    logger.info(&quot;message {}&quot;, lotto)
+  }
+
+  case class Winner(id: Long, numbers: List[Int]) {
+    lazy val asBObject: BObject = (&quot;winner-id&quot; -&gt; id) ~ (&quot;numbers&quot; -&gt; numbers)
+  }
+
+  object Winner {
+    implicit val toArgument: ToArgument[Winner] = ToArgument { w =&gt; Argument(w.asBObject) }
+  }
+
+  case class Lotto(
+      id: Long,
+      winningNumbers: List[Int],
+      winners: List[Winner],
+      drawDate: Option[java.util.Date]
+  ) {
+    lazy val asBObject: BObject = &quot;lotto&quot; -&gt;
+      (&quot;lotto-id&quot;          -&gt; id) ~
+        (&quot;winning-numbers&quot; -&gt; winningNumbers) ~
+        (&quot;draw-date&quot;       -&gt; drawDate.map(_.toString)) ~
+        (&quot;winners&quot;         -&gt; winners.map(w =&gt; w.asBObject))
+  }
+
+  object Lotto {
+    implicit val toArgument: ToArgument[Lotto] = ToArgument { lotto =&gt; Argument(lotto.asBObject) }
+  }
+}</code></pre>
+<p>This produces the following:</p>
+<pre class="prettyprint"><code class="nocode">Fg91NlmNpRodHaINzdiAAA 9:45:57.374 [INFO ] e.d.D.main logger -  message {lotto={lotto-id=5, winning-numbers=[2, 45, 34, 23, 7, 5, 3], draw-date=null, winners=[{winner-id=23, numbers=[2, 45, 34, 23, 3, 5]}, {winner-id=54, numbers=[52, 3, 12, 11, 18, 22]}]}}
+</code></pre>
+<p>in JSON:</p>
+<pre class="prettyprint"><code class="language-json">{
+  &quot;id&quot;: &quot;Fg91NlmNpRodHaINzdiAAA&quot;,
+  &quot;relative_ns&quot;: -135695,
+  &quot;tse_ms&quot;: 1589820357374,
+  &quot;@timestamp&quot;: &quot;2020-05-18T16:45:57.374Z&quot;,
+  &quot;@version&quot;: &quot;1&quot;,
+  &quot;message&quot;: &quot;message {lotto={lotto-id=5, winning-numbers=[2, 45, 34, 23, 7, 5, 3], draw-date=null, winners=[{winner-id=23, numbers=[2, 45, 34, 23, 3, 5]}, {winner-id=54, numbers=[52, 3, 12, 11, 18, 22]}]}}&quot;,
+  &quot;logger_name&quot;: &quot;example.dsl.DSLExample.main logger&quot;,
+  &quot;thread_name&quot;: &quot;main&quot;,
+  &quot;level&quot;: &quot;INFO&quot;,
+  &quot;level_value&quot;: 20000,
+  &quot;lotto&quot;: {
+    &quot;lotto-id&quot;: 5,
+    &quot;winning-numbers&quot;: [
+      2,
+      45,
+      34,
+      23,
+      7,
+      5,
+      3
+    ],
+    &quot;draw-date&quot;: null,
+    &quot;winners&quot;: [
+      {
+        &quot;winner-id&quot;: 23,
+        &quot;numbers&quot;: [
+          2,
+          45,
+          34,
+          23,
+          3,
+          5
+        ]
+      },
+      {
+        &quot;winner-id&quot;: 54,
+        &quot;numbers&quot;: [
+          52,
+          3,
+          12,
+          11,
+          18,
+          22
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+<div class="source-github">
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/main/paradox/usage/dsl.md">here</a>.
+</div>
+
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../usage/typeclasses.html">Type Classes</a></p>
+</div>
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/dsl.html#structured-dsl" class="header">Structured DSL</a>
+  <ul>
+    <li><a href="../usage/dsl.html#constructing-dsl" class="header">Constructing DSL</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2020</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="../lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="../js/magellan.js"></script>
+
+<style type="text/css">@import "../lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="../lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36+26-baf65f69', 'https://tersesystems.github.io/blindsight')});</script>
+
+
+</html>

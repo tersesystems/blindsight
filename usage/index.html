@@ -31,25 +31,26 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="active page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -58,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -89,25 +91,26 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="active page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -116,6 +119,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -147,12 +151,21 @@ logger.info(&quot;I am an SLF4J-like logger&quot;)
 </code></pre>
 <p>But there&rsquo;s a lot more, of course. </p>
 <h2><a href="#examples" name="examples" class="anchor"><span class="anchor-link"></span></a>Examples</h2>
-<p>You can do <a href="structured.html">structured Logging</a> using the Scala collection library:</p>
-<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.api._
-import com.tersesystems.blindsight.logstash.Implicits._
+<p>You can do <a href="dsl.html">structured Logging</a> using an internal DSL:</p>
+<pre class="prettyprint"><code class="language-scala">case class Winner(id: Long, numbers: List[Int])
+case class Lotto(id: Long, winningNumbers: List[Int], winners: List[Winner], drawDate: Option[java.util.Date])
 
-val markers = Markers(&quot;array&quot; -&gt; Seq(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))
-logger.info(markers, &quot;Logs with an array as marker&quot;)
+val winners = List(Winner(23, List(2, 45, 34, 23, 3, 5)), Winner(54, List(52, 3, 12, 11, 18, 22)))
+val lotto = Lotto(5, List(2, 45, 34, 23, 7, 5, 3), winners, None)
+
+import com.tersesystems.blindsight.AST._
+import com.tersesystems.blindsight.DSL._
+val complexArgument: BObject = &quot;lotto&quot; -&gt;
+    (&quot;lotto-id&quot; -&gt; lotto.id) ~
+      (&quot;winning-numbers&quot; -&gt; lotto.winningNumbers) ~
+      (&quot;draw-date&quot; -&gt; lotto.drawDate.map(_.toString)) ~
+      (&quot;winners&quot; -&gt; lotto.winners.map(w =&gt; (&quot;winner-id&quot; -&gt; w.id) ~ (&quot;numbers&quot; -&gt; w.numbers)))
+logger.info(&quot;Logs with an array as marker&quot;, complexArgument)
 </code></pre>
 <p><a href="fluent.html">Fluent Logging</a>:</p>
 <pre class="prettyprint"><code class="language-scala">logger.fluent.info.message(&quot;I am a fluent logger&quot;).log()
@@ -161,7 +174,8 @@ logger.info(markers, &quot;Logs with an array as marker&quot;)
 <pre class="prettyprint"><code class="language-scala">logger.semantic[UserEvent].info(userEvent)
 </code></pre>
 <p><a href="flow.html">Flow Logging</a>:</p>
-<pre class="prettyprint"><code class="language-scala">val result = logger.flow.trace(arg1 + arg2)
+<pre class="prettyprint"><code class="language-scala">implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior 
+val resultIsThree: Int = logger.flow.trace(1 + 2)
 </code></pre>
 <p><a href="conditional.html">Conditional Logging</a>:</p>
 <pre class="prettyprint"><code class="language-scala">logger.onCondition(booleanCondition).info(&quot;Only logs when condition is true&quot;)
@@ -171,39 +185,23 @@ logger.info.when(booleanCondition) { info =&gt; info(&quot;when true&quot;) }
 <p><a href="context.html">Context Logging</a>:</p>
 <pre class="prettyprint"><code class="language-scala">logger.withMarker(&quot;userId&quot; -&gt; userId).info(&quot;Logging with user id added as a context marker!&quot;)
 </code></pre>
-<h2><a href="#principles" name="principles" class="anchor"><span class="anchor-link"></span></a>Principles</h2>
-<p>Blindsight has some organizing principles that inform the design.</p>
-<ul>
-  <li>Loggers depend directly and solely on the SLF4J API, which can always be accessed directly.</li>
-  <li>APIs can be extended or replaced for domain specific logging.</li>
-  <li>Knowing <strong>when</strong> and <strong>when not</strong> to log is more important than &ldquo;how fast&rdquo; you log.</li>
-  <li>Loggers can be resolved from user defined context, not simply by name or by class.</li>
-  <li>Structured logging is baked in, uses standard Scala idioms, and can be overridden.</li>
-</ul>
-<p>Likewise, there are things that Blindsight eschews:</p>
-<ul>
-  <li>No effects; logging is always a side effect.</li>
-  <li>No constraints or configuration on SLF4J implementation.</li>
-  <li>No FP library requirements; no need for scalaz, cats, zio etc.</li>
-  <li>No formatting on the front end; messages should not contain JSON/XML.</li>
-</ul>
-<p>For more details, see the links below:</p>
 <div class="toc ">
 <ul>
   <li><a href="../usage/overview.html" class="page">Overview</a></li>
   <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+  <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+  <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
   <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
   <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
   <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
   <li><a href="../usage/flow.html" class="page">Flow API</a></li>
-  <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
   <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
   <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
   <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
 </ul>
 </div>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/index.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/main/paradox/usage/index.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -219,7 +217,6 @@ The source code for this page can be found <a href="https://github.com/tersesyst
   <li><a href="../usage/index.html#usage" class="header">Usage</a>
   <ul>
     <li><a href="../usage/index.html#examples" class="header">Examples</a></li>
-    <li><a href="../usage/index.html#principles" class="header">Principles</a></li>
   </ul></li>
 </ul>
 </div>
@@ -287,7 +284,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36+26-baf65f69', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

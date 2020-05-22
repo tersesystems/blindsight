@@ -31,25 +31,26 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="active page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -58,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -89,25 +91,26 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.36
+0.1.36+26-baf65f69
 </div>
 </div>
 <div class="nav-toc">
 <ul>
   <li><a href="../setup/index.html" class="page">Setup</a>
   <ul>
-    <li><a href="../setup/logback.html" class="page">Logback</a></li>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
     <li><a href="../usage/flow.html" class="active page">Flow API</a></li>
-    <li><a href="../usage/structured.html" class="page">Structured Logging</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
@@ -116,6 +119,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
 
@@ -152,25 +156,32 @@ val flowLogger: FlowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/flow/SimpleFlow.scala#L40-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
-  arg1 + arg2
-}</code></pre>
-<p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/api/ToArguments.html" title="com.tersesystems.blindsight.api.ToArguments"><code>ToArguments</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/flow/SimpleFlow.scala#L46-L57" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person = logger.flow.trace {
-  Person(name = &quot;Will&quot;, age = arg1 + arg2)
-}
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/test/scala/example/flow/SimpleFlow.scala#L39-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
+  logger.flow.trace {
+    arg1 + arg2
+  }</code></pre>
+<p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/test/scala/example/flow/SimpleFlow.scala#L46-L63" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
+  logger.flow.trace {
+    Person(name = &quot;Will&quot;, age = arg1 + arg2)
+  }
 
 case class Person(name: String, age: Int)
 
 object Person {
   implicit val personToArguments: ToArgument[Person] = ToArgument { person =&gt;
-    import com.tersesystems.blindsight.logstash.Implicits._
-    Argument(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; Argument(person.name), &quot;age&quot; -&gt; Argument(person.age)))
+    import com.tersesystems.blindsight.AST._
+    import com.tersesystems.blindsight.DSL._
+
+    val personObj: BObject = &quot;person&quot; -&gt; (
+      (&quot;name&quot; -&gt; person.name) ~ (&quot;age&quot; -&gt; person.age)
+    )
+    Argument(personObj)
   }
 }</code></pre>
 <p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging is not enabled (whether through conditional logging, explicit filtering, or threshold), then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p>
 <h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
-<p>What happens in a flow is determined by the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
+<p>What happens in a flow is determined by the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
 <p>There are two out of the box behaviors provided: <a href="/blindsight/api/com/tersesystems/blindsight/flow/SimpleFlowBehavior.html" title="com.tersesystems.blindsight.flow.SimpleFlowBehavior"><code>SimpleFlowBehavior</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/flow/XLoggerFlowBehavior.html" title="com.tersesystems.blindsight.flow.XLoggerFlowBehavior"><code>XLoggerFlowBehavior</code></a>. These are modelled after <a href="https://github.com/JohnReedLOL/pos">pos</a> and <a href="http://www.slf4j.org/extensions.html#extended_logger">XLogger</a>, respectively.</p>
 <h2><a href="#integration" name="integration" class="anchor"><span class="anchor-link"></span></a>Integration</h2>
 <p>Flow based logging, because it leaves the flow behavior open, is a good way to integrate with third party systems.</p>
@@ -209,7 +220,7 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 <p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
 <p><img src="trace.png" alt="trace.png" /></p>
 <p>You can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/test/scala/example/flow/HoneycombFlow.scala#L39-L139" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -220,8 +231,8 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
       .setServiceName(&quot;blindsight-example&quot;)
   }
 
-  implicit def flowMapping[B: ToArgument](
-      implicit spanInfo: SpanInfo
+  implicit def flowMapping[B: ToArgument](implicit
+      spanInfo: SpanInfo
   ): HoneycombFlowBehavior[B] = {
     new HoneycombFlowBehavior[B]
   }
@@ -263,7 +274,13 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 
   object Person {
     implicit val personToArguments: ToArgument[Person] = ToArgument { person =&gt;
-      Argument(&quot;person&quot; -&gt; Map(&quot;name&quot; -&gt; Argument(person.name), &quot;age&quot; -&gt; Argument(person.age)))
+      import com.tersesystems.blindsight.AST._
+      import com.tersesystems.blindsight.DSL._
+
+      val personObj: BObject = &quot;person&quot; -&gt; (
+        (&quot;name&quot; -&gt; person.name) ~ (&quot;age&quot; -&gt; person.age)
+      )
+      Argument(personObj)
     }
   }
 }
@@ -295,13 +312,14 @@ class HoneycombFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends 
       )
     }
 
-  override def exitStatement(resultValue: B, source: Source): Option[Statement] = Some {
-    val span = popCurrentSpan
-    Statement()
-      .withMarkers(Markers(markerFactory(span)))
-      .withMessage(s&quot;${source.enclosing.value} exit, duration ${span.duration()}&quot;)
-      .withArguments(Arguments(resultValue))
-  }
+  override def exitStatement(resultValue: B, source: Source): Option[Statement] =
+    Some {
+      val span = popCurrentSpan
+      Statement()
+        .withMarkers(Markers(markerFactory(span)))
+        .withMessage(s&quot;${source.enclosing.value} exit, duration ${span.duration()}&quot;)
+        .withArguments(Arguments(resultValue))
+    }
 
   private def pushCurrentSpan(spanInfo: SpanInfo): Unit = threadLocalStack.get.push(spanInfo)
   private def popCurrentSpan: SpanInfo                  = threadLocalStack.get().pop()
@@ -311,11 +329,11 @@ object HoneycombFlowBehavior {
   val markerFactory = new SpanMarkerFactory
 }</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.36+26-baf65f69/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../usage/structured.html">Structured Logging</a></p>
+<p><strong>Next:</strong> <a href="../usage/conditional.html">Conditional Logging</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
@@ -396,7 +414,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.36+26-baf65f69', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
