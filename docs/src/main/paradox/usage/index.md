@@ -11,7 +11,6 @@
 * [Conditional Logging](conditional.md)
 * [Contextual Logging](context.md)
 * [Source Code](sourcecode.md)
-* [Principles](principles.md)
 
 @@@
 
