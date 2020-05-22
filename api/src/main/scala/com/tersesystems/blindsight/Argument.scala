@@ -23,7 +23,7 @@ package com.tersesystems.blindsight
  * should not have to use it in a logging statement directly.
  *
  * Note that an exception is **not** a valid argument, and exceptions are
- * handled explicitly as [[java.lang.Throwable]] in the APIs.
+ * handled explicitly as `java.lang.Throwable` in the APIs.
  *
  * @param value the argument value.
  */
