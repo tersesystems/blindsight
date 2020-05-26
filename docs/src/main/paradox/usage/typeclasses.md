@@ -61,7 +61,7 @@ object Slf4jMain {
 
 ## Argument and Arguments
 
-The argument @scaladoc[Argument](com.tersesystems.blindsight.Argument).
+Arguments must be convertable to @scaladoc[Argument](com.tersesystems.blindsight.Argument).  This is usually done with type class instances.
 
 Default @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) are determined for the primitives (`String`, `Int`, etc):
 
@@ -69,13 +69,7 @@ Default @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) are determ
 logger.info("one argument {}", 42) // works, because default
 ```
 
-If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) instance:
-
-```scala
-logger.info("arg {}, arg {}, arg {}", Arguments(1, "2", false))
-```
-
-You can define your own argument type classes:
+You can define your own argument type class instances:
 
 ```scala
 import java.time.format.DateTimeFormatter
@@ -92,7 +86,19 @@ logger.info("date is {}", new java.util.Date())
 logger.info("instant is {}", Instant.now())
 ```
 
-There is a plural of @scaladoc[Argument](com.tersesystems.blindsight.Argument), @scaladoc[Arguments](com.tersesystems.blindsight.Arguments).
+Although it's usually better to use the @ref:[DSL](dsl.md) and map to a @scaladoc[BObject](com.tersesystems.blindsight.AST.BObject):
+
+```scala
+implicit val instantToArgument: ToArgument[java.time.Instant] = ToArgument[java.time.Instant] { instant =>
+  Argument(bobj("instant" -> DateTimeFormatter.ISO_INSTANT.format(instant)))
+}
+```
+
+There is a plural of @scaladoc[Argument](com.tersesystems.blindsight.Argument), @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) that is used in place of varadic arguments.  If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) instance:
+
+```scala
+logger.info("arg {}, arg {}, arg {}", Arguments(1, "2", false))
+```
 
 ## Message
 
@@ -107,6 +113,8 @@ logger.fluent.info.message(charSeq).log()
 ```
 
 ## Custom JSON Mappings
+
+You can pass through JSON directly if you already have it and recreating it through the DSL would be a waste.
 
 For example, if you are working with json4s or play-json, you can convert to Jackson JsonNode using a type class:
 
