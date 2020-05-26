@@ -186,14 +186,11 @@ object Slf4jMain {
 }
 </code></pre>
 <h2><a href="#argument-and-arguments" name="argument-and-arguments" class="anchor"><span class="anchor-link"></span></a>Argument and Arguments</h2>
-<p>The argument <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>.</p>
+<p>Arguments must be convertable to <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>. This is usually done with type class instances.</p>
 <p>Default <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a> are determined for the primitives (<code>String</code>, <code>Int</code>, etc):</p>
 <pre class="prettyprint"><code class="language-scala">logger.info(&quot;one argument {}&quot;, 42) // works, because default
 </code></pre>
-<p>If you have more than two arguments, you will need to wrap them so they are provided as a single <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a> instance:</p>
-<pre class="prettyprint"><code class="language-scala">logger.info(&quot;arg {}, arg {}, arg {}&quot;, Arguments(1, &quot;2&quot;, false))
-</code></pre>
-<p>You can define your own argument type classes:</p>
+<p>You can define your own argument type class instances:</p>
 <pre class="prettyprint"><code class="language-scala">import java.time.format.DateTimeFormatter
 
 implicit val dateToArgument: ToArgument[Date] = ToArgument[java.util.Date] { date =&gt;
@@ -207,7 +204,14 @@ implicit val instantToArgument: ToArgument[java.time.Instant] = ToArgument[java.
 logger.info(&quot;date is {}&quot;, new java.util.Date())
 logger.info(&quot;instant is {}&quot;, Instant.now())
 </code></pre>
-<p>There is a plural of <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a>.</p>
+<p>Although it&rsquo;s usually better to use the <a href="dsl.html">DSL</a> and map to a <a href="/blindsight/api/com/tersesystems/blindsight/AST$$BObject.html" title="com.tersesystems.blindsight.AST.BObject"><code>BObject</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">implicit val instantToArgument: ToArgument[java.time.Instant] = ToArgument[java.time.Instant] { instant =&gt;
+  Argument(bobj(&quot;instant&quot; -&gt; DateTimeFormatter.ISO_INSTANT.format(instant)))
+}
+</code></pre>
+<p>There is a plural of <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a> that is used in place of varadic arguments. If you have more than two arguments, you will need to wrap them so they are provided as a single <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a> instance:</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;arg {}, arg {}, arg {}&quot;, Arguments(1, &quot;2&quot;, false))
+</code></pre>
 <h2><a href="#message" name="message" class="anchor"><span class="anchor-link"></span></a>Message</h2>
 <p>The <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a> is usually a String, but it doesn&rsquo;t have to be. Using the <a href="/blindsight/api/com/tersesystems/blindsight/ToMessage.html" title="com.tersesystems.blindsight.ToMessage"><code>ToMessage</code></a> type class, you can convert any class into a message. This is probably most appropriate with string-like classes like <code>CharSequence</code> and <code>akka.util.ByteString</code>.</p>
 <pre class="prettyprint"><code class="language-scala">implicit val toMessage: ToMessage[CharSequence] = ToMessage[CharSequence] { charSeq =&gt;
@@ -217,6 +221,7 @@ val charSeq: CharSequence = new ArrayCharSequence(Array(&#39;1&#39;, &#39;2&#39;
 logger.fluent.info.message(charSeq).log()
 </code></pre>
 <h2><a href="#custom-json-mappings" name="custom-json-mappings" class="anchor"><span class="anchor-link"></span></a>Custom JSON Mappings</h2>
+<p>You can pass through JSON directly if you already have it and recreating it through the DSL would be a waste.</p>
 <p>For example, if you are working with json4s or play-json, you can convert to Jackson JsonNode using a type class:</p>
 <pre class="prettyprint"><code class="language-scala">import com.fasterxml.jackson.databind.JsonNode
 
