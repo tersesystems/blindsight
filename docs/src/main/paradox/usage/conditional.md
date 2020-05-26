@@ -34,6 +34,27 @@ You can, of course, partially apply `when` to return a function:
 
 It is generally easier to pass a conditional logger around rather than a logging function.
 
+## Conditional with Tracer Bullet
+
+Conditional logging is very useful in conjunction with [tracer-bullet logging](https://gist.github.com/wsargent/36e6c3a56b6aedc8db77687ee5ab8c69), where you set a marker that is using a [turbofilter](http://logback.qos.ch/manual/filters.html#TurboFilter) with `OnMatch=ACCEPT`: 
+ 
+ ```xml
+  <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+    <Name>TRACER_FILTER</Name>
+    <Marker>TRACER</Marker>
+    <OnMatch>ACCEPT</OnMatch>
+  </turboFilter> 
+```
+
+This means that you can bypass the logging system's levels, and be sure that logging at a TRACE level will cause a logging event to be generated, even if the logger level is set to INFO.
+
+```scala
+val tracerMarker = org.slf4j.MarkerFactory.getMarker("TRACER")
+logger.withMarker(tracerMarker).trace.when(traceConditionMet) { trace =>
+  trace("this always traces!")
+}
+```
+
 ## Conditional on Circuit Breaker
 
 You can rate limit your logging, or manage logging with a circuit breaker, so that error messages are suppressed when the circuit breaker is open.
@@ -42,7 +63,11 @@ You can rate limit your logging, or manage logging with a circuit breaker, so th
 
 ## Conditional on Memory Pressure
 
-Using conditional logging is preferable to using call-by-name semantics in expensive logging statements.  Call-by-name arguments still create short lived objects that take up memory in a [thread local allocation buffer](https://alidg.me/blog/2019/6/21/tlab-jvm) and must be cleaned up by [garbage collection](https://www.infoq.com/presentations/jvm-60-memory/).  Using `when` will at least create only one function block, rather than many of them.
+Using conditional logging is preferable to using call-by-name semantics in expensive logging statements.  Call-by-name arguments still create short lived objects that take up memory in a [thread local allocation buffer](https://alidg.me/blog/2019/6/21/tlab-jvm) and cause memory churn:
+
+> "You get all of these funny downstream costs that you don't even think about. In terms of the allocation, it's still quick. If the objects die very quickly, there's zero cost to collect them, so that's true. That's what garbage collection people have been telling you all the time, "Go, don't worry about it. Just create objects. It's free to collect them." It may be free to collect them, but quick times a large number does equal slow. If you have high creation rates, it's not free to create. It may be free to collect, but it's not free to create at the higher rate." -- Kirk Pepperdine, [The Trouble with Memory](https://www.infoq.com/presentations/jvm-60-memory/)  
+
+Using `when` will at least create only one function block, rather than many of them.
 
 If you are concerned about the costs of logging overall and are using JDK 11, you can create a condition that returns false in cases of high JVM memory pressure, ideally through a [JEP 331](http://openjdk.java.net/jeps/331) enabled sampler like [heapsampler](https://github.com/odnoklassniki/jvmti-tools/#heapsampler) -- if that's not available, you can use [JFR event streaming](https://blogs.oracle.com/javamagazine/java-flight-recorder-and-jfr-event-streaming-in-java-14) as a feedback mechanism, so you can check the [TLAB allocation rates](https://shipilev.net/jvm/anatomy-quarks/4-tlab-allocation/).
 
