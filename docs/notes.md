@@ -1,4 +1,4 @@
-# Fluent
+## Logger Resolvers
 
 - https://github.com/skjolber/json-log-domain 
 - https://github.com/ffissore/slf4j-fluent/blob/master/src/main/java/org/fissore/slf4j/LoggerAtLevel.java
@@ -58,87 +58,12 @@ Ability to deal with FP heavy code (factories for functions?)  Covering exceptio
 - 
 https://github.com/twitter/util/blob/develop/util-slf4j-api/README.md
 
-# Semantic Logging
+## Structured DSL
 
-Why strongly typed (semantic) logging is important.
-https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md
-
-https://martinfowler.com/articles/domain-oriented-observability.html
-
-https://github.com/SemanticRecord/talaan
-
-- https://github.com/aQute-os/biz.aQute.semantic-logging
-- https://github.com/UnquietCode/LogMachine
-- http://talaan.semanticrecord.org/
-- https://github.com/SemanticRecord/talaan
-- https://looking4q.blogspot.com/2019/01/level-up-logs-and-elk-contract-first.html
-- https://looking4q.blogspot.com/2018/11/logging-cutting-edge-practices.html
-- https://github.com/skjolber/json-log-domain
-- https://github.com/ffissore/slf4j-fluent/blob/master/src/main/java/org/fissore/slf4j/LoggerAtLevel.java
-- http://www.erights.org/elib/Tracing.html
-
-* http://tech.opentable.co.uk/blog/2015/01/23/on-strongly-typed-logging/
+https://github.com/serilog/serilog/wiki/Structured-Data
 
 ## Metrics
 
 - Handling metrics through schema?
 
 Do it on the backend.  Handle events through means of several metrics appender.  When you post an event, there's a metrics appender than handles the aggregation.  This is actually much better than handling metrics inline with the code, because there are locks around histograms etc.  This makes it async and offline from the processing thread, and lets you replace your metrics code later.
-
-
-### Causality / Tree Logging
-
-#### Eliot
-
-https://eliot.readthedocs.io/en/stable/quickstart.html#adding-eliot-logging
-
-https://eliot.readthedocs.io/en/stable/generating/actions.html
-
-
-## Tracing
-
-https://users.scala-lang.org/t/overriding-implicit-contexts/4696/2
-
-https://crates.io/crates/tracing
-
-http://smallcultfollowing.com/babysteps/blog/2020/02/11/async-interview-6-eliza-weisman/
-
-https://github.com/open-telemetry/opentelemetry-java/blob/master/QUICKSTART.md#create-basic-span
-
-TODO Work with tracing API?
-     https://tracing.rs/tracing/
-     https://docs.honeycomb.io/getting-data-in/java/beeline/
-
-Should work with timers.
-
-# Source Info
-
-common "source code" context to your program at runtime.   https://github.com/lihaoyi/sourcecode#logging 
-
-```scala
-trait SourceInfoSupport {
-  def sourceInfoMarker(
-      level: Level,
-      line: Line,
-      file: File,
-      enclosing: Enclosing
-  ): Option[Marker]
-}
-```
- 
-```scala
-trait LogstashSourceInfoSupport extends SourceInfoSupport {
-  override def sourceInfoMarker(
-      level: Level,
-      line: Line,
-      file: File,
-      enclosing: Enclosing
-  ): Option[Marker] = {
-    import com.tersesystems.blindsight.Implicits._
-    val lineMarker      = Markers.append("line", line.value)
-    val fileMarker      = Markers.append("file", file.value)
-    val enclosingMarker = Markers.append("enclosing", enclosing.value)
-    Some(lineMarker :+ fileMarker :+ enclosingMarker)
-  }
-}
-``` 

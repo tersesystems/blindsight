@@ -50,8 +50,21 @@ Managing context is from this point a question of whether you want to pass aroun
 
 ## Mapped Diagnostic Context
 
-Blindsight does not use MDC, and does not recommend its use.
+Blindsight does not use [MDC](http://logback.qos.ch/manual/mdc.html), and does not recommend its use.
 
 There are many reasons to not use MDC.  It is inherently limiting as a `Map[String,String]`.  It must be managed carefully in asynchronous programming to resolve the Map.  It is mutable -- it will only contain the last written values in the map at the time of logging, and no record is kept of prior values.  It is static -- it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed.  And finally, MDC fails silently.  When something goes wrong in MDC, it's anyone's guess what cleared it.
 
 MDC is still useful in some circumstances.  When you have third party code that already has logging, then setting variables in the MDC may be the only way of passing context to that library code: if this is the case, then you will have to manage the mapping of complex non-string data from markers to MDC by hand.
+
+If there are properties in MDC that you want to use in Blindsight across an async boundary, you should pull them from MDC using `getCopyOfContextMap` and add them as structured logging properties before kicking things off:
+
+```scala
+val mdcMap = MDC.getCopyOfContextMap.asJava
+val loggerWithMap = logger.withMarker(bobj(mdcMap))
+val resultFuture = Future {
+  loggerWithMap.trace("This can be executed in different thread")
+  computeThing()
+}
+```
+
+Note that this is rendering markers, not revaluing MDC with a custom execution context -- converters that display MDC values like `%X{foo}` won't work.
