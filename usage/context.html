@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.37
+1.0.0
 </div>
 </div>
 <div class="nav-toc">
@@ -91,7 +91,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-0.1.37
+1.0.0
 </div>
 </div>
 <div class="nav-toc">
@@ -171,11 +171,20 @@ entryLogger.info(anotherMarker, &quot;a message&quot;)
 </code></pre>
 <p>Managing context is from this point a question of whether you want to pass around <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a>, or pass around a <a href="/blindsight/api/com/tersesystems/blindsight/Logger.html" title="com.tersesystems.blindsight.Logger"><code>Logger</code></a>, useful for <a href="https://tersesystems.com/blog/2020/03/10/a-taxonomy-of-logging/">constructing events</a>. </p>
 <h2><a href="#mapped-diagnostic-context" name="mapped-diagnostic-context" class="anchor"><span class="anchor-link"></span></a>Mapped Diagnostic Context</h2>
-<p>Blindsight does not use MDC, and does not recommend its use.</p>
+<p>Blindsight does not use <a href="http://logback.qos.ch/manual/mdc.html">MDC</a>, and does not recommend its use.</p>
 <p>There are many reasons to not use MDC. It is inherently limiting as a <code>Map[String,String]</code>. It must be managed carefully in asynchronous programming to resolve the Map. It is mutable &ndash; it will only contain the last written values in the map at the time of logging, and no record is kept of prior values. It is static &ndash; it cannot be swapped out, enhanced, placed behind a proxy, or otherwise managed. And finally, MDC fails silently. When something goes wrong in MDC, it&rsquo;s anyone&rsquo;s guess what cleared it.</p>
 <p>MDC is still useful in some circumstances. When you have third party code that already has logging, then setting variables in the MDC may be the only way of passing context to that library code: if this is the case, then you will have to manage the mapping of complex non-string data from markers to MDC by hand.</p>
+<p>If there are properties in MDC that you want to use in Blindsight across an async boundary, you should pull them from MDC using <code>getCopyOfContextMap</code> and add them as structured logging properties before kicking things off:</p>
+<pre class="prettyprint"><code class="language-scala">val mdcMap = MDC.getCopyOfContextMap.asJava
+val loggerWithMap = logger.withMarker(bobj(mdcMap))
+val resultFuture = Future {
+  loggerWithMap.trace(&quot;This can be executed in different thread&quot;)
+  computeThing()
+}
+</code></pre>
+<p>Note that this is rendering markers, not revaluing MDC with a custom execution context &ndash; converters that display MDC values like <code>%X{foo}</code> won&rsquo;t work.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v0.1.37/docs/src/main/paradox/usage/context.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.0/docs/src/main/paradox/usage/context.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -259,7 +268,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '0.1.37', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.0', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
