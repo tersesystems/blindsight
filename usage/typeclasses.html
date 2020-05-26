@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0
+1.0.0+3-6635c3dd
 </div>
 </div>
 <div class="nav-toc">
@@ -91,7 +91,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0
+1.0.0+3-6635c3dd
 </div>
 </div>
 <div class="nav-toc">
@@ -209,7 +209,13 @@ logger.info(&quot;instant is {}&quot;, Instant.now())
 </code></pre>
 <p>There is a plural of <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a>.</p>
 <h2><a href="#message" name="message" class="anchor"><span class="anchor-link"></span></a>Message</h2>
-<p>TODO</p>
+<p>The <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a> is usually a String, but it doesn&rsquo;t have to be. Using the <a href="/blindsight/api/com/tersesystems/blindsight/ToMessage.html" title="com.tersesystems.blindsight.ToMessage"><code>ToMessage</code></a> type class, you can convert any class into a message. This is probably most appropriate with string-like classes like <code>CharSequence</code> and <code>akka.util.ByteString</code>.</p>
+<pre class="prettyprint"><code class="language-scala">implicit val toMessage: ToMessage[CharSequence] = ToMessage[CharSequence] { charSeq =&gt;
+  new Message(charSeq.toString)
+}
+val charSeq: CharSequence = new ArrayCharSequence(Array(&#39;1&#39;, &#39;2&#39;, &#39;3&#39;))
+logger.fluent.info.message(charSeq).log()
+</code></pre>
 <h2><a href="#custom-json-mappings" name="custom-json-mappings" class="anchor"><span class="anchor-link"></span></a>Custom JSON Mappings</h2>
 <p>For example, if you are working with json4s or play-json, you can convert to Jackson JsonNode using a type class:</p>
 <pre class="prettyprint"><code class="language-scala">import com.fasterxml.jackson.databind.JsonNode
@@ -240,7 +246,7 @@ import org.json4s.jackson.JsonMethods._
 logger.info(&quot;This message has json {}&quot;, parse(&quot;&quot;&quot; { &quot;numbers&quot; : [1, 2, 3, 4] } &quot;&quot;&quot;))
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.0/docs/src/main/paradox/usage/typeclasses.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/main/paradox/usage/typeclasses.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -326,7 +332,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.0+3-6635c3dd', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
