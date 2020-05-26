@@ -96,7 +96,15 @@ There is a plural of @scaladoc[Argument](com.tersesystems.blindsight.Argument), 
 
 ## Message
 
-TODO
+The @scaladoc[Message](com.tersesystems.blindsight.Message) is usually a String, but it doesn't have to be.  Using the @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage) type class, you can convert any class into a message.  This is probably most appropriate with string-like classes like `CharSequence` and `akka.util.ByteString`.
+
+```scala
+implicit val toMessage: ToMessage[CharSequence] = ToMessage[CharSequence] { charSeq =>
+  new Message(charSeq.toString)
+}
+val charSeq: CharSequence = new ArrayCharSequence(Array('1', '2', '3'))
+logger.fluent.info.message(charSeq).log()
+```
 
 ## Custom JSON Mappings
 

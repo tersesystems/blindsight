@@ -43,7 +43,6 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       }
 
       implicit val payloadToArguments: ToStatement[PayloadModel] = ToStatement { instance =>
-        // XXX Make a builder out of Statement
         Statement(
           markers = Markers("secretToken" -> instance.userSecretToken),
           message = Message("herp" -> "derp"),
