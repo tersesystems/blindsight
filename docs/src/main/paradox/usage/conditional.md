@@ -38,7 +38,7 @@ It is generally easier to pass a conditional logger around rather than a logging
 
 Conditional logging is very useful in conjunction with [tracer-bullet logging](https://gist.github.com/wsargent/36e6c3a56b6aedc8db77687ee5ab8c69), where you set a marker that is using a [turbofilter](http://logback.qos.ch/manual/filters.html#TurboFilter) with `OnMatch=ACCEPT`: 
  
- ```xml
+```xml
   <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
     <Name>TRACER_FILTER</Name>
     <Marker>TRACER</Marker>
@@ -65,7 +65,9 @@ You can rate limit your logging, or manage logging with a circuit breaker, so th
 
 Using conditional logging is preferable to using call-by-name semantics in expensive logging statements.  Call-by-name arguments still create short lived objects that take up memory in a [thread local allocation buffer](https://alidg.me/blog/2019/6/21/tlab-jvm) and cause memory churn:
 
-> "You get all of these funny downstream costs that you don't even think about. In terms of the allocation, it's still quick. If the objects die very quickly, there's zero cost to collect them, so that's true. That's what garbage collection people have been telling you all the time, "Go, don't worry about it. Just create objects. It's free to collect them." It may be free to collect them, but quick times a large number does equal slow. If you have high creation rates, it's not free to create. It may be free to collect, but it's not free to create at the higher rate." -- Kirk Pepperdine, [The Trouble with Memory](https://www.infoq.com/presentations/jvm-60-memory/)  
+> "You get all of these funny downstream costs that you don't even think about. In terms of the allocation, it's still quick. If the objects die very quickly, there's zero cost to collect them, so that's true. That's what garbage collection people have been telling you all the time, "Go, don't worry about it. Just create objects. It's free to collect them." It may be free to collect them, but quick times a large number does equal slow. If you have high creation rates, it's not free to create. It may be free to collect, but it's not free to create at the higher rate." 
+> 
+> -- Kirk Pepperdine, [The Trouble with Memory](https://www.infoq.com/presentations/jvm-60-memory/)  
 
 Using `when` will at least create only one function block, rather than many of them.
 
@@ -80,6 +82,8 @@ If you are on a pre-11 JVM, you can still provide a feedback mechanism to reduce
 [Feature Flag](https://martinfowler.com/articles/feature-toggles.html) systems allow you to turn on and off features in the application at runtime, in response to complex inputs.  Commercial feature flag systems like [Launch Darkly](https://docs.launchdarkly.com/home/managing-flags/targeting-users#section-assigning-users-to-a-variation) allow you to target feature flags to specific users.
 
 @@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #featureflag-conditional }
+
+Note that this is just an example -- in production, you should organize your feature flags so that they're [only exposed from one place](https://andydote.co.uk/2019/06/11/feature-toggles-reducing-coupling/) and the call out to the flag system is under the hood.
 
 By combining conditionals with feature flags, you can use [targeted diagnostic logging](https://tersesystems.com/blog/2019/07/22/targeted-diagnostic-logging-in-production/) to show debug statements in production only for a specific user, without impacting logging for the entire application as a whole.
 
