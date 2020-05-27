@@ -37,7 +37,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a info message with marker" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.info(Markers(bodj("1" -> "2")), "a=b")
+        logger.info(Markers(bobj("1" -> "2")), "a=b")
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
@@ -49,7 +49,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a info message with argument" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.info("a=b", bodj("1" -> "2"))
+        logger.info("a=b", bobj("1" -> "2"))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
@@ -72,7 +72,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
-        logger.info("a=b", bodj("1" -> "2"), e)
+        logger.info("a=b", bobj("1" -> "2"), e)
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("a=b")
@@ -85,7 +85,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
-        logger.info(Markers(bodj("markerKey" -> "markerValue")), "a=b", bodj("1" -> "2"), e)
+        logger.info(Markers(bobj("markerKey" -> "markerValue")), "a=b", bobj("1" -> "2"), e)
 
         val event = listAppender.list.get(0)
         event.getMarker.contains(
@@ -102,9 +102,9 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val logger: Logger = LoggerFactory.getLogger(underlying)
         val e              = new Exception("derp")
         logger.info(
-          Markers(bodj("markerKey" -> "markerValue")),
+          Markers(bobj("markerKey" -> "markerValue")),
           "a=b",
-          Arguments(bodj("1" -> "2"), bodj("3" -> "4")),
+          Arguments(bobj("1" -> "2"), bobj("3" -> "4")),
           e
         )
 
@@ -144,7 +144,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a state marker" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.withMarker(bodj("a" -> "b")).info("I have a marker")
+        logger.withMarker(bobj("a" -> "b")).info("I have a marker")
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("I have a marker")
@@ -182,7 +182,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying                 = loggerContext.getLogger(this.getClass)
         val logger: Logger             = LoggerFactory.getLogger(underlying)
         val fluentLogger: FluentLogger = logger.fluent
-        fluentLogger.withMarker(bodj("a" -> "b")).info.message("I have a marker").log()
+        fluentLogger.withMarker(bobj("a" -> "b")).info.message("I have a marker").log()
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("I have a marker")
@@ -223,7 +223,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val logger: Logger                          = LoggerFactory.getLogger(underlying)
         val semanticLogger: SemanticLogger[Message] = logger.semantic[Message]
 
-        semanticLogger.withMarker(bodj("a" -> "b")).info(Message("I have a marker"))
+        semanticLogger.withMarker(bobj("a" -> "b")).info(Message("I have a marker"))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("I have a marker")

@@ -162,6 +162,18 @@ object AST {
   }
 }
 
+@deprecated("This is a typo of bobj (short for bobject)", "1.0.0")
 object bodj {
+  def apply(fs: AST.BField*): AST.BObject = bobj(fs: _*)
+}
+
+object bobj {
+
+  /**
+   * Convenience method for creating BObject with a list of fields.
+   *
+   * @param fs a varadic list of fields.
+   * @return the BOBject.
+   */
   def apply(fs: AST.BField*): AST.BObject = AST.BObject(fs.toList)
 }

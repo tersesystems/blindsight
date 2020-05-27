@@ -198,7 +198,7 @@ See @ref:[Flow API](flow.md) for more details.
 Blindsight provides structured logging using a DSL which converts to [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  This makes structured logging easy and intuitive, and provides structured output in both line based and JSON based formats.
 
 ```scala
-logger.info("some message", bodj("a" -> "b"))
+logger.info("some message", bobj("a" -> "b"))
 ```
 
 In line format:

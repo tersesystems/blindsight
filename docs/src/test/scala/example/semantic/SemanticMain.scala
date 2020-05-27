@@ -18,7 +18,7 @@ package example.semantic
 
 import java.time.LocalTime
 
-import com.tersesystems.blindsight.{Arguments, LoggerFactory, Statement, ToStatement, bodj}
+import com.tersesystems.blindsight.{Arguments, LoggerFactory, Statement, ToStatement, bobj}
 import com.tersesystems.blindsight.semantic.SemanticLogger
 
 // #semantic-main
@@ -37,7 +37,7 @@ object SemanticMain {
         .withMessage("UserLoggedInEvent message with args {}")
         .withArguments(
           Arguments(
-            bodj(
+            bobj(
               "user-logged-out-event" ->
                 ("name"     -> instance.name) ~
                   ("ipAddr" -> instance.ipAddr)
@@ -56,7 +56,7 @@ object SemanticMain {
         .withMessage("UserLoggedOutEvent message with args {}")
         .withArguments(
           Arguments(
-            bodj(
+            bobj(
               "user-logged-out-event" ->
                 ("name"     -> instance.name) ~
                   ("reason" -> instance.reason)
@@ -76,7 +76,7 @@ object SemanticMain {
         .withMessage(instance.toString)
         .withArguments(
           Arguments(
-            bodj(
+            bobj(
               "user-is-up-late-event" ->
                 ("name"     -> instance.name) ~
                   ("excuse" -> instance.excuse)
