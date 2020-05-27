@@ -168,6 +168,7 @@ object bodj {
 }
 
 object bobj {
+
   /**
    * Convenience method for creating BObject with a list of fields.
    *
