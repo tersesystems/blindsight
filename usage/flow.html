@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0+3-6635c3dd
+1.0.1
 </div>
 </div>
 <div class="nav-toc">
@@ -91,7 +91,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0+3-6635c3dd
+1.0.1
 </div>
 </div>
 <div class="nav-toc">
@@ -156,12 +156,12 @@ val flowLogger: FlowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/flow/SimpleFlow.scala#L39-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L39-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
   logger.flow.trace {
     arg1 + arg2
   }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/flow/SimpleFlow.scala#L46-L63" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L46-L63" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
   logger.flow.trace {
     Person(name = &quot;Will&quot;, age = arg1 + arg2)
   }
@@ -220,7 +220,7 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 <p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
 <p><img src="trace.png" alt="trace.png" /></p>
 <p>You can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -329,7 +329,7 @@ object HoneycombFlowBehavior {
   val markerFactory = new SpanMarkerFactory
 }</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -414,7 +414,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.0+3-6635c3dd', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

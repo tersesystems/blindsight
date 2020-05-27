@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0+3-6635c3dd
+1.0.1
 </div>
 </div>
 <div class="nav-toc">
@@ -91,7 +91,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0+3-6635c3dd
+1.0.1
 </div>
 </div>
 <div class="nav-toc">
@@ -271,7 +271,7 @@ def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
 <p>See <a href="flow.html">Flow API</a> for more details.</p>
 <h2><a href="#structured-logging" name="structured-logging" class="anchor"><span class="anchor-link"></span></a>Structured Logging</h2>
 <p>Blindsight provides structured logging using a DSL which converts to <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Logstash Markers and StructuredArguments</a>. This makes structured logging easy and intuitive, and provides structured output in both line based and JSON based formats.</p>
-<pre class="prettyprint"><code class="language-scala">logger.info(&quot;some message&quot;, bodj(&quot;a&quot; -&gt; &quot;b&quot;))
+<pre class="prettyprint"><code class="language-scala">logger.info(&quot;some message&quot;, bobj(&quot;a&quot; -&gt; &quot;b&quot;))
 </code></pre>
 <p>In line format:</p>
 <pre class="prettyprint"><code class="language-json">2020-04-05T23:09:08.436Z example.Main$ some message a=b
@@ -325,7 +325,7 @@ val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append(&quot;user&quo
 <p>This is the default behavior, and you can override <code>sourceInfoMarker</code> in your own implementation to return whatever you like.</p>
 <p>See <a href="sourcecode.html">Source Code</a> for more details.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/main/paradox/usage/overview.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/main/paradox/usage/overview.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -416,7 +416,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.0+3-6635c3dd', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

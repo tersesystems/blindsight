@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0+3-6635c3dd
+1.0.1
 </div>
 </div>
 <div class="nav-toc">
@@ -91,7 +91,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.0.0+3-6635c3dd
+1.0.1
 </div>
 </div>
 <div class="nav-toc">
@@ -152,20 +152,20 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h2><a href="#on-condition" name="on-condition" class="anchor"><span class="anchor-link"></span></a>On Condition</h2>
 <p>All loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
 <p>This logger will only log if the condition is true.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L13-L15" target="_blank" title="Go to snippet source"></a><code class="language-scala">def booleanCondition: Boolean = sys.props(&quot;java.version&quot;).startsWith(&quot;1.8&quot;)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L13-L15" target="_blank" title="Go to snippet source"></a><code class="language-scala">def booleanCondition: Boolean = sys.props(&quot;java.version&quot;).startsWith(&quot;1.8&quot;)
 val conditionalLogger         = logger.onCondition(booleanCondition)
 conditionalLogger.info(&quot;Only logs when condition is true&quot;)</code></pre>
 <p>Conditions will be stacked with a boolean AND.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L19-L21" target="_blank" title="Go to snippet source"></a><code class="language-scala">def anotherCondition: Boolean = sys.props.get(&quot;user.home&quot;).isDefined
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L19-L21" target="_blank" title="Go to snippet source"></a><code class="language-scala">def anotherCondition: Boolean = sys.props.get(&quot;user.home&quot;).isDefined
 val bothConditionsLogger      = conditionalLogger.onCondition(anotherCondition)
 bothConditionsLogger.info(&quot;Only logs when both conditions are true&quot;)</code></pre>
 <p>The conditions are not exposed from the logger, and clients should not peek under the hood.</p>
 <h2><a href="#when" name="when" class="anchor"><span class="anchor-link"></span></a>When</h2>
 <p>By contrast, <code>when</code> is used on methods, rather than the logger, and provides a block that is executed only when the condition is true:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L25" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info.when(booleanCondition) { info =&gt; info(&quot;log&quot;) }</code></pre>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L25" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info.when(booleanCondition) { info =&gt; info(&quot;log&quot;) }</code></pre>
 <p>This is useful when constructing and executing a logging statement is expensive in itself, and allows for finer grained control.</p>
 <p>You can, of course, partially apply <code>when</code> to return a function:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L29-L30" target="_blank" title="Go to snippet source"></a><code class="language-scala">val infoFunction = logger.info.when(1 == 1)(_)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L29-L30" target="_blank" title="Go to snippet source"></a><code class="language-scala">val infoFunction = logger.info.when(1 == 1)(_)
 infoFunction(info =&gt; info(&quot;when true&quot;))</code></pre>
 <p>It is generally easier to pass a conditional logger around rather than a logging function.</p>
 <h2><a href="#conditional-with-tracer-bullet" name="conditional-with-tracer-bullet" class="anchor"><span class="anchor-link"></span></a>Conditional with Tracer Bullet</h2>
@@ -184,7 +184,7 @@ logger.withMarker(tracerMarker).trace.when(traceConditionMet) { trace =&gt;
 </code></pre>
 <h2><a href="#conditional-on-circuit-breaker" name="conditional-on-circuit-breaker" class="anchor"><span class="anchor-link"></span></a>Conditional on Circuit Breaker</h2>
 <p>You can rate limit your logging, or manage logging with a circuit breaker, so that error messages are suppressed when the circuit breaker is open.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L34-L35" target="_blank" title="Go to snippet source"></a><code class="language-scala">val operationLogger = logger.onCondition(isCircuitBreakerClosed)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L34-L35" target="_blank" title="Go to snippet source"></a><code class="language-scala">val operationLogger = logger.onCondition(isCircuitBreakerClosed)
 operationLogger.error(&quot;Only errors when circuit breaker is closed&quot;)</code></pre>
 <h2><a href="#conditional-on-memory-pressure" name="conditional-on-memory-pressure" class="anchor"><span class="anchor-link"></span></a>Conditional on Memory Pressure</h2>
 <p>Using conditional logging is preferable to using call-by-name semantics in expensive logging statements. Call-by-name arguments still create short lived objects that take up memory in a <a href="https://alidg.me/blog/2019/6/21/tlab-jvm">thread local allocation buffer</a> and cause memory churn:</p>
@@ -194,14 +194,14 @@ operationLogger.error(&quot;Only errors when circuit breaker is closed&quot;)</c
 </blockquote>
 <p>Using <code>when</code> will at least create only one function block, rather than many of them.</p>
 <p>If you are concerned about the costs of logging overall and are using JDK 11, you can create a condition that returns false in cases of high JVM memory pressure, ideally through a <a href="http://openjdk.java.net/jeps/331">JEP 331</a> enabled sampler like <a href="https://github.com/odnoklassniki/jvmti-tools/#heapsampler">heapsampler</a> &ndash; if that&rsquo;s not available, you can use <a href="https://blogs.oracle.com/javamagazine/java-flight-recorder-and-jfr-event-streaming-in-java-14">JFR event streaming</a> as a feedback mechanism, so you can check the <a href="https://shipilev.net/jvm/anatomy-quarks/4-tlab-allocation/">TLAB allocation rates</a>.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L39-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info.when(isLowPressure) { info =&gt;
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L39-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info.when(isLowPressure) { info =&gt;
   val expensiveResult = createLotsOfObjects()
   info(&quot;many statements, much memory pressure {}&quot;, expensiveResult)
 }</code></pre>
 <p>If you are on a pre-11 JVM, you can still provide a feedback mechanism to reduce memory pressure. For example, you can run Yourkit as a <a href="https://www.yourkit.com/docs/java/help/agent.jsp">Java Agent</a> and enable <a href="https://www.yourkit.com/docs/java/help/allocations.jsp">object counting</a>. This is low-overhead and can be run in production, but requires some extra work to close the loop. </p>
 <h2><a href="#conditional-on-feature-flag" name="conditional-on-feature-flag" class="anchor"><span class="anchor-link"></span></a>Conditional on Feature Flag</h2>
 <p><a href="https://martinfowler.com/articles/feature-toggles.html">Feature Flag</a> systems allow you to turn on and off features in the application at runtime, in response to complex inputs. Commercial feature flag systems like <a href="https://docs.launchdarkly.com/home/managing-flags/targeting-users#section-assigning-users-to-a-variation">Launch Darkly</a> allow you to target feature flags to specific users.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L46-L53" target="_blank" title="Go to snippet source"></a><code class="language-scala">implicit val request: Request = Request(user = &quot;thisuser&quot;)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L46-L53" target="_blank" title="Go to snippet source"></a><code class="language-scala">implicit val request: Request = Request(user = &quot;thisuser&quot;)
 
 // Define feature flag method in context of a request...
 def userFeatureFlag(implicit request: Request): Boolean = isUserDebugFlagOn(request)
@@ -214,7 +214,7 @@ userLogger.debug(&quot;user debug request&quot;, request.user)</code></pre>
 <h2><a href="#conditional-on-time" name="conditional-on-time" class="anchor"><span class="anchor-link"></span></a>Conditional on Time</h2>
 <p>Conditional logging can also be used for time and date limited logging statements. This can be a more flexible way of dealing and rollouts, where we can say &ldquo;log verbose debugging statements for the next ten minutes&rdquo; or &ldquo;suppress logging completely from 10 pm to 8 am.&rdquo;</p>
 <p>This works best with a <a href="http://www.scala-lang.org/api/2.13.1/scala/concurrent/duration/Deadline.html" title="scala.concurrent.duration.Deadline"><code>Deadline</code></a>:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L57-L70" target="_blank" title="Go to snippet source"></a><code class="language-scala">import scala.concurrent.duration._
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L57-L70" target="_blank" title="Go to snippet source"></a><code class="language-scala">import scala.concurrent.duration._
 var debugDeadline: Deadline = Deadline.now
 
 def debugActiveFor(newDuration: FiniteDuration) = {
@@ -228,9 +228,9 @@ debugActiveFor(30.seconds)
 logger.debug.when(debugDeadline.hasTimeLeft()) { debug =&gt;
   debug(&quot;Logging debug information while there is time left&quot;)
 }</code></pre>
-<p>For periodic scheduling, you can use <a href="https://github.com/TimeAndSpaceIO/CronScheduler">CronScheduler</a> in conjunction with an <a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/concurrent/atomic/AtomicBoolean.html" title="java.util.concurrent.atomic.AtomicBoolean"><code>AtomicBoolean</code></a>. You can use <a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="java.util.concurrent.ScheduledExecutorService"><code>ScheduledExecutorService</code></a>, but be aware that <a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="java.util.concurrent.ScheduledExecutorService"><code>ScheduledExecutorService</code></a> is not good at handling a periodic schedule as it can suffer from <a href="https://medium.com/@leventov/cronscheduler-a-reliable-java-scheduler-for-external-interactions-cb7ce4a4f2cd">extended drift, especially when system time is corrected</a>.</p>
+<p>For periodic scheduling, you can use <a href="https://github.com/TimeAndSpaceIO/CronScheduler">CronScheduler</a> in conjunction with an <a href="https://docs.oracle.com/javase/8/docs/api/?java/util/concurrent/atomic/AtomicBoolean.html" title="java.util.concurrent.atomic.AtomicBoolean"><code>AtomicBoolean</code></a>. You can use <a href="https://docs.oracle.com/javase/8/docs/api/?java/util/concurrent/ScheduledExecutorService.html" title="java.util.concurrent.ScheduledExecutorService"><code>ScheduledExecutorService</code></a>, but be aware that <a href="https://docs.oracle.com/javase/8/docs/api/?java/util/concurrent/ScheduledExecutorService.html" title="java.util.concurrent.ScheduledExecutorService"><code>ScheduledExecutorService</code></a> is not good at handling a periodic schedule as it can suffer from <a href="https://medium.com/@leventov/cronscheduler-a-reliable-java-scheduler-for-external-interactions-cb7ce4a4f2cd">extended drift, especially when system time is corrected</a>.</p>
 <p>To use CronScheduler, first define a periodic scheduler in Java:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/Periodic.java#L10-L25" target="_blank" title="Go to snippet source"></a><code class="language-java">public class Periodic {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/Periodic.java#L10-L25" target="_blank" title="Go to snippet source"></a><code class="language-java">public class Periodic {
     private final CronScheduler cron = CronScheduler.create(Duration.ofMinutes(1));
 
     public void schedule(Duration duration, CronTask cronTask) {
@@ -247,7 +247,7 @@ logger.debug.when(debugDeadline.hasTimeLeft()) { debug =&gt;
     }
 }</code></pre>
 <p>Then access it from Scala:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/test/scala/example/conditional/ConditionalExample.scala#L74-L86" target="_blank" title="Go to snippet source"></a><code class="language-scala">import java.util.concurrent.atomic.AtomicBoolean
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/test/scala/example/conditional/ConditionalExample.scala#L74-L86" target="_blank" title="Go to snippet source"></a><code class="language-scala">import java.util.concurrent.atomic.AtomicBoolean
 
 val latch    = new AtomicBoolean()
 val periodic = new Periodic()
@@ -262,7 +262,7 @@ logger.debug.when(latch.getAndSet(false)) { debug =&gt; debug(&quot;Only run onc
 periodic.shutdown() // on app shutdown</code></pre>
 <p>The key to using logging in conjunction with a periodic conditional schedule is that you always log on an operation, and can alter the periodic schedule at runtime, without restarting the service. By doing this, you are turning up the observability of an operation for a specific period, as opposed to simply running a logging statement on a periodic basis.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.0+3-6635c3dd/docs/src/main/paradox/usage/conditional.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.0.1/docs/src/main/paradox/usage/conditional.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -351,7 +351,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.0+3-6635c3dd', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.0.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
