@@ -27,21 +27,21 @@ object FluentMain {
 
     import com.tersesystems.blindsight.DSL._
     fluent.info
-      .marker(bodj("string" -> "steve"))
-      .marker(bodj("array" -> Seq("one", "two", "three")))
-      .marker(bodj("number" -> 42))
-      .marker(bodj("boolean" -> true))
+      .marker(bobj("string" -> "steve"))
+      .marker(bobj("array" -> Seq("one", "two", "three")))
+      .marker(bobj("number" -> 42))
+      .marker(bobj("boolean" -> true))
       .message("herp")
       .message("derp")
       .message("{}")
-      .argument(bodj("arg1" -> "value1"))
+      .argument(bobj("arg1" -> "value1"))
       .message("{}")
-      .argument(bodj("numericArg" -> 42))
+      .argument(bobj("numericArg" -> 42))
       .message("and then some more text")
       .message("{}")
-      .argument(bodj("booleanArg" -> false))
-      .argument(bodj("a" -> "b"))
-      .argument(bodj("sequenceArg" -> Seq("a", "b", "c")))
+      .argument(bobj("booleanArg" -> false))
+      .argument(bobj("a" -> "b"))
+      .argument(bobj("sequenceArg" -> Seq("a", "b", "c")))
       .log()
   }
 }
