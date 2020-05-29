@@ -7,7 +7,7 @@ Blindsight is "observability through logging" where observability is defined as 
 Blindsight is a logging library written in Scala that wraps SLF4J to add [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
 
 * Rendering structured logs in multiple formats through a format-independent [AST and DSL](https://tersesystems.github.io/blindsight/usage/dsl.html) .
-* Expressing domain specific objects as arguments through [type classes](https://tersesystems.github.io/blindsight/usage/typeclass.html). 
+* Expressing domain specific objects as arguments through [type classes](https://tersesystems.github.io/blindsight/usage/typeclasses.html). 
 * Resolving operation-specific loggers through [logger resolvers](https://tersesystems.github.io/blindsight/usage/resolvers.html).
 * Building up complex logging statements through [fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html).
 * Enforcing user supplied type constraints through [semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html).
