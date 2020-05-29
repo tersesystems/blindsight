@@ -2,11 +2,15 @@
 
 Blindsight can handle context cleanly over multiple threads.  Context is handled through an immutable API that returns new instances on modification.
 
-This is very useful when you are logging [events](https://www.honeycomb.io/blog/how-are-structured-logs-different-from-events/), because a complete picture is often not available at the beginning of the unit of work.  There are various FP ways of doing this, but explicit `logger` arguments also work fine.
+This is very useful when you are logging complex operations because a complete picture is often not available at the beginning of the unit of work.   The more context you have in your logs, the better.
 
-Blindsight does not use MDC for managing context, and does not touch thread local storage.  Instead, it uses markers and builds up those markers for use in structured logging.  This is especially useful for events.
+Blindsight does not use MDC for managing context, and does not touch thread local storage.  Instead, it uses markers and builds up those markers for use in structured logging, returning a logger that will automatically apply those markers as context.
 
 The assumption is that you will be using the @ref:[structured logging](dsl.md) and [Terse Logback](https://tersesystems.github.io/terse-logback).  You should also read through how to create your own [markers](https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/) for use in logging.
+
+## General Principles
+
+Mark McBride has a blog post on [how to best what context is useful in your logging](https://www.honeycomb.io/blog/event-foo-moar-context-better-events/).
 
 ## Marker Context
 
