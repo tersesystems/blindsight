@@ -2,7 +2,18 @@
 
 [![Build Status](https://travis-ci.org/tersesystems/blindsight.svg?branch=master)](https://travis-ci.org/tersesystems/blindsight) ![Bintray](https://img.shields.io/bintray/v/tersesystems/maven/blindsight-api) [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 
-Blindsight is a Scala logging API that allows for structured logging through [DSL](https://tersesystems.github.io/blindsight/usage/dsl.html) and [Marker/Argument Type Classes](https://tersesystems.github.io/blindsight/usage/typeclass.html), [fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html), [semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html), [flow logging](https://tersesystems.github.io/blindsight/usage/flow.html), [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html), [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html), and [other useful things](https://tersesystems.github.io/blindsight/usage/overview.html).
+Blindsight is "observability through logging" where observability is defined as [baked in high cardinality structured data with field types](https://www.honeycomb.io/blog/observability-a-manifesto/).  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
+
+Blindsight is a logging library written in Scala that wraps SLF4J to add [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
+
+* Rendering structured logs in multiple formats through a format-independent [AST and DSL](https://tersesystems.github.io/blindsight/usage/dsl.html) .
+* Expressing domain specific objects as arguments through [type classes](https://tersesystems.github.io/blindsight/usage/typeclass.html). 
+* Resolving operation-specific loggers through [logger resolvers](https://tersesystems.github.io/blindsight/usage/resolvers.html).
+* Building up complex logging statements through [fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html).
+* Enforcing user supplied type constraints through [semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html).
+* Minimal-overhead tracing and causality tracking through [flow logging](https://tersesystems.github.io/blindsight/usage/flow.html).
+* Providing thread-safe context to logs through [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html).
+* Time-based and targeted diagnostic logging through [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html).
 
 ## Dependencies
 
@@ -116,10 +127,6 @@ There's an example application at [https://github.com/wsargent/play-blindsight](
 ## Documentation 
 
 See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
-
-## Naming
-
-The name is taken from Peter Watts's excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
 ## License
 

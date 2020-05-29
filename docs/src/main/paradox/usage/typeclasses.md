@@ -2,7 +2,19 @@
 
 The important types in Blindsight are @scaladoc[Markers](com.tersesystems.blindsight.Markers), @scaladoc[Argument](com.tersesystems.blindsight.Argument), and  @scaladoc[Message](com.tersesystems.blindsight.Message).
 
- Where possible, the APIs map automatically, using the @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage) and @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) type classes, respectively. 
+ Where possible, the APIs map automatically, using the @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage) and @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) type classes, respectively.
+
+## General Principles
+
+Type classes let you represent your domain objects as structured logging data. 
+
+Although Blindsight does provide mappings of the basic primitive types, you may want to provide some more semantic detail about what the value represents, and use the DSL with a specific field name and type -- for example, rather than representing an age as an integer, `logger.info("person age = {}", persion.age)` is easier if you use a specific class `Age` and have a type class instance that represents that `Age` as `bobj("age_year" -> ageInYear)`
+
+You may find it helpful to use [Refined](https://github.com/fthomas/refined) and [Coulomb](https://github.com/erikerlandson/coulomb#documentation) to provide type-safe validation and unit representation of data to the [DSL](usage/dsl.md).
+
+You will want to be consistent and organized about how you represent your field names, and you will typically want to include a representation of the unit used a scalar quantity, particularly time-based fields.
+
+[Honeycomb suggests](https://www.honeycomb.io/blog/event-foo-building-better-events/) using `_dur` in anything that’s a duration, and suffix with unit quantity -- `_ms`, `_sec`, `_ns`, `_µs`, etc.
 
 ## Markers
 
