@@ -25,7 +25,7 @@ object SimpleFlow {
 
   private def loggingEnabled: Boolean = false
 
-  private val logger =  LoggerFactory.getLogger.onCondition(loggingEnabled)
+  private val logger                 = LoggerFactory.getLogger.onCondition(loggingEnabled)
   private val flowLogger: FlowLogger = logger.flow.onCondition(loggingEnabled)
 
   def main(args: Array[String]): Unit = {
@@ -39,15 +39,17 @@ object SimpleFlow {
   }
 
   // #flow_method
-  def flowMethod(arg1: Int, arg2: Int): Int = flowLogger.trace {
-    arg1 + arg2
-  }
+  def flowMethod(arg1: Int, arg2: Int): Int =
+    flowLogger.trace {
+      arg1 + arg2
+    }
   // #flow_method
 
   // #flow_person_definition
-  def personFlowMethod(arg1: Int, arg2: Int): Person = flowLogger.trace {
-    Person(name = "Will", age = arg1 + arg2)
-  }
+  def personFlowMethod(arg1: Int, arg2: Int): Person =
+    flowLogger.trace {
+      Person(name = "Will", age = arg1 + arg2)
+    }
 
   case class Person(name: String, age: Int)
 

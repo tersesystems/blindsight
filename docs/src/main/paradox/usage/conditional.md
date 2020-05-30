@@ -20,14 +20,18 @@ Conditions will be stacked with a boolean AND.
 
 The conditions are not exposed from the logger, and clients should not peek under the hood.
 
-> **Warning**: Conditional logging is not carried over between loggers.  You should always add conditional logging after picking out an API:
->
-> ```scala
-> private val logger = LoggerFactory.getLogger
-> private def flowEnabled = false
-> private val badPracticeLogger = logger.onCondition(flowEnabled).flow
-> private val goodPracticeLogger = logger.flow.onCondition(flowEnabled)
-> ```
+@@@ note
+
+**Warning**: Conditional logging is not carried over between loggers.  You should always add conditional logging after picking out an API:
+
+```scala
+private val logger = LoggerFactory.getLogger
+private def flowEnabled = false
+private val badPracticeLogger = logger.onCondition(flowEnabled).flow
+private val goodPracticeLogger = logger.flow.onCondition(flowEnabled)
+```
+
+@@@
 
 ## When
 
