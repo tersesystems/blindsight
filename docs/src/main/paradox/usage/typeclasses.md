@@ -10,11 +10,27 @@ Type classes let you represent your domain objects as structured logging data.
 
 Although Blindsight does provide mappings of the basic primitive types, you may want to provide some more semantic detail about what the value represents, and use the DSL with a specific field name and type -- for example, rather than representing an age as an integer, `logger.info("person age = {}", persion.age)` is easier if you use a specific class `Age` and have a type class instance that represents that `Age` as `bobj("age_year" -> ageInYear)`
 
+You will want to be consistent and organized about how you represent your field names, and you will typically want to include a representation of the unit used a scalar quantity, particularly time-based fields.  [Honeycomb suggests](https://www.honeycomb.io/blog/event-foo-building-better-events/) a suffix with unit quantity -- `_ms`, `_sec`, `_ns`, `_µs`, etc.
+
+This also follows for specific points in time.  If you represent an instant as a time since epoch, use `_tse` along with the unit, i.e. milliseconds since epoch is `created_tse_ms`:
+  
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #created_tse_ms }
+
+If you represent an instant in [RFC 3339](https://tools.ietf.org/html/rfc3339#section-5.7) / ISO 8601 format (ideally in UTC), use "_ts", i.e. `created_ts`:
+
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #created_ts }
+
+If you are representing a duration, then specify `_dur` and the unit, i.e. a backoff duration between retries may be `backoff_dur_ms=150`.  
+
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #backoff_dur_ms }
+
+If you are using Java durations, then use `dur_iso` and the ISO-8601 duration format `PnDTnHnMn.nS`, i.e. the duration of someone's bike ride may be `ride_dur_iso="PT2H15M"` 
+
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #ride_dur_iso }
+
+This is because both JSON and logfmt do not come with any understanding of dates themselves, and logs are not always kept under tight control under a schema.  Keeping the units explicit lets the logs be self-documenting.
+
 You may find it helpful to use [Refined](https://github.com/fthomas/refined) and [Coulomb](https://github.com/erikerlandson/coulomb#documentation) to provide type-safe validation and unit representation of data to the [DSL](usage/dsl.md).
-
-You will want to be consistent and organized about how you represent your field names, and you will typically want to include a representation of the unit used a scalar quantity, particularly time-based fields.
-
-[Honeycomb suggests](https://www.honeycomb.io/blog/event-foo-building-better-events/) using `_dur` in anything that’s a duration, and suffix with unit quantity -- `_ms`, `_sec`, `_ns`, `_µs`, etc.
 
 ## Markers
 
@@ -102,7 +118,7 @@ Although it's usually better to use the @ref:[DSL](dsl.md) and map to a @scalado
 
 ```scala
 implicit val instantToArgument: ToArgument[java.time.Instant] = ToArgument[java.time.Instant] { instant =>
-  Argument(bobj("instant" -> DateTimeFormatter.ISO_INSTANT.format(instant)))
+  Argument(bobj("instant_utc" -> DateTimeFormatter.ISO_INSTANT.format(instant)))
 }
 ```
 
