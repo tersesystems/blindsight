@@ -17,8 +17,8 @@ object TypeClassExample {
     // #markers-example
 
     // #combine-markers
-    val markers1: Markers = Markers(MarkerFactory.getDetachedMarker("MARKER1"))
-    val markers2: Markers = Markers(MarkerFactory.getDetachedMarker("MARKER2"))
+    val markers1: Markers          = Markers(MarkerFactory.getDetachedMarker("MARKER1"))
+    val markers2: Markers          = Markers(MarkerFactory.getDetachedMarker("MARKER2"))
     val markersOnePlusTwo: Markers = markers1 + markers2
     // #combine-markers
 
@@ -40,7 +40,6 @@ object TypeClassExample {
     logger.debug(Monday, "this is a test")
     // #weekday-to-marker
 
-
     // #argument-int
     logger.info("one argument {}", 42) // works, because default
     // #argument-int
@@ -61,7 +60,6 @@ object TypeClassExample {
     }
     logger.info("person is {}", Person("steve", 12))
     // #argument-person
-
 
   }
 
