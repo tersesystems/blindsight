@@ -36,6 +36,32 @@ val bobject: BObject = ("name" -> "joe") ~ ("age" -> 35)
 val bobject: BObject = ("name" -> "joe") ~~ ("age" -> 35)
 ```
 
+## Representing Times
+
+You will want to be consistent and organized about how you represent your field names, and you will typically want to include a representation of the unit used a scalar quantity, particularly time-based fields.  [Honeycomb suggests](https://www.honeycomb.io/blog/event-foo-building-better-events/) a suffix with unit quantity -- `_ms`, `_sec`, `_ns`, `_µs`, etc.
+
+This also follows for specific points in time.  If you represent an instant as a time since epoch, use `_tse` along with the unit, i.e. milliseconds since epoch is `created_tse_ms`:
+  
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #created_tse_ms }
+
+If you represent an instant in [RFC 3339](https://tools.ietf.org/html/rfc3339#section-5.7) / ISO 8601 format (ideally in UTC), use "_ts", i.e. `created_ts`:
+
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #created_ts }
+
+If you are representing a duration, then specify `_dur` and the unit, i.e. a backoff duration between retries may be `backoff_dur_ms=150`.  
+
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #backoff_dur_ms }
+
+If you are using Java durations, then use `dur_iso` and the ISO-8601 duration format `PnDTnHnMn.nS`, i.e. the duration of someone's bike ride may be `ride_dur_iso="PT2H15M"` 
+
+@@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #ride_dur_iso }
+
+This is because both JSON and logfmt do not come with any understanding of dates themselves, and logs are not always kept under tight control under a schema.  Keeping the units explicit lets the logs be self-documenting.
+
+You may find it helpful to use [Refined](https://github.com/fthomas/refined) and [Coulomb](https://github.com/erikerlandson/coulomb#documentation) to provide type-safe validation and unit representation of data to the DSL.
+
+## Representing Complex Data
+
 Using the DSL works very well with @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) and @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), because there is a type class instance for `BObject`.  Here's a fully worked example:
 
 @@snip [DSLExample.scala](../../../test/scala/example/dsl/DSLExample.scala) { #dsl-example }

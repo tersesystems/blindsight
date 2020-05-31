@@ -28,6 +28,13 @@ If logging is enabled, then the execution is wrapped to capture the result or ex
 
 What happens in a flow is determined by the @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).  Implementing a flow behavior comes down to creating @scaladoc[Markers](com.tersesystems.blindsight.Markers) and @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) for entry, exit, and exceptions.
 
+The flow is safe to use with `onCondition`.  If disabled, the logger will short circuit to executing the block without adding any logging:
+
+```scala
+private def flowEnabled: Boolean = false
+private val logger: FlowLogger = LoggerFactory.getLogger.flow.onCondition(flowEnabled)
+```
+
 There are two out of the box behaviors provided: @scaladoc[SimpleFlowBehavior](com.tersesystems.blindsight.flow.SimpleFlowBehavior) and @scaladoc[XLoggerFlowBehavior](com.tersesystems.blindsight.flow.XLoggerFlowBehavior).  These are modelled after [pos](https://github.com/JohnReedLOL/pos) and [XLogger](http://www.slf4j.org/extensions.html#extended_logger), respectively.
 
 ## Integration
