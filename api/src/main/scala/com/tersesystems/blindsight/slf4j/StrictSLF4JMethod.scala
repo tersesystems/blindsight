@@ -417,10 +417,8 @@ object StrictSLF4JMethod {
    * @param test the call by name boolean that must be true
    * @param logger the logger that this method belongs to.
    */
-  class Conditional(level: Level,
-      test: => Boolean,
-      logger: ExtendedSLF4JLogger[StrictSLF4JMethod]
-  ) extends StrictSLF4JMethod.Impl(level, logger) {
+  class Conditional(level: Level, test: => Boolean, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
+      extends StrictSLF4JMethod.Impl(level, logger) {
 
     override val parameterList: ParameterList =
       new ParameterList.Conditional(test, logger.parameterList(level))

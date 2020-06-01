@@ -57,7 +57,7 @@ object Slf4jMain {
 
     val m1 = MarkerFactory.getMarker("M1")
 
-    val e         = new Exception("derp")
+    val e = new Exception("derp")
     //    //    val unchecked = logger.unchecked
     //    //    unchecked.error("Exception occured", e)
     //    //    val creditCard = CreditCard("4111111111111")

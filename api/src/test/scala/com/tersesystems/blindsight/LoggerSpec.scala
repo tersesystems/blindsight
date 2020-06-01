@@ -14,7 +14,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
   class TestLogger(strict: SLF4JLogger.Strict) extends Logger.Impl(strict)
 
   def createLogger(implicit loggerContext: LoggerContext): Logger = {
-    val strict     = new SLF4JLogger.Strict(loggerContext.getLogger("testing"), Markers.empty)
+    val strict = new SLF4JLogger.Strict(loggerContext.getLogger("testing"), Markers.empty)
     new TestLogger(strict)
   }
 
@@ -57,7 +57,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "not log on false using conditional with flow API" in {
       val logger = createLogger
 
-      val condition = false
+      val condition                            = false
       implicit def flowBehavior[B: ToArgument] = new SimpleFlowBehavior[B]
       logger.onCondition(condition).flow.info(1 + 2)
       listAppender.list must be(empty)
@@ -84,11 +84,11 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "not log on false using conditional with semantic API" in {
       val logger = createLogger
 
-      val condition = false
+      val condition   = false
       val conditional = logger.onCondition(condition)
-      val s = conditional.semantic[Statement]
-      val statement = Statement().withMessage("do not log")
-      val infoMethod = s.info
+      val s           = conditional.semantic[Statement]
+      val statement   = Statement().withMessage("do not log")
+      val infoMethod  = s.info
       infoMethod.apply(statement)
       listAppender.list must be(empty)
     }

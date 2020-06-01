@@ -24,8 +24,7 @@ import sourcecode.{Enclosing, File, Line}
 trait SemanticMethod[StatementType] {
   def level: Level
 
-  def when(condition: => Boolean)(
-      block: SemanticMethod[StatementType] => Unit): Unit
+  def when(condition: => Boolean)(block: SemanticMethod[StatementType] => Unit): Unit
 
   def apply[T <: StatementType: ToStatement](
       instance: T
@@ -51,10 +50,9 @@ object SemanticMethod {
         t: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers = collateMarkers(statement.markers)
+      val markers   = collateMarkers(statement.markers)
       if (isEnabled(markers)) {
-        parameterList.executeStatement(
-          statement.withMarkers(markers).withThrowable(t))
+        parameterList.executeStatement(statement.withMarkers(markers).withThrowable(t))
       }
     }
 
@@ -96,8 +94,7 @@ object SemanticMethod {
     protected def markerState: Markers = logger.markers
   }
 
-  class Impl[StatementType](level: Level,
-                            logger: ExtendedSemanticLogger[StatementType])
+  class Impl[StatementType](level: Level, logger: ExtendedSemanticLogger[StatementType])
       extends Abstract(level, logger)
       with SemanticMethod[StatementType] {
     override val parameterList: ParameterList = logger.parameterList(level)
@@ -135,10 +132,9 @@ object SemanticMethod {
         t: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers = collateMarkers(statement.markers)
+      val markers   = collateMarkers(statement.markers)
       if (test && isEnabled(markers)) {
-        parameterList.executeStatement(
-          statement.withMarkers(markers).withThrowable(t))
+        parameterList.executeStatement(statement.withMarkers(markers).withThrowable(t))
       }
     }
   }
