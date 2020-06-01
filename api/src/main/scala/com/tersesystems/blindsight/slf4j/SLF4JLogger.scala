@@ -18,6 +18,7 @@ package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
+import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
@@ -187,26 +188,6 @@ object SLF4JLogger {
   }
 
   /**
-   * A logger that provides "unchecked" methods that use `Any` as arguments.
-   *
-   * @param underlying the underlying logger.
-   * @param markers the marker state to be applied to every method.
-   */
-  class Unchecked(underlying: org.slf4j.Logger, markers: Markers)
-      extends SLF4JLogger.Base[UncheckedSLF4JMethod](underlying, markers) {
-
-    override protected def newInstance(
-        underlying: org.slf4j.Logger,
-        markerState: Markers
-    ): Self = new Unchecked(underlying, markerState)
-
-    override protected def newMethod(level: Level) = new UncheckedSLF4JMethod.Impl(level, this)
-
-    override def onCondition(test: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
-      new Unchecked.Conditional(test, this)
-  }
-
-  /**
    * A logger that provides "strict" logging that only takes type class aware arguments.
    *
    * @param underlying the underlying logger.
@@ -226,30 +207,6 @@ object SLF4JLogger {
       new Strict.Conditional(test, this)
   }
 
-  object Unchecked {
-
-    /**
-     * A conditional logger that only calls the method if test returns true.
-     *
-     * @param test a call by name boolean which must be true for calls to happen.
-     * @param logger the logger to delegate calls to.
-     */
-    class Conditional(test: => Boolean, logger: ExtendedSLF4JLogger[UncheckedSLF4JMethod])
-        extends SLF4JLogger.Delegate[UncheckedSLF4JMethod](logger) {
-      override def onCondition(test2: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
-        new Conditional(test && test2, logger)
-
-      override def withMarker[T: ToMarkers](markerInstance: T): SLF4JLogger[UncheckedSLF4JMethod] =
-        new Conditional(
-          test,
-          logger.withMarker(markerInstance).asInstanceOf[ExtendedSLF4JLogger[Method]]
-        )
-
-      override protected def newMethod(level: Level): Method =
-        new UncheckedSLF4JMethod.Conditional(level, test, logger)
-    }
-  }
-
   object Strict {
 
     /**
@@ -260,6 +217,10 @@ object SLF4JLogger {
      */
     class Conditional(test: => Boolean, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
         extends SLF4JLogger.Delegate[StrictSLF4JMethod](logger) {
+
+      override def parameterList(level: Level): ParameterList =
+        new ParameterList.Conditional(test, logger.parameterList(level))
+
       override def onCondition(test2: => Boolean): SLF4JLogger[StrictSLF4JMethod] =
         new Conditional(test && test2, logger)
 

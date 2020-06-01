@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight.slf4j
 
+import com.tersesystems.blindsight.ParameterList.Conditional
 import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -141,7 +142,7 @@ object StrictSLF4JMethod {
     @inline
     protected def markers: Markers = logger.markers
 
-    protected val parameterList: ParameterList = logger.parameterList(level)
+    val parameterList: ParameterList = logger.parameterList(level)
 
     import parameterList._
 
@@ -416,146 +417,18 @@ object StrictSLF4JMethod {
    * @param test the call by name boolean that must be true
    * @param logger the logger that this method belongs to.
    */
-  class Conditional(
-      val level: Level,
+  class Conditional(level: Level,
       test: => Boolean,
       logger: ExtendedSLF4JLogger[StrictSLF4JMethod]
-  ) extends StrictSLF4JMethod {
+  ) extends StrictSLF4JMethod.Impl(level, logger) {
 
-    private def method = logger.method(level)
+    override val parameterList: ParameterList =
+      new ParameterList.Conditional(test, logger.parameterList(level))
 
     override def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit = {
       if (test && condition) {
         block(this)
       }
-    }
-
-    override def apply(
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(throwable)
-    }
-
-    override def apply(
-        message: Message,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(message, throwable)
-    }
-
-    override def apply(
-        message: Message
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(message)
-    }
-
-    override def apply[A: ToArgument](
-        message: Message,
-        arg: A
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(message, arg)
-    }
-
-    override def apply[A1: ToArgument, A2: ToArgument](
-        message: Message,
-        arg1: A1,
-        arg2: A2
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(message, arg1, arg2)
-    }
-
-    override def apply[A: ToArgument](
-        message: Message,
-        arg: A,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(message, arg, throwable)
-    }
-
-    override def apply(
-        message: Message,
-        args: Arguments
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(message, args)
-    }
-
-    override def apply(
-        message: Message,
-        args: Arguments,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(message, args, throwable)
-    }
-
-    override def apply(
-        markers: Markers,
-        message: Message
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, message)
-    }
-
-    override def apply[A1: ToArgument, A2: ToArgument](
-        markers: Markers,
-        message: Message,
-        arg1: A1,
-        arg2: A2
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, message, arg1, arg2)
-    }
-
-    override def apply(
-        markers: Markers
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers)
-    }
-
-    override def apply(
-        markers: Markers,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, throwable)
-    }
-
-    override def apply(
-        markers: Markers,
-        message: Message,
-        args: Arguments
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, message, args)
-    }
-
-    override def apply[A: ToArgument](
-        markers: Markers,
-        message: Message,
-        arg: A
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, message, arg)
-    }
-
-    override def apply(
-        markers: Markers,
-        message: Message,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, message, throwable)
-    }
-
-    override def apply[A: ToArgument](
-        markers: Markers,
-        message: Message,
-        arg: A,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, message, arg, throwable)
-    }
-
-    override def apply(
-        markers: Markers,
-        message: Message,
-        args: Arguments,
-        throwable: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) method.apply(markers, message, args, throwable)
     }
 
     override def toString: String = {

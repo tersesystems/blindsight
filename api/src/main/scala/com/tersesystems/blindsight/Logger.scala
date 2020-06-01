@@ -33,7 +33,7 @@ trait Logger extends SLF4JLogger[StrictSLF4JMethod] {
 
   def strict: SLF4JLogger[StrictSLF4JMethod]
 
-  def unchecked: SLF4JLogger[UncheckedSLF4JMethod]
+  //def unchecked: SLF4JLogger[UncheckedSLF4JMethod]
 
   def semantic[MessageType: NotNothing]: SemanticLogger[MessageType]
 }
@@ -58,9 +58,9 @@ object Logger {
       logger // return an attenuated view on this logger.
     }
 
-    override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
-      new slf4j.SLF4JLogger.Unchecked(logger.underlying, logger.markers)
-    }
+    //    override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
+    //      new slf4j.SLF4JLogger.Unchecked(logger)
+    //    }
 
     override def semantic[StatementType: NotNothing]: SemanticLogger[StatementType] = {
       new SemanticLogger.Impl[StatementType](logger)

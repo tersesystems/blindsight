@@ -57,21 +57,21 @@ object Slf4jMain {
 
     val m1 = MarkerFactory.getMarker("M1")
 
-    val unchecked = logger.unchecked
     val e         = new Exception("derp")
-    unchecked.error("Exception occured", e)
-    val creditCard = CreditCard("4111111111111")
-
-    // case class tostring renders CC number
-    unchecked.info("this is risky unchecked {}", creditCard)
-
-    unchecked.info("this is unchecked {} {}", Arguments(42, 53))
-    unchecked.info(
-      m1,
-      "unchecked with argument and marker {}, creditCard = {}",
-      42,
-      creditCard
-    )
+    //    //    val unchecked = logger.unchecked
+    //    //    unchecked.error("Exception occured", e)
+    //    //    val creditCard = CreditCard("4111111111111")
+    //
+    //    // case class tostring renders CC number
+    //    unchecked.info("this is risky unchecked {}", creditCard)
+    //
+    //    unchecked.info("this is unchecked {} {}", Arguments(42, 53))
+    //    unchecked.info(
+    //      m1,
+    //      "unchecked with argument and marker {}, creditCard = {}",
+    //      42,
+    //      creditCard
+    //    )
 
     val strict: SLF4JLogger[StrictSLF4JMethod] = logger.strict
 

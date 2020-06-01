@@ -16,14 +16,16 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.{Markers, ParameterList, Statement, ToStatement}
+import com.tersesystems.blindsight.ParameterList.Conditional
+import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
 trait SemanticMethod[StatementType] {
   def level: Level
 
-  def when(condition: => Boolean)(block: SemanticMethod[StatementType] => Unit): Unit
+  def when(condition: => Boolean)(
+      block: SemanticMethod[StatementType] => Unit): Unit
 
   def apply[T <: StatementType: ToStatement](
       instance: T
@@ -38,21 +40,23 @@ trait SemanticMethod[StatementType] {
 
 object SemanticMethod {
 
-  class Impl[StatementType](val level: Level, logger: ExtendedSemanticLogger[StatementType])
-      extends SemanticMethod[StatementType] {
+  abstract class Abstract[StatementType](
+      val level: Level,
+      logger: ExtendedSemanticLogger[StatementType]
+  ) extends SemanticMethod[StatementType] {
+    def parameterList: ParameterList
 
     override def apply[T <: StatementType: ToStatement](
         instance: T,
         t: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers   = collateMarkers(statement.markers)
+      val markers = collateMarkers(statement.markers)
       if (isEnabled(markers)) {
-        parameterList.executeStatement(statement.withMarkers(markers).withThrowable(t))
+        parameterList.executeStatement(
+          statement.withMarkers(markers).withThrowable(t))
       }
     }
-
-    protected val parameterList: ParameterList = logger.parameterList(level)
 
     def isEnabled(markers: Markers): Boolean = {
       if (markers.nonEmpty) {
@@ -72,8 +76,9 @@ object SemanticMethod {
     override def apply[T <: StatementType: ToStatement](
         instance: T
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val statement: Statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers              = collateMarkers(statement.markers)
+      val statement: Statement =
+        implicitly[ToStatement[T]].toStatement(instance)
+      val markers = collateMarkers(statement.markers)
       if (isEnabled(markers)) {
         parameterList.executeStatement(statement.withMarkers(markers))
       }
@@ -91,11 +96,20 @@ object SemanticMethod {
     protected def markerState: Markers = logger.markers
   }
 
+  class Impl[StatementType](level: Level,
+                            logger: ExtendedSemanticLogger[StatementType])
+      extends Abstract(level, logger)
+      with SemanticMethod[StatementType] {
+    override val parameterList: ParameterList = logger.parameterList(level)
+  }
+
   class Conditional[StatementType](
       level: Level,
       test: => Boolean,
       logger: ExtendedSemanticLogger[StatementType]
   ) extends SemanticMethod.Impl(level, logger) {
+    override val parameterList: ParameterList =
+      new ParameterList.Conditional(test, logger.parameterList(level))
 
     override def when(
         condition: => Boolean
@@ -108,8 +122,9 @@ object SemanticMethod {
     override def apply[T <: StatementType: ToStatement](
         instance: T
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val statement: Statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers              = collateMarkers(statement.markers)
+      val statement: Statement =
+        implicitly[ToStatement[T]].toStatement(instance)
+      val markers = collateMarkers(statement.markers)
       if (test && isEnabled(markers)) {
         parameterList.executeStatement(statement.withMarkers(markers))
       }
@@ -120,9 +135,10 @@ object SemanticMethod {
         t: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers   = collateMarkers(statement.markers)
+      val markers = collateMarkers(statement.markers)
       if (test && isEnabled(markers)) {
-        parameterList.executeStatement(statement.withMarkers(markers).withThrowable(t))
+        parameterList.executeStatement(
+          statement.withMarkers(markers).withThrowable(t))
       }
     }
   }
