@@ -16,7 +16,6 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.ParameterList.Conditional
 import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}

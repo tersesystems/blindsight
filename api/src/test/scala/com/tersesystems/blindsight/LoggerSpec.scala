@@ -70,16 +70,16 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       logger.onCondition(condition).strict.info("do not log")
       listAppender.list must be(empty)
     }
-    //
-    //    "not log on false using conditional with unchecked API" in {
-    //      val logger = createLogger
-    //
-    //      val condition = false
-    //      val uncheckedLogger = logger.onCondition(condition).unchecked
-    //      val infoMethod = uncheckedLogger.info
-    //      infoMethod.apply("do not log")
-    //      listAppender.list must be(empty)
-    //    }
+
+    "not log on false using conditional with unchecked API" in {
+      val logger = createLogger
+
+      val condition       = false
+      val uncheckedLogger = logger.onCondition(condition).unchecked
+      val infoMethod      = uncheckedLogger.info
+      infoMethod.apply("do not log")
+      listAppender.list must be(empty)
+    }
 
     "not log on false using conditional with semantic API" in {
       val logger = createLogger
