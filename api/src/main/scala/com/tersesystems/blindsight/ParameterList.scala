@@ -21,12 +21,8 @@ import org.slf4j.event.Level
 
 import scala.collection.JavaConverters._
 
-/**
- * This is the calling site of the SLF4J method, where parameters and arguments meet.
- *
- * You should not need to use this as an end user, but it is very useful for extending loggers.
- */
-abstract class ParameterList(val level: Level, val logger: org.slf4j.Logger) {
+trait ParameterList {
+
   def executePredicate(): Boolean
   def executePredicate(marker: Marker): Boolean
 
@@ -39,25 +35,63 @@ abstract class ParameterList(val level: Level, val logger: org.slf4j.Logger) {
   def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit
   def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit
 
-  def executeStatement(statement: Statement): Unit =
-    statement match {
-      case Statement(markers, message, args, None) =>
-        if (markers.isEmpty) {
-          messageArgs(message.toString, args.toArray)
-        } else {
-          markerMessageArgs(markers.marker, message.toString, args.toArray)
-        }
-
-      case Statement(markers, message, args, Some(exception)) =>
-        if (markers.isEmpty) {
-          messageArgs(message.toString, args.toArray :+ exception)
-        } else {
-          markerMessageArgs(markers.marker, message.toString, args.toArray :+ exception)
-        }
-    }
+  def executeStatement(statement: Statement): Unit
 }
 
 object ParameterList {
+
+  /**
+   * This is the calling site of the SLF4J method, where parameters and arguments meet.
+   *
+   * You should not need to use this as an end user, but it is very useful for extending loggers.
+   */
+  abstract class Impl(val level: Level, val logger: org.slf4j.Logger) extends ParameterList {
+
+    def executeStatement(statement: Statement): Unit =
+      statement match {
+        case Statement(markers, message, args, None) =>
+          if (markers.isEmpty) {
+            messageArgs(message.toString, args.toArray)
+          } else {
+            markerMessageArgs(markers.marker, message.toString, args.toArray)
+          }
+
+        case Statement(markers, message, args, Some(exception)) =>
+          if (markers.isEmpty) {
+            messageArgs(message.toString, args.toArray :+ exception)
+          } else {
+            markerMessageArgs(markers.marker, message.toString, args.toArray :+ exception)
+          }
+      }
+  }
+
+  class Conditional(condition: => Boolean, plist: ParameterList) extends ParameterList {
+    override def executePredicate(): Boolean = {
+      condition && plist.executePredicate()
+    }
+    override def executePredicate(marker: Marker): Boolean = {
+      condition && plist.executePredicate(marker)
+    }
+
+    override def message(msg: String): Unit = if (condition) plist.message(msg)
+    override def messageArg1(msg: String, arg: Any): Unit =
+      if (condition) plist.messageArg1(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      if (condition) plist.messageArg1Arg2(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Seq[_]): Unit =
+      if (condition) plist.messageArgs(msg, args)
+    override def markerMessage(marker: Marker, msg: String): Unit =
+      if (condition) plist.markerMessage(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      if (condition) plist.markerMessageArg1(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      if (condition) plist.markerMessageArg1Arg2(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
+      if (condition) plist.markerMessageArgs(marker, msg, args)
+
+    override def executeStatement(statement: Statement): Unit =
+      if (condition) plist.executeStatement(statement)
+  }
 
   /**
    * Indexed by enum ordinal, i.e. to look up, use Level.TRACE.ordinal() as index.
@@ -71,7 +105,7 @@ object ParameterList {
       new ParameterList.Trace(logger)
     )
 
-  class Trace(logger: org.slf4j.Logger) extends ParameterList(Level.TRACE, logger) {
+  class Trace(logger: org.slf4j.Logger) extends Impl(Level.TRACE, logger) {
     override def executePredicate(): Boolean = {
       logger.isTraceEnabled()
     }
@@ -94,7 +128,7 @@ object ParameterList {
       logger.trace(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Debug(logger: org.slf4j.Logger) extends ParameterList(Level.DEBUG, logger) {
+  class Debug(logger: org.slf4j.Logger) extends Impl(Level.DEBUG, logger) {
     override def executePredicate(): Boolean               = logger.isDebugEnabled()
     override def executePredicate(marker: Marker): Boolean = logger.isDebugEnabled(marker)
 
@@ -113,7 +147,7 @@ object ParameterList {
       logger.debug(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Info(logger: org.slf4j.Logger) extends ParameterList(Level.INFO, logger) {
+  class Info(logger: org.slf4j.Logger) extends Impl(Level.INFO, logger) {
     override def executePredicate(): Boolean               = logger.isInfoEnabled
     override def executePredicate(marker: Marker): Boolean = logger.isInfoEnabled(marker)
 
@@ -132,7 +166,7 @@ object ParameterList {
       logger.info(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Warn(logger: org.slf4j.Logger) extends ParameterList(Level.WARN, logger) {
+  class Warn(logger: org.slf4j.Logger) extends Impl(Level.WARN, logger) {
     override def executePredicate(): Boolean               = logger.isWarnEnabled()
     override def executePredicate(marker: Marker): Boolean = logger.isWarnEnabled(marker)
 
@@ -151,7 +185,7 @@ object ParameterList {
       logger.warn(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Error(logger: org.slf4j.Logger) extends ParameterList(Level.ERROR, logger) {
+  class Error(logger: org.slf4j.Logger) extends Impl(Level.ERROR, logger) {
     override def executePredicate(): Boolean               = logger.isErrorEnabled
     override def executePredicate(marker: Marker): Boolean = logger.isErrorEnabled(marker)
 

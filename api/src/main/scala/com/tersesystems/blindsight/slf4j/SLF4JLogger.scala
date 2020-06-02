@@ -16,9 +16,12 @@
 
 package com.tersesystems.blindsight.slf4j
 
+import com.tersesystems.blindsight.fluent.FluentMethod
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
+import org.slf4j.Marker
 import org.slf4j.event.Level
+import org.slf4j.event.Level.{DEBUG, ERROR, INFO, TRACE, WARN}
 import sourcecode.{Enclosing, File, Line}
 
 import scala.reflect.ClassTag
@@ -54,9 +57,7 @@ trait ExtendedSLF4JLogger[M]
     extends SLF4JLogger[M]
     with SourceInfoMixin
     with ParameterListMixin
-    with PredicateMixin[SLF4JPredicate] {
-  def method(level: Level): M
-}
+    with PredicateMixin[SLF4JPredicate]
 
 object SLF4JLogger {
 
@@ -75,14 +76,6 @@ object SLF4JLogger {
 
     protected val parameterLists: Seq[ParameterList] = ParameterList.lists(this.underlying)
 
-    private val methods: Array[M] = Array(
-      error,
-      warn,
-      info,
-      debug,
-      trace
-    )
-
     private val predicates = Array(
       isErrorEnabled,
       isWarnEnabled,
@@ -97,8 +90,6 @@ object SLF4JLogger {
         file: File,
         enclosing: Enclosing
     ): Markers = Markers.empty
-
-    override def method(level: Level): Method = methods(level.ordinal())
 
     override def predicate(level: Level): Predicate = predicates(level.ordinal())
 
@@ -182,28 +173,6 @@ object SLF4JLogger {
     override def predicate(level: Level): SLF4JPredicate = logger.predicate(level)
 
     override def underlying: org.slf4j.Logger = logger.underlying
-
-    override def method(level: Level): M = logger.method(level)
-  }
-
-  /**
-   * A logger that provides "unchecked" methods that use `Any` as arguments.
-   *
-   * @param underlying the underlying logger.
-   * @param markers the marker state to be applied to every method.
-   */
-  class Unchecked(underlying: org.slf4j.Logger, markers: Markers)
-      extends SLF4JLogger.Base[UncheckedSLF4JMethod](underlying, markers) {
-
-    override protected def newInstance(
-        underlying: org.slf4j.Logger,
-        markerState: Markers
-    ): Self = new Unchecked(underlying, markerState)
-
-    override protected def newMethod(level: Level) = new UncheckedSLF4JMethod.Impl(level, this)
-
-    override def onCondition(test: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
-      new Unchecked.Conditional(test, this)
   }
 
   /**
@@ -226,30 +195,6 @@ object SLF4JLogger {
       new Strict.Conditional(test, this)
   }
 
-  object Unchecked {
-
-    /**
-     * A conditional logger that only calls the method if test returns true.
-     *
-     * @param test a call by name boolean which must be true for calls to happen.
-     * @param logger the logger to delegate calls to.
-     */
-    class Conditional(test: => Boolean, logger: ExtendedSLF4JLogger[UncheckedSLF4JMethod])
-        extends SLF4JLogger.Delegate[UncheckedSLF4JMethod](logger) {
-      override def onCondition(test2: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
-        new Conditional(test && test2, logger)
-
-      override def withMarker[T: ToMarkers](markerInstance: T): SLF4JLogger[UncheckedSLF4JMethod] =
-        new Conditional(
-          test,
-          logger.withMarker(markerInstance).asInstanceOf[ExtendedSLF4JLogger[Method]]
-        )
-
-      override protected def newMethod(level: Level): Method =
-        new UncheckedSLF4JMethod.Conditional(level, test, logger)
-    }
-  }
-
   object Strict {
 
     /**
@@ -260,6 +205,10 @@ object SLF4JLogger {
      */
     class Conditional(test: => Boolean, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
         extends SLF4JLogger.Delegate[StrictSLF4JMethod](logger) {
+
+      override def parameterList(level: Level): ParameterList =
+        new ParameterList.Conditional(test, logger.parameterList(level))
+
       override def onCondition(test2: => Boolean): SLF4JLogger[StrictSLF4JMethod] =
         new Conditional(test && test2, logger)
 
@@ -271,6 +220,89 @@ object SLF4JLogger {
 
       override protected def newMethod(level: Level): Method =
         new StrictSLF4JMethod.Conditional(level, test, logger)
+    }
+  }
+
+  /**
+   * A logger that provides "unchecked" logging that only takes type class aware arguments.
+   *
+   */
+  class Unchecked(logger: ExtendedSLF4JLogger[_])
+      extends ExtendedSLF4JLogger[UncheckedSLF4JMethod] {
+    override type Self      = SLF4JLogger[UncheckedSLF4JMethod]
+    override type Method    = UncheckedSLF4JMethod
+    override type Predicate = SLF4JPredicate
+
+    /**
+     * Returns a logger which will always render with the given marker.
+     *
+     * @param instance a type class instance of [[ToMarkers]]
+     * @tparam T the instance type.
+     * @return a new instance of the logger that has this marker.
+     */
+    override def withMarker[T: ToMarkers](instance: T): SLF4JLogger[UncheckedSLF4JMethod] = {
+      new Unchecked(logger.withMarker(instance).asInstanceOf[ExtendedSLF4JLogger[_]])
+    }
+
+    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override def trace: Method             = new UncheckedSLF4JMethod.Impl(TRACE, this)
+
+    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override def debug: Method             = new UncheckedSLF4JMethod.Impl(DEBUG, this)
+
+    override def isInfoEnabled: Predicate = logger.predicate(INFO)
+    override def info: Method             = new UncheckedSLF4JMethod.Impl(INFO, this)
+
+    override def isWarnEnabled: Predicate = logger.predicate(WARN)
+    override def warn: Method             = new UncheckedSLF4JMethod.Impl(WARN, this)
+
+    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override def error: Method             = new UncheckedSLF4JMethod.Impl(ERROR, this)
+
+    def parameterList(level: Level): ParameterList = logger.parameterList(level)
+
+    override def predicate(level: Level): Predicate = logger.predicate(level)
+
+    override def markers: Markers = logger.markers
+
+    override def sourceInfoMarker(
+        level: Level,
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
+
+    override def underlying: org.slf4j.Logger = logger.underlying
+
+    override def onCondition(test: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
+      new Unchecked.Conditional(test, this)
+  }
+
+  object Unchecked {
+
+    /**
+     * A conditional logger that only calls the method if test returns true.
+     *
+     * @param test a call by name boolean which must be true for calls to happen.
+     * @param logger the logger to delegate calls to.
+     */
+    class Conditional(test: => Boolean, logger: ExtendedSLF4JLogger[UncheckedSLF4JMethod])
+        extends SLF4JLogger.Delegate[UncheckedSLF4JMethod](logger) {
+
+      override def parameterList(level: Level): ParameterList =
+        new ParameterList.Conditional(test, logger.parameterList(level))
+
+      override def onCondition(test2: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
+        new Conditional(test && test2, logger)
+
+      override def withMarker[T: ToMarkers](markerInstance: T): SLF4JLogger[UncheckedSLF4JMethod] =
+        new Conditional(
+          test,
+          logger.withMarker(markerInstance).asInstanceOf[ExtendedSLF4JLogger[Method]]
+        )
+
+      override protected def newMethod(level: Level): Method =
+        new UncheckedSLF4JMethod.Conditional(level, test, logger)
     }
   }
 

@@ -118,4 +118,4 @@ trait LowPriorityBehavior {
 object LowPriorityBehavior extends LowPriorityBehavior
 
 class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-    extends SLF4JLogger.Unchecked(underlying, markers)
+    extends SLF4JLogger.Strict(underlying, markers)

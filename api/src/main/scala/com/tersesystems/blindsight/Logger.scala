@@ -59,7 +59,7 @@ object Logger {
     }
 
     override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
-      new slf4j.SLF4JLogger.Unchecked(logger.underlying, logger.markers)
+      new SLF4JLogger.Unchecked(logger)
     }
 
     override def semantic[StatementType: NotNothing]: SemanticLogger[StatementType] = {

@@ -16,27 +16,23 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.{Arguments, Markers, ParameterList, ToMarkers}
+import com.tersesystems.blindsight._
 import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
 /**
- * The unchecked logger method.
- *
- * This is as close to the `org.slf4j.Logger` API as we can get it.
- *
- * Note that arguments are `Any`, but varargs are still replaced by [[Arguments]].
- * This is because it's very difficult to get IDEs and Scala to cleanly know the
- * difference between a varadic list and a single element Seq/List, and so it's
- * still safer to require a wrapper.
- *
- * Note that using this trait will cause warnings when you use it, as it is basically
- * an escape hatch.
+ * An unchecked SLF4J method that takes `Any` as arguments.
  */
 trait UncheckedSLF4JMethod {
   def level: Level
 
+  /**
+   * Runs with a block function that is only called when condition is true.
+   *
+   * @param condition the call by name boolean that must return true
+   * @param block the block executed when condition is true.
+   */
   def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit
 
   def apply(
@@ -105,8 +101,7 @@ object UncheckedSLF4JMethod {
   }
 
   /**
-   * This class does the work of taking various input parameters, and determining what SLF4J method to call
-   * with those parameters.
+   * Unchecked method implementation.
    */
   class Impl(val level: Level, logger: ExtendedSLF4JLogger[UncheckedSLF4JMethod])
       extends UncheckedSLF4JMethod {
@@ -114,9 +109,26 @@ object UncheckedSLF4JMethod {
     @inline
     protected def markers: Markers = logger.markers
 
-    protected val parameterList: ParameterList = logger.parameterList(level)
+    val parameterList: ParameterList = logger.parameterList(level)
 
     import parameterList._
+
+    private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+      val sourceMarker: Markers = logger.sourceInfoMarker(level, line, file, enclosing)
+      sourceMarker + markers
+    }
+
+    private def collateMarkers[MR: ToMarkers](
+        marker: MR
+    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+      collateMarkers + implicitly[ToMarkers[MR]].toMarkers(marker)
+    }
+
+    override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {
+      if (condition && executePredicate(collateMarkers.marker)) {
+        block(this)
+      }
+    }
 
     override def apply(
         msg: String
@@ -235,102 +247,26 @@ object UncheckedSLF4JMethod {
       }
     }
 
-    private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarker: Markers = logger.sourceInfoMarker(level, line, file, enclosing)
-      sourceMarker + markers
-    }
-
-    private def collateMarkers[MR: ToMarkers](
-        marker: MR
-    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      collateMarkers + implicitly[ToMarkers[MR]].toMarkers(marker)
-    }
-
-    override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (condition && executePredicate(collateMarkers.marker)) {
-        block(this)
-      }
-    }
-
     override def toString: String = {
-      s"${getClass.getName}(logger=${logger})"
+      s"${getClass.getName}(logger=$logger)"
     }
   }
 
+  /**
+   * Conditional method implementation.  Only calls when test evaluates to true.
+   *
+   * @param level the method's level
+   * @param test the call by name boolean that must be true
+   * @param logger the logger that this method belongs to.
+   */
   class Conditional(
-      val level: Level,
+      level: Level,
       test: => Boolean,
       logger: ExtendedSLF4JLogger[UncheckedSLF4JMethod]
-  ) extends UncheckedSLF4JMethod {
+  ) extends Impl(level, logger) {
 
-    private def parameterList = logger.parameterList(level)
-
-    override def apply(
-        msg: String
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
-      if (test) {
-        parameterList.message(msg)
-      }
-
-    override def apply(
-        msg: String,
-        arg: Any
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
-      if (test) {
-        parameterList.messageArg1(msg, arg)
-      }
-
-    override def apply(
-        msg: String,
-        arg1: Any,
-        arg2: Any
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
-      if (test) {
-        parameterList.messageArg1Arg2(msg, arg1: Any, arg2)
-      }
-
-    override def apply(
-        msg: String,
-        args: Arguments
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
-      if (test) {
-        parameterList.messageArgs(msg, args.toArray)
-      }
-
-    override def apply(
-        marker: Marker,
-        msg: String
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
-      if (test) {
-        parameterList.markerMessage(marker, msg)
-      }
-
-    override def apply(
-        marker: Marker,
-        msg: String,
-        arg: Any
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
-      if (test) {
-        parameterList.markerMessageArg1(marker, msg.toString, arg)
-      }
-
-    override def apply(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Unit =
-      if (test) {
-        parameterList.markerMessageArg1Arg2(marker, msg, arg1, arg2)
-      }
-
-    override def apply(
-        marker: Marker,
-        msg: String,
-        args: Arguments
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
-      if (test) {
-        parameterList.markerMessageArgs(marker, msg, args.toArray)
-      }
+    override val parameterList: ParameterList =
+      new ParameterList.Conditional(test, logger.parameterList(level))
 
     override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {
       if (test && condition) {
@@ -339,7 +275,7 @@ object UncheckedSLF4JMethod {
     }
 
     override def toString: String = {
-      s"${getClass.getName}(logger=${logger})"
+      s"${getClass.getName}(logger=$logger)"
     }
   }
 }
