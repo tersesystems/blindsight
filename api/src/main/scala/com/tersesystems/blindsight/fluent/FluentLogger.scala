@@ -18,7 +18,7 @@ package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j.{ExtendedSLF4JLogger, SLF4JLoggerAPI, SLF4JPredicate}
-import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
+import com.tersesystems.blindsight.{LoggerState, Markers, ParameterList, ToMarkers}
 import org.slf4j.Logger
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
@@ -53,9 +53,9 @@ trait ExtendedFluentLogger
 
 object FluentLogger {
 
-  class Impl(logger: ExtendedSLF4JLogger[_]) extends ExtendedFluentLogger {
+  class Impl(logger: LoggerState) extends ExtendedFluentLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(logger.withMarker(markerInstance).asInstanceOf[ExtendedSLF4JLogger[_]])
+      new Impl(logger.withMarker(markerInstance))
     }
 
     override def onCondition(test: => Boolean): FluentLogger = {

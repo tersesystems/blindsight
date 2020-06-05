@@ -17,8 +17,8 @@
 package com.tersesystems.blindsight.flow
 
 import com.tersesystems.blindsight.mixins._
-import com.tersesystems.blindsight.slf4j.{ExtendedSLF4JLogger, SLF4JLoggerAPI, SLF4JPredicate}
-import com.tersesystems.blindsight.{Markers, ParameterList, ToMarkers}
+import com.tersesystems.blindsight.slf4j._
+import com.tersesystems.blindsight.{LoggerState, Markers, ParameterList, ToMarkers}
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
 import sourcecode.{Enclosing, File, Line}
@@ -63,25 +63,25 @@ trait ExtendedFlowLogger
 
 object FlowLogger {
 
-  class Impl(logger: ExtendedSLF4JLogger[_]) extends ExtendedFlowLogger {
+  class Impl(logger: LoggerState) extends ExtendedFlowLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(logger.withMarker(markerInstance).asInstanceOf[ExtendedSLF4JLogger[_]])
+      new Impl(logger.withMarker(markerInstance))
     }
 
-    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override def trace: Method             = new FlowMethod.Impl(TRACE, this)
+    override def isTraceEnabled: Predicate = predicate(TRACE)
+    override def trace: Method             = new FlowMethod.Impl(TRACE, logger)
 
-    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override def debug: Method             = new FlowMethod.Impl(DEBUG, this)
+    override def isDebugEnabled: Predicate = predicate(DEBUG)
+    override def debug: Method             = new FlowMethod.Impl(DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = logger.predicate(INFO)
-    override def info: Method             = new FlowMethod.Impl(INFO, this)
+    override def isInfoEnabled: Predicate = predicate(INFO)
+    override def info: Method             = new FlowMethod.Impl(INFO, logger)
 
-    override def isWarnEnabled: Predicate = logger.predicate(WARN)
-    override def warn: Method             = new FlowMethod.Impl(WARN, this)
+    override def isWarnEnabled: Predicate = predicate(WARN)
+    override def warn: Method             = new FlowMethod.Impl(WARN, logger)
 
-    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override def error: Method             = new FlowMethod.Impl(ERROR, this)
+    override def isErrorEnabled: Predicate = predicate(ERROR)
+    override def error: Method             = new FlowMethod.Impl(ERROR, logger)
 
     override def parameterList(level: Level): ParameterList = logger.parameterList(level)
 
@@ -105,34 +105,33 @@ object FlowLogger {
      * @param test the call by name boolean that is a prerequisite for logging.
      * @return the new conditional logger instance.
      */
-    override def onCondition(test: => Boolean): FlowLogger = new Conditional(test, logger)
+    override def onCondition(test: => Boolean): FlowLogger = {
+      new Conditional(logger.onCondition(test _))
+    }
   }
 
   /**
    * Runs the conditional block with logging if test is true, otherwise runs the block.
-   *
-   * @param test the test to be run for logging.
-   * @param logger the extended slf4j logger.
    */
-  class Conditional(test: => Boolean, logger: ExtendedSLF4JLogger[_]) extends ExtendedFlowLogger {
+  class Conditional(logger: LoggerState) extends ExtendedFlowLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Conditional(test, logger.withMarker(markerInstance).asInstanceOf[ExtendedSLF4JLogger[_]])
+      new Conditional(logger.withMarker(markerInstance))
     }
 
-    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override def trace: Method             = new FlowMethod.Conditional(test, TRACE, this)
+    override def isTraceEnabled: Predicate = predicate(TRACE)
+    override def trace: Method             = new FlowMethod.Conditional(TRACE, logger)
 
-    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override def debug: Method             = new FlowMethod.Conditional(test, DEBUG, this)
+    override def isDebugEnabled: Predicate = predicate(DEBUG)
+    override def debug: Method             = new FlowMethod.Conditional(DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = logger.predicate(INFO)
-    override def info: Method             = new FlowMethod.Conditional(test, INFO, this)
+    override def isInfoEnabled: Predicate = predicate(INFO)
+    override def info: Method             = new FlowMethod.Conditional(INFO, logger)
 
-    override def isWarnEnabled: Predicate = logger.predicate(WARN)
-    override def warn: Method             = new FlowMethod.Conditional(test, WARN, this)
+    override def isWarnEnabled: Predicate = predicate(WARN)
+    override def warn: Method             = new FlowMethod.Conditional(WARN, logger)
 
-    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override def error: Method             = new FlowMethod.Conditional(test, ERROR, this)
+    override def isErrorEnabled: Predicate = predicate(ERROR)
+    override def error: Method             = new FlowMethod.Conditional(ERROR, logger)
 
     override def parameterList(level: Level): ParameterList = logger.parameterList(level)
 
@@ -156,7 +155,9 @@ object FlowLogger {
      * @param test2 the call by name boolean that is a prerequisite for logging.
      * @return the new conditional logger instance.
      */
-    override def onCondition(test2: => Boolean): FlowLogger = new Conditional(test && test2, logger)
+    override def onCondition(test2: => Boolean): FlowLogger = {
+      new Conditional(logger.onCondition(test2 _))
+    }
   }
 
 }
