@@ -131,12 +131,12 @@ trait StrictSLF4JMethod {
 }
 
 object StrictSLF4JMethod {
+  import com.tersesystems.blindsight.mixins.SourceInfoMixin
 
   /**
    * Strict method implementation.
    */
-  class Impl(val level: Level, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
-      extends StrictSLF4JMethod {
+  class Impl(val level: Level, logger: LoggerState) extends StrictSLF4JMethod with SourceInfoMixin {
 
     @inline
     protected def markers: Markers = logger.markers
@@ -388,7 +388,7 @@ object StrictSLF4JMethod {
     }
 
     private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarker: Markers = logger.sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarker: Markers = sourceInfoMarker(level, line, file, enclosing)
       sourceMarker + markers
     }
 
@@ -411,19 +411,16 @@ object StrictSLF4JMethod {
 
   /**
    * Conditional method implementation.  Only calls when test evaluates to true.
-   *
-   * @param level the method's level
-   * @param test the call by name boolean that must be true
-   * @param logger the logger that this method belongs to.
    */
-  class Conditional(level: Level, test: => Boolean, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
-      extends StrictSLF4JMethod.Impl(level, logger) {
+  class Conditional(level: Level, logger: LoggerState)
+      extends StrictSLF4JMethod.Impl(level, logger)
+      with SourceInfoMixin {
 
     override val parameterList: ParameterList =
-      new ParameterList.Conditional(test, logger.parameterList(level))
+      new ParameterList.Conditional(logger.condition.get, logger.parameterList(level))
 
     override def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (test && condition) {
+      if (logger.condition.get() && condition) {
         block(this)
       }
     }

@@ -36,7 +36,7 @@ import sourcecode.{Enclosing, File, Line}
  * @tparam StatementType the type class instance of [[com.tersesystems.blindsight.ToStatement]].
  */
 trait SemanticLogger[StatementType]
-    extends SemanticLoggerAPI[StatementType, SLF4JPredicate, SemanticMethod]
+    extends SemanticLoggerAPI[StatementType, SimplePredicate, SemanticMethod]
     with SemanticMarkerMixin[StatementType]
     with SemanticRefineMixin[StatementType] {
   type Self[T] = SemanticLogger[T]
@@ -44,18 +44,10 @@ trait SemanticLogger[StatementType]
   def onCondition(test: => Boolean): Self[StatementType]
 }
 
-// An extended trait with hooks for implementing methods and predicates.
-trait ExtendedSemanticLogger[StatementType]
-    extends SemanticLogger[StatementType]
-    with PredicateMixin[SLF4JPredicate]
-    with UnderlyingMixin
-    with ParameterListMixin
-    with SourceInfoMixin
-
 object SemanticLogger {
 
   class Impl[StatementType](protected val logger: LoggerState)
-      extends ExtendedSemanticLogger[StatementType]
+      extends SemanticLogger[StatementType]
       with SourceInfoMixin {
 
     private val methods: Array[Method[StatementType]] = Array(
@@ -66,19 +58,7 @@ object SemanticLogger {
       trace
     )
 
-    private val predicates: Array[Predicate] = Array(
-      isErrorEnabled,
-      isWarnEnabled,
-      isInfoEnabled,
-      isDebugEnabled,
-      isTraceEnabled
-    )
-
     def method(level: Level): Method[StatementType] = methods(level.ordinal())
-
-    def predicate(level: Level): Predicate = predicates(level.ordinal())
-
-    def parameterList(level: Level): ParameterList = logger.parameterList(level)
 
     override def withMarker[T: ToMarkers](markerInst: => T): Self[StatementType] = {
       val markers = implicitly[ToMarkers[T]].toMarkers(markerInst)
@@ -88,42 +68,39 @@ object SemanticLogger {
     override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = new Impl[T](logger)
 
     override def onCondition(test: => Boolean): Self[StatementType] = {
-      new Conditional(logger.onCondition(test _))
+      val conditional = new Conditional[StatementType](logger.onCondition(test _))
+      conditional.asInstanceOf[Self[StatementType]]
     }
 
-    override def sourceInfoMarker(
-        level: Level,
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
+    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override def trace: SemanticMethod[StatementType] =
+      new SemanticMethod.Impl[StatementType](TRACE, logger)
 
-    override def isTraceEnabled: Predicate    = predicate(TRACE)
-    override def trace: Method[StatementType] = new SemanticMethod.Impl(TRACE, this)
+    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override def debug: SemanticMethod[StatementType] =
+      new SemanticMethod.Impl[StatementType](DEBUG, logger)
 
-    override def isDebugEnabled: Predicate    = predicate(DEBUG)
-    override def debug: Method[StatementType] = new SemanticMethod.Impl(DEBUG, this)
+    override def isInfoEnabled: Predicate = logger.predicate(INFO)
+    override def info: SemanticMethod[StatementType] =
+      new SemanticMethod.Impl[StatementType](INFO, logger)
 
-    override def isInfoEnabled: Predicate    = predicate(INFO)
-    override def info: Method[StatementType] = new SemanticMethod.Impl(INFO, this)
+    override def isWarnEnabled: Predicate = logger.predicate(WARN)
+    override def warn: SemanticMethod[StatementType] =
+      new SemanticMethod.Impl[StatementType](WARN, logger)
 
-    override def isWarnEnabled: Predicate    = predicate(WARN)
-    override def warn: Method[StatementType] = new SemanticMethod.Impl(WARN, this)
-
-    override def isErrorEnabled: Predicate    = predicate(ERROR)
-    override def error: Method[StatementType] = new SemanticMethod.Impl(ERROR, this)
+    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override def error: SemanticMethod[StatementType] =
+      new SemanticMethod.Impl[StatementType](ERROR, logger)
 
     override def markers: Markers = logger.markers
-
-    override def underlying: org.slf4j.Logger = logger.underlying
   }
 
-  class Conditional[StatementType](logger: SemanticLogger[StatementType])
-      extends ExtendedSemanticLogger[StatementType] {
+  class Conditional[StatementType](logger: LoggerState) extends SemanticLogger[StatementType] {
     override type Self[T]   = SemanticLogger[T]
     override type Method[T] = SemanticMethod[T]
-    override type Predicate = SLF4JPredicate
+    override type Predicate = SimplePredicate
 
+    override def markers: Markers = logger.markers
     override def withMarker[T: ToMarkers](markerInstance: => T): Self[StatementType] = {
       new Conditional(logger.withMarker(markerInstance))
     }
@@ -136,41 +113,24 @@ object SemanticLogger {
       new Conditional(logger.onCondition(test2 _))
     }
 
-    override def isTraceEnabled: Predicate = logger.isTraceEnabled
-    override def trace: Method[StatementType] =
-      new SemanticMethod.Conditional(TRACE, test, logger)
+    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override def trace: SemanticMethod[StatementType] =
+      new SemanticMethod.Conditional[StatementType](TRACE, logger)
 
-    override def isDebugEnabled: Predicate = logger.isDebugEnabled
-    override def debug: Method[StatementType] =
-      new SemanticMethod.Conditional(DEBUG, test, logger)
+    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override def debug: SemanticMethod[StatementType] =
+      new SemanticMethod.Conditional[StatementType](DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = logger.isInfoEnabled
-    override def info: Method[StatementType] =
-      new SemanticMethod.Conditional(INFO, test, logger)
+    override def isInfoEnabled: Predicate = logger.predicate(INFO)
+    override def info: SemanticMethod[StatementType] =
+      new SemanticMethod.Conditional[StatementType](INFO, logger)
 
-    override def isWarnEnabled: Predicate = logger.isWarnEnabled
-    override def warn: Method[StatementType] =
-      new SemanticMethod.Conditional(WARN, test, logger)
+    override def isWarnEnabled: Predicate = logger.predicate(WARN)
+    override def warn: SemanticMethod[StatementType] =
+      new SemanticMethod.Conditional[StatementType](WARN, logger)
 
-    override def isErrorEnabled: Predicate = logger.isErrorEnabled
-    override def error: Method[StatementType] =
-      new SemanticMethod.Conditional(ERROR, test, logger)
-
-    override def markers: Markers = logger.markers
-
-    override def sourceInfoMarker(
-        level: Level,
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = {
-      logger.sourceInfoMarker(level, line, file, enclosing)
-    }
-
-    override def predicate(level: Level): SLF4JPredicate = logger.predicate(level)
-
-    override def underlying: org.slf4j.Logger = logger.underlying
-
-    override def parameterList(level: Level): ParameterList = logger.parameterList(level)
+    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override def error: SemanticMethod[StatementType] =
+      new SemanticMethod.Conditional[StatementType](ERROR, logger)
   }
 }

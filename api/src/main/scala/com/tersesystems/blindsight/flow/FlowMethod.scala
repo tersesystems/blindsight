@@ -16,8 +16,7 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.{LoggerState, ParameterList, ToArgument}
-import com.tersesystems.blindsight.slf4j.SLF4JPredicate
+import com.tersesystems.blindsight.{LoggerState, ParameterList, SimplePredicate, ToArgument}
 import org.slf4j.event.Level
 import sourcecode.{Args, Enclosing, File, Line}
 
@@ -52,7 +51,7 @@ object FlowMethod {
    */
   class Impl(level: Level, logger: LoggerState) extends FlowMethod {
 
-    private val predicate: SLF4JPredicate = logger.predicate(level)
+    private val predicate: SimplePredicate   = logger.predicate(level)
     private val parameterList: ParameterList = logger.parameterList(level)
 
     override def apply[B: ToArgument](
@@ -104,8 +103,7 @@ object FlowMethod {
     }
   }
 
-  class Conditional(level: Level, logger: LoggerState)
-      extends Impl(level, logger) {
+  class Conditional(level: Level, logger: LoggerState) extends Impl(level, logger) {
     override def apply[B: ToArgument](
         attempt: => B
     )(implicit

@@ -18,7 +18,7 @@ package com.tersesystems.blindsight.flow
 
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
-import com.tersesystems.blindsight.{LoggerState, Markers, ParameterList, ToMarkers}
+import com.tersesystems.blindsight.{LoggerState, Markers, ParameterList, SimplePredicate, ToMarkers}
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
 import sourcecode.{Enclosing, File, Line}
@@ -46,24 +46,18 @@ import sourcecode.{Enclosing, File, Line}
  * }}}
  */
 trait FlowLogger
-    extends SLF4JLoggerAPI[SLF4JPredicate, FlowMethod]
+    extends SLF4JLoggerAPI[SimplePredicate, FlowMethod]
+    with UnderlyingMixin
     with MarkerMixin
     with OnConditionMixin {
   override type Self      = FlowLogger
   override type Method    = FlowMethod
-  override type Predicate = SLF4JPredicate
+  override type Predicate = SimplePredicate
 }
-
-trait ExtendedFlowLogger
-    extends FlowLogger
-    with PredicateMixin[SLF4JPredicate]
-    with ParameterListMixin
-    with UnderlyingMixin
-    with SourceInfoMixin
 
 object FlowLogger {
 
-  class Impl(logger: LoggerState) extends ExtendedFlowLogger {
+  class Impl(logger: LoggerState) extends FlowLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
       new Impl(logger.withMarker(markerInstance))
     }
@@ -83,18 +77,9 @@ object FlowLogger {
     override def isErrorEnabled: Predicate = predicate(ERROR)
     override def error: Method             = new FlowMethod.Impl(ERROR, logger)
 
-    override def parameterList(level: Level): ParameterList = logger.parameterList(level)
-
-    override def predicate(level: Level): Predicate = logger.predicate(level)
+    def predicate(level: Level): Predicate = ???
 
     override def markers: Markers = logger.markers
-
-    override def sourceInfoMarker(
-        level: Level,
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
 
     override def underlying: org.slf4j.Logger = logger.underlying
 
@@ -113,7 +98,7 @@ object FlowLogger {
   /**
    * Runs the conditional block with logging if test is true, otherwise runs the block.
    */
-  class Conditional(logger: LoggerState) extends ExtendedFlowLogger {
+  class Conditional(logger: LoggerState) extends FlowLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
       new Conditional(logger.withMarker(markerInstance))
     }
@@ -133,18 +118,9 @@ object FlowLogger {
     override def isErrorEnabled: Predicate = predicate(ERROR)
     override def error: Method             = new FlowMethod.Conditional(ERROR, logger)
 
-    override def parameterList(level: Level): ParameterList = logger.parameterList(level)
-
-    override def predicate(level: Level): Predicate = logger.predicate(level)
+    def predicate(level: Level): Predicate = ???
 
     override def markers: Markers = logger.markers
-
-    override def sourceInfoMarker(
-        level: Level,
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
 
     override def underlying: org.slf4j.Logger = logger.underlying
 

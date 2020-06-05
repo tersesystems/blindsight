@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.mixins.SourceInfoMixin
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
@@ -39,7 +40,7 @@ object FluentMethod {
     def logWithPlaceholders(): Unit
   }
 
-  class Impl(val level: Level, logger: ExtendedFluentLogger) extends FluentMethod {
+  class Impl(val level: Level, logger: LoggerState) extends FluentMethod with SourceInfoMixin {
 
     protected val parameterList: ParameterList = logger.parameterList(level)
 
@@ -116,7 +117,7 @@ object FluentMethod {
     protected def collateMarkers(
         markers: Markers
     )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarkers = logger.sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarkers = sourceInfoMarker(level, line, file, enclosing)
       sourceMarkers + markerState + markers
     }
 
@@ -129,11 +130,10 @@ object FluentMethod {
     }
   }
 
-  class Conditional(level: Level, test: => Boolean, logger: ExtendedFluentLogger)
-      extends FluentMethod.Impl(level, logger) {
+  class Conditional(level: Level, logger: LoggerState) extends FluentMethod.Impl(level, logger) {
 
     override def when(condition: => Boolean)(block: FluentMethod => Unit): Unit = {
-      if (test && condition && isEnabled(collateMarkers(logger.markers))) {
+      if (logger.condition.get() && condition && isEnabled(collateMarkers(logger.markers))) {
         block(this)
       }
     }
@@ -141,7 +141,7 @@ object FluentMethod {
     override def apply[T: ToStatement](
         instance: => T
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) {
+      if (logger.condition.get()) {
         val statement = implicitly[ToStatement[T]].toStatement(instance)
         logger.parameterList(level).executeStatement(statement)
       }

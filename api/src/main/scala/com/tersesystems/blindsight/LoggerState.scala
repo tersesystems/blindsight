@@ -1,15 +1,12 @@
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.slf4j.SLF4JPredicate
+import com.tersesystems.blindsight
 import org.slf4j.event.Level
-import sourcecode.{Enclosing, File, Line}
 
 trait LoggerState {
-  def sourceInfoMarker(level: Level, line: Line, file: File, enclosing: Enclosing): Markers
+  def predicate(level: Level): SimplePredicate
 
   def parameterList(level: Level): ParameterList
-
-  def predicate(level: Level): SLF4JPredicate
 
   def withMarker[M: ToMarkers](markers: M): LoggerState
 
@@ -27,6 +24,7 @@ final case class DefaultLoggerState(
     underlying: org.slf4j.Logger,
     condition: Option[() => Boolean]
 ) extends LoggerState {
+  private val parameterLists: Seq[ParameterList] = ParameterList.lists(this.underlying)
 
   override def withMarker[M: ToMarkers](m: M): LoggerState = {
     val markers = implicitly[ToMarkers[M]].toMarkers(m)
@@ -42,4 +40,9 @@ final case class DefaultLoggerState(
     }
   }
 
+  @inline
+  def parameterList(level: Level): ParameterList = parameterLists(level.ordinal)
+
+  override def predicate(level: Level): SimplePredicate =
+    new blindsight.SimplePredicate.Impl(level, this)
 }

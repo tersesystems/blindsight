@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.mixins.SourceInfoMixin
 import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -103,8 +104,9 @@ object UncheckedSLF4JMethod {
   /**
    * Unchecked method implementation.
    */
-  class Impl(val level: Level, logger: ExtendedSLF4JLogger[UncheckedSLF4JMethod])
-      extends UncheckedSLF4JMethod {
+  class Impl(val level: Level, logger: LoggerState)
+      extends UncheckedSLF4JMethod
+      with SourceInfoMixin {
 
     @inline
     protected def markers: Markers = logger.markers
@@ -114,7 +116,7 @@ object UncheckedSLF4JMethod {
     import parameterList._
 
     private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarker: Markers = logger.sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarker: Markers = sourceInfoMarker(level, line, file, enclosing)
       sourceMarker + markers
     }
 
@@ -254,22 +256,17 @@ object UncheckedSLF4JMethod {
 
   /**
    * Conditional method implementation.  Only calls when test evaluates to true.
-   *
-   * @param level the method's level
-   * @param test the call by name boolean that must be true
-   * @param logger the logger that this method belongs to.
    */
   class Conditional(
       level: Level,
-      test: => Boolean,
-      logger: ExtendedSLF4JLogger[UncheckedSLF4JMethod]
+      logger: LoggerState
   ) extends Impl(level, logger) {
 
     override val parameterList: ParameterList =
-      new ParameterList.Conditional(test, logger.parameterList(level))
+      new ParameterList.Conditional(logger.condition.get, logger.parameterList(level))
 
     override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (test && condition) {
+      if (logger.condition.get() && condition) {
         block(this)
       }
     }

@@ -65,32 +65,32 @@ object ParameterList {
       }
   }
 
-  class Conditional(condition: => Boolean, plist: ParameterList) extends ParameterList {
+  class Conditional(condition: () => Boolean, plist: ParameterList) extends ParameterList {
     override def executePredicate(): Boolean = {
-      condition && plist.executePredicate()
+      condition() && plist.executePredicate()
     }
     override def executePredicate(marker: Marker): Boolean = {
-      condition && plist.executePredicate(marker)
+      condition() && plist.executePredicate(marker)
     }
 
-    override def message(msg: String): Unit = if (condition) plist.message(msg)
+    override def message(msg: String): Unit = if (condition()) plist.message(msg)
     override def messageArg1(msg: String, arg: Any): Unit =
-      if (condition) plist.messageArg1(msg, arg)
+      if (condition()) plist.messageArg1(msg, arg)
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
-      if (condition) plist.messageArg1Arg2(msg, arg1, arg2)
+      if (condition()) plist.messageArg1Arg2(msg, arg1, arg2)
     override def messageArgs(msg: String, args: Seq[_]): Unit =
-      if (condition) plist.messageArgs(msg, args)
+      if (condition()) plist.messageArgs(msg, args)
     override def markerMessage(marker: Marker, msg: String): Unit =
-      if (condition) plist.markerMessage(marker, msg)
+      if (condition()) plist.markerMessage(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
-      if (condition) plist.markerMessageArg1(marker, msg, arg)
+      if (condition()) plist.markerMessageArg1(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
-      if (condition) plist.markerMessageArg1Arg2(marker, msg, arg1, arg2)
+      if (condition()) plist.markerMessageArg1Arg2(marker, msg, arg1, arg2)
     override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
-      if (condition) plist.markerMessageArgs(marker, msg, args)
+      if (condition()) plist.markerMessageArgs(marker, msg, args)
 
     override def executeStatement(statement: Statement): Unit =
-      if (condition) plist.executeStatement(statement)
+      if (condition()) plist.executeStatement(statement)
   }
 
   /**

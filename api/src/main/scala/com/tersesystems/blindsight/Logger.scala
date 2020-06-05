@@ -42,9 +42,9 @@ object Logger {
 
   class Impl(loggerState: LoggerState)
       extends Logger
-      with SLF4JLoggerAPI.Proxy[SLF4JPredicate, StrictSLF4JMethod] {
+      with SLF4JLoggerAPI.Proxy[SimplePredicate, StrictSLF4JMethod] {
 
-    override type Parent = ExtendedSLF4JLogger[StrictSLF4JMethod]
+    override type Parent = SLF4JLogger[StrictSLF4JMethod]
     override type Self   = Logger
 
     override protected val logger = new SLF4JLogger.Strict(loggerState)

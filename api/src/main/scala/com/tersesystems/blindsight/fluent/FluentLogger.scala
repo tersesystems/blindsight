@@ -17,8 +17,8 @@
 package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight.mixins._
-import com.tersesystems.blindsight.slf4j.{ExtendedSLF4JLogger, SLF4JLoggerAPI, SLF4JPredicate}
-import com.tersesystems.blindsight.{LoggerState, Markers, ParameterList, ToMarkers}
+import com.tersesystems.blindsight.slf4j._
+import com.tersesystems.blindsight._
 import org.slf4j.Logger
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
@@ -33,12 +33,12 @@ import sourcecode.{Enclosing, File, Line}
  * }}}
  */
 trait FluentLogger
-    extends SLF4JLoggerAPI[SLF4JPredicate, FluentMethod]
+    extends SLF4JLoggerAPI[SimplePredicate, FluentMethod]
     with MarkerMixin
     with OnConditionMixin {
   override type Self      = FluentLogger
   override type Method    = FluentMethod
-  override type Predicate = SLF4JPredicate
+  override type Predicate = SimplePredicate
 }
 
 /**
@@ -46,95 +46,72 @@ trait FluentLogger
  */
 trait ExtendedFluentLogger
     extends FluentLogger
-    with PredicateMixin[SLF4JPredicate]
-    with ParameterListMixin
+    with PredicateMixin[SimplePredicate]
     with UnderlyingMixin
     with SourceInfoMixin
 
 object FluentLogger {
 
-  class Impl(logger: LoggerState) extends ExtendedFluentLogger {
+  class Impl(logger: LoggerState) extends ExtendedFluentLogger with SourceInfoMixin {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
       new Impl(logger.withMarker(markerInstance))
     }
 
     override def onCondition(test: => Boolean): FluentLogger = {
-      new Conditional(test, this)
+      new Conditional(logger.onCondition(test _))
     }
 
-    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override def trace: Method             = new FluentMethod.Impl(TRACE, this)
+    override val isTraceEnabled: Predicate = predicate(TRACE)
+    override val trace: Method             = new FluentMethod.Impl(TRACE, logger)
 
-    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override def debug: Method             = new FluentMethod.Impl(DEBUG, this)
+    override val isDebugEnabled: Predicate = predicate(DEBUG)
+    override val debug: Method             = new FluentMethod.Impl(DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = logger.predicate(INFO)
-    override def info: Method             = new FluentMethod.Impl(INFO, this)
+    override val isInfoEnabled: Predicate = predicate(INFO)
+    override val info: Method             = new FluentMethod.Impl(INFO, logger)
 
-    override def isWarnEnabled: Predicate = logger.predicate(WARN)
-    override def warn: Method             = new FluentMethod.Impl(WARN, this)
+    override val isWarnEnabled: Predicate = predicate(WARN)
+    override val warn: Method             = new FluentMethod.Impl(WARN, logger)
 
-    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override def error: Method             = new FluentMethod.Impl(ERROR, this)
-
-    override def parameterList(level: Level): ParameterList = logger.parameterList(level)
+    override val isErrorEnabled: Predicate = predicate(ERROR)
+    override val error: Method             = new FluentMethod.Impl(ERROR, logger)
 
     override def predicate(level: Level): Predicate = logger.predicate(level)
 
     override def markers: Markers = logger.markers
 
-    override def sourceInfoMarker(
-        level: Level,
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
-
     override def underlying: org.slf4j.Logger = logger.underlying
 
   }
 
-  class Conditional(test: => Boolean, logger: ExtendedFluentLogger) extends ExtendedFluentLogger {
+  class Conditional(logger: LoggerState) extends FluentLogger {
     override type Self      = FluentLogger
     override type Method    = FluentMethod
-    override type Predicate = SLF4JPredicate
+    override type Predicate = SimplePredicate
 
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Conditional(test, logger.withMarker(markerInstance).asInstanceOf[ExtendedFluentLogger])
+      new Conditional(logger.withMarker(markerInstance))
     }
 
     override def onCondition(test2: => Boolean): Self = {
-      new Conditional(test && test2, logger)
+      new Conditional(logger.onCondition(test2 _))
     }
 
-    override def isTraceEnabled: Predicate = logger.isTraceEnabled
-    override def trace: Method             = new FluentMethod.Conditional(Level.TRACE, test, logger)
+    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override def trace: Method             = new FluentMethod.Conditional(TRACE, logger)
 
-    override def isDebugEnabled: Predicate = logger.isDebugEnabled
-    override def debug: Method             = new FluentMethod.Conditional(Level.DEBUG, test, logger)
+    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override def debug: Method             = new FluentMethod.Conditional(DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = logger.isInfoEnabled
-    override def info: Method             = new FluentMethod.Conditional(Level.INFO, test, logger)
+    override def isInfoEnabled: Predicate = logger.predicate(INFO)
+    override def info: Method             = new FluentMethod.Conditional(INFO, logger)
 
-    override def isWarnEnabled: Predicate = logger.isWarnEnabled
-    override def warn: Method             = new FluentMethod.Conditional(Level.WARN, test, logger)
+    override def isWarnEnabled: Predicate = logger.predicate(WARN)
+    override def warn: Method             = new FluentMethod.Conditional(WARN, logger)
 
-    override def isErrorEnabled: Predicate = logger.isErrorEnabled
-    override def error: Method             = new FluentMethod.Conditional(Level.ERROR, test, logger)
+    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override def error: Method             = new FluentMethod.Conditional(ERROR, logger)
 
     override def markers: Markers = logger.markers
-
-    override def sourceInfoMarker(
-        level: Level,
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = logger.sourceInfoMarker(level, line, file, enclosing)
-
-    override def parameterList(level: Level): ParameterList = logger.parameterList(level)
-
-    override def predicate(level: Level): SLF4JPredicate = logger.predicate(level)
-
-    override def underlying: Logger = logger.underlying
   }
 }
