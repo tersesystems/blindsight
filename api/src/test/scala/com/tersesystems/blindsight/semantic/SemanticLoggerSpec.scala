@@ -13,8 +13,8 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
 
   def resourceName: String = "/logback-test-list.xml"
 
-  def loggerState(underlying: org.slf4j.Logger): LoggerState = {
-    DefaultLoggerState(Markers.empty, underlying, None)
+  def core(underlying: org.slf4j.Logger): CoreLogger = {
+    CoreLogger(underlying)
   }
 
   "a logger" when {
@@ -31,7 +31,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
 
       val underlying = loggerContext.getLogger("testing")
       val payloadLogger: SemanticLogger[PayloadModel] =
-        new SemanticLogger.Impl[PayloadModel](loggerState(underlying))
+        new SemanticLogger.Impl[PayloadModel](core(underlying))
       val uuid = UUID.randomUUID()
       payloadLogger.info(PayloadModel(uuid, "1234", "data"))
 
@@ -57,7 +57,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
 
       val underlying = loggerContext.getLogger("testing")
       val payloadLogger: SemanticLogger[PayloadModel] =
-        new SemanticLogger.Impl[PayloadModel](loggerState(underlying))
+        new SemanticLogger.Impl[PayloadModel](core(underlying))
       val uuid = UUID.randomUUID()
       payloadLogger.info(PayloadModel(uuid, "1234", "data"))
 

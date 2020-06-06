@@ -29,8 +29,7 @@ class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTe
 
   override def resourceName: String = "/logback-test-slf4j.xml"
 
-  class TestLogger(underlying: org.slf4j.Logger)
-      extends Unchecked.Impl(DefaultLoggerState(Markers.empty, underlying, None))
+  class TestLogger(underlying: org.slf4j.Logger) extends Unchecked(CoreLogger(underlying))
 
   "A logger with no state marker" when {
     "calling predicate" should {

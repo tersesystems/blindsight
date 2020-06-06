@@ -17,7 +17,6 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.mixins.SourceInfoMixin
 import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -34,7 +33,7 @@ trait UncheckedSLF4JMethod {
    * @param condition the call by name boolean that must return true
    * @param block the block executed when condition is true.
    */
-  def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit
+  def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit
 
   def apply(
       instance: String
@@ -104,19 +103,17 @@ object UncheckedSLF4JMethod {
   /**
    * Unchecked method implementation.
    */
-  class Impl(val level: Level, logger: LoggerState)
-      extends UncheckedSLF4JMethod
-      with SourceInfoMixin {
+  class Impl(val level: Level, core: CoreLogger) extends UncheckedSLF4JMethod {
 
     @inline
-    protected def markers: Markers = logger.markers
+    protected def markers: Markers = core.markers
 
-    val parameterList: ParameterList = logger.parameterList(level)
+    val parameterList: ParameterList = core.parameterList(level)
 
     import parameterList._
 
     private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarker: Markers = sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarker + markers
     }
 
@@ -126,8 +123,8 @@ object UncheckedSLF4JMethod {
       collateMarkers + implicitly[ToMarkers[MR]].toMarkers(marker)
     }
 
-    override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (condition && executePredicate(collateMarkers.marker)) {
+    override def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit = {
+      if (condition(level) && executePredicate(collateMarkers.marker)) {
         block(this)
       }
     }
@@ -250,7 +247,7 @@ object UncheckedSLF4JMethod {
     }
 
     override def toString: String = {
-      s"${getClass.getName}(logger=$logger)"
+      s"${getClass.getName}(logger=$core)"
     }
   }
 
@@ -259,20 +256,20 @@ object UncheckedSLF4JMethod {
    */
   class Conditional(
       level: Level,
-      logger: LoggerState
-  ) extends Impl(level, logger) {
+      core: CoreLogger
+  ) extends Impl(level, core) {
 
     override val parameterList: ParameterList =
-      new ParameterList.Conditional(logger.condition.get, logger.parameterList(level))
+      new ParameterList.Conditional(level, core)
 
-    override def when(condition: => Boolean)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (logger.condition.get() && condition) {
+    override def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit = {
+      if (core.condition(level) && condition(level)) {
         block(this)
       }
     }
 
     override def toString: String = {
-      s"${getClass.getName}(logger=$logger)"
+      s"${getClass.getName}(logger=$core)"
     }
   }
 }

@@ -17,7 +17,7 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight.mixins._
-import com.tersesystems.blindsight.{LoggerState, Markers, SimplePredicate, ToMarkers}
+import com.tersesystems.blindsight.{Condition, CoreLogger, Markers, SimplePredicate, ToMarkers}
 import org.slf4j.Logger
 import org.slf4j.event.Level._
 
@@ -51,159 +51,69 @@ object SLF4JLogger {
    *
     * @tparam M the type of method.
    */
-  abstract class Base[M: ClassTag](loggerState: LoggerState) extends SLF4JLogger[M] {
+  abstract class Base[M: ClassTag](core: CoreLogger) extends SLF4JLogger[M] {
     override type Self      = SLF4JLogger[M]
     override type Method    = M
     override type Predicate = SimplePredicate
 
-    override val underlying: Logger = loggerState.underlying
+    override val underlying: Logger = core.underlying
 
     /**
      * Returns the accumulated markers of this logger.
      *
       * @return the accumulated markers, may be Markers.empty.
      */
-    override val markers: Markers = loggerState.markers
+    override val markers: Markers = core.markers
 
-    override def onCondition(test: => Boolean): Self
+    override def onCondition(condition: Condition): Self
+
+    override val isTraceEnabled: Predicate = core.predicate(TRACE)
+    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
+    override val isInfoEnabled: Predicate  = core.predicate(INFO)
+    override val isWarnEnabled: Predicate  = core.predicate(WARN)
+    override val isErrorEnabled: Predicate = core.predicate(ERROR)
   }
 
-  object Strict {
+  /**
+   * A logger that provides "strict" logging that only takes type class aware arguments.
+   */
+  class Strict(coreLogger: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](coreLogger) {
+    override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, coreLogger)
+    override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, coreLogger)
+    override val info: Method  = new StrictSLF4JMethod.Impl(INFO, coreLogger)
+    override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, coreLogger)
+    override val error: Method = new StrictSLF4JMethod.Impl(ERROR, coreLogger)
 
-    /**
-     * A logger that provides "strict" logging that only takes type class aware arguments.
-     */
-    class Impl(loggerState: LoggerState) extends SLF4JLogger.Base[StrictSLF4JMethod](loggerState) {
-      override val isTraceEnabled: Predicate = loggerState.predicate(TRACE)
-      override val trace: Method =
-        new StrictSLF4JMethod.Impl(TRACE, loggerState)
+    override def withMarker[T: ToMarkers](markerInst: T): Self =
+      new Strict(coreLogger.withMarker(markerInst))
 
-      override val isDebugEnabled: Predicate = loggerState.predicate(DEBUG)
-      override val debug: Method =
-        new StrictSLF4JMethod.Impl(DEBUG, loggerState)
-
-      override val isInfoEnabled: Predicate = loggerState.predicate(INFO)
-      override val info: Method             = new StrictSLF4JMethod.Impl(INFO, loggerState)
-
-      override val isWarnEnabled: Predicate = loggerState.predicate(WARN)
-      override val warn: Method             = new StrictSLF4JMethod.Impl(WARN, loggerState)
-
-      override val isErrorEnabled: Predicate = loggerState.predicate(ERROR)
-      override val error: Method =
-        new StrictSLF4JMethod.Impl(ERROR, loggerState)
-
-      override def withMarker[T: ToMarkers](markerInst: T): Self =
-        new Impl(loggerState.withMarker(markerInst))
-
-      override def onCondition(test: => Boolean): SLF4JLogger[StrictSLF4JMethod] =
-        new Conditional(loggerState.onCondition(test _))
-    }
-
-    /**
-     * A conditional logger that only calls the method if test returns true.
-     */
-    class Conditional(logger: LoggerState) extends SLF4JLogger.Base[StrictSLF4JMethod](logger) {
-      override val isTraceEnabled: Predicate = logger.predicate(TRACE)
-      override val trace: Method =
-        new StrictSLF4JMethod.Conditional(TRACE, logger)
-
-      override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
-      override val debug: Method =
-        new StrictSLF4JMethod.Conditional(DEBUG, logger)
-
-      override val isInfoEnabled: Predicate = logger.predicate(INFO)
-      override val info: Method =
-        new StrictSLF4JMethod.Conditional(INFO, logger)
-
-      override val isWarnEnabled: Predicate = logger.predicate(WARN)
-      override val warn: Method =
-        new StrictSLF4JMethod.Conditional(WARN, logger)
-
-      override val isErrorEnabled: Predicate = logger.predicate(ERROR)
-      override val error: Method =
-        new StrictSLF4JMethod.Conditional(ERROR, logger)
-
-      override def onCondition(test2: => Boolean): SLF4JLogger[StrictSLF4JMethod] =
-        new Conditional(logger.onCondition(test2 _))
-
-      override def withMarker[T: ToMarkers](markerInstance: T): SLF4JLogger[StrictSLF4JMethod] =
-        new Conditional(logger.withMarker(markerInstance))
-    }
+    override def onCondition(condition: Condition): SLF4JLogger[StrictSLF4JMethod] =
+      new Strict(coreLogger.onCondition(condition))
   }
 
-  object Unchecked {
+  /**
+   * A logger that provides "unchecked" logging that only takes type class aware arguments.
+   */
+  class Unchecked(core: CoreLogger) extends SLF4JLogger.Base[UncheckedSLF4JMethod](core) {
+
+    override val trace: Method = new UncheckedSLF4JMethod.Impl(TRACE, core)
+    override val debug: Method = new UncheckedSLF4JMethod.Impl(DEBUG, core)
+    override val info: Method  = new UncheckedSLF4JMethod.Impl(INFO, core)
+    override val warn: Method  = new UncheckedSLF4JMethod.Impl(WARN, core)
+    override val error: Method = new UncheckedSLF4JMethod.Impl(ERROR, core)
 
     /**
-     * A logger that provides "unchecked" logging that only takes type class aware arguments.
+     * Returns a logger which will always render with the given marker.
      *
-      */
-    class Impl(loggerState: LoggerState) extends SLF4JLogger[UncheckedSLF4JMethod] {
-      override type Self      = SLF4JLogger[UncheckedSLF4JMethod]
-      override type Method    = UncheckedSLF4JMethod
-      override type Predicate = SimplePredicate
-
-      /**
-       * Returns a logger which will always render with the given marker.
-       *
-        * @param instance a type class instance of [[ToMarkers]]
-       * @tparam T the instance type.
-       * @return a new instance of the logger that has this marker.
-       */
-      override def withMarker[T: ToMarkers](instance: T): SLF4JLogger[UncheckedSLF4JMethod] = {
-        new Impl(loggerState.withMarker(instance))
-      }
-
-      override val isTraceEnabled: Predicate = loggerState.predicate(TRACE)
-      override val trace: Method =
-        new UncheckedSLF4JMethod.Impl(TRACE, loggerState)
-
-      override val isDebugEnabled: Predicate = loggerState.predicate(DEBUG)
-      override val debug: Method =
-        new UncheckedSLF4JMethod.Impl(DEBUG, loggerState)
-
-      override val isInfoEnabled: Predicate = loggerState.predicate(INFO)
-      override val info: Method =
-        new UncheckedSLF4JMethod.Impl(INFO, loggerState)
-
-      override val isWarnEnabled: Predicate = loggerState.predicate(WARN)
-      override val warn: Method =
-        new UncheckedSLF4JMethod.Impl(WARN, loggerState)
-
-      override val isErrorEnabled: Predicate = loggerState.predicate(ERROR)
-      override val error: Method =
-        new UncheckedSLF4JMethod.Impl(ERROR, loggerState)
-
-      override def markers: Markers = loggerState.markers
-
-      override def underlying: org.slf4j.Logger = loggerState.underlying
-
-      override def onCondition(test: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
-        new Conditional(loggerState.onCondition(test _))
-
-    }
-
-    /**
-     * A conditional logger that only calls the method if test returns true.
+      * @param instance a type class instance of [[ToMarkers]]
+     * @tparam T the instance type.
+     * @return a new instance of the logger that has this marker.
      */
-    class Conditional(loggerState: LoggerState) extends Impl(loggerState) {
+    override def withMarker[T: ToMarkers](instance: T): SLF4JLogger[UncheckedSLF4JMethod] =
+      new Unchecked(core.withMarker(instance))
 
-      override def onCondition(test2: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] =
-        new Conditional(loggerState.onCondition(test2 _))
-
-      override def withMarker[T: ToMarkers](markerInstance: T): SLF4JLogger[UncheckedSLF4JMethod] =
-        new Conditional(loggerState.withMarker(markerInstance))
-
-      override val trace: Method =
-        new UncheckedSLF4JMethod.Conditional(TRACE, loggerState)
-      override val debug: Method =
-        new UncheckedSLF4JMethod.Conditional(DEBUG, loggerState)
-      override val info: Method =
-        new UncheckedSLF4JMethod.Conditional(INFO, loggerState)
-      override val warn: Method =
-        new UncheckedSLF4JMethod.Conditional(WARN, loggerState)
-      override val error: Method =
-        new UncheckedSLF4JMethod.Conditional(ERROR, loggerState)
-    }
+    override def onCondition(condition: Condition): SLF4JLogger[UncheckedSLF4JMethod] =
+      new Unchecked(core.onCondition(condition))
   }
 
 }

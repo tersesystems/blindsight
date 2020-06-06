@@ -44,13 +44,13 @@ trait FluentLogger
 
 object FluentLogger {
 
-  class Impl(logger: LoggerState) extends FluentLogger with SourceInfoMixin {
+  class Impl(logger: CoreLogger) extends FluentLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
       new Impl(logger.withMarker(markerInstance))
     }
 
-    override def onCondition(test: => Boolean): FluentLogger = {
-      new Conditional(logger.onCondition(test _))
+    override def onCondition(condition: Condition): FluentLogger = {
+      new Conditional(logger.onCondition(condition))
     }
 
     override val isTraceEnabled: Predicate = logger.predicate(TRACE)
@@ -73,7 +73,7 @@ object FluentLogger {
     override def underlying: org.slf4j.Logger = logger.underlying
   }
 
-  class Conditional(logger: LoggerState) extends FluentLogger {
+  class Conditional(logger: CoreLogger) extends FluentLogger {
     override type Self      = FluentLogger
     override type Method    = FluentMethod
     override type Predicate = SimplePredicate
@@ -82,8 +82,8 @@ object FluentLogger {
       new Conditional(logger.withMarker(markerInstance))
     }
 
-    override def onCondition(test2: => Boolean): Self = {
-      new Conditional(logger.onCondition(test2 _))
+    override def onCondition(condition: Condition): Self = {
+      new Conditional(logger.onCondition(condition))
     }
 
     override val isTraceEnabled: Predicate = logger.predicate(TRACE)

@@ -13,7 +13,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   def createLogger(implicit loggerContext: LoggerContext): Logger = {
     val underlying = loggerContext.getLogger("testing")
-    new blindsight.Logger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
+    new blindsight.Logger.Impl(CoreLogger(underlying))
   }
 
   "logger" should {

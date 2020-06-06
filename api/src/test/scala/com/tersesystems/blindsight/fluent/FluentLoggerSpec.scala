@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.slf4j.SLF4JLogger
-import com.tersesystems.blindsight.{Argument, DefaultLoggerState, Markers, ToArgument}
+import com.tersesystems.blindsight.{Argument, CoreLogger, DefaultCoreLogger, Markers, ToArgument}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.MarkerFactory
@@ -25,7 +25,7 @@ class FluentLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
 
     val underlying = loggerContext.getLogger("logger")
     val fluentLogger: FluentLogger =
-      new FluentLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
+      new FluentLogger.Impl(CoreLogger(underlying))
     val uuid = UUID.randomUUID()
     fluentLogger.info
       .marker(MarkerFactory.getDetachedMarker("HELLO"))
@@ -45,7 +45,7 @@ class FluentLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
     val underlying = loggerContext.getLogger("logger")
 
     val fluentLogger: FluentLogger =
-      new FluentLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
+      new FluentLogger.Impl(CoreLogger(underlying))
 
     fluentLogger.info.cause(new Exception("exception")).log()
 
@@ -58,7 +58,7 @@ class FluentLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
     val underlying = loggerContext.getLogger("logger")
 
     val fluentLogger: FluentLogger =
-      new FluentLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
+      new FluentLogger.Impl(CoreLogger(underlying))
     fluentLogger.info.argument("only arguments").logWithPlaceholders()
 
     val event = listAppender.list.get(0)

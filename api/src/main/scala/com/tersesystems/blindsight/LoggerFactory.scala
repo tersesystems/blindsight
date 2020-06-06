@@ -82,12 +82,9 @@ object LoggerFactory {
   }
 
   class Impl extends LoggerFactory {
-    import com.tersesystems.blindsight.slf4j.SLF4JLogger
-
     override def getLogger[T: LoggerResolver](instance: T): Logger = {
-      val underlying  = implicitly[LoggerResolver[T]].resolveLogger(instance)
-      val loggerState = DefaultLoggerState(Markers.empty, underlying, None)
-      new Logger.Impl(loggerState)
+      val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
+      new Logger.Impl(CoreLogger(underlying))
     }
   }
 

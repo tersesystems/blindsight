@@ -16,16 +16,14 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.ParameterList.Conditional
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.mixins.SourceInfoMixin
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
 trait SemanticMethod[StatementType] {
   def level: Level
 
-  def when(condition: => Boolean)(block: SemanticMethod[StatementType] => Unit): Unit
+  def when(condition: Condition)(block: SemanticMethod[StatementType] => Unit): Unit
 
   def apply[T <: StatementType: ToStatement](
       instance: T
@@ -42,9 +40,8 @@ object SemanticMethod {
 
   class Impl[StatementType](
       val level: Level,
-      logger: LoggerState
-  ) extends SemanticMethod[StatementType]
-      with SourceInfoMixin {
+      core: CoreLogger
+  ) extends SemanticMethod[StatementType] {
 
     override def apply[T <: StatementType: ToStatement](
         instance: T,
@@ -53,7 +50,7 @@ object SemanticMethod {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
       val markers   = collateMarkers(statement.markers)
       if (isEnabled(markers)) {
-        logger
+        core
           .parameterList(level)
           .executeStatement(statement.withMarkers(markers).withThrowable(t))
       }
@@ -61,16 +58,16 @@ object SemanticMethod {
 
     def isEnabled(markers: Markers): Boolean = {
       if (markers.nonEmpty) {
-        logger.parameterList(level).executePredicate(markers.marker)
+        core.parameterList(level).executePredicate(markers.marker)
       } else {
-        logger.parameterList(level).executePredicate()
+        core.parameterList(level).executePredicate()
       }
     }
 
     protected def collateMarkers(
         markers: Markers
     )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarkers = sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarkers + markerState + markers
     }
 
@@ -81,33 +78,29 @@ object SemanticMethod {
         implicitly[ToStatement[T]].toStatement(instance)
       val markers = collateMarkers(statement.markers)
       if (isEnabled(markers)) {
-        logger.parameterList(level).executeStatement(statement.withMarkers(markers))
+        core.parameterList(level).executeStatement(statement.withMarkers(markers))
       }
     }
 
-    override def when(
-        condition: => Boolean
-    )(block: SemanticMethod[StatementType] => Unit): Unit = {
-      if (condition && isEnabled(markerState)) {
+    override def when(condition: Condition)(block: SemanticMethod[StatementType] => Unit): Unit = {
+      if (condition(level) && isEnabled(markerState)) {
         block(this)
       }
     }
 
     @inline
-    protected def markerState: Markers = logger.markers
+    protected def markerState: Markers = core.markers
   }
 
   class Conditional[StatementType](
       level: Level,
-      logger: LoggerState
-  ) extends SemanticMethod.Impl[StatementType](level, logger) {
+      core: CoreLogger
+  ) extends SemanticMethod.Impl[StatementType](level, core) {
     private val parameterList: ParameterList =
-      new ParameterList.Conditional(logger.condition.get, logger.parameterList(level))
+      new ParameterList.Conditional(level, core)
 
-    override def when(
-        condition: => Boolean
-    )(block: SemanticMethod[StatementType] => Unit): Unit = {
-      if (logger.condition.get() && condition && isEnabled(markerState)) {
+    override def when(condition: Condition)(block: SemanticMethod[StatementType] => Unit): Unit = {
+      if (core.condition(level) && condition(level) && isEnabled(markerState)) {
         block(this)
       }
     }
@@ -118,7 +111,7 @@ object SemanticMethod {
       val statement: Statement =
         implicitly[ToStatement[T]].toStatement(instance)
       val markers = collateMarkers(statement.markers)
-      if (logger.condition.get() && isEnabled(markers)) {
+      if (core.condition(level) && isEnabled(markers)) {
         parameterList.executeStatement(statement.withMarkers(markers))
       }
     }
@@ -129,7 +122,7 @@ object SemanticMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
       val markers   = collateMarkers(statement.markers)
-      if (logger.condition.get() && isEnabled(markers)) {
+      if (core.condition(level) && isEnabled(markers)) {
         parameterList.executeStatement(statement.withMarkers(markers).withThrowable(t))
       }
     }

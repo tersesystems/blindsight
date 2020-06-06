@@ -18,7 +18,14 @@ package com.tersesystems.blindsight.flow
 
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
-import com.tersesystems.blindsight.{LoggerState, Markers, ParameterList, SimplePredicate, ToMarkers}
+import com.tersesystems.blindsight.{
+  Condition,
+  CoreLogger,
+  Markers,
+  ParameterList,
+  SimplePredicate,
+  ToMarkers
+}
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
 import sourcecode.{Enclosing, File, Line}
@@ -57,78 +64,38 @@ trait FlowLogger
 
 object FlowLogger {
 
-  class Impl(logger: LoggerState) extends FlowLogger {
-    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(logger.withMarker(markerInstance))
-    }
+  class Impl(core: CoreLogger) extends FlowLogger {
+    override val isTraceEnabled: Predicate = core.predicate(TRACE)
+    override val trace: Method             = new FlowMethod.Impl(TRACE, core)
 
-    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override val trace: Method             = new FlowMethod.Impl(TRACE, logger)
+    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
+    override val debug: Method             = new FlowMethod.Impl(DEBUG, core)
 
-    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override val debug: Method             = new FlowMethod.Impl(DEBUG, logger)
+    override val isInfoEnabled: Predicate = core.predicate(INFO)
+    override val info: Method             = new FlowMethod.Impl(INFO, core)
 
-    override val isInfoEnabled: Predicate = logger.predicate(INFO)
-    override val info: Method             = new FlowMethod.Impl(INFO, logger)
+    override val isWarnEnabled: Predicate = core.predicate(WARN)
+    override val warn: Method             = new FlowMethod.Impl(WARN, core)
 
-    override val isWarnEnabled: Predicate = logger.predicate(WARN)
-    override val warn: Method             = new FlowMethod.Impl(WARN, logger)
+    override val isErrorEnabled: Predicate = core.predicate(ERROR)
+    override val error: Method             = new FlowMethod.Impl(ERROR, core)
 
-    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override val error: Method             = new FlowMethod.Impl(ERROR, logger)
+    override def markers: Markers = core.markers
 
-    override def markers: Markers = logger.markers
-
-    override def underlying: org.slf4j.Logger = logger.underlying
+    override def underlying: org.slf4j.Logger = core.underlying
 
     /**
      * Returns a new instance of the logger that will only log if the
      * condition is met.
      *
-     * @param test the call by name boolean that is a prerequisite for logging.
      * @return the new conditional logger instance.
      */
-    override def onCondition(test: => Boolean): FlowLogger = {
-      new Conditional(logger.onCondition(test _))
+    override def onCondition(condition: Condition): FlowLogger = {
+      new Impl(core.onCondition(condition))
     }
-  }
 
-  /**
-   * Runs the conditional block with logging if test is true, otherwise runs the block.
-   */
-  class Conditional(logger: LoggerState) extends FlowLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Conditional(logger.withMarker(markerInstance))
-    }
-
-    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override val trace: Method             = new FlowMethod.Conditional(TRACE, logger)
-
-    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override val debug: Method             = new FlowMethod.Conditional(DEBUG, logger)
-
-    override val isInfoEnabled: Predicate = logger.predicate(INFO)
-    override val info: Method             = new FlowMethod.Conditional(INFO, logger)
-
-    override val isWarnEnabled: Predicate = logger.predicate(WARN)
-    override val warn: Method             = new FlowMethod.Conditional(WARN, logger)
-
-    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override val error: Method             = new FlowMethod.Conditional(ERROR, logger)
-
-    override def markers: Markers = logger.markers
-
-    override def underlying: org.slf4j.Logger = logger.underlying
-
-    /**
-     * Returns a new instance of the logger that will only log if the
-     * condition is met.
-     *
-     * @param test2 the call by name boolean that is a prerequisite for logging.
-     * @return the new conditional logger instance.
-     */
-    override def onCondition(test2: => Boolean): FlowLogger = {
-      new Conditional(logger.onCondition(test2 _))
+      new Impl(core.withMarker(markerInstance))
     }
   }
 

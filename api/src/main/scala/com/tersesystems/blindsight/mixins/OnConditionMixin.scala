@@ -16,6 +16,8 @@
 
 package com.tersesystems.blindsight.mixins
 
+import com.tersesystems.blindsight.Condition
+
 /**
  * A conditional logger mixin.
  */
@@ -25,9 +27,6 @@ trait OnConditionMixin {
   /**
    * Returns a new instance of the logger that will only log if the
    * condition is met.
-   *
-   * @param test the call by name boolean that is a prerequisite for logging.
-   * @return the new conditional logger instance.
    */
-  def onCondition(test: => Boolean): Self
+  def onCondition(condition: Condition): Self
 }

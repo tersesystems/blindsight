@@ -17,6 +17,8 @@
 package com.tersesystems.blindsight.logstash
 
 import com.tersesystems.blindsight._
+import org.slf4j.event.Level
+import sourcecode.{Enclosing, File, Line}
 
 /**
  * A logger factory that returns logstash enabled loggers.
@@ -24,6 +26,15 @@ import com.tersesystems.blindsight._
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    new Logger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
+    new Logger.Impl(
+      DefaultCoreLogger(Markers.empty, underlying, Condition.always, sourceInfoBehavior)
+    )
+  }
+
+  val sourceInfoBehavior: SourceInfoBehavior = new SourceInfoBehavior {
+    override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
+      import com.tersesystems.blindsight.SourceCodeImplicits._
+      Markers(bobj(line)) + Markers(bobj(line)) + Markers(bobj(enclosing))
+    }
   }
 }

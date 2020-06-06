@@ -43,14 +43,13 @@ trait SemanticLogger[StatementType]
     with SemanticRefineMixin[StatementType] {
   type Self[T] = SemanticLogger[T]
 
-  def onCondition(test: => Boolean): Self[StatementType]
+  def onCondition(condition: Condition): Self[StatementType]
 }
 
 object SemanticLogger {
 
-  class Impl[StatementType](protected val logger: LoggerState)
-      extends SemanticLogger[StatementType]
-      with SourceInfoMixin {
+  class Impl[StatementType](protected val logger: CoreLogger)
+      extends SemanticLogger[StatementType] {
 
     override def underlying: slf4j.Logger = logger.underlying
 
@@ -62,8 +61,8 @@ object SemanticLogger {
 
     override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = new Impl[T](logger)
 
-    override def onCondition(test: => Boolean): Self[StatementType] = {
-      new Conditional[StatementType](logger.onCondition(test _))
+    override def onCondition(condition: Condition): Self[StatementType] = {
+      new Conditional[StatementType](logger.onCondition(condition))
     }
 
     override val isTraceEnabled: Predicate = logger.predicate(TRACE)
@@ -88,7 +87,7 @@ object SemanticLogger {
 
   }
 
-  class Conditional[StatementType](logger: LoggerState) extends SemanticLogger[StatementType] {
+  class Conditional[StatementType](logger: CoreLogger) extends SemanticLogger[StatementType] {
     override type Self[T]   = SemanticLogger[T]
     override type Method[T] = SemanticMethod[T]
     override type Predicate = SimplePredicate
@@ -104,8 +103,8 @@ object SemanticLogger {
       new Conditional[T](logger)
     }
 
-    override def onCondition(test2: => Boolean): Self[StatementType] = {
-      new Conditional(logger.onCondition(test2 _))
+    override def onCondition(condition: Condition): Self[StatementType] = {
+      new Conditional(logger.onCondition(condition))
     }
 
     override def isTraceEnabled: Predicate = logger.predicate(TRACE)

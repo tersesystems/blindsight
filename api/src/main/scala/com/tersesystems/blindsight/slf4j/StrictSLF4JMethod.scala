@@ -32,7 +32,7 @@ trait StrictSLF4JMethod {
    * @param condition the call by name boolean that must return true
    * @param block the block executed when condition is true.
    */
-  def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit
+  def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit
 
   def apply(
       message: Message
@@ -131,17 +131,16 @@ trait StrictSLF4JMethod {
 }
 
 object StrictSLF4JMethod {
-  import com.tersesystems.blindsight.mixins.SourceInfoMixin
 
   /**
    * Strict method implementation.
    */
-  class Impl(val level: Level, logger: LoggerState) extends StrictSLF4JMethod with SourceInfoMixin {
+  class Impl(val level: Level, core: CoreLogger) extends StrictSLF4JMethod {
 
     @inline
-    protected def markers: Markers = logger.markers
+    protected def markers: Markers = core.markers
 
-    val parameterList: ParameterList = logger.parameterList(level)
+    val parameterList: ParameterList = core.parameterList(level)
 
     import parameterList._
 
@@ -388,7 +387,7 @@ object StrictSLF4JMethod {
     }
 
     private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarker: Markers = sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarker + markers
     }
 
@@ -398,35 +397,33 @@ object StrictSLF4JMethod {
       collateMarkers + implicitly[ToMarkers[MR]].toMarkers(marker)
     }
 
-    override def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (condition && executePredicate(collateMarkers.marker)) {
+    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
+      if (condition(level) && executePredicate(collateMarkers.marker)) {
         block(this)
       }
     }
 
     override def toString: String = {
-      s"${getClass.getName}(logger=$logger)"
+      s"${getClass.getName}(logger=$core)"
     }
   }
 
   /**
    * Conditional method implementation.  Only calls when test evaluates to true.
    */
-  class Conditional(level: Level, logger: LoggerState)
-      extends StrictSLF4JMethod.Impl(level, logger)
-      with SourceInfoMixin {
+  class Conditional(level: Level, core: CoreLogger) extends StrictSLF4JMethod.Impl(level, core) {
 
     override val parameterList: ParameterList =
-      new ParameterList.Conditional(logger.condition.get, logger.parameterList(level))
+      new ParameterList.Conditional(level, core)
 
-    override def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (logger.condition.get() && condition) {
+    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
+      if (core.condition(level) && condition(level)) {
         block(this)
       }
     }
 
     override def toString: String = {
-      s"${getClass.getName}(logger=$logger)"
+      s"${getClass.getName}(logger=$core)"
     }
   }
 }

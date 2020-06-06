@@ -17,7 +17,6 @@
 package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.mixins.SourceInfoMixin
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
@@ -40,14 +39,14 @@ object FluentMethod {
     def logWithPlaceholders(): Unit
   }
 
-  class Impl(val level: Level, logger: LoggerState) extends FluentMethod with SourceInfoMixin {
+  class Impl(val level: Level, core: CoreLogger) extends FluentMethod {
 
-    protected val parameterList: ParameterList = logger.parameterList(level)
+    protected val parameterList: ParameterList = core.parameterList(level)
 
-    def markerState: Markers = logger.markers
+    def markerState: Markers = core.markers
 
     def when(condition: => Boolean)(block: FluentMethod => Unit): Unit = {
-      if (condition && isEnabled(collateMarkers(logger.markers))) {
+      if (condition && isEnabled(collateMarkers(core.markers))) {
         block(this)
       }
     }
@@ -117,7 +116,7 @@ object FluentMethod {
     protected def collateMarkers(
         markers: Markers
     )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarkers = sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarkers + markerState + markers
     }
 
@@ -130,10 +129,10 @@ object FluentMethod {
     }
   }
 
-  class Conditional(level: Level, logger: LoggerState) extends FluentMethod.Impl(level, logger) {
+  class Conditional(level: Level, logger: CoreLogger) extends FluentMethod.Impl(level, logger) {
 
     override def when(condition: => Boolean)(block: FluentMethod => Unit): Unit = {
-      if (logger.condition.get() && condition && isEnabled(collateMarkers(logger.markers))) {
+      if (logger.condition(level) && condition && isEnabled(collateMarkers(logger.markers))) {
         block(this)
       }
     }
@@ -141,7 +140,7 @@ object FluentMethod {
     override def apply[T: ToStatement](
         instance: => T
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (logger.condition.get()) {
+      if (logger.condition(level)) {
         val statement = implicitly[ToStatement[T]].toStatement(instance)
         logger.parameterList(level).executeStatement(statement)
       }

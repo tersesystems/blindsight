@@ -40,44 +40,44 @@ trait Logger extends SLF4JLogger[StrictSLF4JMethod] {
 
 object Logger {
 
-  class Impl(loggerState: LoggerState)
+  class Impl(core: CoreLogger)
       extends Logger
       with SLF4JLoggerAPI.Proxy[SimplePredicate, StrictSLF4JMethod] {
 
     override type Parent = SLF4JLogger[StrictSLF4JMethod]
     override type Self   = Logger
 
-    override protected val logger = new SLF4JLogger.Strict.Impl(loggerState)
+    override protected val logger = new SLF4JLogger.Strict(core)
 
     override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
 
     override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
-      new SLF4JLogger.Unchecked.Impl(loggerState)
+      new SLF4JLogger.Unchecked(core)
     }
 
     override lazy val flow: FlowLogger = {
-      new FlowLogger.Impl(loggerState)
+      new FlowLogger.Impl(core)
     }
 
     override lazy val fluent: FluentLogger = {
-      new FluentLogger.Impl(loggerState)
+      new FluentLogger.Impl(core)
     }
 
     override def semantic[StatementType: NotNothing]: SemanticLogger[StatementType] = {
-      new SemanticLogger.Impl[StatementType](loggerState)
+      new SemanticLogger.Impl[StatementType](core)
     }
 
-    override def onCondition(test: => Boolean): Self = {
-      new Impl(loggerState.onCondition(test _))
+    override def onCondition(condition: Condition): Self = {
+      new Impl(core.onCondition(condition))
     }
 
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(loggerState.withMarker(markers))
+      new Impl(core.withMarker(markers))
     }
 
-    override def markers: Markers = loggerState.markers
+    override def markers: Markers = core.markers
 
-    override def underlying: org.slf4j.Logger = loggerState.underlying
+    override def underlying: org.slf4j.Logger = core.underlying
   }
 
 }
