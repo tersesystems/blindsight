@@ -46,7 +46,6 @@ object ParameterList {
    * You should not need to use this as an end user, but it is very useful for extending loggers.
    */
   abstract class Impl(val level: Level, val logger: org.slf4j.Logger) extends ParameterList {
-
     def executeStatement(statement: Statement): Unit =
       statement match {
         case Statement(markers, message, args, None) =>

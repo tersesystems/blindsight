@@ -26,9 +26,8 @@ import sourcecode.{Enclosing, File, Line}
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    new Logger.Impl(
-      DefaultCoreLogger(Markers.empty, underlying, Condition.always, sourceInfoBehavior)
-    )
+    val state      = LoggerState(Markers.empty, underlying, Condition.always, sourceInfoBehavior)
+    new Logger.Impl(new DefaultCoreLogger(state))
   }
 
   val sourceInfoBehavior: SourceInfoBehavior = new SourceInfoBehavior {

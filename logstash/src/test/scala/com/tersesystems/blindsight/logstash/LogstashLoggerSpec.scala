@@ -133,7 +133,10 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a condition" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.onCondition(1 == 0).info("this is a failed message")
+        val conditional    = logger.onCondition(1 == 0)
+        val infoMethod     = conditional.info
+        infoMethod.apply("this is a failed message")
+
         logger.onCondition(1 == 1).info("this is a successful message")
         listAppender.list.size() must be(1)
 

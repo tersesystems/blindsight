@@ -1,5 +1,7 @@
 package com.tersesystems.blindsight
 
+import com.tersesystems.blindsight
+import org.slf4j
 import org.slf4j.event.Level
 
 trait CoreLogger {
@@ -23,25 +25,30 @@ trait CoreLogger {
 
 object CoreLogger {
   def apply(underlying: org.slf4j.Logger): CoreLogger = {
-    DefaultCoreLogger(Markers.empty, underlying, Condition.always, SourceInfoBehavior.empty)
+    val state = LoggerState(Markers.empty, underlying, Condition.always, SourceInfoBehavior.empty)
+    new DefaultCoreLogger(state)
   }
 }
 
-final case class DefaultCoreLogger(
+final case class LoggerState(
     markers: Markers,
     underlying: org.slf4j.Logger,
     condition: Condition,
     sourceInfoBehavior: SourceInfoBehavior
-) extends CoreLogger {
+)
+
+class DefaultCoreLogger(val state: LoggerState) extends CoreLogger {
   private val parameterLists: Seq[ParameterList] = ParameterList.lists(this.underlying)
 
   override def withMarker[M: ToMarkers](m: M): CoreLogger = {
     val markers = implicitly[ToMarkers[M]].toMarkers(m)
-    copy(markers = this.markers + markers)
+    new DefaultCoreLogger(state.copy(markers = this.markers + markers))
   }
 
-  override def onCondition(t: Condition): CoreLogger = {
-    copy(condition = level => condition(level) && t(level))
+  override def onCondition(c: Condition): CoreLogger = {
+    val newCondition: Condition = Condition(level => state.condition(level) && c(level))
+    val newState                = state.copy(condition = newCondition)
+    new ConditionalCoreLogger(new DefaultCoreLogger(newState))
   }
 
   @inline
@@ -49,4 +56,19 @@ final case class DefaultCoreLogger(
 
   override def predicate(level: Level): SimplePredicate =
     new SimplePredicate.Impl(level, this)
+
+  override def markers: Markers = state.markers
+
+  override def underlying: slf4j.Logger = state.underlying
+
+  override def condition: Condition = state.condition
+
+  override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
+}
+
+class ConditionalCoreLogger(coreLogger: DefaultCoreLogger)
+    extends DefaultCoreLogger(coreLogger.state) {
+  @inline
+  override def parameterList(level: Level): ParameterList =
+    new ParameterList.Conditional(level, coreLogger)
 }

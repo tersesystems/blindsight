@@ -32,7 +32,7 @@ trait StrictSLF4JMethod {
    * @param condition the call by name boolean that must return true
    * @param block the block executed when condition is true.
    */
-  def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit
+  def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit
 
   def apply(
       message: Message
@@ -140,7 +140,7 @@ object StrictSLF4JMethod {
     @inline
     protected def markers: Markers = core.markers
 
-    val parameterList: ParameterList = core.parameterList(level)
+    protected val parameterList: ParameterList = core.parameterList(level)
 
     import parameterList._
 
@@ -397,27 +397,8 @@ object StrictSLF4JMethod {
       collateMarkers + implicitly[ToMarkers[MR]].toMarkers(marker)
     }
 
-    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (condition(level) && executePredicate(collateMarkers.marker)) {
-        block(this)
-      }
-    }
-
-    override def toString: String = {
-      s"${getClass.getName}(logger=$core)"
-    }
-  }
-
-  /**
-   * Conditional method implementation.  Only calls when test evaluates to true.
-   */
-  class Conditional(level: Level, core: CoreLogger) extends StrictSLF4JMethod.Impl(level, core) {
-
-    override val parameterList: ParameterList =
-      new ParameterList.Conditional(level, core)
-
-    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (core.condition(level) && condition(level)) {
+    override def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit = {
+      if (condition && executePredicate(collateMarkers.marker)) {
         block(this)
       }
     }
