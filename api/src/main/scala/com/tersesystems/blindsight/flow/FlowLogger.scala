@@ -62,22 +62,20 @@ object FlowLogger {
       new Impl(logger.withMarker(markerInstance))
     }
 
-    override def isTraceEnabled: Predicate = predicate(TRACE)
-    override def trace: Method             = new FlowMethod.Impl(TRACE, logger)
+    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override val trace: Method             = new FlowMethod.Impl(TRACE, logger)
 
-    override def isDebugEnabled: Predicate = predicate(DEBUG)
-    override def debug: Method             = new FlowMethod.Impl(DEBUG, logger)
+    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override val debug: Method             = new FlowMethod.Impl(DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = predicate(INFO)
-    override def info: Method             = new FlowMethod.Impl(INFO, logger)
+    override val isInfoEnabled: Predicate = logger.predicate(INFO)
+    override val info: Method             = new FlowMethod.Impl(INFO, logger)
 
-    override def isWarnEnabled: Predicate = predicate(WARN)
-    override def warn: Method             = new FlowMethod.Impl(WARN, logger)
+    override val isWarnEnabled: Predicate = logger.predicate(WARN)
+    override val warn: Method             = new FlowMethod.Impl(WARN, logger)
 
-    override def isErrorEnabled: Predicate = predicate(ERROR)
-    override def error: Method             = new FlowMethod.Impl(ERROR, logger)
-
-    def predicate(level: Level): Predicate = ???
+    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override val error: Method             = new FlowMethod.Impl(ERROR, logger)
 
     override def markers: Markers = logger.markers
 
@@ -103,22 +101,20 @@ object FlowLogger {
       new Conditional(logger.withMarker(markerInstance))
     }
 
-    override def isTraceEnabled: Predicate = predicate(TRACE)
-    override def trace: Method             = new FlowMethod.Conditional(TRACE, logger)
+    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override val trace: Method             = new FlowMethod.Conditional(TRACE, logger)
 
-    override def isDebugEnabled: Predicate = predicate(DEBUG)
-    override def debug: Method             = new FlowMethod.Conditional(DEBUG, logger)
+    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override val debug: Method             = new FlowMethod.Conditional(DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = predicate(INFO)
-    override def info: Method             = new FlowMethod.Conditional(INFO, logger)
+    override val isInfoEnabled: Predicate = logger.predicate(INFO)
+    override val info: Method             = new FlowMethod.Conditional(INFO, logger)
 
-    override def isWarnEnabled: Predicate = predicate(WARN)
-    override def warn: Method             = new FlowMethod.Conditional(WARN, logger)
+    override val isWarnEnabled: Predicate = logger.predicate(WARN)
+    override val warn: Method             = new FlowMethod.Conditional(WARN, logger)
 
-    override def isErrorEnabled: Predicate = predicate(ERROR)
-    override def error: Method             = new FlowMethod.Conditional(ERROR, logger)
-
-    def predicate(level: Level): Predicate = ???
+    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override val error: Method             = new FlowMethod.Conditional(ERROR, logger)
 
     override def markers: Markers = logger.markers
 

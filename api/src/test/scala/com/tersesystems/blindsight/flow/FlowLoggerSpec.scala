@@ -2,7 +2,7 @@ package com.tersesystems.blindsight.flow
 
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.slf4j.SLF4JLogger
-import com.tersesystems.blindsight.{Markers, Statement, ToArgument}
+import com.tersesystems.blindsight.{DefaultLoggerState, Markers, Statement, ToArgument}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.event.Level
@@ -15,8 +15,9 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   "flow logger" should {
     "print entry and exit statements" in {
-      val underlying       = loggerContext.getLogger("logger")
-      val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
+      val underlying = loggerContext.getLogger("logger")
+      val flow: FlowLogger =
+        new FlowLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
 
       import LowPriorityBehavior._
 
@@ -31,8 +32,9 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
 
     "render an exception" in {
-      val underlying       = loggerContext.getLogger("logger")
-      val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
+      val underlying = loggerContext.getLogger("logger")
+      val flow: FlowLogger =
+        new FlowLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
       import LowPriorityBehavior._
 
       Try {
@@ -50,8 +52,9 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
 
     "log nothing when using only defaults" in {
-      val underlying       = loggerContext.getLogger("logger")
-      val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
+      val underlying = loggerContext.getLogger("logger")
+      val flow: FlowLogger =
+        new FlowLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
 
       implicit def flowMapping[B]: FlowBehavior[B] = new FlowBehavior[B] {}
 
@@ -69,8 +72,9 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
   "flow logger conditional" should {
 
     "log when a predicate is present" in {
-      val underlying       = loggerContext.getLogger("logger")
-      val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
+      val underlying = loggerContext.getLogger("logger")
+      val flow: FlowLogger =
+        new FlowLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
       import LowPriorityBehavior._
 
       val condition = flow.onCondition(true)
@@ -85,8 +89,9 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
 
     "not log when a predicate is off" in {
-      val underlying       = loggerContext.getLogger("logger")
-      val flow: FlowLogger = new FlowLogger.Impl(new NoSourceSLF4JLogger(underlying))
+      val underlying = loggerContext.getLogger("logger")
+      val flow: FlowLogger =
+        new FlowLogger.Impl(DefaultLoggerState(Markers.empty, underlying, None))
       import LowPriorityBehavior._
 
       val condition = flow.onCondition(false)
@@ -116,6 +121,3 @@ trait LowPriorityBehavior {
 }
 
 object LowPriorityBehavior extends LowPriorityBehavior
-
-class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-    extends SLF4JLogger.Strict(underlying, markers)

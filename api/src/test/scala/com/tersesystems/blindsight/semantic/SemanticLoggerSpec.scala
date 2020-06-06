@@ -13,6 +13,10 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
 
   def resourceName: String = "/logback-test-list.xml"
 
+  def loggerState(underlying: org.slf4j.Logger): LoggerState = {
+    DefaultLoggerState(Markers.empty, underlying, None)
+  }
+
   "a logger" when {
 
     "run against statement" in {
@@ -27,7 +31,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
 
       val underlying = loggerContext.getLogger("testing")
       val payloadLogger: SemanticLogger[PayloadModel] =
-        new SemanticLogger.Impl[PayloadModel](new NoSourceSLF4JLogger(underlying))
+        new SemanticLogger.Impl[PayloadModel](loggerState(underlying))
       val uuid = UUID.randomUUID()
       payloadLogger.info(PayloadModel(uuid, "1234", "data"))
 
@@ -53,7 +57,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
 
       val underlying = loggerContext.getLogger("testing")
       val payloadLogger: SemanticLogger[PayloadModel] =
-        new SemanticLogger.Impl[PayloadModel](new NoSourceSLF4JLogger(underlying))
+        new SemanticLogger.Impl[PayloadModel](loggerState(underlying))
       val uuid = UUID.randomUUID()
       payloadLogger.info(PayloadModel(uuid, "1234", "data"))
 
@@ -67,6 +71,3 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
 final case class PayloadModel(payloadId: UUID, userSecretToken: String, data: String) {
   override def toString: String = s"PayloadModel(uuid=$payloadId)"
 }
-
-class NoSourceSLF4JLogger(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-    extends SLF4JLogger.Strict(underlying, markers)

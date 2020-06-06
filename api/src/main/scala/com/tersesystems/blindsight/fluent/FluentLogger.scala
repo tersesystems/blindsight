@@ -35,24 +35,16 @@ import sourcecode.{Enclosing, File, Line}
 trait FluentLogger
     extends SLF4JLoggerAPI[SimplePredicate, FluentMethod]
     with MarkerMixin
+    with UnderlyingMixin
     with OnConditionMixin {
   override type Self      = FluentLogger
   override type Method    = FluentMethod
   override type Predicate = SimplePredicate
 }
 
-/**
- * The implementation trait.
- */
-trait ExtendedFluentLogger
-    extends FluentLogger
-    with PredicateMixin[SimplePredicate]
-    with UnderlyingMixin
-    with SourceInfoMixin
-
 object FluentLogger {
 
-  class Impl(logger: LoggerState) extends ExtendedFluentLogger with SourceInfoMixin {
+  class Impl(logger: LoggerState) extends FluentLogger with SourceInfoMixin {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
       new Impl(logger.withMarker(markerInstance))
     }
@@ -61,27 +53,24 @@ object FluentLogger {
       new Conditional(logger.onCondition(test _))
     }
 
-    override val isTraceEnabled: Predicate = predicate(TRACE)
+    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
     override val trace: Method             = new FluentMethod.Impl(TRACE, logger)
 
-    override val isDebugEnabled: Predicate = predicate(DEBUG)
+    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
     override val debug: Method             = new FluentMethod.Impl(DEBUG, logger)
 
-    override val isInfoEnabled: Predicate = predicate(INFO)
+    override val isInfoEnabled: Predicate = logger.predicate(INFO)
     override val info: Method             = new FluentMethod.Impl(INFO, logger)
 
-    override val isWarnEnabled: Predicate = predicate(WARN)
+    override val isWarnEnabled: Predicate = logger.predicate(WARN)
     override val warn: Method             = new FluentMethod.Impl(WARN, logger)
 
-    override val isErrorEnabled: Predicate = predicate(ERROR)
+    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
     override val error: Method             = new FluentMethod.Impl(ERROR, logger)
-
-    override def predicate(level: Level): Predicate = logger.predicate(level)
 
     override def markers: Markers = logger.markers
 
     override def underlying: org.slf4j.Logger = logger.underlying
-
   }
 
   class Conditional(logger: LoggerState) extends FluentLogger {
@@ -97,21 +86,23 @@ object FluentLogger {
       new Conditional(logger.onCondition(test2 _))
     }
 
-    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override def trace: Method             = new FluentMethod.Conditional(TRACE, logger)
+    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override val trace: Method             = new FluentMethod.Conditional(TRACE, logger)
 
-    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override def debug: Method             = new FluentMethod.Conditional(DEBUG, logger)
+    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override val debug: Method             = new FluentMethod.Conditional(DEBUG, logger)
 
-    override def isInfoEnabled: Predicate = logger.predicate(INFO)
-    override def info: Method             = new FluentMethod.Conditional(INFO, logger)
+    override val isInfoEnabled: Predicate = logger.predicate(INFO)
+    override val info: Method             = new FluentMethod.Conditional(INFO, logger)
 
-    override def isWarnEnabled: Predicate = logger.predicate(WARN)
-    override def warn: Method             = new FluentMethod.Conditional(WARN, logger)
+    override val isWarnEnabled: Predicate = logger.predicate(WARN)
+    override val warn: Method             = new FluentMethod.Conditional(WARN, logger)
 
-    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override def error: Method             = new FluentMethod.Conditional(ERROR, logger)
+    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override val error: Method             = new FluentMethod.Conditional(ERROR, logger)
 
     override def markers: Markers = logger.markers
+
+    override def underlying: org.slf4j.Logger = logger.underlying
   }
 }

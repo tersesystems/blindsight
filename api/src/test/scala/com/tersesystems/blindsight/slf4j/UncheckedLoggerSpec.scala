@@ -29,24 +29,8 @@ class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTe
 
   override def resourceName: String = "/logback-test-slf4j.xml"
 
-  // XXX there should be a basic impl which has (underlying, markers, test) and just
-  // exposes those to classes so we can pass the state around.
-  class Wrapper(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-      extends SLF4JLogger.Base[UncheckedSLF4JMethod](underlying, markers) {
-    override protected def newInstance(
-        underlying: org.slf4j.Logger,
-        markerState: Markers
-    ): Self = new Wrapper(underlying, markerState)
-
-    override protected def newMethod(level: Level) =
-      new UncheckedSLF4JMethod.Impl(level, this)
-
-    override def onCondition(test: => Boolean) =
-      new Unchecked.Conditional(test, this)
-  }
-
   class TestLogger(underlying: org.slf4j.Logger)
-      extends Unchecked(new Wrapper(underlying, Markers.empty))
+      extends Unchecked.Impl(DefaultLoggerState(Markers.empty, underlying, None))
 
   "A logger with no state marker" when {
     "calling predicate" should {

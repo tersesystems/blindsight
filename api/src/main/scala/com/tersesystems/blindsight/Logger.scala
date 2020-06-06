@@ -47,12 +47,12 @@ object Logger {
     override type Parent = SLF4JLogger[StrictSLF4JMethod]
     override type Self   = Logger
 
-    override protected val logger = new SLF4JLogger.Strict(loggerState)
+    override protected val logger = new SLF4JLogger.Strict.Impl(loggerState)
 
     override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
 
     override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
-      new SLF4JLogger.Unchecked(loggerState)
+      new SLF4JLogger.Unchecked.Impl(loggerState)
     }
 
     override lazy val flow: FlowLogger = {
