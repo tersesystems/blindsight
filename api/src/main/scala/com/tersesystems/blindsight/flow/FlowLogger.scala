@@ -18,17 +18,8 @@ package com.tersesystems.blindsight.flow
 
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
-import com.tersesystems.blindsight.{
-  Condition,
-  CoreLogger,
-  Markers,
-  ParameterList,
-  SimplePredicate,
-  ToMarkers
-}
-import org.slf4j.event.Level
+import com.tersesystems.blindsight._
 import org.slf4j.event.Level._
-import sourcecode.{Enclosing, File, Line}
 
 /**
  * This trait implements a logger that is used for rendering entry/exit logging wrappers.

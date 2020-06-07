@@ -47,12 +47,12 @@ object FlowMethod {
    * The implementation of the flow logger method.
    *
    * @param level the level to log a statement with.
-   * @param logger the parent logger.
+   * @param core the parent logger.
    */
-  class Impl(level: Level, logger: CoreLogger) extends FlowMethod {
+  class Impl(level: Level, core: CoreLogger) extends FlowMethod {
 
-    private val predicate: SimplePredicate   = logger.predicate(level)
-    private val parameterList: ParameterList = logger.parameterList(level)
+    private val predicate: SimplePredicate   = core.predicate(level)
+    private val parameterList: ParameterList = core.parameterList(level)
 
     override def apply[B: ToArgument](
         attempt: => B
@@ -93,7 +93,7 @@ object FlowMethod {
           case Failure(exception) =>
             throwingStatement(exception, source).foreach {
               case (level, stmt) =>
-                logger.parameterList(level).executeStatement(stmt)
+                core.parameterList(level).executeStatement(stmt)
             }
         }
         result.get // rethrow the exception

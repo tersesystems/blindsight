@@ -1,6 +1,6 @@
 package example.resolvers
 
-import com.tersesystems.blindsight.{LoggerFactory, LoggerResolver}
+import com.tersesystems.blindsight.LoggerResolver
 
 object ResolverMain {
 

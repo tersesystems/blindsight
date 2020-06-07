@@ -3,8 +3,6 @@ package example.typeclasses
 import com.tersesystems.blindsight._
 import org.slf4j.MarkerFactory
 
-import scala.util.Random
-
 object TypeClassExample {
 
   private val logger = LoggerFactory.getLogger

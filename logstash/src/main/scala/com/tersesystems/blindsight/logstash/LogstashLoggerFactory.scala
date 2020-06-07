@@ -26,8 +26,7 @@ import sourcecode.{Enclosing, File, Line}
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    val state      = LoggerState(Markers.empty, underlying, Condition.always, sourceInfoBehavior)
-    new Logger.Impl(new DefaultCoreLogger(state))
+    new Logger.Impl(CoreLogger(underlying))
   }
 
   /**
@@ -35,9 +34,9 @@ class LogstashLoggerFactory extends LoggerFactory {
    */
   val sourceInfoBehavior: SourceInfoBehavior = new SourceInfoBehavior {
     override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
-      import com.tersesystems.blindsight.SourceCodeImplicits._
-      import com.tersesystems.blindsight.DSL._
       import com.tersesystems.blindsight.AST.BField
+      import com.tersesystems.blindsight.DSL._
+      import com.tersesystems.blindsight.SourceCodeImplicits._
       Markers((line: BField) ~ file ~ enclosing)
     }
   }

@@ -3,8 +3,7 @@ package com.tersesystems.blindsight.fluent
 import java.util.UUID
 
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
-import com.tersesystems.blindsight.slf4j.SLF4JLogger
-import com.tersesystems.blindsight.{Argument, CoreLogger, DefaultCoreLogger, Markers, ToArgument}
+import com.tersesystems.blindsight.{Argument, CoreLogger, ToArgument}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.MarkerFactory

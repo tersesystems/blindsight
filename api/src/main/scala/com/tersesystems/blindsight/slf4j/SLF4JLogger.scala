@@ -17,11 +17,9 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight.mixins._
-import com.tersesystems.blindsight.{Condition, CoreLogger, Markers, SimplePredicate, ToMarkers}
+import com.tersesystems.blindsight._
 import org.slf4j.Logger
 import org.slf4j.event.Level._
-
-import scala.reflect.ClassTag
 
 /**
  * Public SLF4J Logger interface.  This is intended for the end user.
@@ -51,7 +49,7 @@ object SLF4JLogger {
    *
     * @tparam M the type of method.
    */
-  abstract class Base[M: ClassTag](core: CoreLogger) extends SLF4JLogger[M] {
+  abstract class Base[M](core: CoreLogger) extends SLF4JLogger[M] {
     override type Self      = SLF4JLogger[M]
     override type Method    = M
     override type Predicate = SimplePredicate
@@ -61,11 +59,9 @@ object SLF4JLogger {
     /**
      * Returns the accumulated markers of this logger.
      *
-      * @return the accumulated markers, may be Markers.empty.
+     * @return the accumulated markers, may be Markers.empty.
      */
     override val markers: Markers = core.markers
-
-    override def onCondition(condition: Condition): Self
 
     override val isTraceEnabled: Predicate = core.predicate(TRACE)
     override val isDebugEnabled: Predicate = core.predicate(DEBUG)
@@ -77,25 +73,24 @@ object SLF4JLogger {
   /**
    * A logger that provides "strict" logging that only takes type class aware arguments.
    */
-  class Strict(coreLogger: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](coreLogger) {
-    override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, coreLogger)
-    override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, coreLogger)
-    override val info: Method  = new StrictSLF4JMethod.Impl(INFO, coreLogger)
-    override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, coreLogger)
-    override val error: Method = new StrictSLF4JMethod.Impl(ERROR, coreLogger)
+  class Strict(core: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](core) {
+    override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, core)
+    override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, core)
+    override val info: Method  = new StrictSLF4JMethod.Impl(INFO, core)
+    override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, core)
+    override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
 
     override def withMarker[T: ToMarkers](markerInst: T): Self =
-      new Strict(coreLogger.withMarker(markerInst))
+      new Strict(core.withMarker(markerInst))
 
     override def onCondition(condition: Condition): SLF4JLogger[StrictSLF4JMethod] =
-      new Strict(coreLogger.onCondition(condition))
+      new Strict(core.onCondition(condition))
   }
 
   /**
    * A logger that provides "unchecked" logging that only takes type class aware arguments.
    */
   class Unchecked(core: CoreLogger) extends SLF4JLogger.Base[UncheckedSLF4JMethod](core) {
-
     override val trace: Method = new UncheckedSLF4JMethod.Impl(TRACE, core)
     override val debug: Method = new UncheckedSLF4JMethod.Impl(DEBUG, core)
     override val info: Method  = new UncheckedSLF4JMethod.Impl(INFO, core)

@@ -4,10 +4,10 @@ package example.semantic
 object RefinedMain {
   import com.tersesystems.blindsight._
   import com.tersesystems.blindsight.semantic._
+  import eu.timepit.refined._
   import eu.timepit.refined.api.Refined
   import eu.timepit.refined.collection.NonEmpty
   import eu.timepit.refined.string._
-  import eu.timepit.refined._
 
   implicit def stringToStatement[R]: ToStatement[Refined[String, R]] =
     ToStatement { str =>

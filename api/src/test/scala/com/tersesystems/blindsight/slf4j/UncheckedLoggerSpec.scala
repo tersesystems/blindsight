@@ -18,12 +18,10 @@ package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
-import com.tersesystems.blindsight.slf4j.SLF4JLogger.{Strict, Unchecked}
+import com.tersesystems.blindsight.slf4j.SLF4JLogger.Unchecked
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.slf4j
 import org.slf4j.MarkerFactory
-import org.slf4j.event.Level
 
 class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 

@@ -12,66 +12,65 @@ public interface Logger {
 In Blindsight, the API and the logging levels are all traits, and the `LoggerAPI` is a composition of those traits. 
 
 ```scala
-trait LoggerComponent[P, M] {
+
+trait SLF4JLoggerComponent[P, M] {
   type Predicate <: P
-  type Method    <: M
+  type Method <: M
   type Self
 }
 
-trait InfoLoggerAPI[P, M] extends LoggerComponent[P, M] {
-  def isInfoEnabled: Predicate
-  def info: Method
+object SLF4JLoggerAPI {
+  trait Info[P, M] extends SLF4JLoggerComponent[P, M] {
+    def isInfoEnabled: Predicate
+    def info: Method
+  }
 }
 
-trait LoggerAPI[P, M]
-    extends LoggerComponent[P, M]
-    with TraceLoggerAPI[P, M]
-    with DebugLoggerAPI[P, M]
-    with InfoLoggerAPI[P, M]
-    with WarnLoggerAPI[P, M]
-    with ErrorLoggerAPI[P, M]
+trait SLF4JLoggerAPI[P, M]
+    extends SLF4JLoggerComponent[P, M]
+    with SLF4JLoggerAPI.Trace[P, M]
+    with SLF4JLoggerAPI.Debug[P, M]
+    with SLF4JLoggerAPI.Info[P, M]
+    with SLF4JLoggerAPI.Warn[P, M]
+    with SLF4JLoggerAPI.Error[P, M]
 ```
 
-And the logger itself just puts together the appropriate predicates and methods.
+The logger itself just puts together the appropriate predicates and methods.
 
 ```scala
-
 object SLF4JLogger {
 
-  abstract class Base[M: ClassTag](val underlying: org.slf4j.Logger, val markers: Markers)
-      extends ExtendedSLF4JLogger[M] {      
+  abstract class Base[M: ClassTag](core: CoreLogger) extends SLF4JLogger[M] {
     override type Self      = SLF4JLogger[M]
     override type Method    = M
-    override type Predicate = SLF4JPredicate
+    override type Predicate = SimplePredicate
 
-    // ... some infrastructure for parameter lists...
+    override val underlying: Logger = core.underlying
 
-    // implementation for trace, only the level changes
-    override def isTraceEnabled: Predicate = newPredicate(Level.TRACE)
-    override def trace: Method             = newMethod(Level.TRACE)
+    override val markers: Markers = core.markers
 
-    override def withMarker[T: ToMarkers](markerInst: T): Self = {
-      val markers = implicitly[ToMarkers[T]].toMarkers(markerInst)
-      newInstance(underlying, markers + markers)
-    }
-
-    protected def newInstance(underlying: org.slf4j.Logger, markerState: Markers): Self
-    protected def newMethod(level: Level): Method
-    protected def newPredicate(level: Level): Predicate = new SLF4JPredicate.Impl(level, this)
+    override val isTraceEnabled: Predicate = core.predicate(TRACE)
+    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
+    override val isInfoEnabled: Predicate  = core.predicate(INFO)
+    override val isWarnEnabled: Predicate  = core.predicate(WARN)
+    override val isErrorEnabled: Predicate = core.predicate(ERROR)
   }
 
-  class Strict(underlying: org.slf4j.Logger, markers: Markers)
-      extends SLF4JLogger.Base[StrictSLF4JMethod](underlying, markers) {
-    override protected def newInstance(
-        underlying: org.slf4j.Logger,
-        markerState: Markers
-    ): Self = new Strict(underlying, markerState)
+  /**
+   * A logger that provides "strict" logging that only takes type class aware arguments.
+   */
+  class Strict(core: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](core) {
+    override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, core)
+    override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, core)
+    override val info: Method  = new StrictSLF4JMethod.Impl(INFO, core)
+    override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, core)
+    override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
 
-    override protected def newMethod(level: Level): StrictSLF4JMethod =
-      new StrictSLF4JMethod.Impl(level, this)
+    override def withMarker[T: ToMarkers](markerInst: T): Self =
+      new Strict(core.withMarker(markerInst))
 
-    override def onCondition(test: => Boolean): SLF4JLogger[StrictSLF4JMethod] =
-      new Strict.Conditional(test, this)
+    override def onCondition(condition: Condition): SLF4JLogger[StrictSLF4JMethod] =
+      new Strict(core.onCondition(condition))
   }
 }
 ```
@@ -103,13 +102,13 @@ And from there, the method implementation does the work of resolving type class 
 ```scala
 object StrictSLF4JMethod {
 
-  class Impl(val level: Level, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
+  class Impl(val level: Level, core: CoreLogger)
       extends StrictSLF4JMethod {
 
     @inline
-    protected def markers: Markers = logger.markers
+    protected def markers: Markers = core.markers
 
-    protected val parameterList: ParameterList = logger.parameterList(level)
+    protected val parameterList: ParameterList = core.parameterList(level)
 
     override def apply(
         msg: => Message
@@ -132,3 +131,40 @@ object StrictSLF4JMethod {
 ```
 
 Breaking down the API means that you can pass through only the `LoggerMethod`, or assemble your custom logging levels.  You have the option of extending `LoggerMethod` and `LoggerPredicate` with your own application specific logging API.   Blindsight is designed to work with you so that adding new functionality is easy.
+
+The @scaladoc[com.tersesystems.blindsight.CoreLogger] contains the API independent code for logging.  This exposes the state of the logger (markers, condition and underlying SLF4J logger), and exposes methods for building up additional state without tying that state to an end-user API.
+
+```scala
+trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin {
+  type Self = CoreLogger
+
+  def condition: Condition
+
+  def sourceInfoBehavior: SourceInfoBehavior
+
+  def predicate(level: Level): SimplePredicate
+
+  def parameterList(level: Level): ParameterList
+}
+```
+
+Finally, the @scaladoc[com.tersesystems.blindsight.ParameterList] is where a subset of the SLF4J API is called.  These are organized by level, so `executePredicate()` resolves to `underlying.isLoggingDebug()` if the level is `DEBUG`.
+
+```scala
+trait ParameterList {
+
+  def executePredicate(): Boolean
+  def executePredicate(marker: Marker): Boolean
+
+  def message(msg: String): Unit
+  def messageArg1(msg: String, arg: Any): Unit
+  def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit
+  def messageArgs(msg: String, args: Seq[_]): Unit
+  def markerMessage(marker: Marker, msg: String): Unit
+  def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit
+  def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit
+  def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit
+
+  def executeStatement(statement: Statement): Unit
+}
+``` 

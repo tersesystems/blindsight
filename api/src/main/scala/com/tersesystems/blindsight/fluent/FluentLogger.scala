@@ -16,13 +16,10 @@
 
 package com.tersesystems.blindsight.fluent
 
+import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
-import com.tersesystems.blindsight._
-import org.slf4j.Logger
-import org.slf4j.event.Level
 import org.slf4j.event.Level._
-import sourcecode.{Enclosing, File, Line}
 
 /**
  * The fluent logger trait.
@@ -44,32 +41,32 @@ trait FluentLogger
 
 object FluentLogger {
 
-  class Impl(logger: CoreLogger) extends FluentLogger {
+  class Impl(core: CoreLogger) extends FluentLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(logger.withMarker(markerInstance))
+      new Impl(core.withMarker(markerInstance))
     }
 
     override def onCondition(condition: Condition): FluentLogger = {
-      new Impl(logger.onCondition(condition))
+      new Impl(core.onCondition(condition))
     }
 
-    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override val trace: Method             = new FluentMethod.Impl(TRACE, logger)
+    override val isTraceEnabled: Predicate = core.predicate(TRACE)
+    override val trace: Method             = new FluentMethod.Impl(TRACE, core)
 
-    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override val debug: Method             = new FluentMethod.Impl(DEBUG, logger)
+    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
+    override val debug: Method             = new FluentMethod.Impl(DEBUG, core)
 
-    override val isInfoEnabled: Predicate = logger.predicate(INFO)
-    override val info: Method             = new FluentMethod.Impl(INFO, logger)
+    override val isInfoEnabled: Predicate = core.predicate(INFO)
+    override val info: Method             = new FluentMethod.Impl(INFO, core)
 
-    override val isWarnEnabled: Predicate = logger.predicate(WARN)
-    override val warn: Method             = new FluentMethod.Impl(WARN, logger)
+    override val isWarnEnabled: Predicate = core.predicate(WARN)
+    override val warn: Method             = new FluentMethod.Impl(WARN, core)
 
-    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override val error: Method             = new FluentMethod.Impl(ERROR, logger)
+    override val isErrorEnabled: Predicate = core.predicate(ERROR)
+    override val error: Method             = new FluentMethod.Impl(ERROR, core)
 
-    override def markers: Markers = logger.markers
+    override def markers: Markers = core.markers
 
-    override def underlying: org.slf4j.Logger = logger.underlying
+    override def underlying: org.slf4j.Logger = core.underlying
   }
 }

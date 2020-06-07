@@ -16,13 +16,9 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.mixins._
-import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
-import org.slf4j
-import org.slf4j.event.Level
+import com.tersesystems.blindsight.mixins._
 import org.slf4j.event.Level._
-import sourcecode.{Enclosing, File, Line}
 
 /**
  * The semantic logger trait takes a statement as a type.  Types can be refined from the
@@ -48,42 +44,41 @@ trait SemanticLogger[StatementType]
 
 object SemanticLogger {
 
-  class Impl[StatementType](protected val logger: CoreLogger)
-      extends SemanticLogger[StatementType] {
+  class Impl[StatementType](protected val core: CoreLogger) extends SemanticLogger[StatementType] {
 
-    override def underlying: slf4j.Logger = logger.underlying
+    override def underlying: org.slf4j.Logger = core.underlying
 
-    override def markers: Markers = logger.markers
+    override def markers: Markers = core.markers
     override def withMarker[T: ToMarkers](markerInst: => T): Self[StatementType] = {
       val markers = implicitly[ToMarkers[T]].toMarkers(markerInst)
-      new Impl[StatementType](logger.withMarker(markers))
+      new Impl[StatementType](core.withMarker(markers))
     }
 
-    override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = new Impl[T](logger)
+    override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = new Impl[T](core)
 
     override def onCondition(condition: Condition): Self[StatementType] = {
-      new Impl[StatementType](logger.onCondition(condition))
+      new Impl[StatementType](core.onCondition(condition))
     }
 
-    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
+    override val isTraceEnabled: Predicate = core.predicate(TRACE)
     override val trace: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](TRACE, logger)
+      new SemanticMethod.Impl[StatementType](TRACE, core)
 
-    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
+    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
     override val debug: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](DEBUG, logger)
+      new SemanticMethod.Impl[StatementType](DEBUG, core)
 
-    override val isInfoEnabled: Predicate = logger.predicate(INFO)
+    override val isInfoEnabled: Predicate = core.predicate(INFO)
     override val info: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](INFO, logger)
+      new SemanticMethod.Impl[StatementType](INFO, core)
 
-    override val isWarnEnabled: Predicate = logger.predicate(WARN)
+    override val isWarnEnabled: Predicate = core.predicate(WARN)
     override val warn: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](WARN, logger)
+      new SemanticMethod.Impl[StatementType](WARN, core)
 
-    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
+    override val isErrorEnabled: Predicate = core.predicate(ERROR)
     override val error: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](ERROR, logger)
+      new SemanticMethod.Impl[StatementType](ERROR, core)
 
   }
 
