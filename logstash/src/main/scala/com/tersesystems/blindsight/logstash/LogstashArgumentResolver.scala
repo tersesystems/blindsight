@@ -16,9 +16,9 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.AST._
-import net.logstash.logback.argument.{StructuredArgument, StructuredArguments}
+import com.tersesystems.blindsight._
+import net.logstash.logback.argument.StructuredArguments
 
 class LogstashArgumentResolver extends ArgumentResolver {
   override def resolve(bobject: BObject): Argument = {

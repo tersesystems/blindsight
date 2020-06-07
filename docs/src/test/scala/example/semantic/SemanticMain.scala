@@ -18,8 +18,8 @@ package example.semantic
 
 import java.time.LocalTime
 
-import com.tersesystems.blindsight.{Arguments, LoggerFactory, Statement, ToStatement, bobj}
 import com.tersesystems.blindsight.semantic.SemanticLogger
+import com.tersesystems.blindsight._
 
 // #semantic-main
 object SemanticMain {

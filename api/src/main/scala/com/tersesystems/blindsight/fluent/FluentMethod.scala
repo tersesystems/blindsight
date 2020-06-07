@@ -39,14 +39,14 @@ object FluentMethod {
     def logWithPlaceholders(): Unit
   }
 
-  class Impl(val level: Level, logger: ExtendedFluentLogger) extends FluentMethod {
+  class Impl(val level: Level, core: CoreLogger) extends FluentMethod {
 
-    protected val parameterList: ParameterList = logger.parameterList(level)
+    protected val parameterList: ParameterList = core.parameterList(level)
 
-    def markerState: Markers = logger.markers
+    def markerState: Markers = core.markers
 
     def when(condition: => Boolean)(block: FluentMethod => Unit): Unit = {
-      if (condition && isEnabled(collateMarkers(logger.markers))) {
+      if (condition && isEnabled(collateMarkers(core.markers))) {
         block(this)
       }
     }
@@ -116,7 +116,7 @@ object FluentMethod {
     protected def collateMarkers(
         markers: Markers
     )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarkers = logger.sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarkers + markerState + markers
     }
 
@@ -128,24 +128,4 @@ object FluentMethod {
       }
     }
   }
-
-  class Conditional(level: Level, test: => Boolean, logger: ExtendedFluentLogger)
-      extends FluentMethod.Impl(level, logger) {
-
-    override def when(condition: => Boolean)(block: FluentMethod => Unit): Unit = {
-      if (test && condition && isEnabled(collateMarkers(logger.markers))) {
-        block(this)
-      }
-    }
-
-    override def apply[T: ToStatement](
-        instance: => T
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (test) {
-        val statement = implicitly[ToStatement[T]].toStatement(instance)
-        logger.parameterList(level).executeStatement(statement)
-      }
-    }
-  }
-
 }

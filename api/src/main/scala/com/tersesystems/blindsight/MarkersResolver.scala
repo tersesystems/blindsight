@@ -41,6 +41,7 @@ object MarkersResolver {
 
   private lazy val resolver: MarkersResolver = {
     import javax.management.ServiceNotFoundException
+
     import scala.collection.JavaConverters._
 
     resolverLoader.iterator().asScala.find(_ != null).getOrElse {

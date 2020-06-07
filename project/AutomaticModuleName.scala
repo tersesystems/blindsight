@@ -1,5 +1,5 @@
-import sbt.{Def, _}
 import sbt.Keys._
+import sbt.{Def, _}
 
 /**
  * Helper to set Automatic-Module-Name in projects.

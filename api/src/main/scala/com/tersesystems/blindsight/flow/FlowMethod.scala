@@ -16,8 +16,7 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.ToArgument
-import com.tersesystems.blindsight.slf4j.SLF4JPredicate
+import com.tersesystems.blindsight.{CoreLogger, ParameterList, SimplePredicate, ToArgument}
 import org.slf4j.event.Level
 import sourcecode.{Args, Enclosing, File, Line}
 
@@ -48,12 +47,12 @@ object FlowMethod {
    * The implementation of the flow logger method.
    *
    * @param level the level to log a statement with.
-   * @param logger the parent logger.
+   * @param core the parent logger.
    */
-  class Impl(level: Level, logger: ExtendedFlowLogger) extends FlowMethod {
+  class Impl(level: Level, core: CoreLogger) extends FlowMethod {
 
-    private val predicate: SLF4JPredicate = logger.predicate(level)
-    private val parameterList             = logger.parameterList(level)
+    private val predicate: SimplePredicate   = core.predicate(level)
+    private val parameterList: ParameterList = core.parameterList(level)
 
     override def apply[B: ToArgument](
         attempt: => B
@@ -94,31 +93,12 @@ object FlowMethod {
           case Failure(exception) =>
             throwingStatement(exception, source).foreach {
               case (level, stmt) =>
-                logger.parameterList(level).executeStatement(stmt)
+                core.parameterList(level).executeStatement(stmt)
             }
         }
         result.get // rethrow the exception
       } else {
         attempt // just run the block.
-      }
-    }
-  }
-
-  class Conditional(test: => Boolean, level: Level, logger: ExtendedFlowLogger)
-      extends Impl(level, logger) {
-    override def apply[B: ToArgument](
-        attempt: => B
-    )(implicit
-        line: Line,
-        file: File,
-        enclosing: Enclosing,
-        sourceArgs: Args,
-        mapping: FlowBehavior[B]
-    ): B = {
-      if (test) {
-        super.apply(attempt)
-      } else {
-        attempt
       }
     }
   }

@@ -1,9 +1,9 @@
 package com.tersesystems.blindsight
 
 import ch.qos.logback.classic.LoggerContext
+import com.tersesystems.blindsight
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.flow.SimpleFlowBehavior
-import com.tersesystems.blindsight.slf4j.SLF4JLogger
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -11,11 +11,9 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   override def resourceName: String = "/logback-test-slf4j.xml"
 
-  class TestLogger(strict: SLF4JLogger.Strict) extends Logger.Impl(strict)
-
   def createLogger(implicit loggerContext: LoggerContext): Logger = {
-    val strict = new SLF4JLogger.Strict(loggerContext.getLogger("testing"), Markers.empty)
-    new TestLogger(strict)
+    val underlying = loggerContext.getLogger("testing")
+    new blindsight.Logger.Impl(CoreLogger(underlying))
   }
 
   "logger" should {
@@ -41,7 +39,12 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val condition = true
-      logger.onCondition(condition).fluent.error.message("this should be logged").log()
+      logger
+        .onCondition(condition)
+        .fluent
+        .error
+        .message("this should be logged")
+        .log()
       val event = listAppender.list.get(0)
       event.getMessage must equal("this should be logged")
     }
@@ -50,7 +53,12 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val condition = false
-      logger.onCondition(condition).fluent.error.message("this should not be logged").log()
+      logger
+        .onCondition(condition)
+        .fluent
+        .error
+        .message("this should not be logged")
+        .log()
       listAppender.list must be(empty)
     }
 

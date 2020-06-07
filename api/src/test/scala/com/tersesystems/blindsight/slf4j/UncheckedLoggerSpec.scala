@@ -18,35 +18,16 @@ package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
-import com.tersesystems.blindsight.slf4j.SLF4JLogger.{Strict, Unchecked}
+import com.tersesystems.blindsight.slf4j.SLF4JLogger.Unchecked
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.slf4j
 import org.slf4j.MarkerFactory
-import org.slf4j.event.Level
 
 class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   override def resourceName: String = "/logback-test-slf4j.xml"
 
-  // XXX there should be a basic impl which has (underlying, markers, test) and just
-  // exposes those to classes so we can pass the state around.
-  class Wrapper(underlying: org.slf4j.Logger, markers: Markers = Markers.empty)
-      extends SLF4JLogger.Base[UncheckedSLF4JMethod](underlying, markers) {
-    override protected def newInstance(
-        underlying: org.slf4j.Logger,
-        markerState: Markers
-    ): Self = new Wrapper(underlying, markerState)
-
-    override protected def newMethod(level: Level) =
-      new UncheckedSLF4JMethod.Impl(level, this)
-
-    override def onCondition(test: => Boolean) =
-      new Unchecked.Conditional(test, this)
-  }
-
-  class TestLogger(underlying: org.slf4j.Logger)
-      extends Unchecked(new Wrapper(underlying, Markers.empty))
+  class TestLogger(underlying: org.slf4j.Logger) extends Unchecked(CoreLogger(underlying))
 
   "A logger with no state marker" when {
     "calling predicate" should {

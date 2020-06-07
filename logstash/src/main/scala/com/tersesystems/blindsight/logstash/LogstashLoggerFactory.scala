@@ -16,10 +16,9 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.mixins.SourceInfoMixin
-import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
 import org.slf4j.event.Level
+import sourcecode.{Enclosing, File, Line}
 
 /**
  * A logger factory that returns logstash enabled loggers.
@@ -27,49 +26,19 @@ import org.slf4j.event.Level
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    new Logger.Impl(new LogstashLogger.Strict(underlying, Markers.empty))
+    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior))
   }
-}
-
-object LogstashLogger {
 
   /**
-   * Extends the logback logger with logstash markers on source info.
-   *
-   * @param underlying the slf4j logger.
-   * @param markers    the marker state on the logger.
+   * Add the source code information as markers.
    */
-  class Strict(
-      underlying: org.slf4j.Logger,
-      markers: Markers
-  ) extends SLF4JLogger.Base[StrictSLF4JMethod](underlying, markers)
-      with SourceInfoMixin {
-    override protected def newInstance(
-        underlying: org.slf4j.Logger,
-        markerState: Markers
-    ): Self = new Strict(underlying, markerState)
-
-    override protected def newMethod(level: Level) = new StrictSLF4JMethod.Impl(level, this)
-
-    override def onCondition(test: => Boolean): SLF4JLogger[StrictSLF4JMethod] = {
-      new SLF4JLogger.Strict.Conditional(test, this) with SourceInfoMixin
+  def sourceInfoBehavior: SourceInfoBehavior =
+    new SourceInfoBehavior {
+      override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
+        import com.tersesystems.blindsight.AST.BField
+        import com.tersesystems.blindsight.DSL._
+        import com.tersesystems.blindsight.SourceCodeImplicits._
+        Markers((line: BField) ~ file ~ enclosing)
+      }
     }
-  }
-  //
-  //  class Unchecked(
-  //      underlying: org.slf4j.Logger,
-  //      markers: Markers
-  //  ) extends SLF4JLogger.Base[UncheckedSLF4JMethod](underlying, markers)
-  //      with SourceInfoMixin {
-  //    override protected def newInstance(
-  //        underlying: org.slf4j.Logger,
-  //        markerState: Markers
-  //    ): Self = new Unchecked(underlying, markerState)
-  //
-  //    override protected def newMethod(level: Level) = new UncheckedSLF4JMethod.Impl(level, this)
-  //
-  //    override def onCondition(test: => Boolean): SLF4JLogger[UncheckedSLF4JMethod] = {
-  //      new SLF4JLogger.Unchecked.Conditional(test, this) with SourceInfoMixin
-  //    }
-  //  }
 }

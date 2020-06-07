@@ -108,7 +108,7 @@ lazy val api = (project in file("api"))
     libraryDependencies += logstashLogbackEncoder % Test,
     autoAPIMappings := true
   )
-  .dependsOn(fixtures % "test->test")
+  .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
 lazy val logstash = (project in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))

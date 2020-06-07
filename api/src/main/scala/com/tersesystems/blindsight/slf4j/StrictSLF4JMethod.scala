@@ -135,13 +135,12 @@ object StrictSLF4JMethod {
   /**
    * Strict method implementation.
    */
-  class Impl(val level: Level, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
-      extends StrictSLF4JMethod {
+  class Impl(val level: Level, core: CoreLogger) extends StrictSLF4JMethod {
 
     @inline
-    protected def markers: Markers = logger.markers
+    protected def markers: Markers = core.markers
 
-    val parameterList: ParameterList = logger.parameterList(level)
+    protected val parameterList: ParameterList = core.parameterList(level)
 
     import parameterList._
 
@@ -388,7 +387,7 @@ object StrictSLF4JMethod {
     }
 
     private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarker: Markers = logger.sourceInfoMarker(level, line, file, enclosing)
+      val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarker + markers
     }
 
@@ -405,31 +404,7 @@ object StrictSLF4JMethod {
     }
 
     override def toString: String = {
-      s"${getClass.getName}(logger=$logger)"
-    }
-  }
-
-  /**
-   * Conditional method implementation.  Only calls when test evaluates to true.
-   *
-   * @param level the method's level
-   * @param test the call by name boolean that must be true
-   * @param logger the logger that this method belongs to.
-   */
-  class Conditional(level: Level, test: => Boolean, logger: ExtendedSLF4JLogger[StrictSLF4JMethod])
-      extends StrictSLF4JMethod.Impl(level, logger) {
-
-    override val parameterList: ParameterList =
-      new ParameterList.Conditional(test, logger.parameterList(level))
-
-    override def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (test && condition) {
-        block(this)
-      }
-    }
-
-    override def toString: String = {
-      s"${getClass.getName}(logger=$logger)"
+      s"${getClass.getName}(logger=$core)"
     }
   }
 }
