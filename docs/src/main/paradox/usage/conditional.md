@@ -8,9 +8,11 @@ Conditional logging has the obvious use case of "always" and "never" logging and
 
 ## On Condition
 
-All loggers have an `onCondition` method that returns a conditional logger of the same type.
+All loggers have an `onCondition` method that takes a @scaladoc[Condition](com.tersesystems.blindsight.Condition).  You can create a condition explicitly using one of the apply methods:
 
-This logger will only log if the condition is true.
+@@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #level-conditional }
+
+But you can pass through anything that returns a boolean and it will take it as a call by name.
 
 @@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #simple-conditional }
 

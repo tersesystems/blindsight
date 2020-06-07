@@ -250,26 +250,4 @@ object UncheckedSLF4JMethod {
       s"${getClass.getName}(logger=$core)"
     }
   }
-
-  /**
-   * Conditional method implementation.  Only calls when test evaluates to true.
-   */
-  class Conditional(
-      level: Level,
-      core: CoreLogger
-  ) extends Impl(level, core) {
-
-    override val parameterList: ParameterList =
-      new ParameterList.Conditional(level, core)
-
-    override def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (core.condition(level) && condition(level)) {
-        block(this)
-      }
-    }
-
-    override def toString: String = {
-      s"${getClass.getName}(logger=$core)"
-    }
-  }
 }

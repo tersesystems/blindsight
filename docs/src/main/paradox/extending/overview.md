@@ -132,7 +132,7 @@ object StrictSLF4JMethod {
 
 Breaking down the API means that you can pass through only the `LoggerMethod`, or assemble your custom logging levels.  You have the option of extending `LoggerMethod` and `LoggerPredicate` with your own application specific logging API.   Blindsight is designed to work with you so that adding new functionality is easy.
 
-The @scaladoc[com.tersesystems.blindsight.CoreLogger] contains the API independent code for logging.  This exposes the state of the logger (markers, condition and underlying SLF4J logger), and exposes methods for building up additional state without tying that state to an end-user API.
+The @scaladoc[CoreLogger](com.tersesystems.blindsight.CoreLogger) contains the API independent code for logging.  This exposes the state of the logger (markers, condition and underlying SLF4J logger), and exposes methods for building up additional state without tying that state to an end-user API.
 
 ```scala
 trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin {
@@ -148,7 +148,7 @@ trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin 
 }
 ```
 
-Finally, the @scaladoc[com.tersesystems.blindsight.ParameterList] is where a subset of the SLF4J API is called.  These are organized by level, so `executePredicate()` resolves to `underlying.isLoggingDebug()` if the level is `DEBUG`.
+The @scaladoc[CoreLogger](com.tersesystems.blindsight.CoreLogger) mediates between the user level loggers and the @scaladoc[ParameterList](com.tersesystems.blindsight.ParameterList), which organizes the SLF4J logger by level.  
 
 ```scala
 trait ParameterList {
@@ -167,4 +167,67 @@ trait ParameterList {
 
   def executeStatement(statement: Statement): Unit
 }
-``` 
+```
+
+There is a @scaladoc[Conditional](com.tersesystems.blindsight.ParameterList.Conditional) which will only call out if the condition is met:
+
+```scala
+object ParameterList {
+  class Conditional(level: Level, core: CoreLogger) extends ParameterList {
+    override def executePredicate(): Boolean = {
+      core.condition(level) && core.parameterList(level).executePredicate()
+    }
+    override def executePredicate(marker: Marker): Boolean = {
+      core.condition(level) && core.parameterList(level).executePredicate(marker)
+    }
+
+    override def message(msg: String): Unit =
+      if (core.condition(level)) core.parameterList(level).message(msg)
+    override def messageArg1(msg: String, arg: Any): Unit =
+      if (core.condition(level)) core.parameterList(level).messageArg1(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      if (core.condition(level)) core.parameterList(level).messageArg1Arg2(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Seq[_]): Unit =
+      if (core.condition(level)) core.parameterList(level).messageArgs(msg, args)
+    override def markerMessage(marker: Marker, msg: String): Unit =
+      if (core.condition(level)) core.parameterList(level).markerMessage(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      if (core.condition(level)) core.parameterList(level).markerMessageArg1(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      if (core.condition(level))
+        core.parameterList(level).markerMessageArg1Arg2(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
+      if (core.condition(level)) core.parameterList(level).markerMessageArgs(marker, msg, args)
+
+    override def executeStatement(statement: Statement): Unit =
+      if (core.condition(level)) core.parameterList(level).executeStatement(statement)
+  }
+}
+```
+
+Finally, the parameter lists are organized by level, so `executePredicate()` resolves to `underlying.isLoggingDebug()` if the level is `INFO`.
+
+```scala
+object ParameterList {
+  class Info(logger: org.slf4j.Logger) extends Impl(Level.INFO, logger) {
+    override def executePredicate(): Boolean               = logger.isInfoEnabled
+    override def executePredicate(marker: Marker): Boolean = logger.isInfoEnabled(marker)
+
+    override def message(msg: String): Unit               = logger.info(msg)
+    override def messageArg1(msg: String, arg: Any): Unit = logger.info(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      logger.info(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Seq[_]): Unit =
+      logger.info(msg, args.asJava.toArray: _*)
+    override def markerMessage(marker: Marker, msg: String): Unit = logger.info(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      logger.info(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      logger.info(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
+      logger.info(marker, msg, args.asJava.toArray: _*)
+  }
+}
+```
+
+This is how Blindsight works.
