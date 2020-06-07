@@ -72,7 +72,7 @@ object Logger {
     }
 
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(core.withMarker(markers))
+      new Impl(core.withMarker(markerInstance))
     }
 
     override def markers: Markers = core.markers

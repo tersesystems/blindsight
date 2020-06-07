@@ -62,7 +62,7 @@ object SemanticLogger {
     override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = new Impl[T](logger)
 
     override def onCondition(condition: Condition): Self[StatementType] = {
-      new Conditional[StatementType](logger.onCondition(condition))
+      new Impl[StatementType](logger.onCondition(condition))
     }
 
     override val isTraceEnabled: Predicate = logger.predicate(TRACE)
@@ -87,44 +87,4 @@ object SemanticLogger {
 
   }
 
-  class Conditional[StatementType](logger: CoreLogger) extends SemanticLogger[StatementType] {
-    override type Self[T]   = SemanticLogger[T]
-    override type Method[T] = SemanticMethod[T]
-    override type Predicate = SimplePredicate
-
-    override def underlying: slf4j.Logger = logger.underlying
-
-    override def markers: Markers = logger.markers
-    override def withMarker[T: ToMarkers](markerInstance: => T): Self[StatementType] = {
-      new Conditional(logger.withMarker(markerInstance))
-    }
-
-    override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = {
-      new Conditional[T](logger)
-    }
-
-    override def onCondition(condition: Condition): Self[StatementType] = {
-      new Conditional(logger.onCondition(condition))
-    }
-
-    override def isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override def trace: SemanticMethod[StatementType] =
-      new SemanticMethod.Conditional[StatementType](TRACE, logger)
-
-    override def isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override def debug: SemanticMethod[StatementType] =
-      new SemanticMethod.Conditional[StatementType](DEBUG, logger)
-
-    override def isInfoEnabled: Predicate = logger.predicate(INFO)
-    override def info: SemanticMethod[StatementType] =
-      new SemanticMethod.Conditional[StatementType](INFO, logger)
-
-    override def isWarnEnabled: Predicate = logger.predicate(WARN)
-    override def warn: SemanticMethod[StatementType] =
-      new SemanticMethod.Conditional[StatementType](WARN, logger)
-
-    override def isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override def error: SemanticMethod[StatementType] =
-      new SemanticMethod.Conditional[StatementType](ERROR, logger)
-  }
 }

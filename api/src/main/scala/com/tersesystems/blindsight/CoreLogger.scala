@@ -41,8 +41,9 @@ class DefaultCoreLogger(val state: LoggerState) extends CoreLogger {
   private val parameterLists: Seq[ParameterList] = ParameterList.lists(this.underlying)
 
   override def withMarker[M: ToMarkers](m: M): CoreLogger = {
-    val markers = implicitly[ToMarkers[M]].toMarkers(m)
-    new DefaultCoreLogger(state.copy(markers = this.markers + markers))
+    val markers  = implicitly[ToMarkers[M]].toMarkers(m)
+    val newState = state.copy(markers = this.markers + markers)
+    new DefaultCoreLogger(newState)
   }
 
   override def onCondition(c: Condition): CoreLogger = {

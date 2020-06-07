@@ -102,22 +102,4 @@ object FlowMethod {
       }
     }
   }
-
-  class Conditional(level: Level, logger: CoreLogger) extends Impl(level, logger) {
-    override def apply[B: ToArgument](
-        attempt: => B
-    )(implicit
-        line: Line,
-        file: File,
-        enclosing: Enclosing,
-        sourceArgs: Args,
-        mapping: FlowBehavior[B]
-    ): B = {
-      if (logger.condition(level)) {
-        super.apply(attempt)
-      } else {
-        attempt
-      }
-    }
-  }
 }

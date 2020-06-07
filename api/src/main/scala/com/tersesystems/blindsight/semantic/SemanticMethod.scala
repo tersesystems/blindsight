@@ -91,40 +91,4 @@ object SemanticMethod {
     @inline
     protected def markerState: Markers = core.markers
   }
-
-  class Conditional[StatementType](
-      level: Level,
-      core: CoreLogger
-  ) extends SemanticMethod.Impl[StatementType](level, core) {
-    private val parameterList: ParameterList =
-      new ParameterList.Conditional(level, core)
-
-    override def when(condition: Condition)(block: SemanticMethod[StatementType] => Unit): Unit = {
-      if (core.condition(level) && condition(level) && isEnabled(markerState)) {
-        block(this)
-      }
-    }
-
-    override def apply[T <: StatementType: ToStatement](
-        instance: T
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val statement: Statement =
-        implicitly[ToStatement[T]].toStatement(instance)
-      val markers = collateMarkers(statement.markers)
-      if (core.condition(level) && isEnabled(markers)) {
-        parameterList.executeStatement(statement.withMarkers(markers))
-      }
-    }
-
-    override def apply[T <: StatementType: ToStatement](
-        instance: T,
-        t: Throwable
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers   = collateMarkers(statement.markers)
-      if (core.condition(level) && isEnabled(markers)) {
-        parameterList.executeStatement(statement.withMarkers(markers).withThrowable(t))
-      }
-    }
-  }
 }

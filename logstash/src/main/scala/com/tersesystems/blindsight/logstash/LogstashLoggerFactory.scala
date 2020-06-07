@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight.logstash
 
+import com.tersesystems.blindsight.AST.BField
 import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -30,10 +31,14 @@ class LogstashLoggerFactory extends LoggerFactory {
     new Logger.Impl(new DefaultCoreLogger(state))
   }
 
+  /**
+   * Add the source code information as
+   */
   val sourceInfoBehavior: SourceInfoBehavior = new SourceInfoBehavior {
     override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
       import com.tersesystems.blindsight.SourceCodeImplicits._
-      Markers(bobj(line)) + Markers(bobj(line)) + Markers(bobj(enclosing))
+      import com.tersesystems.blindsight.DSL._
+      Markers((line: BField) ~ file ~ enclosing)
     }
   }
 }

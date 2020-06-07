@@ -128,23 +128,4 @@ object FluentMethod {
       }
     }
   }
-
-  class Conditional(level: Level, logger: CoreLogger) extends FluentMethod.Impl(level, logger) {
-
-    override def when(condition: => Boolean)(block: FluentMethod => Unit): Unit = {
-      if (logger.condition(level) && condition && isEnabled(collateMarkers(logger.markers))) {
-        block(this)
-      }
-    }
-
-    override def apply[T: ToStatement](
-        instance: => T
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (logger.condition(level)) {
-        val statement = implicitly[ToStatement[T]].toStatement(instance)
-        logger.parameterList(level).executeStatement(statement)
-      }
-    }
-  }
-
 }

@@ -50,7 +50,7 @@ object FluentLogger {
     }
 
     override def onCondition(condition: Condition): FluentLogger = {
-      new Conditional(logger.onCondition(condition))
+      new Impl(logger.onCondition(condition))
     }
 
     override val isTraceEnabled: Predicate = logger.predicate(TRACE)
@@ -67,39 +67,6 @@ object FluentLogger {
 
     override val isErrorEnabled: Predicate = logger.predicate(ERROR)
     override val error: Method             = new FluentMethod.Impl(ERROR, logger)
-
-    override def markers: Markers = logger.markers
-
-    override def underlying: org.slf4j.Logger = logger.underlying
-  }
-
-  class Conditional(logger: CoreLogger) extends FluentLogger {
-    override type Self      = FluentLogger
-    override type Method    = FluentMethod
-    override type Predicate = SimplePredicate
-
-    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Conditional(logger.withMarker(markerInstance))
-    }
-
-    override def onCondition(condition: Condition): Self = {
-      new Conditional(logger.onCondition(condition))
-    }
-
-    override val isTraceEnabled: Predicate = logger.predicate(TRACE)
-    override val trace: Method             = new FluentMethod.Conditional(TRACE, logger)
-
-    override val isDebugEnabled: Predicate = logger.predicate(DEBUG)
-    override val debug: Method             = new FluentMethod.Conditional(DEBUG, logger)
-
-    override val isInfoEnabled: Predicate = logger.predicate(INFO)
-    override val info: Method             = new FluentMethod.Conditional(INFO, logger)
-
-    override val isWarnEnabled: Predicate = logger.predicate(WARN)
-    override val warn: Method             = new FluentMethod.Conditional(WARN, logger)
-
-    override val isErrorEnabled: Predicate = logger.predicate(ERROR)
-    override val error: Method             = new FluentMethod.Conditional(ERROR, logger)
 
     override def markers: Markers = logger.markers
 

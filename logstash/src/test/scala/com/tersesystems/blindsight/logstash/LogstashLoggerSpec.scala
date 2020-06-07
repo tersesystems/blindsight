@@ -147,7 +147,9 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
       "work with a state marker" in {
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
-        logger.withMarker(bobj("a" -> "b")).info("I have a marker")
+        val infoMethod     = logger.withMarker(bobj("a" -> "b")).info
+
+        infoMethod.apply("I have a marker")
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("I have a marker")
