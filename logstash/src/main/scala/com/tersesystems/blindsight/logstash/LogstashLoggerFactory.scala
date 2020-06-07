@@ -26,13 +26,13 @@ import sourcecode.{Enclosing, File, Line}
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    new Logger.Impl(CoreLogger(underlying))
+    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior))
   }
 
   /**
-   * Add the source code information as
+   * Add the source code information as markers.
    */
-  val sourceInfoBehavior: SourceInfoBehavior = new SourceInfoBehavior {
+  def sourceInfoBehavior: SourceInfoBehavior = new SourceInfoBehavior {
     override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
       import com.tersesystems.blindsight.AST.BField
       import com.tersesystems.blindsight.DSL._

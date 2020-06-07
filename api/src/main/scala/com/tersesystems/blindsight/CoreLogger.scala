@@ -25,7 +25,11 @@ object CoreLogger {
   )
 
   def apply(underlying: org.slf4j.Logger): CoreLogger = {
-    val state = State(Markers.empty, underlying, Condition.always, SourceInfoBehavior.empty)
+    apply(underlying, SourceInfoBehavior.empty)
+  }
+
+  def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior): CoreLogger = {
+    val state = State(Markers.empty, underlying, Condition.always, sourceInfoBehavior)
     new Impl(state)
   }
 
@@ -59,10 +63,10 @@ object CoreLogger {
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
   }
 
-  class Conditional(coreLogger: Impl) extends Impl(coreLogger.state) {
+  class Conditional(impl: Impl) extends Impl(impl.state) {
     @inline
     override def parameterList(level: Level): ParameterList =
-      new ParameterList.Conditional(level, coreLogger)
+      new ParameterList.Conditional(level, impl)
   }
 
 }
