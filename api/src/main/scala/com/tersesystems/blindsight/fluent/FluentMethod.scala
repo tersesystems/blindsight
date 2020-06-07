@@ -25,7 +25,7 @@ import sourcecode.{Enclosing, File, Line}
  */
 trait FluentMethod extends FluentAPI {
 
-  def when(condition: => Boolean)(block: FluentMethod => Unit): Unit
+  def when(condition: Condition)(block: FluentMethod => Unit): Unit
 
   def apply[T: ToStatement](
       instance: => T
@@ -45,8 +45,8 @@ object FluentMethod {
 
     def markerState: Markers = core.markers
 
-    def when(condition: => Boolean)(block: FluentMethod => Unit): Unit = {
-      if (condition && isEnabled(collateMarkers(core.markers))) {
+    def when(condition: Condition)(block: FluentMethod => Unit): Unit = {
+      if (condition(level, core.state) && isEnabled(collateMarkers(core.markers))) {
         block(this)
       }
     }

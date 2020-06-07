@@ -67,32 +67,35 @@ object ParameterList {
   class Conditional(level: Level, core: CoreLogger) extends ParameterList {
 
     override def executePredicate(): Boolean = {
-      core.condition(level) && core.parameterList(level).executePredicate()
+      core.condition(level, core.state) && core.parameterList(level).executePredicate()
     }
     override def executePredicate(marker: Marker): Boolean = {
-      core.condition(level) && core.parameterList(level).executePredicate(marker)
+      core.condition(level, core.state) && core.parameterList(level).executePredicate(marker)
     }
 
     override def message(msg: String): Unit =
-      if (core.condition(level)) core.parameterList(level).message(msg)
+      if (core.condition(level, core.state)) core.parameterList(level).message(msg)
     override def messageArg1(msg: String, arg: Any): Unit =
-      if (core.condition(level)) core.parameterList(level).messageArg1(msg, arg)
+      if (core.condition(level, core.state)) core.parameterList(level).messageArg1(msg, arg)
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
-      if (core.condition(level)) core.parameterList(level).messageArg1Arg2(msg, arg1, arg2)
+      if (core.condition(level, core.state))
+        core.parameterList(level).messageArg1Arg2(msg, arg1, arg2)
     override def messageArgs(msg: String, args: Seq[_]): Unit =
-      if (core.condition(level)) core.parameterList(level).messageArgs(msg, args)
+      if (core.condition(level, core.state)) core.parameterList(level).messageArgs(msg, args)
     override def markerMessage(marker: Marker, msg: String): Unit =
-      if (core.condition(level)) core.parameterList(level).markerMessage(marker, msg)
+      if (core.condition(level, core.state)) core.parameterList(level).markerMessage(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
-      if (core.condition(level)) core.parameterList(level).markerMessageArg1(marker, msg, arg)
+      if (core.condition(level, core.state))
+        core.parameterList(level).markerMessageArg1(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
-      if (core.condition(level))
+      if (core.condition(level, core.state))
         core.parameterList(level).markerMessageArg1Arg2(marker, msg, arg1, arg2)
     override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
-      if (core.condition(level)) core.parameterList(level).markerMessageArgs(marker, msg, args)
+      if (core.condition(level, core.state))
+        core.parameterList(level).markerMessageArgs(marker, msg, args)
 
     override def executeStatement(statement: Statement): Unit =
-      if (core.condition(level)) core.parameterList(level).executeStatement(statement)
+      if (core.condition(level, core.state)) core.parameterList(level).executeStatement(statement)
   }
 
   /**

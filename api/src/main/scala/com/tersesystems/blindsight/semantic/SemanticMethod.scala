@@ -83,7 +83,7 @@ object SemanticMethod {
     }
 
     override def when(condition: Condition)(block: SemanticMethod[StatementType] => Unit): Unit = {
-      if (condition(level) && isEnabled(markerState)) {
+      if (condition(level, core.state) && isEnabled(markerState)) {
         block(this)
       }
     }
