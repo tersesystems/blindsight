@@ -16,7 +16,6 @@
 
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.AST.BField
 import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -38,6 +37,7 @@ class LogstashLoggerFactory extends LoggerFactory {
     override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
       import com.tersesystems.blindsight.SourceCodeImplicits._
       import com.tersesystems.blindsight.DSL._
+      import com.tersesystems.blindsight.AST.BField
       Markers((line: BField) ~ file ~ enclosing)
     }
   }

@@ -23,7 +23,7 @@ object SimpleFlow {
 
   private implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior
 
-  private def loggingEnabled: Boolean = false
+  private def loggingEnabled: Boolean = true
 
   private val logger                 = LoggerFactory.getLogger.onCondition(loggingEnabled)
   private val flowLogger: FlowLogger = logger.flow.onCondition(loggingEnabled)

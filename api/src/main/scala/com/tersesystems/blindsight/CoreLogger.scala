@@ -1,7 +1,5 @@
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight
-import org.slf4j
 import org.slf4j.event.Level
 
 trait CoreLogger {
@@ -60,7 +58,7 @@ class DefaultCoreLogger(val state: LoggerState) extends CoreLogger {
 
   override def markers: Markers = state.markers
 
-  override def underlying: slf4j.Logger = state.underlying
+  override def underlying: org.slf4j.Logger = state.underlying
 
   override def condition: Condition = state.condition
 
