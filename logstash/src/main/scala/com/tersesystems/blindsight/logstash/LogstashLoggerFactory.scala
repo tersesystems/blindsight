@@ -32,12 +32,13 @@ class LogstashLoggerFactory extends LoggerFactory {
   /**
    * Add the source code information as markers.
    */
-  def sourceInfoBehavior: SourceInfoBehavior = new SourceInfoBehavior {
-    override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
-      import com.tersesystems.blindsight.AST.BField
-      import com.tersesystems.blindsight.DSL._
-      import com.tersesystems.blindsight.SourceCodeImplicits._
-      Markers((line: BField) ~ file ~ enclosing)
+  def sourceInfoBehavior: SourceInfoBehavior =
+    new SourceInfoBehavior {
+      override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
+        import com.tersesystems.blindsight.AST.BField
+        import com.tersesystems.blindsight.DSL._
+        import com.tersesystems.blindsight.SourceCodeImplicits._
+        Markers((line: BField) ~ file ~ enclosing)
+      }
     }
-  }
 }
