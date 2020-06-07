@@ -124,7 +124,7 @@ object UncheckedSLF4JMethod {
     }
 
     override def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (condition(level) && executePredicate(collateMarkers.marker)) {
+      if (condition(level, core.state) && executePredicate(collateMarkers.marker)) {
         block(this)
       }
     }

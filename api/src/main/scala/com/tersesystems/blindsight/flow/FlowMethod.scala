@@ -16,7 +16,13 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.{CoreLogger, ParameterList, SimplePredicate, ToArgument}
+import com.tersesystems.blindsight.{
+  Condition,
+  CoreLogger,
+  ParameterList,
+  SimplePredicate,
+  ToArgument
+}
 import org.slf4j.event.Level
 import sourcecode.{Args, Enclosing, File, Line}
 
@@ -29,6 +35,7 @@ import scala.util.{Failure, Success, Try}
  * the logging statement can render it appropriately.
  */
 trait FlowMethod {
+  def when(condition: Condition): FlowMethod
 
   def apply[B: ToArgument](
       block: => B
@@ -53,6 +60,10 @@ object FlowMethod {
 
     private val predicate: SimplePredicate   = core.predicate(level)
     private val parameterList: ParameterList = core.parameterList(level)
+
+    override def when(condition: Condition): FlowMethod = {
+      new Impl(level, core.onCondition(condition))
+    }
 
     override def apply[B: ToArgument](
         attempt: => B

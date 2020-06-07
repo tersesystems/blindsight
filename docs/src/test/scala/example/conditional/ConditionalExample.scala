@@ -2,8 +2,9 @@ package example.conditional
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.tersesystems.blindsight.{Argument, Condition, LoggerFactory}
+import com.tersesystems.blindsight.{Argument, Condition, CoreLogger, LoggerFactory}
 import io.timeandspace.cronscheduler.CronTask
+import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
 
 object SimpleConditionalExample {
@@ -16,9 +17,18 @@ object SimpleConditionalExample {
     conditionalLogger.info("Only logs when condition is true")
     // #simple-conditional
 
-    // #level-conditional
-    val higherThanDebug = logger.onCondition(Condition(level => level.compareTo(Level.DEBUG) >= 0))
-    // #level-conditional
+    // #marker-conditional
+    val fooMarker              = MarkerFactory.getMarker("FOO")
+    val markerCondition        = Condition((state: CoreLogger.State) => state.markers.contains(fooMarker))
+    val conditionalOnFooMarker = logger.onCondition(markerCondition)
+    // #marker-conditional
+
+    // #level-marker-conditional
+    val levelMarkerCondition = Condition((level, state) =>
+      (level.compareTo(Level.DEBUG) >= 0) && state.markers.contains(fooMarker)
+    )
+    val conditionalOnLevelAndMarker = logger.onCondition(levelMarkerCondition)
+    // #level-marker-conditional
 
     // #composed-conditional
     def anotherCondition: Boolean = sys.props.get("user.home").isDefined

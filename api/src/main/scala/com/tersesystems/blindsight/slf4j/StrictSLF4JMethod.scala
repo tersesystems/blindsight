@@ -32,7 +32,7 @@ trait StrictSLF4JMethod {
    * @param condition the call by name boolean that must return true
    * @param block the block executed when condition is true.
    */
-  def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit
+  def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit
 
   def apply(
       message: Message
@@ -397,8 +397,8 @@ object StrictSLF4JMethod {
       collateMarkers + implicitly[ToMarkers[MR]].toMarkers(marker)
     }
 
-    override def when(condition: => Boolean)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (condition && executePredicate(collateMarkers.marker)) {
+    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
+      if (condition(level, core.state) && executePredicate(collateMarkers.marker)) {
         block(this)
       }
     }
