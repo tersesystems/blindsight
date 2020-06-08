@@ -121,7 +121,9 @@ lazy val logstash = (project in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
     name := "blindsight-logstash",
-    mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % previousVersion),
+    mimaPreviousArtifacts := Set(
+      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
+    ),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder,
     autoAPIMappings := true
@@ -133,7 +135,7 @@ lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
-    mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.1.0"),
+    mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.1.0")
   )
   .dependsOn(api)
 
