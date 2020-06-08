@@ -11,7 +11,7 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
   s
 }
 
-ThisBuild / scalafmtOnCompile := true
+ThisBuild / scalafmtOnCompile := false
 
 // These settings seem not to work for sbt-release-early, so .travis.yml copies to
 // .sbt/gpg/pubring.asc / secring.asc as a fallback
@@ -106,7 +106,9 @@ lazy val api = (project in file("api"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
   .settings(
     name := "blindsight-api",
-    mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% name.value % previousVersion),
+    mimaPreviousArtifacts := Set(
+      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
+    ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaTest              % Test,
