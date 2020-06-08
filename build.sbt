@@ -11,7 +11,7 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
   s
 }
 
-ThisBuild / scalafmtOnCompile := true
+ThisBuild / scalafmtOnCompile := false
 
 // These settings seem not to work for sbt-release-early, so .travis.yml copies to
 // .sbt/gpg/pubring.asc / secring.asc as a fallback
@@ -22,6 +22,8 @@ ThisBuild / pgpSecretRing := file(".travis/local.secring.asc")
 // Disable sync to maven, we absolutely don't need this in sbt
 // and it causes a None.get error at bintray.BintrayRepo.$anonfun$requestSonatypeCredentials$5(BintrayRepo.scala:186)
 ThisBuild / releaseEarlyEnableSyncToMaven := false
+
+ThisBuild / resolvers += Resolver.bintrayRepo("tersesystems", "maven")
 
 ThisBuild / releaseEarlyWith := BintrayPublisher
 ThisBuild / bintrayOrganization := Some("tersesystems")
@@ -36,6 +38,8 @@ ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / headerLicense := None
+
+val previousVersion = "1.1.0"
 
 val disableDocs = Seq[Setting[_]](
   sources in (Compile, doc) := Seq.empty,
@@ -52,6 +56,7 @@ val disablePublishing = Seq[Setting[_]](
 // https://www.scala-sbt.org/sbt-site/getting-started.html#previewing-the-site
 lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
+  .disablePlugins(MimaPlugin)
   .settings(
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies += cronScheduler                   % Test,
@@ -86,6 +91,7 @@ lazy val docs = (project in file("docs"))
   .dependsOn(api, logstash)
 
 lazy val fixtures = (project in file("fixtures"))
+  .disablePlugins(MimaPlugin)
   .settings(
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
@@ -100,6 +106,9 @@ lazy val api = (project in file("api"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
   .settings(
     name := "blindsight-api",
+    mimaPreviousArtifacts := Set(
+      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
+    ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaTest              % Test,
@@ -114,6 +123,9 @@ lazy val logstash = (project in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
     name := "blindsight-logstash",
+    mimaPreviousArtifacts := Set(
+      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
+    ),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder,
     autoAPIMappings := true
@@ -124,11 +136,13 @@ lazy val logstash = (project in file("logstash"))
 lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
-    name := "blindsight-generic"
+    name := "blindsight-generic",
+    mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.1.0")
   )
   .dependsOn(api)
 
 lazy val root = (project in file("."))
+  .disablePlugins(MimaPlugin)
   .settings(
     name := "blindsight-root"
   )
