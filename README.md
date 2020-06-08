@@ -98,7 +98,7 @@ logger.semantic[String Refined Url].info(refineMV(Url)("https://tersesystems.com
 ```scala
 import com.tersesystems.blindsight.flow._
 
-implicit def flowBehavior[B]: FlowBehavior[B] = ???
+implicit def flowBehavior[B]: FlowBehavior[B] = new SimpleFlowBehavior
 
 val result = logger.flow.trace(arg1 + arg2)
 ```
