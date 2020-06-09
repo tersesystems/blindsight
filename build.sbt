@@ -138,6 +138,7 @@ lazy val logstash = (project in file("logstash"))
 // run with "jmh:run"
 lazy val benchmarks = (project in file("benchmarks"))
   .enablePlugins(JmhPlugin)
+  .disablePlugins(MimaPlugin)
   .settings(
     libraryDependencies += "com.portingle" % "slf4jtesting" % "1.1.3",
     fork in run := true
