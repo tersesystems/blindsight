@@ -132,10 +132,15 @@ lazy val logstash = (project in file("logstash"))
   )
   .dependsOn(api, fixtures % "test->test")
 
+// https://github.com/ktoso/sbt-jmh
+// http://tutorials.jenkov.com/java-performance/jmh.html
+// https://www.researchgate.net/publication/333825812_What's_Wrong_With_My_Benchmark_Results_Studying_Bad_Practices_in_JMH_Benchmarks
+// run with "jmh:run"
 lazy val benchmarks = (project in file("benchmarks"))
   .enablePlugins(JmhPlugin)
   .settings(
-    libraryDependencies += "com.portingle" % "slf4jtesting" % "1.1.3"
+    libraryDependencies += "com.portingle" % "slf4jtesting" % "1.1.3",
+    fork in run := true
   )
   .dependsOn(api)
 
