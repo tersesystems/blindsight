@@ -132,6 +132,13 @@ lazy val logstash = (project in file("logstash"))
   )
   .dependsOn(api, fixtures % "test->test")
 
+lazy val benchmarks = (project in file("benchmarks"))
+  .enablePlugins(JmhPlugin)
+  .settings(
+    libraryDependencies += "com.portingle" % "slf4jtesting" % "1.1.3"
+  )
+  .dependsOn(api)
+
 // serviceloader implementation with only SLF4J dependencies.
 lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
@@ -148,4 +155,4 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, logstash, generic)
+  .aggregate(api, docs, fixtures, benchmarks, logstash, generic)
