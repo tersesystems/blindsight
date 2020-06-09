@@ -16,6 +16,8 @@
 
 package com.tersesystems.blindsight
 
+import java.util.Arrays.deepToString
+
 import sourcecode._
 
 /**
@@ -32,9 +34,22 @@ trait SourceCodeImplicits {
   implicit def enclosingToField(enclosing: Enclosing): BField =
     "source.enclosing" -> enclosing.value
 
+  def argToField(value: Any): BValue = {
+    value match {
+      case null =>
+        BString("null")
+      case s: String =>
+        BString(s)
+      case array: Array[_] =>
+        BString(deepToString(array.asInstanceOf[Array[Object]]))
+      case other =>
+        BString(other.toString)
+    }
+  }
+
   implicit def argsToField(sourceArgs: Args): BField = {
     val args: Seq[BField] =
-      sourceArgs.value.flatMap(_.map(a => a.source -> BString(String.valueOf(a.value))))
+      sourceArgs.value.flatMap(_.map(a => a.source -> argToField(a.value)))
     BField("source.arguments", args)
   }
 }
