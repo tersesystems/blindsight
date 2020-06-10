@@ -116,10 +116,6 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-Ywarn-dead-code",
     "-encoding",
     "UTF-8",
-    "-opt:l:inline",
-    "-opt-inline-from:com.tersesystems.blindsight.**",
-    "-opt-warnings:any-inline-failed",
-    "-Yopt-log-inline",
     "-language:implicitConversions",
     "-language:higherKinds",
     "-language:existentials",
@@ -128,7 +124,12 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     case Some((2, n)) if n >= 13 =>
       Seq("-Xsource:2.13")
     case Some((2, n)) if n >= 12 =>
-      Seq("-Xsource:2.12")
+      Seq(
+        "-opt:l:inline",
+        "-opt-inline-from:com.tersesystems.blindsight.**",
+        "-opt-warnings:any-inline-failed",
+        "-Yopt-log-inline"
+      )
     case Some((2, n)) if n == 11 =>
       Seq("-Xsource:2.11")
   })

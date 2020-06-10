@@ -34,7 +34,7 @@ trait SourceCodeImplicits {
   implicit def enclosingToField(enclosing: Enclosing): BField =
     "source.enclosing" -> enclosing.value
 
-  def argToField(value: Any): BValue = {
+  private def argToField(value: Any): BValue = {
     value match {
       case null =>
         BString("null")
