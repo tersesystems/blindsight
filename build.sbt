@@ -140,10 +140,9 @@ lazy val benchmarks = (project in file("benchmarks"))
   .enablePlugins(JmhPlugin)
   .disablePlugins(MimaPlugin)
   .settings(
-    libraryDependencies += "com.portingle" % "slf4jtesting" % "1.1.3",
     fork in run := true
   )
-  .dependsOn(api)
+  .dependsOn(logstash)
 
 // serviceloader implementation with only SLF4J dependencies.
 lazy val generic = (project in file("generic"))
