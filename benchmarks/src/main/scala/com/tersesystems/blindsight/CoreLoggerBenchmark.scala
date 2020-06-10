@@ -16,11 +16,11 @@ import sourcecode.{Enclosing, File, Line}
 class CoreLoggerBenchmark {
 
   private val slf4jLogger = org.slf4j.LoggerFactory.getLogger(classOf[CoreLoggerBenchmark])
-  private val coreLogger = CoreLogger(slf4jLogger)
-  val logger: Logger = LoggerFactory.getLogger(slf4jLogger)
-  val line: Line = new Line(42)
-  val file: File = new File("file")
-  val enclosing = new Enclosing("enclosing")
+  private val coreLogger  = CoreLogger(slf4jLogger)
+  val logger: Logger      = LoggerFactory.getLogger(slf4jLogger)
+  val line: Line          = new Line(42)
+  val file: File          = new File("file")
+  val enclosing           = new Enclosing("enclosing")
 
   @Benchmark
   def coreBenchmark: Unit = {
@@ -39,12 +39,12 @@ class CoreLoggerBenchmark {
   //    slf4jLogger.trace("Hello world")
   //  }
 
-    @Benchmark
-    def enabledSLF4JLoggerBenchmark: Unit = {
-      // 74 ns with an info statement.
-      val markers = coreLogger.sourceInfoBehavior(SLF4JLevel.INFO, line, file, enclosing)
-      slf4jLogger.info(markers.marker, "Hello world")
-    }
+  @Benchmark
+  def enabledSLF4JLoggerBenchmark: Unit = {
+    // 74 ns with an info statement.
+    val markers = coreLogger.sourceInfoBehavior(SLF4JLevel.INFO, line, file, enclosing)
+    slf4jLogger.info(markers.marker, "Hello world")
+  }
 
   //  @Benchmark
   //  def disabledLoggerBenchmark: Unit = {

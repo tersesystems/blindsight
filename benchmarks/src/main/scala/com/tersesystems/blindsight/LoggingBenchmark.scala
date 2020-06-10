@@ -13,8 +13,8 @@ import org.slf4j.event.{Level => SLF4JLevel}
 @State(Scope.Benchmark)
 class LoggingBenchmark {
 
-  val logger: Logger = LoggerFactory.getLogger
-  val infoCondition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
+  val logger: Logger               = LoggerFactory.getLogger
+  val infoCondition: Condition     = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
   val traceConditionLogger: Logger = logger.onCondition(infoCondition)
   val falseConditionLogger: Logger = logger.onCondition(false)
 
@@ -27,7 +27,7 @@ class LoggingBenchmark {
   @Benchmark
   def traceWhenBenchmark: Unit = {
     // 600 ns with an info statement.
-    logger.trace.when(false) {log => log("Hello world")}
+    logger.trace.when(false) { log => log("Hello world") }
   }
 
   @Benchmark

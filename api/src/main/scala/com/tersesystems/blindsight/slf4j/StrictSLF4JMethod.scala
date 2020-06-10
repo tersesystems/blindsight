@@ -163,7 +163,7 @@ object StrictSLF4JMethod {
         arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog)
-          markerMessageArg1(markersPlusSource.marker, message.toString, Argument(arg).value)
+        markerMessageArg1(markersPlusSource.marker, message.toString, Argument(arg).value)
     }
 
     override def apply(
@@ -180,7 +180,12 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog)
-          markerMessageArg1Arg2(markersPlusSource.marker, message.toString, Argument(arg).value, throwable)
+        markerMessageArg1Arg2(
+          markersPlusSource.marker,
+          message.toString,
+          Argument(arg).value,
+          throwable
+        )
     }
 
     override def apply[A1: ToArgument, A2: ToArgument](
@@ -189,7 +194,12 @@ object StrictSLF4JMethod {
         arg2: A2
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        markerMessageArg1Arg2(markersPlusSource.marker, message.toString, Argument(arg1).value, Argument(arg2).value)
+        markerMessageArg1Arg2(
+          markersPlusSource.marker,
+          message.toString,
+          Argument(arg1).value,
+          Argument(arg2).value
+        )
       }
     }
 
@@ -326,7 +336,11 @@ object StrictSLF4JMethod {
     }
 
     @inline
-    private def markersPlusSource(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+    private def markersPlusSource(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Markers = {
       val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarker + markers
     }

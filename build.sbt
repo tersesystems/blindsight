@@ -106,7 +106,7 @@ lazy val fixtures = (project in file("fixtures"))
 // inliner causes failures right now with
 // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
 // https://www.lightbend.com/blog/scala-inliner-optimizer
-// https://docs.scala-lang.org/overviews/compiler-options/index.html        
+// https://docs.scala-lang.org/overviews/compiler-options/index.html
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   Seq(
     //scalacOptions += "-Xfatal-warnings",
@@ -114,7 +114,8 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-deprecation",
     "-Xlint",
     "-Ywarn-dead-code",
-    "-encoding", "UTF-8",
+    "-encoding",
+    "UTF-8",
     "-opt:l:inline",
     "-opt-inline-from:com.tersesystems.blindsight.**",
     "-opt-warnings:any-inline-failed",
@@ -124,13 +125,13 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:existentials",
     "-language:postfixOps"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, n)) if n >= 13 =>
-        Seq("-Xsource:2.13")        
-      case Some((2, n)) if n >= 12 => 
-        Seq("-Xsource:2.12")
-      case Some((2, n)) if n == 11 => 
-        Seq("-Xsource:2.11")      
-      })
+    case Some((2, n)) if n >= 13 =>
+      Seq("-Xsource:2.13")
+    case Some((2, n)) if n >= 12 =>
+      Seq("-Xsource:2.12")
+    case Some((2, n)) if n == 11 =>
+      Seq("-Xsource:2.11")
+  })
 }
 
 // API that provides a logger with everything
@@ -140,7 +141,7 @@ lazy val api = (project in file("api"))
     name := "blindsight-api",
     mimaPreviousArtifacts := Set(
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
-    ),    
+    ),
     classpathOptions := classpathOptions.value.withFilterLibrary(false),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += slf4jApi,
@@ -161,10 +162,8 @@ lazy val logstash = (project in file("logstash"))
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    
-    // FIXME Figure out why optimize requires scala-library on the classpath...    
+    // FIXME Figure out why optimize requires scala-library on the classpath...
     classpathOptions := classpathOptions.value.withFilterLibrary(false),
-
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder,
     autoAPIMappings := true
