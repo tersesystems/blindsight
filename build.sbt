@@ -120,11 +120,9 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:higherKinds",
     "-language:existentials",
     "-language:postfixOps"
-  ) ++ (CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, n)) if n >= 13 =>
-      Seq("-Xsource:2.13")
+  ) ++ (CrossVersion.partialVersion(scalaVersion) match {    
     case Some((2, n)) if n >= 12 =>
-      Seq(
+      Seq(        
         "-opt:l:inline",
         "-opt-inline-from:com.tersesystems.blindsight.**",
         "-opt-warnings:any-inline-failed",
