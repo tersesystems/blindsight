@@ -39,7 +39,7 @@ object FluentMethod {
     def logWithPlaceholders(): Unit
   }
 
-  class Impl(val level: Level, core: CoreLogger) extends FluentMethod {
+  final class Impl(val level: Level, core: CoreLogger) extends FluentMethod {
 
     protected val parameterList: ParameterList = core.parameterList(level)
 

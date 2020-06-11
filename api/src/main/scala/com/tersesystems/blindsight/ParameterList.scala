@@ -64,7 +64,7 @@ object ParameterList {
       }
   }
 
-  class Conditional(level: Level, core: CoreLogger) extends ParameterList {
+  final class Conditional(level: Level, core: CoreLogger) extends ParameterList {
 
     override def executePredicate(): Boolean = {
       core.condition(level, core.state) && core.parameterList(level).executePredicate()
@@ -110,7 +110,7 @@ object ParameterList {
       new ParameterList.Trace(logger)
     )
 
-  class Trace(logger: org.slf4j.Logger) extends Impl(Level.TRACE, logger) {
+  final class Trace(logger: org.slf4j.Logger) extends Impl(Level.TRACE, logger) {
     override def executePredicate(): Boolean = {
       logger.isTraceEnabled()
     }
@@ -133,7 +133,7 @@ object ParameterList {
       logger.trace(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Debug(logger: org.slf4j.Logger) extends Impl(Level.DEBUG, logger) {
+  final class Debug(logger: org.slf4j.Logger) extends Impl(Level.DEBUG, logger) {
     override def executePredicate(): Boolean               = logger.isDebugEnabled()
     override def executePredicate(marker: Marker): Boolean = logger.isDebugEnabled(marker)
 
@@ -152,7 +152,7 @@ object ParameterList {
       logger.debug(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Info(logger: org.slf4j.Logger) extends Impl(Level.INFO, logger) {
+  final class Info(logger: org.slf4j.Logger) extends Impl(Level.INFO, logger) {
     override def executePredicate(): Boolean               = logger.isInfoEnabled
     override def executePredicate(marker: Marker): Boolean = logger.isInfoEnabled(marker)
 
@@ -171,7 +171,7 @@ object ParameterList {
       logger.info(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Warn(logger: org.slf4j.Logger) extends Impl(Level.WARN, logger) {
+  final class Warn(logger: org.slf4j.Logger) extends Impl(Level.WARN, logger) {
     override def executePredicate(): Boolean               = logger.isWarnEnabled()
     override def executePredicate(marker: Marker): Boolean = logger.isWarnEnabled(marker)
 
@@ -190,7 +190,7 @@ object ParameterList {
       logger.warn(marker, msg, args.asJava.toArray: _*)
   }
 
-  class Error(logger: org.slf4j.Logger) extends Impl(Level.ERROR, logger) {
+  final class Error(logger: org.slf4j.Logger) extends Impl(Level.ERROR, logger) {
     override def executePredicate(): Boolean               = logger.isErrorEnabled
     override def executePredicate(marker: Marker): Boolean = logger.isErrorEnabled(marker)
 

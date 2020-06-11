@@ -18,24 +18,24 @@ class FluentBenchmark {
   val fluent: FluentLogger = LoggerFactory.getLogger.fluent
 
   @Benchmark
-  def fluentInfoBenchmark: Unit = {
+  def info(): Unit = {
     fluent.info.message("Hello world").log()
   }
 
   @Benchmark
-  def fluentInfoWhenBenchmark: Unit = {
+  def falseWhenInfo(): Unit = {
     fluent.info.when(false) { info =>
       info.message("Hello world").log()
     }
   }
 
   @Benchmark
-  def fluentTraceBenchmark: Unit = {
+  def trace(): Unit = {
     fluent.trace.message("Hello world").log()
   }
 
   @Benchmark
-  def fluentTraceWhenBenchmark: Unit = {
+  def falseTraceInfo(): Unit = {
     fluent.trace.when(false) { trace =>
       trace.message("Hello world").log()
     }

@@ -73,7 +73,7 @@ object SLF4JLogger {
   /**
    * A logger that provides "strict" logging that only takes type class aware arguments.
    */
-  class Strict(core: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](core) {
+  final class Strict(core: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](core) {
     override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, core)
     override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, core)
     override val info: Method  = new StrictSLF4JMethod.Impl(INFO, core)

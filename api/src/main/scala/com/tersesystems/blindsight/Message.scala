@@ -30,14 +30,17 @@ package com.tersesystems.blindsight
  * logger.info(message)
  * }}}
  */
-final class Message(private val raw: String) extends AnyVal {
+final class Message(val raw: String) extends AnyVal {
 
   def +(message: Message): Message = new Message(raw + message.raw)
 
+  @inline
   def isEmpty: Boolean = raw.isEmpty
 
+  @inline
   def nonEmpty: Boolean = raw.nonEmpty
 
+  @inline
   override def toString: String = raw
 
   def withPlaceHolders(args: Arguments): Message = {
@@ -48,8 +51,6 @@ final class Message(private val raw: String) extends AnyVal {
 }
 
 object Message {
-  import scala.language.implicitConversions
-
   implicit def stringToMessage(str: String): Message = new Message(str)
 
   def empty: Message = new Message("")

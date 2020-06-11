@@ -38,7 +38,7 @@ trait SemanticMethod[StatementType] {
 
 object SemanticMethod {
 
-  class Impl[StatementType](
+  final class Impl[StatementType](
       val level: Level,
       core: CoreLogger
   ) extends SemanticMethod[StatementType] {

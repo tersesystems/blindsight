@@ -103,10 +103,10 @@ object UncheckedSLF4JMethod {
   /**
    * Unchecked method implementation.
    */
-  class Impl(val level: Level, core: CoreLogger) extends UncheckedSLF4JMethod {
+  final class Impl(val level: Level, core: CoreLogger) extends UncheckedSLF4JMethod {
 
     @inline
-    protected def markers: Markers = core.markers
+    private def markers: Markers = core.markers
 
     val parameterList: ParameterList = core.parameterList(level)
 
