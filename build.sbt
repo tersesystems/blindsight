@@ -1,4 +1,5 @@
 import Dependencies._
+import com.typesafe.tools.mima.core.{IncompatibleMethTypeProblem, ProblemFilters, ReversedMissingMethodProblem}
 import sbt.Keys.libraryDependencies
 
 initialize := {
@@ -154,6 +155,25 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   })
 }
 
+lazy val mimaExclusions = Seq(
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Trace.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Debug.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Info.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Warn.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Error.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Debug.markerMessageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Info.markerMessageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Warn.markerMessageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Error.markerMessageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Conditional.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList#Conditional.markerMessageArgs"),
+  ProblemFilters.exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
+  ProblemFilters.exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ParameterList.markerMessageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList.markerMessageArgs")
+)
+
 // API that provides a logger with everything
 lazy val api = (project in file("api"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
@@ -164,6 +184,7 @@ lazy val api = (project in file("api"))
     ),
     //classpathOptions := classpathOptions.value.withFilterLibrary(false),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    mimaBinaryIssueFilters := mimaExclusions,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaTest              % Test,
