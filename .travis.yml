@@ -1,5 +1,4 @@
 jdk:
-- openjdk8
 - openjdk11
 language: scala
 scala:

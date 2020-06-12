@@ -1,6 +1,13 @@
 import Dependencies._
 import sbt.Keys.libraryDependencies
 
+initialize := {
+  val _        = initialize.value // run the previous initialization
+  val required = "11"
+  val current  = sys.props("java.specification.version")
+  assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
+}
+
 // Sanity check for sbt-travisci
 Global / onLoad := (Global / onLoad).value.andThen { s =>
   val v = scala213.value
