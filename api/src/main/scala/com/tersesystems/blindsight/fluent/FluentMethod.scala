@@ -51,7 +51,7 @@ object FluentMethod {
       }
     }
 
-    final case class BuilderImpl(
+    case class BuilderImpl(
         mkrs: Markers,
         m: Message,
         args: Arguments,

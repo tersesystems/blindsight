@@ -19,8 +19,6 @@ package com.tersesystems.blindsight
 import org.slf4j.Marker
 import org.slf4j.event.Level
 
-import scala.collection.JavaConverters._
-
 trait ParameterList {
 
   def executePredicate(): Boolean
@@ -29,11 +27,11 @@ trait ParameterList {
   def message(msg: String): Unit
   def messageArg1(msg: String, arg: Any): Unit
   def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit
-  def messageArgs(msg: String, args: Seq[_]): Unit
+  def messageArgs(msg: String, args: Array[_]): Unit
   def markerMessage(marker: Marker, msg: String): Unit
   def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit
   def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit
-  def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit
+  def markerMessageArgs(marker: Marker, msg: String, args: Array[_]): Unit
 
   def executeStatement(statement: Statement): Unit
 }
@@ -50,16 +48,16 @@ object ParameterList {
       statement match {
         case Statement(markers, message, args, None) =>
           if (markers.isEmpty) {
-            messageArgs(message.toString, args.toArray)
+            messageArgs(message.toString, (args.toArray))
           } else {
-            markerMessageArgs(markers.marker, message.toString, args.toArray)
+            markerMessageArgs(markers.marker, message.toString, (args.toArray))
           }
 
         case Statement(markers, message, args, Some(exception)) =>
           if (markers.isEmpty) {
-            messageArgs(message.toString, args.toArray :+ exception)
+            messageArgs(message.toString, (args.toArray :+ exception))
           } else {
-            markerMessageArgs(markers.marker, message.toString, args.toArray :+ exception)
+            markerMessageArgs(markers.marker, message.toString, (args.toArray :+ exception))
           }
       }
   }
@@ -80,7 +78,7 @@ object ParameterList {
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       if (core.condition(level, core.state))
         core.parameterList(level).messageArg1Arg2(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Seq[_]): Unit =
+    override def messageArgs(msg: String, args: Array[_]): Unit =
       if (core.condition(level, core.state)) core.parameterList(level).messageArgs(msg, args)
     override def markerMessage(marker: Marker, msg: String): Unit =
       if (core.condition(level, core.state)) core.parameterList(level).markerMessage(marker, msg)
@@ -90,7 +88,7 @@ object ParameterList {
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       if (core.condition(level, core.state))
         core.parameterList(level).markerMessageArg1Arg2(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[_]): Unit =
       if (core.condition(level, core.state))
         core.parameterList(level).markerMessageArgs(marker, msg, args)
 
@@ -122,15 +120,15 @@ object ParameterList {
     override def messageArg1(msg: String, arg: Any): Unit = logger.trace(msg, arg)
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.trace(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Seq[_]): Unit =
-      logger.trace(msg, args.asJava.toArray: _*)
+    override def messageArgs(msg: String, args: Array[_]): Unit =
+      logger.trace(msg, args: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.trace(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.trace(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.trace(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
-      logger.trace(marker, msg, args.asJava.toArray: _*)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[_]): Unit =
+      logger.trace(marker, msg, args: _*)
   }
 
   class Debug(logger: org.slf4j.Logger) extends Impl(Level.DEBUG, logger) {
@@ -141,15 +139,15 @@ object ParameterList {
     override def messageArg1(msg: String, arg: Any): Unit = logger.debug(msg, arg)
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.debug(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Seq[_]): Unit =
-      logger.debug(msg, args.asJava.toArray: _*)
+    override def messageArgs(msg: String, args: Array[_]): Unit =
+      logger.debug(msg, args: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.debug(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.debug(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.debug(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
-      logger.debug(marker, msg, args.asJava.toArray: _*)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[_]): Unit =
+      logger.debug(marker, msg, args: _*)
   }
 
   class Info(logger: org.slf4j.Logger) extends Impl(Level.INFO, logger) {
@@ -160,15 +158,15 @@ object ParameterList {
     override def messageArg1(msg: String, arg: Any): Unit = logger.info(msg, arg)
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.info(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Seq[_]): Unit =
-      logger.info(msg, args.asJava.toArray: _*)
+    override def messageArgs(msg: String, args: Array[_]): Unit =
+      logger.info(msg, args: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.info(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.info(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.info(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
-      logger.info(marker, msg, args.asJava.toArray: _*)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[_]): Unit =
+      logger.info(marker, msg, args: _*)
   }
 
   class Warn(logger: org.slf4j.Logger) extends Impl(Level.WARN, logger) {
@@ -179,15 +177,15 @@ object ParameterList {
     override def messageArg1(msg: String, arg: Any): Unit = logger.warn(msg, arg)
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.warn(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Seq[_]): Unit =
-      logger.warn(msg, args.asJava.toArray: _*)
+    override def messageArgs(msg: String, args: Array[_]): Unit =
+      logger.warn(msg, args: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.warn(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.warn(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.warn(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
-      logger.warn(marker, msg, args.asJava.toArray: _*)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[_]): Unit =
+      logger.warn(marker, msg, args: _*)
   }
 
   class Error(logger: org.slf4j.Logger) extends Impl(Level.ERROR, logger) {
@@ -198,14 +196,14 @@ object ParameterList {
     override def messageArg1(msg: String, arg: Any): Unit = logger.error(msg, arg)
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.error(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Seq[_]): Unit =
-      logger.error(msg, args.asJava.toArray: _*)
+    override def messageArgs(msg: String, args: Array[_]): Unit =
+      logger.error(msg, args: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.error(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.error(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.error(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit =
-      logger.error(marker, msg, args.asJava.toArray: _*)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[_]): Unit =
+      logger.error(marker, msg, args: _*)
   }
 }

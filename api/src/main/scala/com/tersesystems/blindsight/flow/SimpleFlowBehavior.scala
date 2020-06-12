@@ -36,11 +36,13 @@ class SimpleFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
   ): Option[(Level, Statement)] = {
     val args = Arguments(findArgs(source), throwable.getMessage, findPos(source))
     Some(
-      Level.ERROR,
-      Statement()
-        .withThrowable(throwable)
-        .withMessage(s"{} throws {} at {}")
-        .withArguments(args)
+      (
+        Level.ERROR,
+        Statement()
+          .withThrowable(throwable)
+          .withMessage(s"{} throws {} at {}")
+          .withArguments(args)
+      )
     )
   }
 

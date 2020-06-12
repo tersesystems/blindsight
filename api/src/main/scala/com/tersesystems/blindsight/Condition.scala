@@ -2,8 +2,6 @@ package com.tersesystems.blindsight
 
 import org.slf4j.event.Level
 
-import scala.language.implicitConversions
-
 trait Condition extends ((Level, CoreLogger.State) => Boolean)
 
 object Condition {

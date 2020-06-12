@@ -50,11 +50,15 @@ object LoggerFactory {
 
   private lazy val loggerFactory: LoggerFactory = {
     import javax.management.ServiceNotFoundException
-
-    import scala.collection.JavaConverters._
-
-    loggerFactoryLoader.iterator().asScala.find(_ != null).getOrElse {
+    val iter                         = loggerFactoryLoader.iterator()
+    var loggerFactory: LoggerFactory = null;
+    while (iter.hasNext && loggerFactory == null) {
+      loggerFactory = iter.next()
+    }
+    if (loggerFactory == null) {
       throw new ServiceNotFoundException("No logger factory found!")
+    } else {
+      loggerFactory
     }
   }
   private val loggerFactoryLoader = ServiceLoader.load(classOf[LoggerFactory])

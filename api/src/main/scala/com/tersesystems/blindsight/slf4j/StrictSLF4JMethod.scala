@@ -269,11 +269,11 @@ object StrictSLF4JMethod {
       val m: Markers = collateMarkers
       if (m.nonEmpty) {
         if (executePredicate(m.marker)) {
-          markerMessageArgs(m.marker, message.toString, args.toArray :+ throwable)
+          markerMessageArgs(m.marker, message.toString, (args.toArray :+ throwable))
         }
       } else {
         if (executePredicate()) {
-          messageArgs(message.toString, args.toArray :+ throwable)
+          messageArgs(message.toString, (args.toArray :+ throwable))
         }
       }
     }
@@ -370,7 +370,7 @@ object StrictSLF4JMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = collateMarkers(markers)
       if (executePredicate(m.marker)) {
-        markerMessageArgs(m.marker, message.toString, args.toArray)
+        markerMessageArgs(m.marker, message.toString, (args.toArray))
       }
     }
 
@@ -382,7 +382,7 @@ object StrictSLF4JMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = collateMarkers(markers)
       if (executePredicate(m.marker)) {
-        markerMessageArgs(m.marker, message.toString, args.toArray :+ throwable)
+        markerMessageArgs(m.marker, message.toString, (args.toArray :+ throwable))
       }
     }
 
