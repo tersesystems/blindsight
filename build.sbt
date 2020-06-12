@@ -140,17 +140,6 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
         "-Xsource:2.12",
         "-Yno-adapted-args"
       )
-    // inliner causes failures right now with
-    // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
-    // https://www.lightbend.com/blog/scala-inliner-optimizer
-    // https://docs.scala-lang.org/overviews/compiler-options/index.html
-
-    //      Seq(
-    //        "-opt:l:inline",
-    //        "-opt-inline-from:com.tersesystems.blindsight.**",
-    //        "-opt-warnings:any-inline-failed",
-    //        "-Yopt-log-inline"
-    //      )
     case Some((2, n)) if n == 11 =>
       Seq(
         "-Xsource:2.11",
@@ -158,6 +147,17 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
       )
   })
 }
+
+// inliner causes failures right now with
+// "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
+// https://www.lightbend.com/blog/scala-inliner-optimizer
+// https://docs.scala-lang.org/overviews/compiler-options/index.html
+val optimizeSettings = Seq(
+  "-opt:l:inline",
+  "-opt-inline-from:com.tersesystems.blindsight.**",
+  "-opt-warnings:any-inline-failed",
+  "-Yopt-log-inline"
+)
 
 lazy val mimaExclusions = Seq(
   ProblemFilters.exclude[IncompatibleMethTypeProblem](
