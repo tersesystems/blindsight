@@ -184,7 +184,7 @@ lazy val api = (project in file("api"))
     ),
     //classpathOptions := classpathOptions.value.withFilterLibrary(false),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    mimaBinaryIssueFilters := mimaExclusions,
+    //mimaBinaryIssueFilters := mimaExclusions,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaTest              % Test,
