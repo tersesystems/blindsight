@@ -135,10 +135,10 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
         "-Xsource:2.12",
         "-Yno-adapted-args"
       )
-      // inliner causes failures right now with
-      // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
-      // https://www.lightbend.com/blog/scala-inliner-optimizer
-      // https://docs.scala-lang.org/overviews/compiler-options/index.html
+    // inliner causes failures right now with
+    // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
+    // https://www.lightbend.com/blog/scala-inliner-optimizer
+    // https://docs.scala-lang.org/overviews/compiler-options/index.html
 
     //      Seq(
     //        "-opt:l:inline",
