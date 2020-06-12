@@ -108,6 +108,39 @@ lazy val fixtures = (project in file("fixtures"))
   .settings(disablePublishing)
   .settings(disableDocs)
 
+// https://docs.scala-lang.org/overviews/core/collections-migration-213.html
+// https://confadmin.trifork.com/dl/2018/GOTO_Berlin/Migrating_to_Scala_2.13.pdf
+def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
+  Seq(
+    //scalacOptions += "-Xfatal-warnings",
+    "-unchecked",
+    "-deprecation",
+    "-Xlint",
+    "-Ywarn-dead-code",
+    "-encoding",
+    "UTF-8",
+    "-language:implicitConversions",
+    "-language:higherKinds",
+    "-language:existentials",
+    "-language:postfixOps"
+  ) ++ (CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, n)) if n >= 12 =>
+      // inliner causes failures right now with
+      // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
+      // https://www.lightbend.com/blog/scala-inliner-optimizer
+      // https://docs.scala-lang.org/overviews/compiler-options/index.html
+      Seq.empty
+    //      Seq(
+    //        "-opt:l:inline",
+    //        "-opt-inline-from:com.tersesystems.blindsight.**",
+    //        "-opt-warnings:any-inline-failed",
+    //        "-Yopt-log-inline"
+    //      )
+    case Some((2, n)) if n == 11 =>
+      Seq("-Xsource:2.11")
+  })
+}
+
 // API that provides a logger with everything
 lazy val api = (project in file("api"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
@@ -116,6 +149,8 @@ lazy val api = (project in file("api"))
     mimaPreviousArtifacts := Set(
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
+    //classpathOptions := classpathOptions.value.withFilterLibrary(false),
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaTest              % Test,
