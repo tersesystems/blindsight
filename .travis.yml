@@ -4,12 +4,12 @@ language: scala
 scala:
   - 2.11.12
   - 2.12.11
-  - 2.13.1
+  - 2.13.2
 jobs:
   include:
   - stage: check
     env: ISOLATED=true
-    scala: 2.13.1
+    scala: 2.13.2
     script: sbt scalafmtCheckAll || { echo "[error] Unformatted code found. Please
       run 'scalafmtAll' and commit the reformatted code."; false; }
     name: Code style check (fixed with `sbt scalafmtAll`)
@@ -30,7 +30,7 @@ jobs:
   - stage: docs
     name: Push documentation to ghpages
     env: ISOLATED=true
-    scala: 2.13.1
+    scala: 2.13.2
     script:
     - git config --global user.name "$USER"
     - git config --global user.email "$TRAVIS_BUILD_NUMBER@$TRAVIS_COMMIT"
