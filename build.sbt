@@ -18,6 +18,18 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
   s
 }
 
+scalafixDependencies in ThisBuild += "org.scala-lang.modules" %% "scala-collection-migrations" % "2.1.6"
+libraryDependencies +=  "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.6"
+addCompilerPlugin(scalafixSemanticdb)
+scalacOptions ++= List("-Yrangepos", "-P:semanticdb:synthetics:on")
+
+inThisBuild(
+  List(
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision
+  )
+)
+
 ThisBuild / scalafmtOnCompile := false
 
 // These settings seem not to work for sbt-release-early, so .travis.yml copies to

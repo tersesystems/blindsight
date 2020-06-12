@@ -29,3 +29,5 @@ addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.7.0")
 
 // https://github.com/dwijnand/sbt-travisci
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
+
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.17")
