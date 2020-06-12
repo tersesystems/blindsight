@@ -140,14 +140,14 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
         "-Xsource:2.12",
         "-Yno-adapted-args"
       )
-    // inliner must be run with "clean; compile", it's not incremental
-    // https://www.lightbend.com/blog/scala-inliner-optimizer
-    // https://docs.scala-lang.org/overviews/compiler-options/index.html
-    Seq(
-      "-opt:l:inline",
-      "-opt-inline-from:com.tersesystems.blindsight.**",
-      "-opt-warnings:any-inline-failed"
-    )
+      // inliner must be run with "clean; compile", it's not incremental
+      // https://www.lightbend.com/blog/scala-inliner-optimizer
+      // https://docs.scala-lang.org/overviews/compiler-options/index.html
+      Seq(
+        "-opt:l:inline",
+        "-opt-inline-from:com.tersesystems.blindsight.**",
+        "-opt-warnings:any-inline-failed"
+      )
     case Some((2, n)) if n == 11 =>
       Seq(
         "-Xsource:2.11",
