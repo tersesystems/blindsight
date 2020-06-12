@@ -140,17 +140,14 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
         "-Xsource:2.12",
         "-Yno-adapted-args"
       )
-    // inliner causes failures right now with
-    // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
+    // inliner must be run with "clean; compile", it's not incremental
     // https://www.lightbend.com/blog/scala-inliner-optimizer
     // https://docs.scala-lang.org/overviews/compiler-options/index.html
-
-    //      Seq(
-    //        "-opt:l:inline",
-    //        "-opt-inline-from:com.tersesystems.blindsight.**",
-    //        "-opt-warnings:any-inline-failed",
-    //        "-Yopt-log-inline"
-    //      )
+    Seq(
+      "-opt:l:inline",
+      "-opt-inline-from:com.tersesystems.blindsight.**",
+      "-opt-warnings:any-inline-failed"
+    )
     case Some((2, n)) if n == 11 =>
       Seq(
         "-Xsource:2.11",
@@ -216,7 +213,6 @@ lazy val api = (project in file("api"))
     mimaPreviousArtifacts := Set(
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
-    //classpathOptions := classpathOptions.value.withFilterLibrary(false),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     //mimaBinaryIssueFilters := mimaExclusions,
     libraryDependencies += slf4jApi,
@@ -236,6 +232,7 @@ lazy val logstash = (project in file("logstash"))
     mimaPreviousArtifacts := Set(
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder,
     autoAPIMappings := true
