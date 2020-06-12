@@ -115,7 +115,7 @@ trait LowPriorityBehavior {
           exc: Throwable,
           source: FlowBehavior.Source
       ): Option[(Level, Statement)] =
-        Some(Level.ERROR, Statement().withMessage("throwing"))
+        Some((Level.ERROR, Statement().withMessage("throwing")))
     }
 }
 

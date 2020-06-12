@@ -12,7 +12,7 @@ class FluentLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
 
   def resourceName: String = "/logback-test-list.xml"
 
-  final case class PayloadModel(payloadId: UUID, userSecretToken: String, data: String) {
+  case class PayloadModel(payloadId: UUID, userSecretToken: String, data: String) {
     override def toString: String = s"PayloadModel(uuid=$payloadId)"
   }
 

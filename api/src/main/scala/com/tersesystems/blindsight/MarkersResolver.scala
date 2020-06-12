@@ -41,11 +41,15 @@ object MarkersResolver {
 
   private lazy val resolver: MarkersResolver = {
     import javax.management.ServiceNotFoundException
-
-    import scala.collection.JavaConverters._
-
-    resolverLoader.iterator().asScala.find(_ != null).getOrElse {
+    val iter                             = resolverLoader.iterator()
+    var markersResolver: MarkersResolver = null;
+    while (iter.hasNext && markersResolver == null) {
+      markersResolver = iter.next()
+    }
+    if (markersResolver == null) {
       throw new ServiceNotFoundException("No markers resolver found!")
+    } else {
+      markersResolver
     }
   }
 }

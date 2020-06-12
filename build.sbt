@@ -1,4 +1,9 @@
 import Dependencies._
+import com.typesafe.tools.mima.core.{
+  IncompatibleMethTypeProblem,
+  ProblemFilters,
+  ReversedMissingMethodProblem
+}
 import sbt.Keys.libraryDependencies
 
 initialize := {
@@ -112,24 +117,34 @@ lazy val fixtures = (project in file("fixtures"))
 // https://confadmin.trifork.com/dl/2018/GOTO_Berlin/Migrating_to_Scala_2.13.pdf
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   Seq(
-    //scalacOptions += "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-    "-Xlint",
-    "-Ywarn-dead-code",
+    "-feature",
     "-encoding",
     "UTF-8",
     "-language:implicitConversions",
     "-language:higherKinds",
     "-language:existentials",
-    "-language:postfixOps"
+    "-language:postfixOps",
+    "-Xlint",
+    //"-Xfatal-warnings",
+    "-Ywarn-dead-code",
+    "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, n)) if n >= 12 =>
-      // inliner causes failures right now with
-      // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
-      // https://www.lightbend.com/blog/scala-inliner-optimizer
-      // https://docs.scala-lang.org/overviews/compiler-options/index.html
-      Seq.empty
+    case Some((2, n)) if n >= 13 =>
+      Seq(
+        "-Xsource:2.13"
+      )
+    case Some((2, n)) if n == 12 =>
+      Seq(
+        "-Xsource:2.12",
+        "-Yno-adapted-args"
+      )
+    // inliner causes failures right now with
+    // "scala.reflect.internal.MissingRequirementError: object scala in compiler mirror not found."
+    // https://www.lightbend.com/blog/scala-inliner-optimizer
+    // https://docs.scala-lang.org/overviews/compiler-options/index.html
+
     //      Seq(
     //        "-opt:l:inline",
     //        "-opt-inline-from:com.tersesystems.blindsight.**",
@@ -137,9 +152,61 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     //        "-Yopt-log-inline"
     //      )
     case Some((2, n)) if n == 11 =>
-      Seq("-Xsource:2.11")
+      Seq(
+        "-Xsource:2.11",
+        "-Yno-adapted-args"
+      )
   })
 }
+
+lazy val mimaExclusions = Seq(
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Trace.messageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Debug.messageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Info.messageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Warn.messageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Error.messageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Debug.markerMessageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Info.markerMessageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Warn.markerMessageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Error.markerMessageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Conditional.messageArgs"
+  ),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList#Conditional.markerMessageArgs"
+  ),
+  ProblemFilters
+    .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
+  ProblemFilters.exclude[ReversedMissingMethodProblem](
+    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
+  ),
+  ProblemFilters
+    .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
+  )
+)
 
 // API that provides a logger with everything
 lazy val api = (project in file("api"))
@@ -151,6 +218,7 @@ lazy val api = (project in file("api"))
     ),
     //classpathOptions := classpathOptions.value.withFilterLibrary(false),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    //mimaBinaryIssueFilters := mimaExclusions,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaTest              % Test,

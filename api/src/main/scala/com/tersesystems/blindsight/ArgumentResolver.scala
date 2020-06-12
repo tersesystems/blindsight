@@ -43,11 +43,15 @@ object ArgumentResolver {
 
   private lazy val argumentResolver: ArgumentResolver = {
     import javax.management.ServiceNotFoundException
-
-    import scala.collection.JavaConverters._
-
-    argumentResolverLoader.iterator().asScala.find(_ != null).getOrElse {
+    val iter                       = argumentResolverLoader.iterator()
+    var resolver: ArgumentResolver = null;
+    while (iter.hasNext && resolver == null) {
+      resolver = iter.next()
+    }
+    if (resolver == null) {
       throw new ServiceNotFoundException("No argument resolver found!")
+    } else {
+      resolver
     }
   }
 

@@ -49,11 +49,13 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       source: FlowBehavior.Source
   ): Option[(Level, Statement)] = {
     Some(
-      Level.ERROR, // xlogger logs exceptions at an error level.
-      Statement()
-        .withThrowable(throwable)
-        .withMarkers(XLoggerFlowBehavior.throwingMarkers)
-        .withMessage(s"${source.enclosing.value} exception")
+      (
+        Level.ERROR, // xlogger logs exceptions at an error level.
+        Statement()
+          .withThrowable(throwable)
+          .withMarkers(XLoggerFlowBehavior.throwingMarkers)
+          .withMessage(s"${source.enclosing.value} exception")
+      )
     )
   }
 

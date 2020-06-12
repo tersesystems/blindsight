@@ -60,7 +60,7 @@ object CoreLogger {
   }
 
   class Impl(val state: State) extends CoreLogger {
-    private val parameterLists: Seq[ParameterList] = ParameterList.lists(this.underlying)
+    private val parameterLists: Array[ParameterList] = ParameterList.lists(this.underlying)
 
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Impl(state.withMarker(m))
