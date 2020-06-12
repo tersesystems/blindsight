@@ -48,7 +48,7 @@ final class Message(private val raw: String) extends AnyVal {
 }
 
 object Message {
-  import scala.language.implicitConversions
+
 
   implicit def stringToMessage(str: String): Message = new Message(str)
 

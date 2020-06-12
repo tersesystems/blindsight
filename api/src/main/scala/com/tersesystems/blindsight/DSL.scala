@@ -18,7 +18,7 @@ package com.tersesystems.blindsight
 
 import com.tersesystems.blindsight.AST._
 
-import scala.language.implicitConversions
+
 
 /**
  * A DSL to produce valid [[AST]] of values.
