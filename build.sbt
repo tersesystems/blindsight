@@ -1,5 +1,6 @@
 import Dependencies._
 import com.typesafe.tools.mima.core.{
+  DirectMissingMethodProblem,
   IncompatibleMethTypeProblem,
   ProblemFilters,
   ReversedMissingMethodProblem
@@ -166,7 +167,11 @@ lazy val api = (project in file("api"))
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    //mimaBinaryIssueFilters := mimaExclusions,
+    mimaBinaryIssueFilters := Seq(
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl.markerState"
+      )
+    ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaTest              % Test,
@@ -183,6 +188,11 @@ lazy val logstash = (project in file("logstash"))
     name := "blindsight-logstash",
     mimaPreviousArtifacts := Set(
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
+    ),
+    mimaBinaryIssueFilters := Seq(
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.logstash.LogstashLoggerFactory.sourceInfoBehavior"
+      )
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,

@@ -26,19 +26,32 @@ import sourcecode.{Enclosing, File, Line}
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior))
+    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior(underlying)))
   }
 
-  /**
-   * Add the source code information as markers.
-   */
-  def sourceInfoBehavior: SourceInfoBehavior =
-    new SourceInfoBehavior {
-      override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
-        import com.tersesystems.blindsight.AST.BField
-        import com.tersesystems.blindsight.DSL._
-        import com.tersesystems.blindsight.SourceCodeImplicits._
-        Markers((line: BField) ~ file ~ enclosing)
-      }
+  private def sourceInfoBehavior(underlying: org.slf4j.Logger): SourceInfoBehavior = {
+    if (sourceInfoEnabled(underlying)) {
+      sourceInfoAsMarker
+    } else {
+      SourceInfoBehavior.empty
     }
+  }
+
+  private def sourceInfoEnabled(underlying: org.slf4j.Logger): Boolean = {
+    // We know this is Logback, so we can ask the logger context for data
+    val logbackLogger = underlying.asInstanceOf[ch.qos.logback.classic.Logger]
+    val enabled       = logbackLogger.getLoggerContext.getProperty("blindsight.source.enabled")
+    java.lang.Boolean.parseBoolean(enabled)
+  }
+
+  private val sourceInfoAsMarker: SourceInfoBehavior = new MarkerSourceInfoBehavior()
+
+  final class MarkerSourceInfoBehavior extends SourceInfoBehavior {
+    override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
+      import com.tersesystems.blindsight.AST.BField
+      import com.tersesystems.blindsight.DSL._
+      import com.tersesystems.blindsight.SourceCodeImplicits._
+      Markers((line: BField) ~ file ~ enclosing)
+    }
+  }
 }

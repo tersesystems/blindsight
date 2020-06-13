@@ -54,7 +54,13 @@ final class Markers(private val internal: Set[Marker]) {
 
   def +[T: ToMarkers](elem: T): Markers = {
     val markers = implicitly[ToMarkers[T]].toMarkers(elem)
-    new Markers(internal ++ markers.internal)
+    if (isEmpty) {
+      markers
+    } else if (markers.isEmpty) {
+      this
+    } else {
+      new Markers(internal ++ markers.internal)
+    }
   }
 
   def -[T: ToMarkers](elem: T): Markers = {
@@ -66,7 +72,7 @@ final class Markers(private val internal: Set[Marker]) {
 }
 
 object Markers {
-  def empty: Markers = new Markers(Set.empty)
+  val empty: Markers = new Markers(Set.empty)
 
   def apply[T: ToMarkers](instance: => T): Markers = implicitly[ToMarkers[T]].toMarkers(instance)
 

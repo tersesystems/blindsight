@@ -43,7 +43,7 @@ object FluentMethod {
 
     protected val parameterList: ParameterList = core.parameterList(level)
 
-    def markerState: Markers = core.markers
+    private def markerState: Markers = core.markers
 
     def when(condition: Condition)(block: FluentMethod => Unit): Unit = {
       if (condition(level, core.state) && isEnabled(collateMarkers(core.markers))) {
@@ -87,7 +87,7 @@ object FluentMethod {
     }
 
     object BuilderImpl {
-      def empty: BuilderImpl = BuilderImpl(Markers.empty, Message.empty, Arguments.empty, None)
+      val empty: BuilderImpl = BuilderImpl(Markers.empty, Message.empty, Arguments.empty, None)
     }
 
     override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
@@ -107,9 +107,9 @@ object FluentMethod {
         instance: => T
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers   = collateMarkers(statement.markers)
-      if (isEnabled(markers)) {
-        parameterList.executeStatement(statement.withMarkers(markers))
+      if (isEnabled(statement.markers)) {
+        val sourceMarkers = collateMarkers(statement.markers)
+        parameterList.executeStatement(statement.withMarkers(sourceMarkers))
       }
     }
 
