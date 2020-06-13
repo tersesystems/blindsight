@@ -14,36 +14,59 @@ import org.slf4j.event.{Level => SLF4JLevel}
 class LoggingBenchmark {
 
   val logger: Logger               = LoggerFactory.getLogger
-  val infoCondition: Condition     = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val traceConditionLogger: Logger = logger.onCondition(infoCondition)
+  val condition: Condition     = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
+  val infoConditionLogger: Logger = logger.onCondition(condition)
   val falseConditionLogger: Logger = logger.onCondition(false)
 
   @Benchmark
-  def traceBenchmark: Unit = {
-    // 600 ns with an info statement.
+  def trace(): Unit = {
     logger.trace("Hello world")
   }
 
   @Benchmark
-  def traceWhenBenchmark: Unit = {
-    // 600 ns with an info statement.
+  def traceWhen(): Unit = {
     logger.trace.when(false) { log => log("Hello world") }
   }
 
   @Benchmark
-  def conditionalTraceBenchmark: Unit = {
-    traceConditionLogger.trace("Hello world")
+  def traceCondition(): Unit = {
+    infoConditionLogger.trace("Hello world")
   }
 
   @Benchmark
-  def falseConditionalTraceBenchmark: Unit = {
+  def traceFalse(): Unit = {
     falseConditionLogger.trace("Hello world")
   }
 
   @Benchmark
-  def ifTraceBenchmark: Unit = {
-    // 16 ns using conditional logging.
+  def traceExplicitPredicate(): Unit = {
     if (logger.isTraceEnabled()) logger.trace("Hello world")
+  }
+
+  @Benchmark
+  def info(): Unit = {
+    logger.info("Hello world")
+  }
+
+  @Benchmark
+  def infoWhen(): Unit = {
+    // 600 ns with an info statement.
+    logger.info.when(false) { log => log("Hello world") }
+  }
+
+  @Benchmark
+  def infoCondition(): Unit = {
+    infoConditionLogger.info("Hello world")
+  }
+
+  @Benchmark
+  def infoFalse(): Unit = {
+    falseConditionLogger.info("Hello world")
+  }
+
+  @Benchmark
+  def infoExplicitPredicate(): Unit = {
+    if (logger.isInfoEnabled()) logger.info("Hello world")
   }
 
 }

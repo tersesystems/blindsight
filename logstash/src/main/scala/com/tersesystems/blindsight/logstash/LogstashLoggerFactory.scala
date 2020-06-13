@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight.logstash
 
+import ch.qos.logback.classic.LoggerContext
 import com.tersesystems.blindsight._
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -26,19 +27,28 @@ import sourcecode.{Enclosing, File, Line}
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior))
+    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior(underlying)))
   }
 
-  /**
-   * Add the source code information as markers.
-   */
-  def sourceInfoBehavior: SourceInfoBehavior =
-    new SourceInfoBehavior {
-      override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
-        import com.tersesystems.blindsight.AST.BField
-        import com.tersesystems.blindsight.DSL._
-        import com.tersesystems.blindsight.SourceCodeImplicits._
-        Markers((line: BField) ~ file ~ enclosing)
-      }
+  def sourceInfoBehavior(underlying: org.slf4j.Logger): SourceInfoBehavior = {
+    // We know this is Logback, so we can ask the logger context for data
+    val logbackLogger = underlying.asInstanceOf[ch.qos.logback.classic.Logger]
+    val sourceInfoEnabled = logbackLogger.getLoggerContext.getProperty("blindsight.source.enabled")
+    if (java.lang.Boolean.parseBoolean(sourceInfoEnabled)) {
+      sourceInfoAsMarker
+    } else {
+      SourceInfoBehavior.empty
     }
+  }
+
+  private val sourceInfoAsMarker: SourceInfoBehavior = new MarkerSourceInfoBehavior()
+
+  final class MarkerSourceInfoBehavior extends SourceInfoBehavior {
+    override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers = {
+      import com.tersesystems.blindsight.AST.BField
+      import com.tersesystems.blindsight.DSL._
+      import com.tersesystems.blindsight.SourceCodeImplicits._
+      Markers((line: BField) ~ file ~ enclosing)
+    }
+  }
 }
