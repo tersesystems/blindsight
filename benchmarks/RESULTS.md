@@ -1,10 +1,83 @@
 # Results
 
-On the following hardware:
+This page gives a baseline for how much overhead Blindsight adds on top of using raw SLF4J.  This is purely CPU bound, so your results will vary depending on how powerful your CPU is.  The raw SLF4J logger performance numbers are
+
+## Hardware
+
+Tests are run on a desktop CPU running Windows 10, using an Ubuntu Virtualbox:
 
 ```text
 Processor	Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz, 3600 Mhz, 8 Core(s), 16 Logical Processor(s)
 ```
+
+## Raw SLF4J Logger
+
+Running SLF4J as a baseline with Logback 1.2.3 and a no-op appender:
+
+```scala
+class SLF4JLoggerBenchmark {
+  private val slf4jLogger = org.slf4j.LoggerFactory.getLogger(classOf[CoreLoggerBenchmark])
+
+  @Benchmark
+  def trace(): Unit = {
+    slf4jLogger.trace("Hello world")
+  }
+
+  @Benchmark
+  def info(): Unit = {
+    slf4jLogger.info("Hello world")
+  }
+}
+```
+
+yields:
+
+```
+[info] Benchmark                   Mode  Cnt   Score   Error  Units
+[info] SLF4JLoggerBenchmark.info   avgt    5  42.381 ± 0.411  ns/op
+[info] SLF4JLoggerBenchmark.trace  avgt    5   1.313 ± 0.044  ns/op
+[success] Total time: 23 s, completed Jun 13, 2020, 2:20:01 PM
+```
+
+## Core Logger
+
+The core logger should give as close as possible performance to the SLF4J logger.
+
+```scala
+class CoreLoggerBenchmark {
+  private val slf4jLogger = org.slf4j.LoggerFactory.getLogger(classOf[CoreLoggerBenchmark])
+  private val coreLogger  = CoreLogger(slf4jLogger)
+  val line: Line          = new Line(42)
+  val file: File          = new File("file")
+  val enclosing           = new Enclosing("enclosing")
+
+  @Benchmark
+  def trace(): Unit = {
+    coreLogger.parameterList(SLF4JLevel.TRACE).message("Hello world")
+  }
+
+  @Benchmark
+  def info(): Unit = {
+    coreLogger.parameterList(SLF4JLevel.INFO).message("Hello world")
+  }
+
+  @Benchmark
+  def sourceInfoBehavior(blackhole: Blackhole): Unit = {
+    blackhole.consume(coreLogger.sourceInfoBehavior(SLF4JLevel.INFO, line, file, enclosing))
+  }
+}
+```
+
+yields:
+
+```
+[info] Benchmark                               Mode  Cnt   Score   Error  Units
+[info] CoreLoggerBenchmark.info                avgt    5  43.636 ± 0.059  ns/op
+[info] CoreLoggerBenchmark.sourceInfoBehavior  avgt    5   5.233 ± 0.186  ns/op
+[info] CoreLoggerBenchmark.trace               avgt    5   2.792 ± 0.427  ns/op
+```
+
+## Blindsight Logger
 
 With the following benchmark:
 
@@ -97,3 +170,48 @@ Using a no-op appender and Logback:
 [info] LoggingBenchmark.traceFalse              avgt    5   12.181 ± 0.366  ns/op
 [info] LoggingBenchmark.traceWhen               avgt    5    1.947 ± 0.008  ns/op
 ```
+
+## Fluent Logger
+
+The fluent logger is a little slower because it constructs objects internally, and always calls `messageArgs`, even if there are no arguments.
+
+```scala
+class FluentBenchmark {
+  val fluent: FluentLogger = LoggerFactory.getLogger.fluent
+
+  @Benchmark
+  def info(): Unit = {
+    fluent.info.message("Hello world").log()
+  }
+
+  @Benchmark
+  def infoWhen(): Unit = {
+    fluent.info.when(false) { info =>
+      info.message("Hello world").log()
+    }
+  }
+
+  @Benchmark
+  def trace(): Unit = {
+    fluent.trace.message("Hello world").log()
+  }
+
+  @Benchmark
+  def traceWhen(): Unit = {
+    fluent.trace.when(false) { trace =>
+      trace.message("Hello world").log()
+    }
+  }
+}
+```
+
+Yields:
+
+```scala
+[info] FluentBenchmark.info       avgt    5  150.817 ± 4.792  ns/op
+[info] FluentBenchmark.infoWhen   avgt    5    1.538 ± 0.019  ns/op
+[info] FluentBenchmark.trace      avgt    5   40.223 ± 1.580  ns/op
+[info] FluentBenchmark.traceWhen  avgt    5    1.541 ± 0.063  ns/op
+```
+
+This could be improved.

@@ -87,7 +87,7 @@ object FluentMethod {
     }
 
     object BuilderImpl {
-      def empty: BuilderImpl = BuilderImpl(Markers.empty, Message.empty, Arguments.empty, None)
+      val empty: BuilderImpl = BuilderImpl(Markers.empty, Message.empty, Arguments.empty, None)
     }
 
     override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
