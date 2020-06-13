@@ -113,6 +113,15 @@ lazy val fixtures = (project in file("fixtures"))
   .settings(disablePublishing)
   .settings(disableDocs)
 
+// inliner must be run with "clean; compile", it's not incremental
+// https://www.lightbend.com/blog/scala-inliner-optimizer
+// https://docs.scala-lang.org/overviews/compiler-options/index.html
+val optimizeInline = Seq(
+  "-opt:l:inline",
+  "-opt-inline-from:com.tersesystems.blindsight.**",
+  "-opt-warnings:any-inline-failed"
+)
+
 // https://docs.scala-lang.org/overviews/core/collections-migration-213.html
 // https://confadmin.trifork.com/dl/2018/GOTO_Berlin/Migrating_to_Scala_2.13.pdf
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
@@ -134,20 +143,12 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     case Some((2, n)) if n >= 13 =>
       Seq(
         "-Xsource:2.13"
-      )
+      ) ++ optimizeInline
     case Some((2, n)) if n == 12 =>
       Seq(
         "-Xsource:2.12",
         "-Yno-adapted-args"
-      )
-      // inliner must be run with "clean; compile", it's not incremental
-      // https://www.lightbend.com/blog/scala-inliner-optimizer
-      // https://docs.scala-lang.org/overviews/compiler-options/index.html
-      Seq(
-        "-opt:l:inline",
-        "-opt-inline-from:com.tersesystems.blindsight.**",
-        "-opt-warnings:any-inline-failed"
-      )
+      ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
       Seq(
         "-Xsource:2.11",
@@ -155,55 +156,6 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
       )
   })
 }
-
-lazy val mimaExclusions = Seq(
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Trace.messageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Debug.messageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Info.messageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Warn.messageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Error.messageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Debug.markerMessageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Info.markerMessageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Warn.markerMessageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Error.markerMessageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Conditional.messageArgs"
-  ),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList#Conditional.markerMessageArgs"
-  ),
-  ProblemFilters
-    .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
-  ProblemFilters.exclude[ReversedMissingMethodProblem](
-    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
-  ),
-  ProblemFilters
-    .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
-  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
-  )
-)
 
 // API that provides a logger with everything
 lazy val api = (project in file("api"))
@@ -268,3 +220,52 @@ lazy val root = (project in file("."))
   .settings(disableDocs)
   .settings(disablePublishing)
   .aggregate(api, docs, fixtures, benchmarks, logstash, generic)
+
+//lazy val mimaExclusions = Seq(
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Trace.messageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Debug.messageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Info.messageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Warn.messageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Error.messageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Debug.markerMessageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Info.markerMessageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Warn.markerMessageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Error.markerMessageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Conditional.messageArgs"
+//  ),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList#Conditional.markerMessageArgs"
+//  ),
+//  ProblemFilters
+//    .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
+//  ProblemFilters.exclude[ReversedMissingMethodProblem](
+//    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
+//  ),
+//  ProblemFilters
+//    .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
+//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
+//    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
+//  )
+//)
