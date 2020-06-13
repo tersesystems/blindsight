@@ -14,8 +14,8 @@ import org.slf4j.event.{Level => SLF4JLevel}
 class LoggingBenchmark {
 
   val logger: Logger               = LoggerFactory.getLogger
-  val condition: Condition     = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val infoConditionLogger: Logger = logger.onCondition(condition)
+  val condition: Condition         = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
+  val infoConditionLogger: Logger  = logger.onCondition(condition)
   val falseConditionLogger: Logger = logger.onCondition(false)
 
   @Benchmark

@@ -29,7 +29,6 @@ class CoreLoggerBenchmark {
 
   @Benchmark
   def info(): Unit = {
-    // 4 ns for trace
     coreLogger.parameterList(SLF4JLevel.INFO).message("Hello world")
   }
 
