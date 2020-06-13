@@ -1,0 +1,11 @@
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <appender name="NOP" class="com.tersesystems.blindsight.NoOpAppender">
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="NOP" />
+    </root>
+
+</configuration>

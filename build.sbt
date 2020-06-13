@@ -239,6 +239,18 @@ lazy val logstash = (project in file("logstash"))
   )
   .dependsOn(api, fixtures % "test->test")
 
+// https://github.com/ktoso/sbt-jmh
+// http://tutorials.jenkov.com/java-performance/jmh.html
+// https://www.researchgate.net/publication/333825812_What's_Wrong_With_My_Benchmark_Results_Studying_Bad_Practices_in_JMH_Benchmarks
+// run with "jmh:run"
+lazy val benchmarks = (project in file("benchmarks"))
+  .enablePlugins(JmhPlugin)
+  .disablePlugins(MimaPlugin)
+  .settings(
+    fork in run := true
+  )
+  .dependsOn(logstash)
+
 // serviceloader implementation with only SLF4J dependencies.
 lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
@@ -255,4 +267,4 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, logstash, generic)
+  .aggregate(api, docs, fixtures, benchmarks, logstash, generic)
