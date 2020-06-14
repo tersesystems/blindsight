@@ -51,7 +51,7 @@ object Message {
 
   implicit def stringToMessage(str: String): Message = new Message(str)
 
-  def empty: Message = new Message("")
+  val empty: Message = new Message("")
 
   def apply[T: ToMessage](instance: => T): Message = implicitly[ToMessage[T]].toMessage(instance)
 }

@@ -22,9 +22,6 @@ object FluentMain {
   private val fluent = LoggerFactory.getLogger.fluent
 
   def main(args: Array[String]): Unit = {
-    val statement = Statement().withMessage("hello world")
-    fluent.info(statement)
-
     import com.tersesystems.blindsight.DSL._
     fluent.info
       .marker(bobj("string" -> "steve"))

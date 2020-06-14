@@ -48,18 +48,34 @@ object ParameterList {
   abstract class Impl(val level: Level, val logger: org.slf4j.Logger) extends ParameterList {
     def executeStatement(statement: Statement): Unit =
       statement match {
-        case Statement(markers, message, args, None) =>
+        case Statement(markers, m, args, None) =>
           if (markers.isEmpty) {
-            messageArgs(message.toString, args.toArray)
+            if (args.isEmpty) {
+              message(m.toString)
+            } else {
+              messageArgs(m.toString, args.toArray)
+            }
           } else {
-            markerMessageArgs(markers.marker, message.toString, args.toArray)
+            if (args.isEmpty) {
+              markerMessage(markers.marker, m.toString)
+            } else {
+              markerMessageArgs(markers.marker, m.toString, args.toArray)
+            }
           }
 
-        case Statement(markers, message, args, Some(exception)) =>
+        case Statement(markers, m, args, Some(exception)) =>
           if (markers.isEmpty) {
-            messageArgs(message.toString, args.toArray :+ exception)
+            if (args.isEmpty) {
+              messageArg1(m.toString, exception)
+            } else {
+              messageArgs(m.toString, args.toArray :+ exception)
+            }
           } else {
-            markerMessageArgs(markers.marker, message.toString, args.toArray :+ exception)
+            if (args.isEmpty) {
+              markerMessageArg1(markers.marker, m.toString, exception)
+            } else {
+              markerMessageArgs(markers.marker, m.toString, args.toArray :+ exception)
+            }
           }
       }
   }

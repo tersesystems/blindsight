@@ -55,6 +55,12 @@ object Argument {
  */
 final class Arguments(private val elements: Seq[Argument]) {
 
+  def size: Int = elements.size
+
+  def isEmpty: Boolean = elements.isEmpty
+
+  def nonEmpty: Boolean = elements.nonEmpty
+
   def add[T: ToArgument](instance: T): Arguments = {
     new Arguments(elements :+ Argument(instance))
   }
@@ -79,7 +85,7 @@ object AsArgument {
 }
 
 object Arguments {
-  def empty: Arguments = new Arguments(Seq.empty)
+  val empty: Arguments = new Arguments(Seq.empty)
 
   def apply(els: AsArgument*): Arguments = {
     els.foldLeft(Arguments.empty)((acc, el) => acc + el.argument)
