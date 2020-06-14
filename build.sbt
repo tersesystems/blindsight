@@ -207,6 +207,9 @@ lazy val api = (project in file("api"))
       ),
       ProblemFilters.exclude[DirectMissingMethodProblem](
         "com.tersesystems.blindsight.fluent.FluentMethod.apply"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.flow.FlowMethod#Impl.tryExecution"
       )
     ),
     libraryDependencies += slf4jApi,

@@ -36,25 +36,6 @@ import org.slf4j.event.Level
  *
  * You can use the `createEntryStatement` to start a timer and then complete it on exit/throwing,
  * or use the flow as hooks into the tracing framework.
- *
- * The hooks are used in the FlowLoggerMethod roughly as follows:
- *
- * {{{
- * val source: FlowBehavior.Source = ???
- * if (isLoggingInfo(entryMarkers(source)) {
- *   entryStatement(source).foreach(logger.info)
- * }
- * Try(executeCode) match {
- *   case Success(value) =>
- *     if (isLoggingInfo(exitMarkers(source))) {
- *       createExitStatement(source).foreach(logger.info)
- *     }
- *   case Failure(e) =>
- *     if (isLoggingInfo(throwingMarkers(source))) {
- *        createThrowingStatement(source).foreach(logger.info)
- *     }
- * }
- * }}}
  */
 trait FlowBehavior[B] {
   import FlowBehavior._
@@ -121,4 +102,8 @@ object FlowBehavior {
    * @param args the arguments.
    */
   case class Source(line: Line, file: File, enclosing: Enclosing, args: Args)
+
+  class Noop[B] extends FlowBehavior[B]
+
+  def noop[B]: FlowBehavior[B] = new Noop[B]
 }

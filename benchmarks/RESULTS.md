@@ -226,3 +226,13 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
 ```
 
 In practice, it's okay for markers to be the predicate testing option.
+
+## Semantic Benchmarks
+
+```
+[info] Benchmark                    Mode  Cnt   Score   Error  Units
+[info] SemanticBenchmark.info       avgt    5  73.584 ± 1.325  ns/op
+[info] SemanticBenchmark.infoWhen   avgt    5   1.535 ± 0.031  ns/op
+[info] SemanticBenchmark.trace      avgt    5  22.226 ± 9.561  ns/op
+[info] SemanticBenchmark.traceWhen  avgt    5   1.530 ± 0.026  ns/op
+```

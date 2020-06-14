@@ -16,7 +16,7 @@ class LoggingBenchmark {
   val logger: Logger               = LoggerFactory.getLogger
   val condition: Condition         = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
   val infoConditionLogger: Logger  = logger.onCondition(condition)
-  val falseConditionLogger: Logger = logger.onCondition(false)
+  val neverConditionLogger: Logger = logger.onCondition(Condition.never)
 
   @Benchmark
   def trace(): Unit = {
@@ -25,7 +25,7 @@ class LoggingBenchmark {
 
   @Benchmark
   def traceWhen(): Unit = {
-    logger.trace.when(false) { log => log("Hello world") }
+    logger.trace.when(Condition.never) { log => log("Hello world") }
   }
 
   @Benchmark
@@ -35,7 +35,7 @@ class LoggingBenchmark {
 
   @Benchmark
   def traceFalse(): Unit = {
-    falseConditionLogger.trace("Hello world")
+    neverConditionLogger.trace("Hello world")
   }
 
   @Benchmark
@@ -51,7 +51,7 @@ class LoggingBenchmark {
   @Benchmark
   def infoWhen(): Unit = {
     // 600 ns with an info statement.
-    logger.info.when(false) { log => log("Hello world") }
+    logger.info.when(Condition.never) { log => log("Hello world") }
   }
 
   @Benchmark
@@ -61,7 +61,7 @@ class LoggingBenchmark {
 
   @Benchmark
   def infoFalse(): Unit = {
-    falseConditionLogger.info("Hello world")
+    neverConditionLogger.info("Hello world")
   }
 
   @Benchmark

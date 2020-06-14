@@ -19,6 +19,7 @@ package com.tersesystems.blindsight.flow
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
+import org.slf4j
 import org.slf4j.event.Level._
 
 /**
@@ -32,6 +33,10 @@ import org.slf4j.event.Level._
  * the result is returned or execution rethrown.  If the logging level is not enabled or logging
  * execution is denied by a filter, then execution of the block still proceeds but is not wrapped by a
  * `Try` block.
+ *
+ * You should use `Condition.never` explicitly here to disable logging, as it will shortcut to a Noop
+ * implementation.  Benchmarks show a noop flow takes 42ns to execute, 4.5ns if you remove sourcecode.Args
+ * from the method signature.
  *
  * {{{
  * import com.tersesystems.blindsight._
@@ -82,12 +87,41 @@ object FlowLogger {
      * @return the new conditional logger instance.
      */
     override def onCondition(condition: Condition): FlowLogger = {
-      new Impl(core.onCondition(condition))
+      if (condition == Condition.never) {
+        new Noop(core)
+      } else {
+        new Impl(core.onCondition(condition))
+      }
     }
 
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
       new Impl(core.withMarker(markerInstance))
     }
+  }
+
+  final class Noop(core: CoreLogger) extends FlowLogger {
+    override val isTraceEnabled: Predicate = core.predicate(TRACE)
+    override val trace: Method             = FlowMethod.Noop
+
+    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
+    override val debug: Method             = FlowMethod.Noop
+
+    override val isInfoEnabled: Predicate = core.predicate(INFO)
+    override val info: Method             = FlowMethod.Noop
+
+    override val isWarnEnabled: Predicate = core.predicate(WARN)
+    override val warn: Method             = FlowMethod.Noop
+
+    override val isErrorEnabled: Predicate = core.predicate(ERROR)
+    override val error: Method             = FlowMethod.Noop
+
+    override def withMarker[T: ToMarkers](instance: T): FlowLogger = this
+
+    override def markers: Markers = core.markers
+
+    override def underlying: slf4j.Logger = core.underlying
+
+    override def onCondition(condition: Condition): FlowLogger = this
   }
 
 }

@@ -1,6 +1,5 @@
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.fluent.FluentLogger
 import org.openjdk.jmh.annotations.Benchmark
 
 import org.openjdk.jmh.annotations._
@@ -14,31 +13,40 @@ import com.tersesystems.blindsight.fluent.FluentLogger
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Benchmark)
-class FluentBenchmark {
-  val fluent: FluentLogger = LoggerFactory.getLogger.fluent
+class SemanticBenchmark {
+  val semantic      = LoggerFactory.getLogger.semantic[SampleMessage]
+  val sampleMessage = SampleMessage("hello world")
 
   @Benchmark
   def info(): Unit = {
-    fluent.info.message("Hello world").log()
+    semantic.info(sampleMessage)
   }
 
   @Benchmark
   def infoWhen(): Unit = {
-    fluent.info.when(Condition.never) { info =>
-      info.message("Hello world").log()
+    semantic.info.when(false) { info =>
+      info(sampleMessage)
     }
   }
 
   @Benchmark
   def trace(): Unit = {
-    fluent.trace.message("Hello world").log()
+    semantic.trace(sampleMessage)
   }
 
   @Benchmark
   def traceWhen(): Unit = {
-    fluent.trace.when(Condition.never) { trace =>
-      trace.message("Hello world").log()
+    semantic.trace.when(false) { trace =>
+      trace(sampleMessage)
     }
   }
 
+}
+
+final case class SampleMessage(messageType: String)
+
+object SampleMessage {
+  implicit val toStatement: ToStatement[SampleMessage] = ToStatement { sample =>
+    Message(sample.messageType).toStatement
+  }
 }
