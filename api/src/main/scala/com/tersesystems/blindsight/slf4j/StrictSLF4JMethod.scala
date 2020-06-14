@@ -136,9 +136,7 @@ object StrictSLF4JMethod {
    * Strict method implementation.
    */
   class Impl(val level: Level, core: CoreLogger) extends StrictSLF4JMethod {
-
-    @inline
-    protected def markers: Markers = core.markers
+    import core.markers
 
     protected val parameterList: ParameterList = core.parameterList(level)
 
