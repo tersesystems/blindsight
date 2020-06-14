@@ -33,6 +33,10 @@ import scala.util.{Failure, Success, Try}
  *
  * Note that the return value must have a type class instance of [[ToArgument]] in scope, so that
  * the logging statement can render it appropriately.
+ *
+ * You should use `Condition.never` explicitly here to disable logging, as it will shortcut to a Noop
+ * implementation.  Benchmarks show a noop flow takes 42ns to execute, 4.5ns if you remove sourcecode.Args
+ * from the method signature.
  */
 trait FlowMethod {
   def when(condition: Condition): FlowMethod
@@ -44,8 +48,10 @@ trait FlowMethod {
       file: File,
       enclosing: Enclosing,
       sourceArgs: Args,
+      /* Adding args means an extra 42ns to assemble the seq even if we have a no-op. */
       mapping: FlowBehavior[B]
   ): B
+
 }
 
 object FlowMethod {
@@ -58,11 +64,14 @@ object FlowMethod {
    */
   class Impl(level: Level, core: CoreLogger) extends FlowMethod {
 
-    private val predicate: SimplePredicate   = core.predicate(level)
-    private val parameterList: ParameterList = core.parameterList(level)
+    private val predicate: SimplePredicate = core.predicate(level)
 
     override def when(condition: Condition): FlowMethod = {
-      new Impl(level, core.onCondition(condition))
+      if (condition == Condition.never) {
+        Noop
+      } else {
+        new Impl(level, core.onCondition(condition))
+      }
     }
 
     override def apply[B: ToArgument](
@@ -74,29 +83,13 @@ object FlowMethod {
         sourceArgs: Args,
         mapping: FlowBehavior[B]
     ): B = {
-      import mapping._
-      val source = FlowBehavior.Source(line, file, enclosing, sourceArgs)
-      if (predicate(entryMarkers(source))) {
-        entryStatement(source).foreach(parameterList.executeStatement)
-      }
-      tryExecution(attempt)
-    }
+      if (predicate()) {
+        import mapping._
+        val parameterList: ParameterList = core.parameterList(level)
 
-    protected def tryExecution[B: ToArgument](
-        attempt: => B
-    )(implicit
-        line: Line,
-        file: File,
-        enclosing: Enclosing,
-        sourceArgs: Args,
-        mapping: FlowBehavior[B]
-    ): B = {
-      import mapping._
-      val source = FlowBehavior.Source(line, file, enclosing, sourceArgs)
-      // We always run through the predicate on exit marker, as this will not add more
-      // than a nanosecond to execution typically:
-      // https://github.com/wsargent/slf4j-benchmark
-      if (predicate(exitMarkers(source))) {
+        val source = FlowBehavior.Source(line, file, enclosing, sourceArgs)
+        entryStatement(source).foreach(parameterList.executeStatement)
+
         val result = Try(attempt)
         result match {
           case Success(resultValue) =>
@@ -112,5 +105,20 @@ object FlowMethod {
         attempt // just run the block.
       }
     }
+  }
+
+  /**
+   * A no-operation flow method that can be inlined by the compiler.
+   */
+  object Noop extends FlowMethod {
+    override def when(condition: Condition): FlowMethod = Noop
+
+    override def apply[B: ToArgument](block: => B)(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing,
+        args: Args,
+        mapping: FlowBehavior[B]
+    ): B = block
   }
 }

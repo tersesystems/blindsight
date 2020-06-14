@@ -6,6 +6,12 @@ Blindsight has conditional logging on two levels; on the logger itself, and on t
 
 Conditional logging has the obvious use case of "always" and "never" logging and logging based on given feature flags.  However, it also allows for less intuitive use cases, such as time-limited logging conditions or JVM conditions that limit logging in response to high CPU or memory pressure.
 
+@@@ note
+
+You should use `Condition.never` and `Condition.always` when disabling logging, as it will allow Blindsight to do some additional optimization, particularly with @ref:[flow logging](flow.md).
+
+@@@
+
 ## On Condition
 
 All loggers have an `onCondition` method that takes a @scaladoc[Condition](com.tersesystems.blindsight.Condition).  You can look at a marker from the logger state:

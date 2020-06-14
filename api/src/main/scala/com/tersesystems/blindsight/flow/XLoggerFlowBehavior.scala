@@ -37,10 +37,12 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
 
   override def entryStatement(source: FlowBehavior.Source): Option[Statement] = {
     Some(
-      Statement()
-        .withMarkers(entryMarkers(source))
-        .withMessage(s"${source.enclosing.value} entry {}")
-        .withArguments(Argument(findArgs(source)).arguments)
+      Statement(
+        markers = entryMarkers(source),
+        message = s"${source.enclosing.value} entry {}",
+        arguments = Argument(findArgs(source)).arguments,
+        throwable = None
+      )
     )
   }
 
@@ -51,20 +53,24 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
     Some(
       (
         Level.ERROR, // xlogger logs exceptions at an error level.
-        Statement()
-          .withThrowable(throwable)
-          .withMarkers(XLoggerFlowBehavior.throwingMarkers)
-          .withMessage(s"${source.enclosing.value} exception")
+        Statement(
+          markers = XLoggerFlowBehavior.throwingMarkers,
+          message = s"${source.enclosing.value} exception",
+          arguments = Arguments.empty,
+          throwable = Some(throwable)
+        )
       )
     )
   }
 
   override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] = {
     Some(
-      Statement()
-        .withMarkers(exitMarkers(source))
-        .withMessage(s"${source.enclosing.value} exit with result {}")
-        .withArguments(Arguments(Argument(resultValue)))
+      Statement(
+        markers = exitMarkers(source),
+        message = s"${source.enclosing.value} exit with result {}",
+        arguments = Arguments(Argument(resultValue)),
+        throwable = None
+      )
     )
   }
 }

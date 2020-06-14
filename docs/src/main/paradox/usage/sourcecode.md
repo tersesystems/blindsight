@@ -13,7 +13,17 @@ trait SourceInfoMixin {
 }
 ```
 
-When using `blindsight-generic`, this returns `Markers.empty`, but when using `blindsight-logstash`, this adds `source.line`, `source.file` and `source.enclosing` to the JSON logs automatically:
+To enable this, use `blindsight-logstash` and add a `blindsight.source.enabled` property to the Logback context with the value of `true`:
+
+```xml
+<configuration>
+  <property name="blindsight.source.enabled" value="true"/>
+ 
+  <!-- ... -->
+</configuration>
+```
+
+This adds `source.line`, `source.file` and `source.enclosing` to the JSON logs.
 
 ```json
 {

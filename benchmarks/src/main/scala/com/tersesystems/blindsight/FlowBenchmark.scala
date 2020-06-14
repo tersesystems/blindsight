@@ -15,34 +15,52 @@ import org.openjdk.jmh.infra.Blackhole
 @Fork(1)
 @State(Scope.Benchmark)
 class FlowBenchmark {
-  val flow = LoggerFactory.getLogger.flow
+  val flow        = LoggerFactory.getLogger.flow
+  val condition   = Condition.never
+  val neverLogger = flow.onCondition(Condition.never)
 
-  implicit val flowBehavior: FlowBehavior[String] = new SimpleFlowBehavior[String]
-
-  @Benchmark
-  def info(blackhole: Blackhole): Unit = {
-    blackhole.consume(flow.info("hello".concat(" world")))
-  }
+  implicit def flowBehavior[B]: FlowBehavior[B] = FlowBehavior.noop
 
   @Benchmark
-  def infoWhen(blackhole: Blackhole): Unit = {
-    val result = flow.info.when(false) {
-      "hello".concat(" world")
+  def info(): Unit = {
+    val result = flow.info {
+      "Hello world"
     }
-    blackhole.consume(result)
   }
 
   @Benchmark
-  def trace(blackhole: Blackhole): Unit = {
-    blackhole.consume(flow.trace("hello".concat(" world")))
-  }
-
-  @Benchmark
-  def traceWhen(blackhole: Blackhole): Unit = {
-    val result = flow.trace.when(false) {
-      "hello ".concat(" world")
+  def infoWhen(): Unit = {
+    val result = flow.info.when(condition) {
+      "Hello world"
     }
-    blackhole.consume(result)
+  }
+
+  @Benchmark
+  def neverInfo(): Unit = {
+    val result = neverLogger.info {
+      "Hello world"
+    }
+  }
+
+  @Benchmark
+  def trace(): Unit = {
+    val result = flow.trace {
+      "Hello world"
+    }
+  }
+
+  @Benchmark
+  def traceWhen(): Unit = {
+    val result = flow.trace.when(condition) {
+      "Hello world"
+    }
+  }
+
+  @Benchmark
+  def neverTrace(): Unit = {
+    val result = neverLogger.trace {
+      "Hello world"
+    }
   }
 
 }

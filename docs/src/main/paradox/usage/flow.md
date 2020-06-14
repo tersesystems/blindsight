@@ -31,9 +31,31 @@ What happens in a flow is determined by the @scaladoc[FlowBehavior](com.tersesys
 The flow is safe to use with `onCondition`.  If disabled, the logger will short circuit to executing the block without adding any logging:
 
 ```scala
-private def flowEnabled: Boolean = false
+private def flowEnabled: Condition = Condition.never
 private val logger: FlowLogger = LoggerFactory.getLogger.flow.onCondition(flowEnabled)
 ```
+
+@@@ note
+
+To disable flow logging where it would normally be logged, use `Condition.never` in the `onCondition` or `when` block.  Using `Condition.never` allows the flow to short-circuit with no-op behavior.
+
+@@@  
+
+Performance of flow logging is evaluated with a set of JMH benchmarks, using Logback with a no-op appender and `FlowBehavior.noop`, so only the raw CPU cost of branching and constructing statements is evaluated.
+
+On an `i9-9990k`, the results are as follows:
+
+```
+[info] Benchmark                 Mode  Cnt    Score    Error  Units
+[info] FlowBenchmark.info        avgt    5  533.628 ± 51.956  ns/op
+[info] FlowBenchmark.infoWhen    avgt    5   43.804 ±  1.139  ns/op
+[info] FlowBenchmark.neverInfo   avgt    5   38.950 ±  0.278  ns/op
+[info] FlowBenchmark.neverTrace  avgt    5   39.042 ±  0.659  ns/op
+[info] FlowBenchmark.trace       avgt    5   44.315 ±  1.513  ns/op
+[info] FlowBenchmark.traceWhen   avgt    5   42.634 ±  1.379  ns/op
+```
+
+Evaluation of a no-op flow adds roughly 42 nanoseconds to execution -- the time it takes to create a `Seq` from `sourcecode.Args` and discard them.  Removing `sourcecode.Args` from the implicits takes the no-op down to 4.5 nanoseconds.  For comparison, evaluating a guard of `if (logger.isLoggingDebug())` using SLF4J is 1.5 nanoseconds.  I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.
 
 There are two out of the box behaviors provided: @scaladoc[SimpleFlowBehavior](com.tersesystems.blindsight.flow.SimpleFlowBehavior) and @scaladoc[XLoggerFlowBehavior](com.tersesystems.blindsight.flow.XLoggerFlowBehavior).  These are modelled after [pos](https://github.com/JohnReedLOL/pos) and [XLogger](http://www.slf4j.org/extensions.html#extended_logger), respectively.
 

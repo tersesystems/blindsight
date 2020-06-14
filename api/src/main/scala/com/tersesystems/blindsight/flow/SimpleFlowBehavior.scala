@@ -34,25 +34,27 @@ class SimpleFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       throwable: Throwable,
       source: FlowBehavior.Source
   ): Option[(Level, Statement)] = {
-    val args = Arguments(findArgs(source), throwable.getMessage, findPos(source))
     Some(
       (
         Level.ERROR,
-        Statement()
-          .withThrowable(throwable)
-          .withMessage(s"{} throws {} at {}")
-          .withArguments(args)
+        Statement(
+          markers = Markers.empty,
+          message = "{} throws {} at {}",
+          arguments = Arguments(findArgs(source), throwable.getMessage, findPos(source)),
+          throwable = Some(throwable)
+        )
       )
     )
   }
 
   override def exitStatement(resultValue: B, source: FlowBehavior.Source): Option[Statement] = {
-    val args = Arguments(findArgs(source), resultValue, findPos(source))
     Some(
-      Statement()
-        .withMarkers(exitMarkers(source))
-        .withMessage("{} => {} {}")
-        .withArguments(args)
+      Statement(
+        markers = exitMarkers(source),
+        message = "{} => {} {}",
+        arguments = Arguments(findArgs(source), resultValue, findPos(source)),
+        throwable = None
+      )
     )
   }
 

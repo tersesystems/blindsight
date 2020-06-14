@@ -14,7 +14,7 @@ import com.tersesystems.blindsight.fluent.FluentLogger
 @Fork(1)
 @State(Scope.Benchmark)
 class SemanticBenchmark {
-  val semantic = LoggerFactory.getLogger.semantic[SampleMessage]
+  val semantic      = LoggerFactory.getLogger.semantic[SampleMessage]
   val sampleMessage = SampleMessage("hello world")
 
   @Benchmark

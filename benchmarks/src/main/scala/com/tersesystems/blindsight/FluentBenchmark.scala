@@ -24,7 +24,7 @@ class FluentBenchmark {
 
   @Benchmark
   def infoWhen(): Unit = {
-    fluent.info.when(false) { info =>
+    fluent.info.when(Condition.never) { info =>
       info.message("Hello world").log()
     }
   }
@@ -36,7 +36,7 @@ class FluentBenchmark {
 
   @Benchmark
   def traceWhen(): Unit = {
-    fluent.trace.when(false) { trace =>
+    fluent.trace.when(Condition.never) { trace =>
       trace.message("Hello world").log()
     }
   }
