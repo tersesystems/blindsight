@@ -210,6 +210,18 @@ lazy val api = (project in file("api"))
       ),
       ProblemFilters.exclude[DirectMissingMethodProblem](
         "com.tersesystems.blindsight.flow.FlowMethod#Impl.tryExecution"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod#Impl.markers"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.semantic.SemanticMethod#Impl.markerState"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod#Impl.markers"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod#Impl.markers"
       )
     ),
     libraryDependencies += slf4jApi,

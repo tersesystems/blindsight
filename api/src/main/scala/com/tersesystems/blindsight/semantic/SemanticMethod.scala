@@ -43,6 +43,8 @@ object SemanticMethod {
       core: CoreLogger
   ) extends SemanticMethod[StatementType] {
 
+    import core.{markers => markerState}
+
     override def apply[T <: StatementType: ToStatement](
         instance: T,
         t: Throwable
@@ -88,7 +90,5 @@ object SemanticMethod {
       }
     }
 
-    @inline
-    protected def markerState: Markers = core.markers
   }
 }

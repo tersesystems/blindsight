@@ -70,7 +70,6 @@ object CoreLogger {
       new Conditional(new Impl(state.onCondition(c)))
     }
 
-    @inline
     def parameterList(level: Level): ParameterList = parameterLists(level.ordinal)
 
     override def predicate(level: Level): SimplePredicate =
