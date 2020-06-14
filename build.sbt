@@ -2,6 +2,7 @@ import Dependencies._
 import com.typesafe.tools.mima.core.{
   DirectMissingMethodProblem,
   IncompatibleMethTypeProblem,
+  IncompatibleResultTypeProblem,
   ProblemFilters,
   ReversedMissingMethodProblem
 }
@@ -170,6 +171,42 @@ lazy val api = (project in file("api"))
     mimaBinaryIssueFilters := Seq(
       ProblemFilters.exclude[DirectMissingMethodProblem](
         "com.tersesystems.blindsight.fluent.FluentMethod#Impl.markerState"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy$default$1"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy$default$2"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy$default$3"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.mkrs"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.m"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.args"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.apply"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.this"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl.apply"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod#Impl.parameterList"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentMethod.apply"
       )
     ),
     libraryDependencies += slf4jApi,

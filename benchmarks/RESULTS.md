@@ -173,7 +173,7 @@ Using a no-op appender and Logback:
 
 ## Fluent Logger
 
-The fluent logger is a little slower because it constructs objects internally, and always calls `messageArgs`, even if there are no arguments.
+The fluent logger is call by name, and so does not evaluate any messages or arguments unless `log()` is called and there is a successful predicate test.
 
 ```scala
 class FluentBenchmark {
@@ -208,10 +208,21 @@ class FluentBenchmark {
 Yields:
 
 ```scala
-[info] FluentBenchmark.info       avgt    5  150.817 ± 4.792  ns/op
-[info] FluentBenchmark.infoWhen   avgt    5    1.538 ± 0.019  ns/op
-[info] FluentBenchmark.trace      avgt    5   40.223 ± 1.580  ns/op
-[info] FluentBenchmark.traceWhen  avgt    5    1.541 ± 0.063  ns/op
+[info] Benchmark                  Mode  Cnt   Score   Error  Units
+[info] FluentBenchmark.info       avgt    5  63.151 ± 2.089  ns/op
+[info] FluentBenchmark.infoWhen   avgt    5   1.546 ± 0.056  ns/op
+[info] FluentBenchmark.trace      avgt    5   4.872 ± 0.352  ns/op
+[info] FluentBenchmark.traceWhen  avgt    5   1.535 ± 0.029  ns/op
 ```
 
-This could be improved.
+The `info` benchmark is not all that different from the static builder, but the interesting thing is the `trace` benchmark.  It's still slower than a conditional check because it has to accumulate some state, but not by much.
+
+Technically speaking, Logback can accept a logging event even calling `isTraceEnabled(markers)` returns false.  This is because the TurboFilter API is richer than the predicate API: you can return `FilterReply.ACCEPT` based on the message, parameter array, or Throwable.
+
+```java
+public abstract class TurboFilter extends ContextAwareBase implements LifeCycle {
+    public abstract FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t);    
+}
+```
+
+In practice, it's okay for markers to be the predicate testing option.
