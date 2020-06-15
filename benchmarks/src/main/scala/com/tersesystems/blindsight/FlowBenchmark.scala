@@ -4,9 +4,9 @@ import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit
 
-import com.tersesystems.blindsight.flow.{FlowBehavior, SimpleFlowBehavior}
-import com.tersesystems.blindsight.fluent.FluentLogger
-import org.openjdk.jmh.infra.Blackhole
+import com.tersesystems.blindsight.flow.{FlowBehavior}
+
+import org.slf4j.event.{Level => SLF4JLevel}
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -15,9 +15,9 @@ import org.openjdk.jmh.infra.Blackhole
 @Fork(1)
 @State(Scope.Benchmark)
 class FlowBenchmark {
-  val flow        = LoggerFactory.getLogger.flow
-  val condition   = Condition.never
-  val neverLogger = flow.onCondition(Condition.never)
+  val flow                 = LoggerFactory.getLogger.flow
+  val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
+  val neverLogger          = flow.onCondition(Condition.never)
 
   implicit def flowBehavior[B]: FlowBehavior[B] = FlowBehavior.noop
 
