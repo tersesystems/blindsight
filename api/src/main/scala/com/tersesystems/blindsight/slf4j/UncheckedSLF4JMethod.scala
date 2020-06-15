@@ -187,11 +187,11 @@ object UncheckedSLF4JMethod {
       val markers = collateMarkers
       if (markers.nonEmpty) {
         if (executePredicate(markers.marker)) {
-          markerMessageArgs(markers.marker, format, args.toArray)
+          markerMessageArgs(markers.marker, format, args.toSeq)
         }
       } else {
         if (executePredicate()) {
-          messageArgs(format, args.toArray)
+          messageArgs(format, args.toSeq)
         }
       }
     }
@@ -241,7 +241,7 @@ object UncheckedSLF4JMethod {
       )
       val markers = collateMarkers(marker)
       if (executePredicate(markers.marker)) {
-        markerMessageArgs(markers.marker, format, (args.toArray))
+        markerMessageArgs(markers.marker, format, args.toSeq)
       }
     }
 

@@ -19,7 +19,7 @@ package com.tersesystems.blindsight
 import org.slf4j.Marker
 import org.slf4j.event.Level
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait ParameterList {
 
@@ -53,13 +53,13 @@ object ParameterList {
             if (args.isEmpty) {
               message(m.toString)
             } else {
-              messageArgs(m.toString, args.toArray)
+              messageArgs(m.toString, args.toSeq)
             }
           } else {
             if (args.isEmpty) {
               markerMessage(markers.marker, m.toString)
             } else {
-              markerMessageArgs(markers.marker, m.toString, args.toArray)
+              markerMessageArgs(markers.marker, m.toString, args.toSeq)
             }
           }
 
@@ -68,13 +68,13 @@ object ParameterList {
             if (args.isEmpty) {
               messageArg1(m.toString, exception)
             } else {
-              messageArgs(m.toString, args.toArray :+ exception)
+              messageArgs(m.toString, args.toSeq :+ exception)
             }
           } else {
             if (args.isEmpty) {
               markerMessageArg1(markers.marker, m.toString, exception)
             } else {
-              markerMessageArgs(markers.marker, m.toString, args.toArray :+ exception)
+              markerMessageArgs(markers.marker, m.toString, args.toSeq :+ exception)
             }
           }
       }
