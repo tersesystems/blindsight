@@ -17,7 +17,6 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
-import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
@@ -238,7 +237,7 @@ object StrictSLF4JMethod {
     }
 
     override def apply(
-                        markers: Markers,
+        markers: Markers,
         message1: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(markers)) {
@@ -330,8 +329,8 @@ object StrictSLF4JMethod {
 
     // optimize for the conditional, even if we have to reconstruct the marker twice
     @inline
-    private def shouldLog(marker: Marker): Boolean = {
-      val m: Markers = core.state.markers + marker
+    private def shouldLog(markers: Markers): Boolean = {
+      val m: Markers = core.state.markers + markers
       executePredicate(m.marker)
     }
 

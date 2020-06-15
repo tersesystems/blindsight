@@ -14,10 +14,9 @@ import org.slf4j.event.{Level => SLF4JLevel}
 class UncheckedBenchmark {
 
   val logger               = LoggerFactory.getLogger.unchecked
-  val condition: Condition         = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
+  val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
   val infoConditionLogger  = logger.onCondition(condition)
   val neverConditionLogger = logger.onCondition(Condition.never)
-
 
   val args = Arguments("one", "two", "three")
 

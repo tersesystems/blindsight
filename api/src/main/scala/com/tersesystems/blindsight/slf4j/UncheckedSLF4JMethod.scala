@@ -73,9 +73,7 @@ trait UncheckedSLF4JMethod {
       arg2: Any
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(markers: Marker,
-            message: String,
-            args: Arguments)(implicit
+  def apply(markers: Marker, message: String, args: Arguments)(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
@@ -220,21 +218,20 @@ object UncheckedSLF4JMethod {
 
     @inline
     private def markersPlusSource(implicit
-                                  line: Line,
-                                  file: File,
-                                  enclosing: Enclosing
-                                 ): Markers = {
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Markers = {
       val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
       core.state.markers + sourceMarker
     }
 
     @inline
     private def markersPlusSource[MR: ToMarkers](
-                                                  marker: MR
-                                                )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+        marker: MR
+    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
       markersPlusSource + implicitly[ToMarkers[MR]].toMarkers(marker)
     }
-
 
     override def toString: String = {
       s"${getClass.getName}(logger=$core)"

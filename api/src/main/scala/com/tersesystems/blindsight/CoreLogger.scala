@@ -86,15 +86,15 @@ object CoreLogger {
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
 
     override def when(level: Level, condition: Condition): Boolean = {
-     if (condition(level, state)) {
-       if (state.markers.isEmpty) {
-         parameterList(level).executePredicate()
-       } else {
-         parameterList(level).executePredicate(state.markers.marker)
-       }
-     } else {
-       false
-     }
+      if (condition(level, state)) {
+        if (state.markers.isEmpty) {
+          parameterList(level).executePredicate()
+        } else {
+          parameterList(level).executePredicate(state.markers.marker)
+        }
+      } else {
+        false
+      }
     }
   }
 
