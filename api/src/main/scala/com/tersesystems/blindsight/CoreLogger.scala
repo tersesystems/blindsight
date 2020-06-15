@@ -1,7 +1,6 @@
 package com.tersesystems.blindsight
 
 import com.tersesystems.blindsight.mixins.{MarkerMixin, OnConditionMixin, UnderlyingMixin}
-import org.slf4j
 import org.slf4j.event.Level
 
 trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin {
