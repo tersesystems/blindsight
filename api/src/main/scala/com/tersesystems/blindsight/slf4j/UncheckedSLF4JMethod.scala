@@ -73,7 +73,9 @@ trait UncheckedSLF4JMethod {
       arg2: Any
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply(markers: Marker, message: String, args: Arguments)(implicit
+  def apply(markers: Marker,
+            message: String,
+            args: Arguments)(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
@@ -107,23 +109,12 @@ object UncheckedSLF4JMethod {
 
     import core.markers
 
-    val parameterList: ParameterList = core.parameterList(level)
+    protected val parameterList: ParameterList = core.parameterList(level)
 
     import parameterList._
 
-    private def collateMarkers(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
-      sourceMarker + markers
-    }
-
-    private def collateMarkers[MR: ToMarkers](
-        marker: MR
-    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      collateMarkers + implicitly[ToMarkers[MR]].toMarkers(marker)
-    }
-
     override def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (condition(level, core.state) && executePredicate(collateMarkers.marker)) {
+      if (condition(level, core.state) && executePredicate(markersPlusSource.marker)) {
         block(this)
       }
     }
@@ -131,31 +122,19 @@ object UncheckedSLF4JMethod {
     override def apply(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val markers = collateMarkers
-      if (markers.nonEmpty) {
-        if (executePredicate(markers.marker)) {
-          markerMessage(markers.marker, msg)
-        }
-      } else {
-        if (executePredicate()) {
-          message(msg)
-        }
-      }
+      if (shouldLog)
+        markerMessage(markersPlusSource.marker, msg)
     }
 
     override def apply(
         format: String,
         arg: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val markers: Markers = collateMarkers
-      if (markers.nonEmpty) {
-        if (executePredicate(markers.marker)) {
-          markerMessageArg1(markers.marker, format, arg)
-        }
-      } else {
-        if (executePredicate()) {
-          messageArg1(format, arg)
-        }
+      if (shouldLog) {
+        warnIfChecked(
+          "Use apply(format, Argument(arg)) as Any cannot be type checked"
+        )
+        markerMessageArg1(markersPlusSource.marker, format, arg)
       }
     }
 
@@ -164,18 +143,11 @@ object UncheckedSLF4JMethod {
         arg1: Any,
         arg2: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      warnIfChecked(
-        "Use apply(format, Arguments(arg1, arg2)) as Any cannot be type checked"
-      )
-      val markers: Markers = collateMarkers
-      if (markers.nonEmpty) {
-        if (executePredicate(markers.marker)) {
-          markerMessageArg1Arg2(markers.marker, format, arg1, arg2)
-        }
-      } else {
-        if (executePredicate()) {
-          messageArg1Arg2(format, arg1, arg2)
-        }
+      if (shouldLog) {
+        warnIfChecked(
+          "Use apply(format, Arguments(arg1, arg2)) as Any cannot be type checked"
+        )
+        markerMessageArg1Arg2(markersPlusSource.marker, format, arg1, arg2)
       }
     }
 
@@ -183,16 +155,8 @@ object UncheckedSLF4JMethod {
         format: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      warnIfChecked("Use apply(format, Arguments(args)) as Any* cannot be type checked")
-      val markers = collateMarkers
-      if (markers.nonEmpty) {
-        if (executePredicate(markers.marker)) {
-          markerMessageArgs(markers.marker, format, args.toSeq)
-        }
-      } else {
-        if (executePredicate()) {
-          messageArgs(format, args.toSeq)
-        }
+      if (shouldLog) {
+        markerMessageArgs(markersPlusSource.marker, format, args.toSeq)
       }
     }
 
@@ -200,9 +164,9 @@ object UncheckedSLF4JMethod {
         marker: Marker,
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val markers = collateMarkers(marker)
-      if (executePredicate(markers.marker)) {
-        markerMessage(markers.marker, msg)
+      val m = markersPlusSource(markers)
+      if (executePredicate(m.marker)) {
+        markerMessage(m.marker, msg)
       }
     }
 
@@ -211,9 +175,9 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      val markers = collateMarkers(marker)
-      if (executePredicate(markers.marker)) {
-        markerMessageArg1(markers.marker, msg, arg)
+      val m = markersPlusSource(markers)
+      if (executePredicate(m.marker)) {
+        markerMessageArg1(m.marker, msg, arg)
       }
     }
 
@@ -222,12 +186,12 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      warnIfChecked(
-        "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
-      )
-      val markers = collateMarkers(marker)
-      if (executePredicate(markers.marker)) {
-        markerMessageArg1Arg2(markers.marker, format, arg1, arg2)
+      val m = markersPlusSource(marker)
+      if (executePredicate(m.marker)) {
+        warnIfChecked(
+          "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
+        )
+        markerMessageArg1Arg2(m.marker, format, arg1, arg2)
       }
     }
 
@@ -236,14 +200,38 @@ object UncheckedSLF4JMethod {
         format: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      warnIfChecked(
-        s"Use apply(marker, format, Arguments(args)) as Any* cannot be type checked: ${file}:${line}"
-      )
-      val markers = collateMarkers(marker)
-      if (executePredicate(markers.marker)) {
-        markerMessageArgs(markers.marker, format, args.toSeq)
+      val m = markersPlusSource(marker)
+      if (executePredicate(m.marker)) {
+        warnIfChecked(
+          s"Use apply(marker, format, Arguments(args)) as Any* cannot be type checked: ${file}:${line}"
+        )
+        markerMessageArgs(m.marker, format, args.toSeq)
       }
     }
+
+    @inline
+    private def shouldLog: Boolean = {
+      val m: Markers = core.state.markers
+      if (m.isEmpty) executePredicate() else executePredicate(m.marker)
+    }
+
+    @inline
+    private def markersPlusSource(implicit
+                                  line: Line,
+                                  file: File,
+                                  enclosing: Enclosing
+                                 ): Markers = {
+      val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
+      sourceMarker + markers
+    }
+
+    @inline
+    private def markersPlusSource[MR: ToMarkers](
+                                                  marker: MR
+                                                )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+      markersPlusSource + implicitly[ToMarkers[MR]].toMarkers(marker)
+    }
+
 
     override def toString: String = {
       s"${getClass.getName}(logger=$core)"
