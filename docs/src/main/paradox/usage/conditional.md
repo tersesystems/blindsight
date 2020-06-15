@@ -51,11 +51,11 @@ It is generally easier to pass a conditional logger around rather than a logging
 Conditional logging is very useful in conjunction with [tracer-bullet logging](https://gist.github.com/wsargent/36e6c3a56b6aedc8db77687ee5ab8c69), where you set a marker that is using a [turbofilter](http://logback.qos.ch/manual/filters.html#TurboFilter) with `OnMatch=ACCEPT`: 
  
 ```xml
-  <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
-    <Name>TRACER_FILTER</Name>
-    <Marker>TRACER</Marker>
-    <OnMatch>ACCEPT</OnMatch>
-  </turboFilter> 
+<turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+  <Name>TRACER_FILTER</Name>
+  <Marker>TRACER</Marker>
+  <OnMatch>ACCEPT</OnMatch>
+</turboFilter> 
 ```
 
 This means that you can bypass the logging system's levels, and be sure that logging at a TRACE level will cause a logging event to be generated, even if the logger level is set to INFO.

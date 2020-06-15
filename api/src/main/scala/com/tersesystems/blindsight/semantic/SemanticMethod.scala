@@ -86,8 +86,8 @@ object SemanticMethod {
     }
 
     protected def markersPlusSource(
-                                     markers: Markers
-                                   )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+        markers: Markers
+    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
       val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
       sourceMarkers + core.markers + markers
     }
