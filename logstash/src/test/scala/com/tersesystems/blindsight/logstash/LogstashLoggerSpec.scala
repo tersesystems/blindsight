@@ -10,7 +10,7 @@ import net.logstash.logback.marker.{Markers => LogstashMarkers}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 

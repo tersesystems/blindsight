@@ -120,12 +120,15 @@ lazy val fixtures = (project in file("fixtures"))
 // https://docs.scala-lang.org/overviews/compiler-options/index.html
 val optimizeInline = Seq(
   "-opt:l:inline",
-  "-opt-inline-from:com.tersesystems.blindsight.**",
-  "-opt-warnings:any-inline-failed"
+  "-opt-inline-from:com.tersesystems.blindsight.**"
+  // have to comment this out as it fails on this:
+  //Error:(51, 53) com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; could not be inlined:
+  //The callee com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; contains the instruction INVOKESPECIAL com/tersesystems/blindsight/LoggerFactory$.loggerFactory ()Lcom/tersesystems/blindsight/LoggerFactory;
+  //that would cause an IllegalAccessError when inlined into class com/tersesystems/blindsight/logstash/LogstashLoggerSpec.
+  //val logger: Logger = LoggerFactory.getLogger(underlying)
+  //"-opt-warnings:any-inline-failed"
 )
 
-// https://docs.scala-lang.org/overviews/core/collections-migration-213.html
-// https://confadmin.trifork.com/dl/2018/GOTO_Berlin/Migrating_to_Scala_2.13.pdf
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   Seq(
     "-unchecked",
@@ -138,7 +141,7 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:existentials",
     "-language:postfixOps",
     "-Xlint",
-    //"-Xfatal-warnings",
+    "-Xfatal-warnings",
     "-Ywarn-dead-code",
     "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
