@@ -15,9 +15,9 @@ import org.slf4j.event.{Level => SLF4JLevel}
 @Fork(1)
 @State(Scope.Benchmark)
 class FlowBenchmark {
-  val flow        = LoggerFactory.getLogger.flow
+  val flow                 = LoggerFactory.getLogger.flow
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val neverLogger = flow.onCondition(Condition.never)
+  val neverLogger          = flow.onCondition(Condition.never)
 
   implicit def flowBehavior[B]: FlowBehavior[B] = FlowBehavior.noop
 

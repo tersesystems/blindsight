@@ -15,8 +15,8 @@ import org.slf4j.event.{Level => SLF4JLevel}
 @Fork(1)
 @State(Scope.Benchmark)
 class SemanticBenchmark {
-  val semantic      = LoggerFactory.getLogger.semantic[SampleMessage]
-  val sampleMessage = SampleMessage("hello world")
+  val semantic             = LoggerFactory.getLogger.semantic[SampleMessage]
+  val sampleMessage        = SampleMessage("hello world")
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
 
   @Benchmark
