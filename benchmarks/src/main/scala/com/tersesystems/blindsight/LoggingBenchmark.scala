@@ -25,7 +25,7 @@ class LoggingBenchmark {
 
   @Benchmark
   def traceWhen(): Unit = {
-    logger.trace.when(Condition.never) { log => log("Hello world") }
+    logger.trace.when(condition) { log => log("Hello world") }
   }
 
   @Benchmark
@@ -50,8 +50,7 @@ class LoggingBenchmark {
 
   @Benchmark
   def infoWhen(): Unit = {
-    // 600 ns with an info statement.
-    logger.info.when(Condition.never) { log => log("Hello world") }
+    logger.info.when(condition) { log => log("Hello world") }
   }
 
   @Benchmark

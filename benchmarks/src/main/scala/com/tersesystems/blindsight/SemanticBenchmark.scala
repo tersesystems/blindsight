@@ -6,6 +6,7 @@ import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit
 
 import com.tersesystems.blindsight.fluent.FluentLogger
+import org.slf4j.event.{Level => SLF4JLevel}
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -16,6 +17,7 @@ import com.tersesystems.blindsight.fluent.FluentLogger
 class SemanticBenchmark {
   val semantic      = LoggerFactory.getLogger.semantic[SampleMessage]
   val sampleMessage = SampleMessage("hello world")
+  val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
 
   @Benchmark
   def info(): Unit = {
@@ -24,7 +26,7 @@ class SemanticBenchmark {
 
   @Benchmark
   def infoWhen(): Unit = {
-    semantic.info.when(false) { info =>
+    semantic.info.when(condition) { info =>
       info(sampleMessage)
     }
   }
@@ -36,7 +38,7 @@ class SemanticBenchmark {
 
   @Benchmark
   def traceWhen(): Unit = {
-    semantic.trace.when(false) { trace =>
+    semantic.trace.when(condition) { trace =>
       trace(sampleMessage)
     }
   }

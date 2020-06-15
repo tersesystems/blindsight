@@ -42,7 +42,7 @@ class UncheckedBenchmark {
 
   @Benchmark
   def traceWhen(): Unit = {
-    logger.trace.when(Condition.never) { log => log("Hello world") }
+    logger.trace.when(condition) { log => log("Hello world") }
   }
 
   @Benchmark
@@ -51,7 +51,7 @@ class UncheckedBenchmark {
   }
 
   @Benchmark
-  def traceFalse(): Unit = {
+  def neverTrace(): Unit = {
     neverConditionLogger.trace("Hello world")
   }
 
@@ -82,8 +82,7 @@ class UncheckedBenchmark {
 
   @Benchmark
   def infoWhen(): Unit = {
-    // 600 ns with an info statement.
-    logger.info.when(Condition.never) { log => log("Hello world") }
+    logger.info.when(condition) { log => log("Hello world") }
   }
 
   @Benchmark
@@ -92,7 +91,7 @@ class UncheckedBenchmark {
   }
 
   @Benchmark
-  def infoFalse(): Unit = {
+  def neverInfo(): Unit = {
     neverConditionLogger.info("Hello world")
   }
 

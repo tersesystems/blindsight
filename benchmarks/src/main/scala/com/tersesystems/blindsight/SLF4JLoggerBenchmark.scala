@@ -4,8 +4,6 @@ import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.infra.Blackhole
-import org.slf4j.event.{Level => SLF4JLevel}
-import sourcecode.{Enclosing, File, Line}
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -23,7 +21,18 @@ class SLF4JLoggerBenchmark {
   }
 
   @Benchmark
+  def isTraceEnabled(blackhole: Blackhole): Unit = {
+    blackhole.consume(slf4jLogger.isTraceEnabled())
+  }
+
+  @Benchmark
   def info(): Unit = {
     slf4jLogger.info("Hello world")
   }
+
+  @Benchmark
+  def isInfoEnabled(blackhole: Blackhole): Unit = {
+    blackhole.consume(slf4jLogger.isInfoEnabled())
+  }
+
 }
