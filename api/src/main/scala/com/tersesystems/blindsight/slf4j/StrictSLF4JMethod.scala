@@ -206,7 +206,7 @@ object StrictSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog)
-        markerMessageArgs(markersPlusSource.marker, message.toString, args.toArray)
+        markerMessageArgs(markersPlusSource.marker, message.toString, args.toSeq)
     }
 
     override def apply(
@@ -215,7 +215,7 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        markerMessageArgs(markersPlusSource.marker, message.toString, args.toArray :+ throwable)
+        markerMessageArgs(markersPlusSource.marker, message.toString, args.toSeq :+ throwable)
       }
     }
 
@@ -311,7 +311,7 @@ object StrictSLF4JMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = markersPlusSource(markers)
       if (executePredicate(m.marker)) {
-        markerMessageArgs(m.marker, message.toString, args.toArray)
+        markerMessageArgs(m.marker, message.toString, args.toSeq)
       }
     }
 
@@ -323,7 +323,7 @@ object StrictSLF4JMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val m = markersPlusSource(markers)
       if (executePredicate(m.marker)) {
-        markerMessageArgs(m.marker, message.toString, args.toArray :+ throwable)
+        markerMessageArgs(m.marker, message.toString, args.toSeq :+ throwable)
       }
     }
 

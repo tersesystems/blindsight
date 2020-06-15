@@ -226,6 +226,7 @@ lazy val api = (project in file("api"))
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
+    libraryDependencies += scalaCollectionCompat,
     libraryDependencies += scalaTest              % Test,
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
