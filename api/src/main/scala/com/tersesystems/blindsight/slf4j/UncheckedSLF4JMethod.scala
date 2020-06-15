@@ -111,7 +111,7 @@ object UncheckedSLF4JMethod {
     import parameterList._
 
     override def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (condition(level, core.state) && executePredicate(markersPlusSource.marker)) {
+      if (core.when(level, condition)) {
         block(this)
       }
     }
