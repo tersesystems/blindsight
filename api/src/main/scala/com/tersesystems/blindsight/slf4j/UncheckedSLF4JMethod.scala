@@ -106,9 +106,6 @@ object UncheckedSLF4JMethod {
    * Unchecked method implementation.
    */
   class Impl(val level: Level, core: CoreLogger) extends UncheckedSLF4JMethod {
-
-    import core.markers
-
     protected val parameterList: ParameterList = core.parameterList(level)
 
     import parameterList._
@@ -164,9 +161,8 @@ object UncheckedSLF4JMethod {
         marker: Marker,
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val m = markersPlusSource(markers)
-      if (executePredicate(m.marker)) {
-        markerMessage(m.marker, msg)
+      if (shouldLog(marker)) {
+        markerMessage(markersPlusSource(marker).marker, msg)
       }
     }
 
@@ -175,9 +171,11 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      val m = markersPlusSource(markers)
-      if (executePredicate(m.marker)) {
-        markerMessageArg1(m.marker, msg, arg)
+      if (shouldLog(marker)) {
+        warnIfChecked(
+          "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
+        )
+        markerMessageArg1(markersPlusSource(marker).marker, msg, arg)
       }
     }
 
@@ -186,12 +184,11 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      val m = markersPlusSource(marker)
-      if (executePredicate(m.marker)) {
+      if (shouldLog(marker)) {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
-        markerMessageArg1Arg2(m.marker, format, arg1, arg2)
+        markerMessageArg1Arg2(markersPlusSource(marker).marker, format, arg1, arg2)
       }
     }
 
@@ -200,12 +197,11 @@ object UncheckedSLF4JMethod {
         format: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val m = markersPlusSource(marker)
-      if (executePredicate(m.marker)) {
+      if (shouldLog(marker)) {
         warnIfChecked(
           s"Use apply(marker, format, Arguments(args)) as Any* cannot be type checked: ${file}:${line}"
         )
-        markerMessageArgs(m.marker, format, args.toSeq)
+        markerMessageArgs(markersPlusSource(marker).marker, format, args.toSeq)
       }
     }
 
@@ -215,6 +211,13 @@ object UncheckedSLF4JMethod {
       if (m.isEmpty) executePredicate() else executePredicate(m.marker)
     }
 
+    // optimize for the conditional, even if we have to reconstruct the marker twice
+    @inline
+    private def shouldLog(marker: Marker): Boolean = {
+      val m: Markers = core.state.markers + marker
+      executePredicate(m.marker)
+    }
+
     @inline
     private def markersPlusSource(implicit
                                   line: Line,
@@ -222,7 +225,7 @@ object UncheckedSLF4JMethod {
                                   enclosing: Enclosing
                                  ): Markers = {
       val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
-      sourceMarker + markers
+      core.state.markers + sourceMarker
     }
 
     @inline
