@@ -120,7 +120,7 @@ lazy val fixtures = (project in file("fixtures"))
 // https://docs.scala-lang.org/overviews/compiler-options/index.html
 val optimizeInline = Seq(
   "-opt:l:inline",
-  "-opt-inline-from:com.tersesystems.blindsight.**",
+  "-opt-inline-from:com.tersesystems.blindsight.**"
   // have to comment this out as it fails on this:
   //Error:(51, 53) com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; could not be inlined:
   //The callee com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; contains the instruction INVOKESPECIAL com/tersesystems/blindsight/LoggerFactory$.loggerFactory ()Lcom/tersesystems/blindsight/LoggerFactory;
