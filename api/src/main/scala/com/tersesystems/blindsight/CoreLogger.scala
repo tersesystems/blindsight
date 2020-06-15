@@ -4,8 +4,6 @@ import com.tersesystems.blindsight.mixins.{MarkerMixin, OnConditionMixin, Underl
 import org.slf4j.event.Level
 
 trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin {
-  def when(level: Level, condition: Condition): Boolean
-
   type Self = CoreLogger
 
   def state: CoreLogger.State
@@ -17,6 +15,8 @@ trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin 
   def predicate(level: Level): SimplePredicate
 
   def parameterList(level: Level): ParameterList
+
+  def when(level: Level, condition: Condition): Boolean
 }
 
 object CoreLogger {
@@ -69,7 +69,11 @@ object CoreLogger {
     }
 
     override def onCondition(c: Condition): CoreLogger = {
-      new Conditional(new Impl(state.onCondition(c)))
+      if (c == Condition.never) {
+        new Noop(this)
+      } else {
+        new Conditional(new Impl(state.onCondition(c)))
+      }
     }
 
     def parameterList(level: Level): ParameterList = parameterLists(level.ordinal)
@@ -86,11 +90,14 @@ object CoreLogger {
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
 
     override def when(level: Level, condition: Condition): Boolean = {
-      if (condition(level, state)) {
+      // because conditions are AND, if there's a never in the condition we
+      // can always return false right off the bat.
+      if (condition != Condition.never && condition(level, state)) {
+        val list = parameterList(level)
         if (state.markers.isEmpty) {
-          parameterList(level).executePredicate()
+          list.executePredicate()
         } else {
-          parameterList(level).executePredicate(state.markers.marker)
+          list.executePredicate(state.markers.marker)
         }
       } else {
         false
@@ -102,6 +109,14 @@ object CoreLogger {
     @inline
     override def parameterList(level: Level): ParameterList =
       new ParameterList.Conditional(level, impl)
+  }
+
+  class Noop(impl: Impl) extends Impl(impl.state) {
+    override def parameterList(level: Level): ParameterList = ParameterList.Noop
+
+    override def when(level: Level, condition: Condition): Boolean = false
+
+    override def onCondition(condition: Condition): CoreLogger = this
   }
 
 }

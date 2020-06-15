@@ -80,6 +80,30 @@ object ParameterList {
       }
   }
 
+  object Noop extends ParameterList {
+    override def executePredicate(): Boolean = false
+
+    override def executePredicate(marker: Marker): Boolean = false
+
+    override def message(msg: String): Unit = ()
+
+    override def messageArg1(msg: String, arg: Any): Unit = ()
+
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit = ()
+
+    override def messageArgs(msg: String, args: Seq[_]): Unit = ()
+
+    override def markerMessage(marker: Marker, msg: String): Unit = ()
+
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit = ()
+
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit = ()
+
+    override def markerMessageArgs(marker: Marker, msg: String, args: Seq[_]): Unit = ()
+
+    override def executeStatement(statement: Statement): Unit = ()
+  }
+
   class Conditional(level: Level, core: CoreLogger) extends ParameterList {
 
     override def executePredicate(): Boolean = {

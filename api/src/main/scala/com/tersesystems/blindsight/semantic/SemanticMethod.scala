@@ -43,34 +43,20 @@ object SemanticMethod {
       core: CoreLogger
   ) extends SemanticMethod[StatementType] {
 
-    import core.{markers => markerState}
+    private val parameterList: ParameterList = core.parameterList(level)
 
     override def apply[T <: StatementType: ToStatement](
         instance: T,
         t: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
-      val markers   = collateMarkers(statement.markers)
-      if (isEnabled(markers)) {
-        core
-          .parameterList(level)
-          .executeStatement(statement.withMarkers(markers).withThrowable(t))
+      if (shouldLog(statement.markers)) {
+        parameterList.executeStatement(
+          statement
+            .withMarkers(markersPlusSource(statement.markers))
+            .withThrowable(t)
+        )
       }
-    }
-
-    def isEnabled(markers: Markers): Boolean = {
-      if (markers.nonEmpty) {
-        core.parameterList(level).executePredicate(markers.marker)
-      } else {
-        core.parameterList(level).executePredicate()
-      }
-    }
-
-    protected def collateMarkers(
-        markers: Markers
-    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
-      sourceMarkers + markerState + markers
     }
 
     override def apply[T <: StatementType: ToStatement](
@@ -78,9 +64,10 @@ object SemanticMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement: Statement =
         implicitly[ToStatement[T]].toStatement(instance)
-      val markers = collateMarkers(statement.markers)
-      if (isEnabled(markers)) {
-        core.parameterList(level).executeStatement(statement.withMarkers(markers))
+      if (shouldLog(statement.markers)) {
+        parameterList.executeStatement(
+          statement.withMarkers(markersPlusSource(statement.markers))
+        )
       }
     }
 
@@ -88,6 +75,21 @@ object SemanticMethod {
       if (core.when(level, condition)) {
         block(this)
       }
+    }
+
+    protected def shouldLog(markers: Markers): Boolean = {
+      if (markers.nonEmpty) {
+        parameterList.executePredicate(markers.marker)
+      } else {
+        parameterList.executePredicate()
+      }
+    }
+
+    protected def markersPlusSource(
+        markers: Markers
+    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+      val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
+      sourceMarkers + core.markers + markers
     }
 
   }

@@ -34,7 +34,7 @@ class LoggingBenchmark {
   }
 
   @Benchmark
-  def traceFalse(): Unit = {
+  def neverTrace(): Unit = {
     neverConditionLogger.trace("Hello world")
   }
 
@@ -60,7 +60,7 @@ class LoggingBenchmark {
   }
 
   @Benchmark
-  def infoFalse(): Unit = {
+  def neverInfo(): Unit = {
     neverConditionLogger.info("Hello world")
   }
 
