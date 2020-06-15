@@ -5,6 +5,7 @@ scala:
   - 2.11.12
   - 2.12.11
   - 2.13.2
+sbt_args: -no-colors -J-Xss2m -XX:MaxInlineLevel=18 -XX:MaxInlineSize=270 -XX:MaxTrivialSize=12
 jobs:
   include:
   - stage: check
