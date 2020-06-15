@@ -4,6 +4,8 @@ import com.tersesystems.blindsight.mixins.{MarkerMixin, OnConditionMixin, Underl
 import org.slf4j.event.Level
 
 trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin {
+  def when(level: Level, condition: Condition): Boolean
+
   type Self = CoreLogger
 
   def state: CoreLogger.State
@@ -82,6 +84,18 @@ object CoreLogger {
     override def condition: Condition = state.condition
 
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
+
+    override def when(level: Level, condition: Condition): Boolean = {
+      if (condition(level, state)) {
+        if (state.markers.isEmpty) {
+          parameterList(level).executePredicate()
+        } else {
+          parameterList(level).executePredicate(state.markers.marker)
+        }
+      } else {
+        false
+      }
+    }
   }
 
   class Conditional(impl: Impl) extends Impl(impl.state) {

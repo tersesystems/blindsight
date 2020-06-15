@@ -225,7 +225,9 @@ lazy val api = (project in file("api"))
       ),
       ProblemFilters.exclude[DirectMissingMethodProblem](
         "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod#Impl.markers"
-      )
+      ),
+      ProblemFilters
+        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger.when")
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,

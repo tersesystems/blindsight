@@ -38,7 +38,7 @@ object FluentMethod {
   class Impl(val level: Level, core: CoreLogger) extends FluentMethod {
 
     def when(condition: Condition)(block: FluentMethod => Unit): Unit = {
-      if (condition(level, core.state) && isEnabled(collateMarkers(core.markers))) {
+      if (core.when(level, condition)) {
         block(this)
       }
     }
