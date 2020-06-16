@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.1.0
+1.2.1
 </div>
 </div>
 <div class="nav-toc">
@@ -59,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../benchmarks.html" class="page">Benchmarks</a></li>
   <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
@@ -91,7 +92,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.1.0
+1.2.1
 </div>
 </div>
 <div class="nav-toc">
@@ -119,6 +120,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../benchmarks.html" class="page">Benchmarks</a></li>
   <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
@@ -147,25 +149,25 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#logger-resolvers" name="logger-resolvers" class="anchor"><span class="anchor-link"></span></a>Logger Resolvers</h1>
 <p>The easiest way to get at a logger is to use <a href="/blindsight/api/com/tersesystems/blindsight/LoggerFactory$.html" title="com.tersesystems.blindsight.LoggerFactory"><code>LoggerFactory</code></a>. This looks like the SLF4J version, but is more flexible because it uses a <a href="/blindsight/api/com/tersesystems/blindsight/LoggerResolver.html" title="com.tersesystems.blindsight.LoggerResolver"><code>LoggerResolver</code></a> type class under the hood.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/resolvers/ResolverMain.scala#L9-L12" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.LoggerFactory
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/resolvers/ResolverMain.scala#L9-L12" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.LoggerFactory
 
 val loggerFromName  = LoggerFactory.getLogger(&quot;some.Logger&quot;)
 val loggerFromClass = LoggerFactory.getLogger(getClass)</code></pre>
 <p>There is also a macro based version which finds the enclosing class name and hands it to you:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/resolvers/ResolverMain.scala#L16" target="_blank" title="Go to snippet source"></a><code class="language-scala">val loggerFromEnclosing = LoggerFactory.getLogger</code></pre>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/resolvers/ResolverMain.scala#L16" target="_blank" title="Go to snippet source"></a><code class="language-scala">val loggerFromEnclosing = LoggerFactory.getLogger</code></pre>
 <p>Finally, you also have the option of creating your own <a href="/blindsight/api/com/tersesystems/blindsight/LoggerResolver.html" title="com.tersesystems.blindsight.LoggerResolver"><code>LoggerResolver</code></a>. This is useful when you want to get away from class based logging, and use a naming strategy based on a correlation id.</p>
 <p>For example, you can resolve a logger using a request:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/resolvers/ResolverMain.scala#L23-L27" target="_blank" title="Go to snippet source"></a><code class="language-scala">implicit val requestToResolver: LoggerResolver[Request] = new LoggerResolver[Request] {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/resolvers/ResolverMain.scala#L23-L27" target="_blank" title="Go to snippet source"></a><code class="language-scala">implicit val requestToResolver: LoggerResolver[Request] = new LoggerResolver[Request] {
   override def resolveLogger(instance: Request): org.slf4j.Logger = {
     org.slf4j.LoggerFactory.getLogger(&quot;requests.&quot; + instance.id)
   }
 }</code></pre>
 <p>And from then on, you can do:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/resolvers/ResolverMain.scala#L31-L33" target="_blank" title="Go to snippet source"></a><code class="language-scala">def loggerFromRequest(request: Request): Unit = {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/resolvers/ResolverMain.scala#L31-L33" target="_blank" title="Go to snippet source"></a><code class="language-scala">def loggerFromRequest(request: Request): Unit = {
   val logger = com.tersesystems.blindsight.LoggerFactory.getLogger(request)
 }</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/main/paradox/usage/resolvers.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/main/paradox/usage/resolvers.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -235,7 +237,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.1.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.2.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

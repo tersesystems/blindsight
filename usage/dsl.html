@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.1.0
+1.2.1
 </div>
 </div>
 <div class="nav-toc">
@@ -59,6 +59,7 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../benchmarks.html" class="page">Benchmarks</a></li>
   <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
@@ -91,7 +92,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.1.0
+1.2.1
 </div>
 </div>
 <div class="nav-toc">
@@ -119,6 +120,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
+  <li><a href="../benchmarks.html" class="page">Benchmarks</a></li>
   <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
@@ -171,21 +173,21 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h2><a href="#representing-times" name="representing-times" class="anchor"><span class="anchor-link"></span></a>Representing Times</h2>
 <p>You will want to be consistent and organized about how you represent your field names, and you will typically want to include a representation of the unit used a scalar quantity, particularly time-based fields. <a href="https://www.honeycomb.io/blog/event-foo-building-better-events/">Honeycomb suggests</a> a suffix with unit quantity &ndash; <code>_ms</code>, <code>_sec</code>, <code>_ns</code>, <code>_µs</code>, etc.</p>
 <p>This also follows for specific points in time. If you represent an instant as a time since epoch, use <code>_tse</code> along with the unit, i.e. milliseconds since epoch is <code>created_tse_ms</code>:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/dsl/TimeExample.scala#L13" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info(&quot;time = {}&quot;, bobj(&quot;created_tse_ms&quot; -&gt; Instant.now.toEpochMilli))</code></pre>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/dsl/TimeExample.scala#L13" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info(&quot;time = {}&quot;, bobj(&quot;created_tse_ms&quot; -&gt; Instant.now.toEpochMilli))</code></pre>
 <p>If you represent an instant in <a href="https://tools.ietf.org/html/rfc3339#section-5.7">RFC 3339</a> / ISO 8601 format (ideally in UTC), use &quot;_ts&quot;, i.e. <code>created_ts</code>:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/dsl/TimeExample.scala#L17" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info(&quot;time = {}&quot;, bobj(&quot;created_ts&quot; -&gt; Instant.now.toString))</code></pre>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/dsl/TimeExample.scala#L17" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info(&quot;time = {}&quot;, bobj(&quot;created_ts&quot; -&gt; Instant.now.toString))</code></pre>
 <p>If you are representing a duration, then specify <code>_dur</code> and the unit, i.e. a backoff duration between retries may be <code>backoff_dur_ms=150</code>. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/dsl/TimeExample.scala#L21-L23" target="_blank" title="Go to snippet source"></a><code class="language-scala">val backoffDuration = 150
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/dsl/TimeExample.scala#L21-L23" target="_blank" title="Go to snippet source"></a><code class="language-scala">val backoffDuration = 150
 // // assume we call after(backoffDuration, task) etc...
 logger.info(&quot;backoff duration = {}&quot;, bobj(&quot;backoff_dur_ms&quot; -&gt; backoffDuration))</code></pre>
 <p>If you are using Java durations, then use <code>dur_iso</code> and the ISO-8601 duration format <code>PnDTnHnMn.nS</code>, i.e. the duration of someone&rsquo;s bike ride may be <code>ride_dur_iso=&quot;PT2H15M&quot;</code> </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/dsl/TimeExample.scala#L27-L28" target="_blank" title="Go to snippet source"></a><code class="language-scala">val rideDuration = Duration.parse(&quot;PT2H15M&quot;)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/dsl/TimeExample.scala#L27-L28" target="_blank" title="Go to snippet source"></a><code class="language-scala">val rideDuration = Duration.parse(&quot;PT2H15M&quot;)
 logger.info(&quot;backoff duration = {}&quot;, bobj(&quot;ride_dur_iso&quot; -&gt; rideDuration.toString))</code></pre>
 <p>This is because both JSON and logfmt do not come with any understanding of dates themselves, and logs are not always kept under tight control under a schema. Keeping the units explicit lets the logs be self-documenting.</p>
 <p>You may find it helpful to use <a href="https://github.com/fthomas/refined">Refined</a> and <a href="https://github.com/erikerlandson/coulomb#documentation">Coulomb</a> to provide type-safe validation and unit representation of data to the DSL.</p>
 <h2><a href="#representing-complex-data" name="representing-complex-data" class="anchor"><span class="anchor-link"></span></a>Representing Complex Data</h2>
 <p>Using the DSL works very well with <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/ToMarkers.html" title="com.tersesystems.blindsight.ToMarkers"><code>ToMarkers</code></a>, because there is a type class instance for <code>BObject</code>. Here&rsquo;s a fully worked example:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/test/scala/example/dsl/DSLExample.scala#L4-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.AST._
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/dsl/DSLExample.scala#L4-L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">import com.tersesystems.blindsight.AST._
 import com.tersesystems.blindsight.DSL._
 import com.tersesystems.blindsight.{LoggerFactory, _}
 
@@ -279,7 +281,7 @@ object DSLExample {
 }
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.1.0/docs/src/main/paradox/usage/dsl.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/main/paradox/usage/dsl.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -364,7 +366,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.1.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.2.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
