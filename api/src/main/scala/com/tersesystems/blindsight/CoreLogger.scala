@@ -124,9 +124,11 @@ object CoreLogger {
 
     override def when(level: Level, condition: Condition): Boolean = false
 
-    override def onCondition(condition: Condition): CoreLogger = new Noop(state.onCondition(condition))
+    override def onCondition(condition: Condition): CoreLogger =
+      new Noop(state.onCondition(condition))
 
-    override def withMarker[T: ToMarkers](instance: T): CoreLogger = new Noop(state.withMarker(instance))
+    override def withMarker[T: ToMarkers](instance: T): CoreLogger =
+      new Noop(state.withMarker(instance))
   }
 
 }
