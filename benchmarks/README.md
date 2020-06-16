@@ -8,14 +8,14 @@ To run as json:
 
 ```
 sbt 'benchmarks/jmh:run -rf json'
-CURRENT_DATE=`date -Iseconds`
-mkdir -p $CURRENT_DATE
-mv benchmarks/jmh-result.json benchmarks/$CURRENT_DATE/openjdk11.json
+LOGDATE=$(date +%Y%m%dT%H%M%S)
+mkdir -p $LOGDATE
+mv benchmarks/jmh-result.json benchmarks/$LOGDATE/openjdk11.json
 ```
 
 You can add a link to [JMH Visualizer](https://jmh.morethan.io/):
 
-https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/2020-06-16T08%3A59%3A21-07%3A00/openjdk11.json
+https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200616T110241/openjdk11.json
 
 ## Profiling
 
