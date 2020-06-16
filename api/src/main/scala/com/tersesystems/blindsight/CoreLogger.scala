@@ -61,22 +61,8 @@ object CoreLogger {
     new Impl(state)
   }
 
-  class Impl(val state: State) extends CoreLogger {
-    private val parameterLists: Array[ParameterList] = ParameterList.lists(this.underlying)
-
-    override def withMarker[M: ToMarkers](m: M): CoreLogger = {
-      new Impl(state.withMarker(m))
-    }
-
-    override def onCondition(c: Condition): CoreLogger = {
-      if (c == Condition.never) {
-        new Noop(this)
-      } else {
-        new Conditional(new Impl(state.onCondition(c)))
-      }
-    }
-
-    def parameterList(level: Level): ParameterList = parameterLists(level.ordinal)
+  abstract class Abstract extends CoreLogger {
+    val state: State
 
     override def predicate(level: Level): SimplePredicate =
       new SimplePredicate.Impl(level, this)
@@ -103,20 +89,46 @@ object CoreLogger {
         false
       }
     }
+
+    override def onCondition(c: Condition): CoreLogger = {
+      if (c == Condition.never) {
+        new Noop(state)
+      } else {
+        new Conditional(new Impl(state.onCondition(c)))
+      }
+    }
+  }
+
+  class Impl(val state: State) extends Abstract {
+    private val parameterLists: Array[ParameterList] = ParameterList.lists(this.underlying)
+
+    override def parameterList(level: Level): ParameterList = parameterLists(level.ordinal)
+
+    override def withMarker[M: ToMarkers](m: M): CoreLogger = {
+      new Impl(state.withMarker(m))
+    }
   }
 
   class Conditional(impl: Impl) extends Impl(impl.state) {
     @inline
     override def parameterList(level: Level): ParameterList =
       new ParameterList.Conditional(level, impl)
+
+    override def withMarker[M: ToMarkers](m: M): CoreLogger = {
+      new Conditional(new Impl(state.withMarker(m)))
+    }
   }
 
-  class Noop(impl: Impl) extends Impl(impl.state) {
+  class Noop(val state: State) extends Abstract {
     override def parameterList(level: Level): ParameterList = ParameterList.Noop
 
     override def when(level: Level, condition: Condition): Boolean = false
 
-    override def onCondition(condition: Condition): CoreLogger = this
+    override def onCondition(condition: Condition): CoreLogger =
+      new Noop(state.onCondition(condition))
+
+    override def withMarker[T: ToMarkers](instance: T): CoreLogger =
+      new Noop(state.withMarker(instance))
   }
 
 }
