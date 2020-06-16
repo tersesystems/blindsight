@@ -1,0 +1,3 @@
+-XX:+UnlockExperimentalVMOptions
+-XX:+EnableJVMCI
+-XX:+UseJVMCICompiler
