@@ -15,7 +15,7 @@ mv benchmarks/jmh-result.json benchmarks/$CURRENT_DATE/openjdk11.json
 
 You can add a link to [JMH Visualizer](https://jmh.morethan.io/):
 
-https://jmh.morethan.io/?source=https://github.com/tersesystems/blindsight/blob/master/benchmarks/results/2020-06-16/oraclejdk11.json
+https://jmh.morethan.io/?source=https://github.com/tersesystems/blindsight/blob/master/benchmarks/results/2020-06-16T08:59:21-07:00/openjdk11.json
 
 ## Profiling
 
