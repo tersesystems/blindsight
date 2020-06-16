@@ -250,6 +250,28 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       event.getMarker.contains(someMarker) must be(true)
     }
 
+    "log on tracer marker" in {
+      val logger = createLogger
+
+      val tracerMarker   = MarkerFactory.getMarker("TRACER_MARKER")
+      val traceCondition = Condition((level, _) => level == Level.TRACE)
+      val conditional    = logger.onCondition(traceCondition)
+      conditional.withMarker(tracerMarker).trace("trace statement")
+
+      val event = listAppender.list.get(0)
+      event.getMarker.contains(tracerMarker) must be(true)
+    }
+
+    "do not log on debug" in {
+      val logger = createLogger
+
+      val tracerMarker   = MarkerFactory.getMarker("TRACER_MARKER")
+      val traceCondition = Condition((level, _) => level == Level.TRACE)
+      val conditional    = logger.onCondition(traceCondition)
+      conditional.withMarker(tracerMarker).debug("trace statement")
+      listAppender.list must be(empty)
+    }
+
     "log on condition/marker/condition" in {
       val logger = createLogger
 
