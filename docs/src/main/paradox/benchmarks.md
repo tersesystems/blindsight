@@ -16,6 +16,17 @@ Tests are run on a desktop CPU running Windows 10, using an Ubuntu image inside 
 Processor	Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz, 3600 Mhz, 8 Core(s), 16 Logical Processor(s)
 ```
 
+Tests were run on OpenJDK 11:
+
+```
+OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.7+10)
+OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.7+10, mixed mode
+```
+
+## JMH Visualizer
+
+[Here's a link to the results in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/2020-06-16T08%3A59%3A21-07%3A00/openjdk11.json).
+
 ## Raw SLF4J Logger
 
 Running SLF4J as a baseline gives an idea of the underlying SLF4J calls and how much overhead is added by Blindsight.
