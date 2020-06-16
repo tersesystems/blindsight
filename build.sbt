@@ -275,6 +275,8 @@ lazy val benchmarks = (project in file("benchmarks"))
   .settings(
     fork in run := true
   )
+  .settings(disableDocs)
+  .settings(disablePublishing)
   .dependsOn(logstash)
 
 // serviceloader implementation with only SLF4J dependencies.
