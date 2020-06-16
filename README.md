@@ -27,6 +27,16 @@ Versions are published for Scala 2.11, 2.12, and 2.13.
 
 See [Setup](https://tersesystems.github.io/blindsight/setup/index.html) for how to install Blindsight.
 
+Because Blindsight uses a very recent version of Logstash that depends on Jackson 2.11.0, you may need to update your dependencies for the `jackson-scala-module` if you're using Play or Akka.
+
+```
+libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0"
+```
+
+## Benchmarks
+
+Benchmarks are available [here](https://tersesystems.github.io/blindsight/benchmarks.html).
+
 ## Usage
  
 To use a Blindsight Logger:
@@ -120,7 +130,7 @@ val contextMarkers: Markers = logger.markers
 
 ## Example
 
-There's an example application at [https://github.com/wsargent/play-blindsight](https://github.com/wsargent/play-blindsight) that integrates with Honeycomb Tracing using the flow logger:
+There's an example application at [https://github.com/tersesystems/play-blindsight](https://github.com/tersesystems/play-blindsight) that integrates with Honeycomb Tracing using the flow logger:
 
 ![trace.png](trace.png)
 
