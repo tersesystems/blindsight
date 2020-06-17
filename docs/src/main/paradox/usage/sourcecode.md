@@ -1,17 +1,6 @@
 # Source Code
 
-SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/lihaoyi/sourcecode) macros, using the @scaladoc[SourceInfoMixin](com.tersesystems.blindsight.mixins.SourceInfoMixin) on the logger.
-
-```scala
-trait SourceInfoMixin {
-  def sourceInfoMarker(
-      level: Level,
-      line: Line,
-      file: File,
-      enclosing: Enclosing
-  ): Markers
-}
-```
+SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/lihaoyi/sourcecode) macros.
 
 To enable this, use `blindsight-logstash` and add a `blindsight.source.enabled` property to the Logback context with the value of `true`:
 
@@ -23,7 +12,7 @@ To enable this, use `blindsight-logstash` and add a `blindsight.source.enabled` 
 </configuration>
 ```
 
-This adds `source.line`, `source.file` and `source.enclosing` to the JSON logs.
+This adds `source.line`, `source.file` and `source.enclosing` to the JSON logs:
 
 ```json
 {
@@ -40,4 +29,4 @@ This adds `source.line`, `source.file` and `source.enclosing` to the JSON logs.
 }
 ```
 
-This is the default behavior, and you can override `sourceInfoMarker` in your own implementation to return whatever you like.
+This is the default behavior, and you can override `sourceInfoBehavior` in your own implementation to return whatever you like, by replacing the @scaladoc[SourceInfoBehavior](com.tersesystems.blindsight.SourceInfoBehavior) implementation on the @scaladoc[CoreLogger.State](com.tersesystems.blindsight.CoreLogger.State).
