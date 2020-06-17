@@ -24,7 +24,7 @@ import org.slf4j.event.Level._
 /**
  * Public SLF4J Logger interface.  This is intended for the end user.
  *
-  * {{{
+ * {{{
  * val markers = Markers(bobj("key" -> "value"))
  * val message = "message arg1={} arg2={} arg3={}"
  * val arguments: Arguments = Arguments("arg1", 42, true)
@@ -32,7 +32,7 @@ import org.slf4j.event.Level._
  * logger.info(markers, message, arguments, e);
  * }}}
  *
-  * @tparam M the type of method.
+ * @tparam M the type of method.
  */
 trait SLF4JLogger[M]
     extends SLF4JLoggerAPI[SimplePredicate, M]
@@ -47,7 +47,7 @@ object SLF4JLogger {
   /**
    * A convenient abstract base class implementation.
    *
-    * @tparam M the type of method.
+   * @tparam M the type of method.
    */
   abstract class Base[M](core: CoreLogger) extends SLF4JLogger[M] {
     override type Self      = SLF4JLogger[M]
@@ -100,7 +100,7 @@ object SLF4JLogger {
     /**
      * Returns a logger which will always render with the given marker.
      *
-      * @param instance a type class instance of [[ToMarkers]]
+     * @param instance a type class instance of [[ToMarkers]]
      * @tparam T the instance type.
      * @return a new instance of the logger that has this marker.
      */
