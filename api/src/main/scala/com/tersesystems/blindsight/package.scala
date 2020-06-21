@@ -12,34 +12,36 @@ package object blindsight {
 
     import scala.reflect.macros.blackbox
 
-    private val OnlyOneMarker = "More than one marker argument is defined! Please provide a single Markers instance for multiple markers."
-    private val MarkerAfterArguments = "Marker argument is after Arguments!  Please move the marker to the beginning of the string."
-    private val MarkerAfterThrowable = "Marker argument is after throwable!  Please move the marker to the beginning of the string."
+    private val OnlyOneMarker =
+      "More than one marker argument is defined! Please provide a single Markers instance for multiple markers."
+    private val MarkerAfterArguments =
+      "Marker argument is after Arguments!  Please move the marker to the beginning of the string."
+    private val MarkerAfterThrowable =
+      "Marker argument is after throwable!  Please move the marker to the beginning of the string."
 
     def statement(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[Statement] = {
       import c.universe._
 
       def isThrowable(el: Tree) = el.tpe <:< typeOf[Throwable]
-      def isMarker(el: Tree) = el.tpe <:< typeOf[org.slf4j.Marker]
-      def isMarkers(el: Tree) = el.tpe <:< typeOf[Markers]
-
+      def isMarker(el: Tree)    = el.tpe <:< typeOf[org.slf4j.Marker]
+      def isMarkers(el: Tree)   = el.tpe <:< typeOf[Markers]
 
       if (args.nonEmpty) {
         c.prefix.tree match {
           case Apply(_, List(Apply(_, partz))) =>
-
             val argumentList: mutable.Buffer[c.Expr[Argument]] = mutable.Buffer()
-            var markersExpr: Option[c.Expr[Markers]] = None
-            var throwableExpr: Option[c.Expr[Throwable]] = None
+            var markersExpr: Option[c.Expr[Markers]]           = None
+            var throwableExpr: Option[c.Expr[Throwable]]       = None
 
-            def assertMarkerConditions(): Unit = if (markersExpr.isDefined) {
-              c.abort(c.enclosingPosition, OnlyOneMarker)
-            } else if (throwableExpr.isDefined) {
-              // must be before arguments (args adds ex to both argslist and throwableExpr)
-              c.abort(c.enclosingPosition, MarkerAfterThrowable)
-            } else if (argumentList.nonEmpty) {
-              c.abort(c.enclosingPosition, MarkerAfterArguments)
-            }
+            def assertMarkerConditions(): Unit =
+              if (markersExpr.isDefined) {
+                c.abort(c.enclosingPosition, OnlyOneMarker)
+              } else if (throwableExpr.isDefined) {
+                // must be before arguments (args adds ex to both argslist and throwableExpr)
+                c.abort(c.enclosingPosition, MarkerAfterThrowable)
+              } else if (argumentList.nonEmpty) {
+                c.abort(c.enclosingPosition, MarkerAfterArguments)
+              }
 
             // arguments are converted using ToArgument, or are throwable which render as strings.
             args.foreach { t =>
@@ -53,9 +55,13 @@ package object blindsight {
                   markersExpr = Some(c.Expr[Markers](q"$el"))
                 case _ if isThrowable(el) =>
                   throwableExpr = Some(c.Expr[Throwable](q"$el"))
-                  argumentList += c.Expr[Argument](q"com.tersesystems.blindsight.Argument($el.toString)")
+                  argumentList += c.Expr[Argument](
+                    q"com.tersesystems.blindsight.Argument($el.toString)"
+                  )
                 case _ =>
-                  argumentList += c.Expr[Argument](q"implicitly[com.tersesystems.blindsight.ToArgument[${el.tpe}]].toArgument($el)")
+                  argumentList += c.Expr[Argument](
+                    q"implicitly[com.tersesystems.blindsight.ToArgument[${el.tpe}]].toArgument($el)"
+                  )
               }
             }
             val arguments = q"com.tersesystems.blindsight.Arguments(..$argumentList)"

@@ -28,11 +28,11 @@ object InterpolationMain {
   }
 
   def main(args: Array[String]): Unit = {
-    val pizza    = Pizza("sweetcorn")
-    val burrito  = Burrito("chicken")
-    val anything = "anything"
-    val marker1 = MarkerFactory.getMarker("MARKER1")
-    val marker2 = MarkerFactory.getMarker("MARKER2")
+    val pizza     = Pizza("sweetcorn")
+    val burrito   = Burrito("chicken")
+    val anything  = "anything"
+    val marker1   = MarkerFactory.getMarker("MARKER1")
+    val marker2   = MarkerFactory.getMarker("MARKER2")
     val throwable = new IllegalStateException("illegal state")
 
     logger.info(st"")            // nothing at all
