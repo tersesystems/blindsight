@@ -1,5 +1,13 @@
 import Dependencies._
-import com.typesafe.tools.mima.core.{DirectMissingMethodProblem, IncompatibleMethTypeProblem, IncompatibleResultTypeProblem, IncompatibleTemplateDefProblem, MissingTypesProblem, ProblemFilters, ReversedMissingMethodProblem}
+import com.typesafe.tools.mima.core.{
+  DirectMissingMethodProblem,
+  IncompatibleMethTypeProblem,
+  IncompatibleResultTypeProblem,
+  IncompatibleTemplateDefProblem,
+  MissingTypesProblem,
+  ProblemFilters,
+  ReversedMissingMethodProblem
+}
 import sbt.Keys.libraryDependencies
 
 initialize := {
@@ -168,9 +176,11 @@ lazy val api = (project in file("api"))
     scalacOptions += "-language:experimental.macros",
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     mimaBinaryIssueFilters := Seq(
-      ProblemFilters.exclude[IncompatibleTemplateDefProblem]("com.tersesystems.blindsight.Statement"),
+      ProblemFilters
+        .exclude[IncompatibleTemplateDefProblem]("com.tersesystems.blindsight.Statement"),
       ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.Statement$"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Statement.apply")
+      ProblemFilters
+        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Statement.apply")
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
@@ -191,7 +201,6 @@ lazy val logstash = (project in file("logstash"))
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
     mimaBinaryIssueFilters := Seq(
-
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
