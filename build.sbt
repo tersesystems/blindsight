@@ -1,11 +1,5 @@
 import Dependencies._
-import com.typesafe.tools.mima.core.{
-  DirectMissingMethodProblem,
-  IncompatibleMethTypeProblem,
-  IncompatibleResultTypeProblem,
-  ProblemFilters,
-  ReversedMissingMethodProblem
-}
+import com.typesafe.tools.mima.core.{DirectMissingMethodProblem, IncompatibleMethTypeProblem, IncompatibleResultTypeProblem, IncompatibleTemplateDefProblem, MissingTypesProblem, ProblemFilters, ReversedMissingMethodProblem}
 import sbt.Keys.libraryDependencies
 
 initialize := {
@@ -53,7 +47,7 @@ ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / headerLicense := None
 
-val previousVersion = "1.1.0"
+val previousVersion = "1.2.1"
 
 val disableDocs = Seq[Setting[_]](
   sources in (Compile, doc) := Seq.empty,
@@ -174,68 +168,9 @@ lazy val api = (project in file("api"))
     scalacOptions += "-language:experimental.macros",
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     mimaBinaryIssueFilters := Seq(
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl.markerState"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy$default$1"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy$default$2"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.copy$default$3"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.mkrs"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.m"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.args"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.apply"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl#BuilderImpl.this"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl.apply"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod#Impl.parameterList"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentMethod.apply"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.flow.FlowMethod#Impl.tryExecution"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod#Impl.markers"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.semantic.SemanticMethod#Impl.markerState"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod#Impl.markers"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod#Impl.markers"
-      ),
-      ProblemFilters
-        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger.when"),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.semantic.SemanticMethod#Impl.collateMarkers"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.semantic.SemanticMethod#Impl.isEnabled"
-      )
+      ProblemFilters.exclude[IncompatibleTemplateDefProblem]("com.tersesystems.blindsight.Statement"),
+      ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.Statement$"),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Statement.apply")
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
@@ -256,9 +191,7 @@ lazy val logstash = (project in file("logstash"))
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
     mimaBinaryIssueFilters := Seq(
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.logstash.LogstashLoggerFactory.sourceInfoBehavior"
-      )
+
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
