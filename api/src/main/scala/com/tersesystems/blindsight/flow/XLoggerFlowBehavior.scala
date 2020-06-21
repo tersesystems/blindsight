@@ -40,8 +40,7 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       Statement(
         markers = entryMarkers(source),
         message = s"${source.enclosing.value} entry {}",
-        arguments = Argument(findArgs(source)).arguments,
-        throwable = None
+        arguments = Arguments(findArgs(source))
       )
     )
   }
@@ -56,8 +55,7 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
         Statement(
           markers = XLoggerFlowBehavior.throwingMarkers,
           message = s"${source.enclosing.value} exception",
-          arguments = Arguments.empty,
-          throwable = Some(throwable)
+          throwable = throwable
         )
       )
     )
@@ -68,8 +66,7 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       Statement(
         markers = exitMarkers(source),
         message = s"${source.enclosing.value} exit with result {}",
-        arguments = Arguments(Argument(resultValue)),
-        throwable = None
+        arguments = Arguments(resultValue)
       )
     )
   }

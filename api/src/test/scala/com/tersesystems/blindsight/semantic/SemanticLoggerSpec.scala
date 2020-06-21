@@ -21,10 +21,8 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
     "run against statement" in {
       implicit val payloadToArguments: ToStatement[PayloadModel] = ToStatement { instance =>
         Statement(
-          Markers.empty,
           Message("payloadModel:"),
-          Arguments(instance.payloadId.toString),
-          None
+          Arguments(instance.payloadId.toString)
         )
       }
 
@@ -49,8 +47,7 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         Statement(
           markers = Markers("secretToken" -> instance.userSecretToken),
           message = Message("herp" -> "derp"),
-          arguments = Arguments(instance.payloadId.toString),
-          None
+          arguments = Arguments(instance.payloadId.toString)
         )
       }
 
