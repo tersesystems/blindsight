@@ -9,7 +9,7 @@ object InterpolationMain {
 
   sealed trait Food
 
-  case class Pizza(topping: String) extends Food
+  case class Pizza(topping: String)   extends Food
   case class Burrito(filling: String) extends Food
 
   implicit val pizzaToArgument: ToArgument[Pizza] = ToArgument[Pizza] { pizza =>
@@ -25,11 +25,11 @@ object InterpolationMain {
   }
 
   def main(args: Array[String]): Unit = {
-    val pizza = Pizza("sweetcorn")
-    val burrito = Burrito("chicken")
+    val pizza    = Pizza("sweetcorn")
+    val burrito  = Burrito("chicken")
     val anything = "anything"
 
-    logger.info(st"") // nothing at all
+    logger.info(st"")            // nothing at all
     logger.info(st"I like food") // constant
     logger.info(st"I like $pizza")
     logger.info(st"I like $burrito")

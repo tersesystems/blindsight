@@ -67,7 +67,9 @@ object FluentMethod {
       override def log(): Unit = {
         val markers = mkrs()
         if (isEnabled(markers)) {
-          val statement = e.map(ee => Statement(markers, m(), args(), ee)).getOrElse(Statement(markers, m(), args()))
+          val statement = e
+            .map(ee => Statement(markers, m(), args(), ee))
+            .getOrElse(Statement(markers, m(), args()))
           executeStatement(statement)
         }
       }
@@ -75,8 +77,10 @@ object FluentMethod {
       override def logWithPlaceholders(): Unit = {
         val markers = mkrs()
         if (isEnabled(markers)) {
-          val message   = m().withPlaceHolders(args())
-          val statement = e.map(ee => Statement(markers, message, args(), ee)).getOrElse(Statement(markers, message, args()))
+          val message = m().withPlaceHolders(args())
+          val statement = e
+            .map(ee => Statement(markers, message, args(), ee))
+            .getOrElse(Statement(markers, message, args()))
           executeStatement(statement)
         }
       }

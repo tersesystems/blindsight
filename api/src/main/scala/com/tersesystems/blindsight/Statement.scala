@@ -17,10 +17,10 @@
 package com.tersesystems.blindsight
 
 /**
-  * A statement represents a total logging statement.  This is most useful
-  * for semantic logging, which converts objects to [[Statement]], but is
-  * generally helpful in packaging as well.
-  */
+ * A statement represents a total logging statement.  This is most useful
+ * for semantic logging, which converts objects to [[Statement]], but is
+ * generally helpful in packaging as well.
+ */
 trait Statement {
   def markers: Markers
   def message: Message
@@ -35,7 +35,7 @@ trait Statement {
 
 object Statement {
 
-  final case class  Impl private (
+  final case class Impl private (
       markers: Markers = Markers.empty,
       message: Message = Message.empty,
       arguments: Arguments = Arguments.empty,
@@ -85,13 +85,7 @@ object Statement {
   def apply(markers: Markers, message: Message, throwable: Throwable): Statement =
     Impl(markers, message = message, throwable = Some(throwable))
 
-  def apply(markers: Markers,
-            message: Message,
-            arguments: Arguments,
-            t: Throwable): Statement =
-    Impl(markers = markers,
-         message = message,
-         arguments = arguments,
-         throwable = Some(t))
+  def apply(markers: Markers, message: Message, arguments: Arguments, t: Throwable): Statement =
+    Impl(markers = markers, message = message, arguments = arguments, throwable = Some(t))
 
 }
