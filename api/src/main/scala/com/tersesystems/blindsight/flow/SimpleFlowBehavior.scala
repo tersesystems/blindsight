@@ -38,10 +38,9 @@ class SimpleFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       (
         Level.ERROR,
         Statement(
-          markers = Markers.empty,
           message = "{} throws {} at {}",
           arguments = Arguments(findArgs(source), throwable.getMessage, findPos(source)),
-          throwable = Some(throwable)
+          throwable = throwable
         )
       )
     )
@@ -52,8 +51,7 @@ class SimpleFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       Statement(
         markers = exitMarkers(source),
         message = "{} => {} {}",
-        arguments = Arguments(findArgs(source), resultValue, findPos(source)),
-        throwable = None
+        arguments = Arguments(findArgs(source), resultValue, findPos(source))
       )
     )
   }

@@ -50,6 +50,15 @@ object FluentMethod {
         e: Option[Throwable]
     ) extends FluentMethod.Builder {
 
+      override def statement(statement: => Statement): FluentMethod.Builder = {
+        copy(
+          mkrs = () => statement.markers,
+          m = () => statement.message,
+          args = () => statement.arguments,
+          e = statement.throwable
+        )
+      }
+
       override def marker[T: ToMarkers](instance: => T): FluentMethod.Builder = {
         copy(mkrs = () => mkrs() + Markers(instance))
       }
@@ -67,7 +76,9 @@ object FluentMethod {
       override def log(): Unit = {
         val markers = mkrs()
         if (isEnabled(markers)) {
-          val statement = Statement(markers = markers, message = m(), arguments = args(), e)
+          val statement = e
+            .map(ee => Statement(markers, m(), args(), ee))
+            .getOrElse(Statement(markers, m(), args()))
           executeStatement(statement)
         }
       }
@@ -75,8 +86,10 @@ object FluentMethod {
       override def logWithPlaceholders(): Unit = {
         val markers = mkrs()
         if (isEnabled(markers)) {
-          val message   = m().withPlaceHolders(args())
-          val statement = Statement(markers = markers, message = message, arguments = args(), e)
+          val message = m().withPlaceHolders(args())
+          val statement = e
+            .map(ee => Statement(markers, message, args(), ee))
+            .getOrElse(Statement(markers, message, args()))
           executeStatement(statement)
         }
       }
@@ -85,6 +98,15 @@ object FluentMethod {
     object BuilderImpl {
       val empty: BuilderImpl =
         BuilderImpl(() => Markers.empty, () => Message.empty, () => Arguments.empty, None)
+    }
+
+    override def statement(statement: => Statement): FluentMethod.Builder = {
+      BuilderImpl(
+        mkrs = () => statement.markers,
+        m = () => statement.message,
+        args = () => statement.arguments,
+        e = statement.throwable
+      )
     }
 
     override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
