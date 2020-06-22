@@ -179,7 +179,16 @@ lazy val api = (project in file("api"))
         .exclude[IncompatibleTemplateDefProblem]("com.tersesystems.blindsight.Statement"),
       ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.Statement$"),
       ProblemFilters
-        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Statement.apply")
+        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Statement.apply"),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.apply"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod.apply"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentAPI.statement"
+      )
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,

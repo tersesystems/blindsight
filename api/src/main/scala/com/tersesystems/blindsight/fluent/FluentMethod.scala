@@ -50,6 +50,15 @@ object FluentMethod {
         e: Option[Throwable]
     ) extends FluentMethod.Builder {
 
+      override def statement(statement: => Statement): FluentMethod.Builder = {
+        copy(
+          mkrs = () => statement.markers,
+          m = () => statement.message,
+          args = () => statement.arguments,
+          e = statement.throwable
+        )
+      }
+
       override def marker[T: ToMarkers](instance: => T): FluentMethod.Builder = {
         copy(mkrs = () => mkrs() + Markers(instance))
       }
@@ -89,6 +98,15 @@ object FluentMethod {
     object BuilderImpl {
       val empty: BuilderImpl =
         BuilderImpl(() => Markers.empty, () => Message.empty, () => Arguments.empty, None)
+    }
+
+    override def statement(statement: => Statement): FluentMethod.Builder = {
+      BuilderImpl(
+        mkrs = () => statement.markers,
+        m = () => statement.message,
+        args = () => statement.arguments,
+        e = statement.throwable
+      )
     }
 
     override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {

@@ -8,7 +8,7 @@ import org.slf4j.MarkerFactory
 
 object InterpolationMain {
 
-  val logger: SemanticLogger[Statement] = LoggerFactory.getLogger(getClass).semantic[Statement]
+  private val logger = LoggerFactory.getLogger(getClass)
 
   sealed trait Food
 
@@ -47,17 +47,18 @@ object InterpolationMain {
     import DSL._
     logger.info(st"Time since epoch is ${bobj("instant_tse" -> Instant.now.toEpochMilli)}")
 
-    // exception should be handled specially.
-    logger.info(st"this is an $throwable")
-
-    // marker must be the first argument, and will not show up as {}.
-    logger.info(st"${marker1}I like both $pizza and $burrito and $throwable")
-
     //logger.info(st"${marker1} ${marker2} two markers won't compile")
     logger.info(st"${Markers(marker1) + Markers(marker2)}a single Markers will compile")
 
+    // exception should be handled specially.
+    logger.error(st"this is an $throwable")
+
+    // marker must be the first argument, and will not show up as {}.
+    logger.error(st"${marker1}I like both $pizza and $burrito and $throwable")
+
     // exception can happen anywhere and will still be added to the end.
-    val statement = st"message has three args, plus throwable $throwable $pizza $burrito"
+    val statement = st"message has three args, plus throwable [$throwable] $pizza $burrito"
+    logger.error(statement)
     println(statement.arguments)
     println(statement.throwable)
   }

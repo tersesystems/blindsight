@@ -148,7 +148,9 @@ object StrictSLF4JMethod {
 
     override def apply(
         st: Statement
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {}
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      if (shouldLog) parameterList.executeStatement(st)
+    }
 
     override def apply(
         msg: Message
