@@ -143,7 +143,7 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:existentials",
     "-language:postfixOps",
     "-Xlint",
-    "-Xfatal-warnings",
+    // "-Xfatal-warnings", https://github.com/scala/bug/issues/7707 still broken in 2.12
     "-Ywarn-dead-code",
     "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
