@@ -173,7 +173,6 @@ lazy val api = (project in file("api"))
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    scalacOptions += "-language:experimental.macros",
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     mimaBinaryIssueFilters := Seq(
       ProblemFilters

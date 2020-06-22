@@ -1,6 +1,6 @@
 package com.tersesystems
 
-import scala.collection.mutable
+import scala.language.experimental.macros
 
 package object blindsight {
 
@@ -9,7 +9,7 @@ package object blindsight {
   }
 
   private object impl {
-
+    import scala.collection.mutable
     import scala.reflect.macros.blackbox
 
     private val OnlyOneMarker =

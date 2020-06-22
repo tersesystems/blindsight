@@ -4,6 +4,7 @@
 * [Logger Resolvers](resolvers.md)
 * [Structured DSL](dsl.md)
 * [Type Classes](typeclasses.md)
+* [String Interpolation](interpolation.md)
 * [SLF4J API](slf4j.md)
 * [Fluent API](fluent.md)
 * [Semantic API](semantic.md)
@@ -27,7 +28,16 @@ But there's a lot more, of course.
 
 ## Examples
 
-You can do @ref:[structured Logging](dsl.md) using an internal DSL:
+@ref:[statement interpolation](interpolation.md):
+
+```scala
+val dayOfWeek = "Monday"
+val temp = 72 
+val statement: Statement = st"It is ${dayOfWeek} and the temperature is ${temp} degrees."
+logger.info(statement)
+```
+
+@ref:[Structured logging](dsl.md) using an internal DSL:
 
 ```scala
 case class Winner(id: Long, numbers: List[Int])
