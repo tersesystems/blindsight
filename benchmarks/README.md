@@ -7,10 +7,10 @@ Using https://github.com/plokhotnyuk/jsoniter-scala#run-jvm-benchmarks as a guid
 To run as json:
 
 ```
-sbt 'benchmarks/jmh:run -rf json'
+sbt 'benchmarks/jmh:run -prof gc -rf json'
 LOGDATE=$(date +%Y%m%dT%H%M%S)
-mkdir -p $LOGDATE
-mv benchmarks/jmh-result.json benchmarks/$LOGDATE/openjdk11.json
+mkdir -p benchmarks/results/$LOGDATE
+mv benchmarks/jmh-result.json benchmarks/results/$LOGDATE/openjdk11.json
 ```
 
 You can add a link to [JMH Visualizer](https://jmh.morethan.io/):
