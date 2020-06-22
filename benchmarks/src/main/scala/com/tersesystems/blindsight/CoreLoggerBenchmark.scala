@@ -21,6 +21,11 @@ class CoreLoggerBenchmark {
   val file: File          = new File("file")
   val enclosing           = new Enclosing("enclosing")
 
+  val arg1 = Argument("one")
+  val arg2 = Argument("two")
+  val arg3 = Argument("three")
+  val args = Arguments(arg1, arg2, arg3)
+
   @Benchmark
   def trace(): Unit = {
     // 2.715 ns for trace
@@ -28,8 +33,18 @@ class CoreLoggerBenchmark {
   }
 
   @Benchmark
+  def traceWithStatement(): Unit = {
+    coreLogger.parameterList(SLF4JLevel.TRACE).executeStatement((st"Hello world ${arg1}, ${arg2}, ${arg3}"))
+  }
+
+  @Benchmark
   def info(): Unit = {
     coreLogger.parameterList(SLF4JLevel.INFO).message("Hello world")
+  }
+
+  @Benchmark
+  def infoWithStatement(): Unit = {
+    coreLogger.parameterList(SLF4JLevel.INFO).executeStatement(st"Hello world ${arg1}, ${arg2}, ${arg3}")
   }
 
   @Benchmark
