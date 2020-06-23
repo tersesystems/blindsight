@@ -87,7 +87,11 @@ object AsArgument {
 object Arguments {
   val empty: Arguments = new Arguments(Seq.empty)
 
+  def fromSeq(els: Seq[Argument]): Arguments = {
+    new Arguments(els)
+  }
+
   def apply(els: AsArgument*): Arguments = {
-    els.foldLeft(Arguments.empty)((acc, el) => acc + el.argument)
+    new Arguments(els.map(el => el.argument))
   }
 }
