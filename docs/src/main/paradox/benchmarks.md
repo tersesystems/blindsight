@@ -25,7 +25,7 @@ OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.7+10, mixed mode
 
 ## JMH Visualizer
 
-[Here's a link to the results in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200621T210854/openjdk11.json).
+[Here's a link to the results in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200622T222138/openjdk11.json).
 
 ## Raw SLF4J Logger
 
