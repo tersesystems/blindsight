@@ -21,9 +21,19 @@ class FluentBenchmark {
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
   val neverConditionLogger = fluent.onCondition(Condition.never)
 
+  val arg1 = Argument("one")
+  val arg2 = Argument("two")
+  val arg3 = Argument("three")
+  val args = Arguments(arg1, arg2, arg3)
+
   @Benchmark
   def info(): Unit = {
     fluent.info.message("Hello world").log()
+  }
+
+  @Benchmark
+  def infoWithStatement(): Unit = {
+    fluent.info.statement(st"Hello world ${arg1}, ${arg2}, ${arg3}").log()
   }
 
   @Benchmark

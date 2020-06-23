@@ -15,9 +15,18 @@ class SLF4JLoggerBenchmark {
 
   private val slf4jLogger = org.slf4j.LoggerFactory.getLogger(classOf[CoreLoggerBenchmark])
 
+  val arg1 = ("one")
+  val arg2 = ("two")
+  val arg3 = ("three")
+
   @Benchmark
   def trace(): Unit = {
     slf4jLogger.trace("Hello world")
+  }
+
+  @Benchmark
+  def traceWithArgs(): Unit = {
+    slf4jLogger.trace("Hello world {}, {}, {}", arg1, arg2, arg3)
   }
 
   @Benchmark
@@ -28,6 +37,11 @@ class SLF4JLoggerBenchmark {
   @Benchmark
   def info(): Unit = {
     slf4jLogger.info("Hello world")
+  }
+
+  @Benchmark
+  def infoWithArgs(): Unit = {
+    slf4jLogger.info("Hello world {}, {}, {}", arg1, arg2, arg3)
   }
 
   @Benchmark

@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit
 
-import com.tersesystems.blindsight.flow.{FlowBehavior}
+import com.tersesystems.blindsight.flow.FlowBehavior
 
 import org.slf4j.event.{Level => SLF4JLevel}
 

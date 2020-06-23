@@ -18,9 +18,24 @@ class LoggingBenchmark {
   val infoConditionLogger: Logger  = logger.onCondition(condition)
   val neverConditionLogger: Logger = logger.onCondition(Condition.never)
 
+  val arg1 = Argument("one")
+  val arg2 = Argument("two")
+  val arg3 = Argument("three")
+  val args = Arguments(arg1, arg2, arg3)
+
   @Benchmark
   def trace(): Unit = {
     logger.trace("Hello world")
+  }
+
+  @Benchmark
+  def traceWithArgs(): Unit = {
+    logger.trace("Hello world {}, {}, {}", args)
+  }
+
+  @Benchmark
+  def traceWithStatement(): Unit = {
+    logger.trace(st"Hello world ${arg1}, ${arg2}, ${arg3}")
   }
 
   @Benchmark
@@ -46,6 +61,16 @@ class LoggingBenchmark {
   @Benchmark
   def info(): Unit = {
     logger.info("Hello world")
+  }
+
+  @Benchmark
+  def infoWithArgs(): Unit = {
+    logger.info("Hello world {}, {}, {}", args)
+  }
+
+  @Benchmark
+  def infoWithStatement(): Unit = {
+    logger.info(st"Hello world ${arg1}, ${arg2}, ${arg3}")
   }
 
   @Benchmark
