@@ -27,7 +27,7 @@ package com.tersesystems.blindsight
  *
  * @param value the argument value.
  */
-final class Argument(val value: Any) {
+final class Argument(val value: Any) extends AnyVal {
   def arguments: Arguments   = new Arguments(Seq(this))
   def toStatement: Statement = Statement().withArguments(arguments)
 }
@@ -53,7 +53,7 @@ object Argument {
  * val argsPlus: Arguments = argsA + true
  * }}}
  */
-final class Arguments(private val elements: Seq[Argument]) {
+final class Arguments(private val elements: Seq[Argument]) extends AnyVal {
 
   def size: Int = elements.size
 
@@ -74,16 +74,6 @@ final class Arguments(private val elements: Seq[Argument]) {
   def toArray: Array[Any] = toSeq.toArray
 }
 
-// this is a cheap way to set up a hetrogenous list of arguments
-final class AsArgument(val argument: Argument)
-
-object AsArgument {
-  implicit def toAsArgument[A: ToArgument](a: A): AsArgument = {
-    val arguments = implicitly[ToArgument[A]].toArgument(a)
-    new AsArgument(arguments)
-  }
-}
-
 object Arguments {
   val empty: Arguments = new Arguments(Seq.empty)
 
@@ -93,5 +83,15 @@ object Arguments {
 
   def apply(els: AsArgument*): Arguments = {
     new Arguments(els.map(el => el.argument))
+  }
+}
+
+// this is a cheap way to set up a hetrogenous list of arguments
+final class AsArgument(val argument: Argument)
+
+object AsArgument {
+  implicit def toAsArgument[A: ToArgument](a: A): AsArgument = {
+    val arguments = implicitly[ToArgument[A]].toArgument(a)
+    new AsArgument(arguments)
   }
 }
