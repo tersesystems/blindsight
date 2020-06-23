@@ -13,6 +13,8 @@ mkdir -p benchmarks/results/$LOGDATE
 mv benchmarks/jmh-result.json benchmarks/results/$LOGDATE/openjdk11.json
 ```
 
+Benchmarks currently take about 14 minutes to run everything.  Do not resize or futz with Virtualbox while running, it can cause spikes (+900 ms) in benchmarks.
+
 You can add a link to [JMH Visualizer](https://jmh.morethan.io/):
 
 https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200616T110241/openjdk11.json
