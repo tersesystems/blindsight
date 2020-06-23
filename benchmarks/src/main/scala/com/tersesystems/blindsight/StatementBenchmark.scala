@@ -30,11 +30,11 @@ class StatementBenchmark {
   }
 
   @Benchmark
-  def statementFromSeq(blackhole: Blackhole): Unit = {
+  def statementFromArray(blackhole: Blackhole): Unit = {
     blackhole.consume(
       Statement(
         message = "Hello world {}, {}, {}",
-        arguments = Arguments.fromSeq(Array(arg1, arg2, arg3))
+        arguments = Arguments.fromArray(Array(arg1, arg2, arg3))
       )
     )
   }
