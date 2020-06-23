@@ -34,7 +34,9 @@ class CoreLoggerBenchmark {
 
   @Benchmark
   def traceWithStatement(): Unit = {
-    coreLogger.parameterList(SLF4JLevel.TRACE).executeStatement((st"Hello world ${arg1}, ${arg2}, ${arg3}"))
+    coreLogger
+      .parameterList(SLF4JLevel.TRACE)
+      .executeStatement((st"Hello world ${arg1}, ${arg2}, ${arg3}"))
   }
 
   @Benchmark
@@ -44,7 +46,9 @@ class CoreLoggerBenchmark {
 
   @Benchmark
   def infoWithStatement(): Unit = {
-    coreLogger.parameterList(SLF4JLevel.INFO).executeStatement(st"Hello world ${arg1}, ${arg2}, ${arg3}")
+    coreLogger
+      .parameterList(SLF4JLevel.INFO)
+      .executeStatement(st"Hello world ${arg1}, ${arg2}, ${arg3}")
   }
 
   @Benchmark

@@ -24,7 +24,9 @@ class StatementBenchmark {
 
   @Benchmark
   def statementFromApply(blackhole: Blackhole): Unit = {
-    blackhole.consume(Statement(message = "Hello world {}, {}, {}", arguments = Arguments(arg1, arg2, arg3)))
+    blackhole.consume(
+      Statement(message = "Hello world {}, {}, {}", arguments = Arguments(arg1, arg2, arg3))
+    )
   }
 
 }
