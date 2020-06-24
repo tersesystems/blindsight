@@ -163,14 +163,14 @@ object ParameterList {
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.trace(msg, arg1, arg2)
     override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.trace(msg, args: _*)
+      logger.trace(msg, args.asInstanceOf[Array[Object]]: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.trace(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.trace(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.trace(marker, msg, arg1, arg2)
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.trace(marker, msg, args: _*)
+      logger.trace(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
   class Debug(logger: org.slf4j.Logger) extends Impl(Level.DEBUG, logger) {
@@ -182,14 +182,14 @@ object ParameterList {
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.debug(msg, arg1, arg2)
     override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.debug(msg, args: _*)
+      logger.debug(msg, args.asInstanceOf[Array[Object]]: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.debug(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.debug(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.debug(marker, msg, arg1, arg2)
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.debug(marker, msg, args: _*)
+      logger.debug(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
   class Info(logger: org.slf4j.Logger) extends Impl(Level.INFO, logger) {
@@ -201,14 +201,14 @@ object ParameterList {
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.info(msg, arg1, arg2)
     override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.info(msg, args: _*)
+      logger.info(msg, args.asInstanceOf[Array[Object]]: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.info(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.info(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.info(marker, msg, arg1, arg2)
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.info(marker, msg, args: _*)
+      logger.info(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
   class Warn(logger: org.slf4j.Logger) extends Impl(Level.WARN, logger) {
@@ -220,14 +220,14 @@ object ParameterList {
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.warn(msg, arg1, arg2)
     override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.warn(msg, args: _*)
+      logger.warn(msg, args.asInstanceOf[Array[Object]]: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.warn(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.warn(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.warn(marker, msg, arg1, arg2)
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.warn(marker, msg, args: _*)
+      logger.warn(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
   class Error(logger: org.slf4j.Logger) extends Impl(Level.ERROR, logger) {
@@ -239,13 +239,13 @@ object ParameterList {
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
       logger.error(msg, arg1, arg2)
     override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.error(msg, args: _*)
+      logger.error(msg, args.asInstanceOf[Array[Object]]: _*)
     override def markerMessage(marker: Marker, msg: String): Unit = logger.error(marker, msg)
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
       logger.error(marker, msg, arg)
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
       logger.error(marker, msg, arg1, arg2)
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.error(marker, msg, args: _*)
+      logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 }
