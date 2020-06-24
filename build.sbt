@@ -244,6 +244,60 @@ lazy val api = (project in file("api"))
       ),
       ProblemFilters.exclude[IncompatibleMethTypeProblem](
         "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod#Impl.apply"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Conditional.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Conditional.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Error.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Error.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Debug.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Debug.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.ParameterList.messageArgs"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Noop.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Noop.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Warn.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Warn.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Info.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Info.markerMessageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Trace.messageArgs"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"
       )
     ),
     libraryDependencies += slf4jApi,
