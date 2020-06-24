@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.2"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.0"
   val scalamock = "org.scalamock" %% "scalamock" % "4.4.0"
 
   val terseLogback = "0.16.1"
