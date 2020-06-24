@@ -65,7 +65,7 @@ package object blindsight {
               }
             }
             val arguments =
-              q"com.tersesystems.blindsight.Arguments.fromSeq(Array[Argument](..$argumentList))"
+              q"com.tersesystems.blindsight.Arguments.fromArray(Array[Argument](..$argumentList))"
 
             // statement message is made up of the constant parts of string.
             val messageList = partz.map { case Literal(Constant(const: String)) => const }

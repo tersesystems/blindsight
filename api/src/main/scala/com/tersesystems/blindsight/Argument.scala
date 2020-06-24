@@ -16,6 +16,8 @@
 
 package com.tersesystems.blindsight
 
+import scala.collection.compat.immutable.ArraySeq
+
 /**
  * This class represents an argument to a logging statement.
  *
@@ -27,8 +29,8 @@ package com.tersesystems.blindsight
  *
  * @param value the argument value.
  */
-final class Argument(val value: Any) {
-  def arguments: Arguments   = new Arguments(Seq(this))
+final class Argument(val value: Any) extends AnyVal {
+  def arguments: Arguments   = new Arguments(Array(this))
   def toStatement: Statement = Statement().withArguments(arguments)
 }
 
@@ -53,9 +55,9 @@ object Argument {
  * val argsPlus: Arguments = argsA + true
  * }}}
  */
-final class Arguments(private val elements: Seq[Argument]) {
+final class Arguments(private val elements: Array[Argument]) extends AnyVal {
 
-  def size: Int = elements.size
+  def size: Int = elements.length
 
   def isEmpty: Boolean = elements.isEmpty
 
@@ -67,11 +69,23 @@ final class Arguments(private val elements: Seq[Argument]) {
 
   def +[T: ToArgument](instance: T): Arguments = add(instance)
 
-  def placeholders: String = " {}" * elements.size
+  def placeholders: String = " {}" * elements.length
 
-  def toSeq: Seq[Any] = elements.map(_.value)
+  def toSeq: Seq[Any] = ArraySeq.unsafeWrapArray(toArray)
 
-  def toArray: Array[Any] = toSeq.toArray
+  def toArray: Array[Any] = elements.map(_.value)
+}
+
+object Arguments {
+  val empty: Arguments = new Arguments(Array.empty)
+
+  def fromArray(els: Array[Argument]): Arguments = {
+    new Arguments(els)
+  }
+
+  def apply(els: AsArgument*): Arguments = {
+    new Arguments(els.map(el => el.argument).toArray)
+  }
 }
 
 // this is a cheap way to set up a hetrogenous list of arguments
@@ -81,17 +95,5 @@ object AsArgument {
   implicit def toAsArgument[A: ToArgument](a: A): AsArgument = {
     val arguments = implicitly[ToArgument[A]].toArgument(a)
     new AsArgument(arguments)
-  }
-}
-
-object Arguments {
-  val empty: Arguments = new Arguments(Seq.empty)
-
-  def fromSeq(els: Seq[Argument]): Arguments = {
-    new Arguments(els)
-  }
-
-  def apply(els: AsArgument*): Arguments = {
-    new Arguments(els.map(el => el.argument))
   }
 }

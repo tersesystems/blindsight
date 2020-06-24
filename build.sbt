@@ -188,6 +188,62 @@ lazy val api = (project in file("api"))
       ),
       ProblemFilters.exclude[ReversedMissingMethodProblem](
         "com.tersesystems.blindsight.fluent.FluentAPI.statement"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.ArgumentResolver.apply"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.ArgumentEnrichment#RichToArgument.asArgument"
+      ),
+      ProblemFilters
+        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.empty"),
+      ProblemFilters
+        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.apply"),
+      ProblemFilters
+        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Argument.apply"),
+      ProblemFilters
+        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Arguments.this"),
+      ProblemFilters
+        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Argument.arguments"),
+      ProblemFilters
+        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.+"),
+      ProblemFilters
+        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.add"),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.Message.withPlaceHolders"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.ArgumentResolver.resolve"
+      ),
+      ProblemFilters
+        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.AsArgument.argument"),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.ToArgument.toArgument"
+      ),
+      ProblemFilters
+        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.AsArgument.this"),
+      ProblemFilters
+        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ToArgument.toArgument"),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.Message.withPlaceHolders$extension"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.ArgumentResolver.resolve"
+      ),
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.ArgumentResolver#Passthrough.resolve"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod.apply"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod#Impl.apply"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.apply"
+      ),
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod#Impl.apply"
       )
     ),
     libraryDependencies += slf4jApi,
@@ -209,6 +265,9 @@ lazy val logstash = (project in file("logstash"))
       "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     ),
     mimaBinaryIssueFilters := Seq(
+      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+        "com.tersesystems.blindsight.logstash.LogstashArgumentResolver.resolve"
+      )
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
