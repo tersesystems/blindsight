@@ -161,7 +161,7 @@ object UncheckedSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        markerMessageArgs(markersPlusSource.marker, format, args.toSeq)
+        markerMessageArgs(markersPlusSource.marker, format, args.toArray)
       }
     }
 
@@ -206,10 +206,7 @@ object UncheckedSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(marker)) {
-        warnIfChecked(
-          s"Use apply(marker, format, Arguments(args)) as Any* cannot be type checked: ${file}:${line}"
-        )
-        markerMessageArgs(markersPlusSource(marker).marker, format, args.toSeq)
+        markerMessageArgs(markersPlusSource(marker).marker, format, args.toArray)
       }
     }
 
