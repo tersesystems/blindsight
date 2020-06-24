@@ -39,7 +39,7 @@ trait ParameterList {
 object ParameterList {
 
   /**
-   * This is the calling site of the SLF4J method, where parameters and Array[Any] meet.
+   * This is the calling site of the SLF4J method.
    *
    * You should not need to use this as an end user, but it is very useful for extending loggers.
    */
