@@ -17,7 +17,10 @@ Benchmarks currently take about 14 minutes to run everything.  Do not resize or 
 
 You can add a link to [JMH Visualizer](https://jmh.morethan.io/):
 
-https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200616T110241/openjdk11.json
+* [6/16](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200616T110241/openjdk11.json)
+* [6/22](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200622T222138/openjdk11.json)
+* [6/23](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200623T190617/openjdk11.json)
+* [6/24](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200624T090407/openjdk11.json)
 
 ## Profiling
 
