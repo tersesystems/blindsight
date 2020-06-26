@@ -35,6 +35,8 @@ trait UncheckedSLF4JMethod {
    */
   def when(condition: Condition)(block: UncheckedSLF4JMethod => Unit): Unit
 
+  def apply(block: UncheckedSLF4JMethod => Unit): Unit
+
   def apply(
       st: Statement
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
@@ -116,6 +118,10 @@ object UncheckedSLF4JMethod {
       if (core.when(level, condition)) {
         block(this)
       }
+    }
+
+    def apply(block: UncheckedSLF4JMethod => Unit): Unit = {
+      if (shouldLog) block(this)
     }
 
     override def apply(

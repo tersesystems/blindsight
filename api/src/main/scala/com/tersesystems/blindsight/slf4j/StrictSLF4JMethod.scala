@@ -34,6 +34,8 @@ trait StrictSLF4JMethod {
    */
   def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit
 
+  def apply(block: StrictSLF4JMethod => Unit): Unit
+
   def apply(
       st: Statement
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
@@ -150,6 +152,10 @@ object StrictSLF4JMethod {
         st: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) parameterList.executeStatement(st)
+    }
+
+    def apply(block: StrictSLF4JMethod => Unit): Unit = {
+      if (shouldLog) block(this)
     }
 
     override def apply(
