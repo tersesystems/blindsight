@@ -22,9 +22,40 @@ package object blindsight {
     def statement(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[Statement] = {
       import c.universe._
 
-      def isThrowable(el: Tree) = el.tpe <:< typeOf[Throwable]
-      def isMarker(el: Tree)    = el.tpe <:< typeOf[org.slf4j.Marker]
-      def isMarkers(el: Tree)   = el.tpe <:< typeOf[Markers]
+      def isThrowable(el: Tree): Boolean = el.tpe <:< typeOf[Throwable]
+      def isMarker(el: Tree): Boolean    = el.tpe <:< typeOf[org.slf4j.Marker]
+      def isMarkers(el: Tree): Boolean   = el.tpe <:< typeOf[Markers]
+      def isPrimitive(el: Tree): Boolean = {
+        val tpe = el.tpe
+        (tpe <:< typeOf[Boolean]) ||
+          (tpe <:< typeOf[Byte]) ||
+          (tpe <:< typeOf[Short]) ||
+          (tpe <:< typeOf[Char]) ||
+          (tpe <:< typeOf[Int]) ||
+          (tpe <:< typeOf[Long]) ||
+          (tpe <:< typeOf[Float]) ||
+          (tpe <:< typeOf[Double]) ||
+          (tpe <:< typeOf[String])
+      }
+
+      def createMessage(value: List[String], holders: Map[Int, c.universe.Tree]): c.Expr[String] = {
+        // for any placeholders that are primitives or throwables, we want to create a
+        // stringbuilder that inlines those variables.
+        // https://github.com/plokhotnyuk/fast-string-interpolator
+
+        // For everything that isn't, we want to provide "{}" as the string.
+        // if the holders are empty (there's no primitives or throwables) then inlining toString
+        // isn't possible, and just create a single string with {} in it.
+      }
+
+      def createMarkersMessage(value: List[String], holders: Map[Int, c.universe.Tree]): c.Expr[String] = {
+        // Remove the first {} as it is a marker.
+        // While it's technically possible to have multiple markers in the statement,
+        // st"$marker1 $marker2 etc"
+        // then we'd have to figure out what to do with the whitespace in between (trim? leave?),
+        // and it's much simpler to require a preaggregated one.
+        value.mkString("{}")
+      }
 
       if (args.nonEmpty) {
         c.prefix.tree match {
@@ -43,8 +74,10 @@ package object blindsight {
                 c.abort(c.enclosingPosition, MarkerAfterArguments)
               }
 
+            var holders: Map[Int, Tree] = Map()
             // arguments are converted using ToArgument, or are throwable which render as strings.
-            args.foreach { t =>
+            for (index <- 0 to args.size) {
+              val t = args(index)
               val el = t.tree
               el match {
                 case _ if isMarker(el) =>
@@ -53,14 +86,14 @@ package object blindsight {
                 case _ if isMarkers(el) =>
                   assertMarkerConditions()
                   markersExpr = Some(c.Expr[Markers](q"$el"))
-                case _ if isThrowable(el) =>
+                case throwableTree if isThrowable(el) =>
                   throwableExpr = Some(c.Expr[Throwable](q"$el"))
-                  argumentList += c.Expr[Argument](
-                    q"com.tersesystems.blindsight.Argument($el.toString)"
-                  )
+                  holders += (index -> throwableTree)
+                case prim if isPrimitive(el) =>
+                  holders += (index -> prim)
                 case _ =>
                   argumentList += c.Expr[Argument](
-                    q"implicitly[com.tersesystems.blindsight.ToArgument[${el.tpe}]].toArgument($el)"
+                    q"com.tersesystems.blindsight.Argument($el)"
                   )
               }
             }
@@ -71,7 +104,7 @@ package object blindsight {
             val messageList = partz.map { case Literal(Constant(const: String)) => const }
 
             if (markersExpr.isEmpty) {
-              val message = messageList.mkString("{}")
+              val message = createMessage(messageList, holders)
               if (throwableExpr.isEmpty) {
                 c.Expr(
                   q"com.tersesystems.blindsight.Statement($message, $arguments)"
@@ -83,13 +116,7 @@ package object blindsight {
                 )
               }
             } else {
-              // Remove the first {} as it is a marker.
-              // While it's technically possible to have multiple markers in the statement,
-              // st"$marker1 $marker2 etc"
-              // then we'd have to figure out what to do with the whitespace in between (trim? leave?),
-              // and it's much simpler to require a preaggregated one.
-              val message = messageList.mkString("{}").replaceFirst("\\{}", "")
-
+              val message = createMarkersMessage(messageList, holders)
               val markers = markersExpr.get
               if (throwableExpr.isEmpty) {
                 c.Expr(
