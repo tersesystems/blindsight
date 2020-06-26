@@ -83,6 +83,16 @@ class UncheckedLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTe
         event.getArgumentArray.apply(2) must equal("322")
       }
 
+      "call with lazy message" in {
+        val logger = new TestLogger(loggerContext.getLogger("testing"))
+        logger.debug { log =>
+          log("hello world")
+        }
+
+        val event = listAppender.list.get(0)
+        event.getMessage must equal("hello world")
+      }
+
       "call with marker, message and argument" in {
         val logger = new TestLogger(loggerContext.getLogger("testing"))
 
