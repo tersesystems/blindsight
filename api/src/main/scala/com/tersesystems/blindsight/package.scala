@@ -38,7 +38,7 @@ package object blindsight {
           (tpe <:< typeOf[String])
       }
 
-      def createMessage(value: List[String], holders: Map[Int, c.universe.Tree]): c.Expr[String] = {
+      def createMessage(value: List[String], holders: Map[Int, c.universe.Tree]): String = {
         // for any placeholders that are primitives or throwables, we want to create a
         // stringbuilder that inlines those variables.
         // https://github.com/plokhotnyuk/fast-string-interpolator
@@ -46,9 +46,10 @@ package object blindsight {
         // For everything that isn't, we want to provide "{}" as the string.
         // if the holders are empty (there's no primitives or throwables) then inlining toString
         // isn't possible, and just create a single string with {} in it.
+        value.mkString("{}")
       }
 
-      def createMarkersMessage(value: List[String], holders: Map[Int, c.universe.Tree]): c.Expr[String] = {
+      def createMarkersMessage(value: List[String], holders: Map[Int, c.universe.Tree]): String = {
         // Remove the first {} as it is a marker.
         // While it's technically possible to have multiple markers in the statement,
         // st"$marker1 $marker2 etc"
