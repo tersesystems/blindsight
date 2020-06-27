@@ -49,11 +49,10 @@ class InterpolationSpec extends AnyWordSpec with Matchers {
       val arg2                 = Argument("arg2")
       val ex                   = new Exception("ex")
       val statement: Statement = st"prefix $arg1 middlefix $arg2 postfix $ex"
-      statement.message must be(Message("prefix {} middlefix {} postfix {}"))
+      statement.message must be(Message("prefix {} middlefix {} postfix java.lang.Exception: ex"))
       val args = statement.arguments.toSeq
       args(0) must be("arg1")
       args(1) must be("arg2")
-      args(2) must be(ex.toString)
       statement.throwable.get must be(ex)
     }
 
@@ -92,25 +91,23 @@ class InterpolationSpec extends AnyWordSpec with Matchers {
       val arg2      = Argument("arg2")
       val ex        = new Exception("ex")
       val statement = st"${markers}$arg1 $arg2 $ex"
-      statement.message must be(Message("{} {} {}"))
+      statement.message must be(Message("{} {} java.lang.Exception: ex"))
       statement.markers.marker.contains(marker1) must be(true)
       val args = statement.arguments.toSeq
+      args.size must be(2)
       args(0) must be("arg1")
       args(1) must be("arg2")
       statement.throwable.get must be(ex)
     }
 
     "be multiple exceptions" in {
-      val ex1                  = new Exception("ex")
-      val ex2                  = new Exception("ex")
-      val ex3                  = new Exception("ex")
+      val ex1                  = new Exception("ex1")
+      val ex2                  = new Exception("ex2")
+      val ex3                  = new Exception("ex3")
       val statement: Statement = st"$ex1 $ex2 $ex3"
 
-      statement.message must be(Message("{} {} {}"))
-      val args = statement.arguments.toSeq
-      args(0) must be(ex1.toString)
-      args(1) must be(ex2.toString)
-      args(2) must be(ex3.toString)
+      statement.message must be(Message("java.lang.Exception: ex1 java.lang.Exception: ex2 java.lang.Exception: ex3"))
+      statement.arguments.size must be(0)
       statement.throwable.get must be(ex3)
     }
 

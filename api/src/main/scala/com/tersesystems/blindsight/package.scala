@@ -8,15 +8,135 @@ package object blindsight {
     def st(args: Any*): Statement = macro impl.statement
   }
 
+  object StatementContext {
+
+    def stringBuilder(): ParameterizedStringBuilder = ParameterizedStringBuilder()
+
+    /**
+     * Creates an SLF4J parameterized string, swapping out [[Argument]] instances for `{}` and
+     * rendering nothing if a [[Markers]] or [[org.slf4j.Marker]] is passed in.
+     *
+     * This class will use a threadlocal instance of StringBuilder and reuse it for parsing,
+     * which makes it faster than your average StringBuilder.
+     *
+     * It is used by the statement interpolation macro, and should not be used directly in your application.
+     *
+     * @param initialCapacity the initial capacity of a string builder.
+     */
+    class ParameterizedStringBuilder private (initialCapacity: Int) {
+      private[this] val sb = new java.lang.StringBuilder(initialCapacity)
+
+      def capacity: Int = sb.capacity
+
+      def setLength(length: Int): Unit = {
+        sb.setLength(length)
+      }
+
+      def append(sb: StringBuffer): ParameterizedStringBuilder = {
+        sb.append(sb)
+        this
+      }
+
+      def append(s: CharSequence): ParameterizedStringBuilder = {
+        sb.append(s)
+        this
+      }
+
+      def append(s: String): ParameterizedStringBuilder = {
+        sb.append(s)
+        this
+      }
+
+      def append(boolean: Boolean): ParameterizedStringBuilder = {
+        sb.append(boolean)
+        this
+      }
+
+      def append(byte: Byte): ParameterizedStringBuilder = {
+        sb.append(byte)
+        this
+      }
+
+      def append(ch: Char): ParameterizedStringBuilder = {
+        sb.append(ch)
+        this
+      }
+
+      def append(short: Short): ParameterizedStringBuilder = {
+        sb.append(short)
+        this
+      }
+
+      def append(int: Int): ParameterizedStringBuilder = {
+        sb.append(int)
+        this
+      }
+
+      def append(long: Long): ParameterizedStringBuilder = {
+        sb.append(long)
+        this
+      }
+
+      def append(double: Double): ParameterizedStringBuilder = {
+        sb.append(double)
+        this
+      }
+
+      def append(float: Float): ParameterizedStringBuilder = {
+        sb.append(float)
+        this
+      }
+
+      def append(marker: org.slf4j.Marker): ParameterizedStringBuilder = {
+        this
+      }
+
+      def append(markers: Markers): ParameterizedStringBuilder = {
+        this
+      }
+
+      def append(t: Throwable): ParameterizedStringBuilder = {
+        sb.append(t.toString)
+        this
+      }
+
+      def append[A: ToArgument](instance: A): ParameterizedStringBuilder = {
+        sb.append("{}")
+        this
+      }
+
+      override def toString: String = sb.toString
+    }
+
+    private object ParameterizedStringBuilder {
+      private[this] final val size = 4096
+
+      def apply(): ParameterizedStringBuilder = pool.get()
+
+      private[this] final val pool = new ThreadLocal[ParameterizedStringBuilder] {
+        override def initialValue(): ParameterizedStringBuilder = new ParameterizedStringBuilder(size)
+
+        override def get(): ParameterizedStringBuilder = {
+          var sb = super.get()
+          if (sb.capacity > size) {
+            sb = initialValue()
+            set(sb)
+          } else sb.setLength(0)
+          sb
+        }
+      }
+    }
+  }
+
   private object impl {
     import scala.collection.mutable
     import scala.reflect.macros.blackbox
 
-    private val OnlyOneMarker =
+    private[this] val OnlyOneMarker =
       "More than one marker argument is defined! Please provide a single Markers instance for multiple markers."
-    private val MarkerAfterArguments =
+    private[this] val MarkerAfterArguments =
       "Marker argument is after Arguments!  Please move the marker to the beginning of the string."
-    private val MarkerAfterThrowable =
+    private[this] val MarkerAfterThrowable =
       "Marker argument is after throwable!  Please move the marker to the beginning of the string."
 
     def statement(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[Statement] = {
@@ -38,37 +158,34 @@ package object blindsight {
           (tpe <:< typeOf[String])
       }
 
-      def createMessage(fragments: List[String], holders: Map[Int, c.universe.Tree]): String = {
-        // for any placeholders that are primitives or throwables, we want to create a
-        // stringbuilder that inlines those variables.
-        // https://github.com/plokhotnyuk/fast-string-interpolator
+      def createMessage(constants: List[String]): c.Expr[String] = {
+        val (valDeclarations, values) = args.map { arg =>
+          arg.tree match {
+            case tree @ Literal(Constant(_)) =>
+              (EmptyTree, if (tree.tpe <:< definitions.NullTpe) q"(null: String)" else tree)
+            case tree =>
+              val name = TermName(c.freshName())
+              val tpe = if (tree.tpe <:< definitions.NullTpe) typeOf[String] else tree.tpe
+              (q"val $name: $tpe = $arg", Ident(name))
+          }
+        }.unzip
 
-        // For everything that isn't, we want to provide "{}" as the string.
-        // if the holders are empty (there's no primitives or throwables) then inlining toString
-        // isn't possible, and just create a single string with {} in it.
-        val sb = new StringBuilder()
-        fragments.zipWithIndex.foreach { case (el, i) =>
-          sb.append(el)
-          if (i < fragments.size - 1) {
-            holders.get(i) match {
-              case Some(tree) =>
-                sb.append("tree = " + tree)
-
-              case None =>
-                sb.append("{}")
+        val appends = constants.zipAll(values, "", null)
+          .foldLeft(q"com.tersesystems.blindsight.StatementContext.stringBuilder()") { case (sb, (s, v)) =>
+            val len = s.length
+            if (len == 0) {
+              if (v == null) sb
+              else q"$sb.append($v)"
+            } else if (len == 1) {
+              if (v == null) q"$sb.append(${s.charAt(0)})"
+              else q"$sb.append(${s.charAt(0)}).append($v)"
+            } else {
+              if (v == null) q"$sb.append($s)"
+              else q"$sb.append($s).append($v)"
             }
           }
-        }
-        sb.toString()
-      }
 
-      def createMarkersMessage(value: List[String], holders: Map[Int, c.universe.Tree]): String = {
-        // Remove the first {} as it is a marker.
-        // While it's technically possible to have multiple markers in the statement,
-        // st"$marker1 $marker2 etc"
-        // then we'd have to figure out what to do with the whitespace in between (trim? leave?),
-        // and it's much simpler to require a preaggregated one.
-        value.mkString("{}")
+        c.Expr(c.typecheck(q"..$valDeclarations; $appends.toString"))
       }
 
       if (args.nonEmpty) {
@@ -88,8 +205,6 @@ package object blindsight {
                 c.abort(c.enclosingPosition, MarkerAfterArguments)
               }
 
-            var holders: Map[Int, Tree] = Map()
-            // arguments are converted using ToArgument, or are throwable which render as strings.
             for (index <- 0 until args.size) {
               val t = args(index)
               val el = t.tree
@@ -102,9 +217,8 @@ package object blindsight {
                   markersExpr = Some(c.Expr[Markers](q"$el"))
                 case throwableTree if isThrowable(el) =>
                   throwableExpr = Some(c.Expr[Throwable](q"$el"))
-                  holders += (index -> q"$throwableTree")
-                case prim if isPrimitive(el) =>
-                  holders += (index -> prim)
+                case _ if isPrimitive(el) =>
+                // do not add it as an argument, parameterized string will inline it.
                 case _ =>
                   argumentList += c.Expr[Argument](
                     q"com.tersesystems.blindsight.Argument($el)"
@@ -114,11 +228,9 @@ package object blindsight {
             val arguments =
               q"com.tersesystems.blindsight.Arguments.fromArray(Array[Argument](..$argumentList))"
 
-            // statement message is made up of the constant parts of string.
-            val messageList = partz.map { case Literal(Constant(const: String)) => const }
-
+            val constants = partz.map { case Literal(Constant(const: String)) => const }
+            val message = createMessage(constants)
             if (markersExpr.isEmpty) {
-              val message = createMessage(messageList, holders)
               if (throwableExpr.isEmpty) {
                 c.Expr(
                   q"com.tersesystems.blindsight.Statement($message, $arguments)"
@@ -130,7 +242,6 @@ package object blindsight {
                 )
               }
             } else {
-              val message = createMarkersMessage(messageList, holders)
               val markers = markersExpr.get
               if (throwableExpr.isEmpty) {
                 c.Expr(
@@ -154,4 +265,5 @@ package object blindsight {
       }
     }
   }
+
 }

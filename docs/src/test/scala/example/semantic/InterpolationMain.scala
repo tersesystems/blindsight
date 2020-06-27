@@ -3,7 +3,6 @@ package example.semantic
 import java.time.Instant
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.semantic.SemanticLogger
 import org.slf4j.MarkerFactory
 
 object InterpolationMain {
@@ -30,7 +29,7 @@ object InterpolationMain {
   def main(args: Array[String]): Unit = {
     val pizza     = Pizza("sweetcorn")
     val burrito   = Burrito("chicken")
-    val anything  = "anything"
+    val anything: String  = "anything"
     val marker1   = MarkerFactory.getMarker("MARKER1")
     val marker2   = MarkerFactory.getMarker("MARKER2")
     val throwable = new IllegalStateException("illegal state")
@@ -52,6 +51,8 @@ object InterpolationMain {
 
     // exception should be handled specially.
     logger.error(st"this is an $throwable")
+
+    //logger.info(st"derp ${("hello" -> "world")}")
 
     // marker must be the first argument, and will not show up as {}.
     logger.error(st"${marker1}I like both $pizza and $burrito and $throwable")
