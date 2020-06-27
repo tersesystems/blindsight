@@ -38,7 +38,7 @@ package object blindsight {
           (tpe <:< typeOf[String])
       }
 
-      def createMessage(value: List[String], holders: Map[Int, c.universe.Tree]): String = {
+      def createMessage(fragments: List[String], holders: Map[Int, c.universe.Tree]): String = {
         // for any placeholders that are primitives or throwables, we want to create a
         // stringbuilder that inlines those variables.
         // https://github.com/plokhotnyuk/fast-string-interpolator
@@ -46,7 +46,20 @@ package object blindsight {
         // For everything that isn't, we want to provide "{}" as the string.
         // if the holders are empty (there's no primitives or throwables) then inlining toString
         // isn't possible, and just create a single string with {} in it.
-        value.mkString("{}")
+        val sb = new StringBuilder()
+        fragments.zipWithIndex.foreach { case (el, i) =>
+          sb.append(el)
+          if (i < fragments.size - 1) {
+            holders.get(i) match {
+              case Some(tree) =>
+                sb.append("tree = " + tree)
+
+              case None =>
+                sb.append("{}")
+            }
+          }
+        }
+        sb.toString()
       }
 
       def createMarkersMessage(value: List[String], holders: Map[Int, c.universe.Tree]): String = {
@@ -77,7 +90,7 @@ package object blindsight {
 
             var holders: Map[Int, Tree] = Map()
             // arguments are converted using ToArgument, or are throwable which render as strings.
-            for (index <- 0 to args.size) {
+            for (index <- 0 until args.size) {
               val t = args(index)
               val el = t.tree
               el match {
@@ -89,7 +102,7 @@ package object blindsight {
                   markersExpr = Some(c.Expr[Markers](q"$el"))
                 case throwableTree if isThrowable(el) =>
                   throwableExpr = Some(c.Expr[Throwable](q"$el"))
-                  holders += (index -> throwableTree)
+                  holders += (index -> q"$throwableTree")
                 case prim if isPrimitive(el) =>
                   holders += (index -> prim)
                 case _ =>
