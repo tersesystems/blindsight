@@ -32,6 +32,16 @@ class FluentBenchmark {
   }
 
   @Benchmark
+  def infoWithArgs(): Unit = {
+    fluent.info
+      .statement(st"Hello world {}, {}, {}")
+      .argument(arg1)
+      .argument(arg2)
+      .argument(arg3)
+      .log()
+  }
+
+  @Benchmark
   def infoWithStatement(): Unit = {
     fluent.info.statement(st"Hello world ${arg1}, ${arg2}, ${arg3}").log()
   }

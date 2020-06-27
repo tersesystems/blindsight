@@ -110,7 +110,12 @@ object FluentMethod {
     }
 
     override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
-      BuilderImpl(() => Markers.empty, () => Message.empty, () => Arguments(instance), None)
+      BuilderImpl(
+        () => Markers.empty,
+        () => Message.empty,
+        () => Arguments.fromInstance(instance),
+        None
+      )
     }
 
     override def cause(e: Throwable): FluentMethod.Builder = {

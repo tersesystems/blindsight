@@ -13,17 +13,19 @@ import org.openjdk.jmh.infra.Blackhole
 @State(Scope.Benchmark)
 class StatementBenchmark {
 
-  val arg1 = Argument("one")
-  val arg2 = Argument("two")
-  val arg3 = Argument("three")
-
   @Benchmark
   def statementFromInterpolation(blackhole: Blackhole): Unit = {
+    val arg1 = "one"
+    val arg2 = "two"
+    val arg3 = "three"
     blackhole.consume(st"Hello world $arg1, $arg2, $arg3")
   }
 
   @Benchmark
   def statementFromApply(blackhole: Blackhole): Unit = {
+    val arg1 = "one"
+    val arg2 = "two"
+    val arg3 = "three"
     blackhole.consume(
       Statement(message = "Hello world {}, {}, {}", arguments = Arguments(arg1, arg2, arg3))
     )
@@ -31,10 +33,13 @@ class StatementBenchmark {
 
   @Benchmark
   def statementFromArray(blackhole: Blackhole): Unit = {
+    val arg1 = "one"
+    val arg2 = "two"
+    val arg3 = "three"
     blackhole.consume(
       Statement(
         message = "Hello world {}, {}, {}",
-        arguments = Arguments.fromArray(Array(arg1, arg2, arg3))
+        arguments = Arguments.fromArray(Array(Argument(arg1), Argument(arg2), Argument(arg3)))
       )
     )
   }
