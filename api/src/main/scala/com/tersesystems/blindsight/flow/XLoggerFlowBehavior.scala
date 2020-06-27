@@ -40,7 +40,7 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       Statement(
         markers = entryMarkers(source),
         message = s"${source.enclosing.value} entry {}",
-        arguments = Arguments(findArgs(source))
+        arguments = Arguments.fromArray(Array(Argument(findArgs(source))))
       )
     )
   }
@@ -66,7 +66,7 @@ class XLoggerFlowBehavior[B: ToArgument] extends FlowBehavior[B] {
       Statement(
         markers = exitMarkers(source),
         message = s"${source.enclosing.value} exit with result {}",
-        arguments = Arguments(resultValue)
+        arguments = Arguments.fromInstance(resultValue)
       )
     )
   }

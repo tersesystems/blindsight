@@ -60,7 +60,7 @@ package object blindsight {
                   )
                 case _ =>
                   argumentList += c.Expr[Argument](
-                    q"implicitly[com.tersesystems.blindsight.ToArgument[${el.tpe}]].toArgument($el)"
+                    q"com.tersesystems.blindsight.Argument($el)"
                   )
               }
             }

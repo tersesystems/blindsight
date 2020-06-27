@@ -4,6 +4,7 @@ import com.typesafe.tools.mima.core.{
   IncompatibleMethTypeProblem,
   IncompatibleResultTypeProblem,
   IncompatibleTemplateDefProblem,
+  MissingClassProblem,
   MissingTypesProblem,
   ProblemFilters,
   ReversedMissingMethodProblem
@@ -298,7 +299,13 @@ lazy val api = (project in file("api"))
       ),
       ProblemFilters.exclude[IncompatibleMethTypeProblem](
         "com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"
-      )
+      ),
+      ProblemFilters
+        .exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.Arguments.apply"),
+      ProblemFilters
+        .exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.Arguments.apply"),
+      ProblemFilters.exclude[MissingClassProblem]("com.tersesystems.blindsight.AsArgument"),
+      ProblemFilters.exclude[MissingClassProblem]("com.tersesystems.blindsight.AsArgument$")
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,

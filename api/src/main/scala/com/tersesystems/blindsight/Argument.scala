@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight
 
 import scala.collection.compat.immutable.ArraySeq
+import scala.reflect.macros.blackbox
 
 /**
  * This class represents an argument to a logging statement.
@@ -77,23 +78,28 @@ final class Arguments(private val elements: Array[Argument]) extends AnyVal {
 }
 
 object Arguments {
+  import scala.language.experimental.macros
+
   val empty: Arguments = new Arguments(Array.empty)
 
   def fromArray(els: Array[Argument]): Arguments = {
     new Arguments(els)
   }
 
-  def apply(els: AsArgument*): Arguments = {
-    new Arguments(els.map(el => el.argument).toArray)
+  def fromInstance[A: ToArgument](instance: A): Arguments = {
+    val argument = implicitly[ToArgument[A]].toArgument(instance)
+    fromArray(Array(argument))
   }
-}
 
-// this is a cheap way to set up a hetrogenous list of arguments
-final class AsArgument(val argument: Argument)
+  def apply(args: Any*): Arguments = macro impl.apply
 
-object AsArgument {
-  implicit def toAsArgument[A: ToArgument](a: A): AsArgument = {
-    val arguments = implicitly[ToArgument[A]].toArgument(a)
-    new AsArgument(arguments)
+  private object impl {
+    def apply(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[Arguments] = {
+      import c.universe._
+      val elements: Seq[c.Expr[Argument]] = args.map { t =>
+        c.Expr[Argument](q"com.tersesystems.blindsight.Argument(${t.tree})")
+      }
+      c.Expr[Arguments](q"com.tersesystems.blindsight.Arguments.fromArray(Array(..$elements))")
+    }
   }
 }
