@@ -23,6 +23,14 @@ class StatementBenchmark {
   }
 
   @Benchmark
+  def inlineStatementFromInterpolation(blackhole: Blackhole): Unit = {
+    val arg1 = "one"
+    val arg2 = "two"
+    val arg3 = "three"
+    blackhole.consume(st"Hello world $arg1, $arg2, $arg3")
+  }
+
+  @Benchmark
   def statementFromApply(blackhole: Blackhole): Unit = {
     blackhole.consume(
       Statement(message = "Hello world {}, {}, {}", arguments = Arguments(arg1, arg2, arg3))

@@ -129,7 +129,7 @@ package object blindsight {
     }
 
     private object ParameterizedStringBuilder {
-      private[this] final val size = 4096
+      private[this] final val size = 1024
 
       @inline
       def apply(): ParameterizedStringBuilder = pool.get()
@@ -239,7 +239,7 @@ package object blindsight {
                 case throwableTree if isThrowable(el) =>
                   throwableExpr = Some(c.Expr[Throwable](q"$el"))
                 case _ if isPrimitive(el) =>
-                // do not add it as an argument, parameterized string will inline it.
+                  // do not add it as an argument, parameterized string will inline it.
                 case _ =>
                   argumentList += c.Expr[Argument](
                     q"com.tersesystems.blindsight.Argument($el)"
