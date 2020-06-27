@@ -21,6 +21,8 @@ package object blindsight {
      *
      * It is used by the statement interpolation macro, and should not be used directly in your application.
      *
+     * Blatantly copied from <a href="https://github.com/plokhotnyuk/fast-string-interpolator">fast-string-interpolator</a>.
+     *
      * @param initialCapacity the initial capacity of a string builder.
      */
     class ParameterizedStringBuilder private (initialCapacity: Int) {
