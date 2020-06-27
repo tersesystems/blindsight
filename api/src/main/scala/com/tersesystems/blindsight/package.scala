@@ -25,94 +25,113 @@ package object blindsight {
      *
      * @param initialCapacity the initial capacity of a string builder.
      */
-    class ParameterizedStringBuilder private (initialCapacity: Int) {
+    final class ParameterizedStringBuilder private (initialCapacity: Int) {
       private[this] val sb = new java.lang.StringBuilder(initialCapacity)
 
+      @inline
       def capacity: Int = sb.capacity
 
+      @inline
       def setLength(length: Int): Unit = {
         sb.setLength(length)
       }
 
+      @inline
       def append(sb: StringBuffer): ParameterizedStringBuilder = {
         sb.append(sb)
         this
       }
 
+      @inline
       def append(s: CharSequence): ParameterizedStringBuilder = {
         sb.append(s)
         this
       }
 
+      @inline
       def append(s: String): ParameterizedStringBuilder = {
         sb.append(s)
         this
       }
 
+      @inline
       def append(boolean: Boolean): ParameterizedStringBuilder = {
         sb.append(boolean)
         this
       }
 
+      @inline
       def append(byte: Byte): ParameterizedStringBuilder = {
         sb.append(byte)
         this
       }
 
+      @inline
       def append(ch: Char): ParameterizedStringBuilder = {
         sb.append(ch)
         this
       }
 
+      @inline
       def append(short: Short): ParameterizedStringBuilder = {
         sb.append(short)
         this
       }
 
+      @inline
       def append(int: Int): ParameterizedStringBuilder = {
         sb.append(int)
         this
       }
 
+      @inline
       def append(long: Long): ParameterizedStringBuilder = {
         sb.append(long)
         this
       }
 
+      @inline
       def append(double: Double): ParameterizedStringBuilder = {
         sb.append(double)
         this
       }
 
+      @inline
       def append(float: Float): ParameterizedStringBuilder = {
         sb.append(float)
         this
       }
 
+      @inline
       def append(marker: org.slf4j.Marker): ParameterizedStringBuilder = {
         this
       }
 
+      @inline
       def append(markers: Markers): ParameterizedStringBuilder = {
         this
       }
 
+      @inline
       def append(t: Throwable): ParameterizedStringBuilder = {
         sb.append(t.toString)
         this
       }
 
+      @inline
       def append[A: ToArgument](instance: A): ParameterizedStringBuilder = {
         sb.append("{}")
         this
       }
 
+      @inline
       override def toString: String = sb.toString
     }
 
     private object ParameterizedStringBuilder {
       private[this] final val size = 4096
 
+      @inline
       def apply(): ParameterizedStringBuilder = pool.get()
 
       private[this] final val pool = new ThreadLocal[ParameterizedStringBuilder] {
