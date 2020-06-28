@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.3.0 [diff](https://github.com/tersesystems/blindsight/compare/v1.2.1...1.3.0)
+## 1.3.0 [diff](https://github.com/tersesystems/blindsight/compare/v1.2.1...v1.3.0)
 
 * Replace `AsArguments` with macro expansion [#149](https://github.com/tersesystems/blindsight/pull/149)
 * Add lazy methods to slf4j [#146](https://github.com/tersesystems/blindsight/pull/146)
