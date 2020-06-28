@@ -1,4 +1,14 @@
-## GC Churn Results
+# Memory Churn
+
+## Overview
+
+We're looking for memory churn.  
+
+https://www.infoq.com/presentations/jvm-60-memory
+
+https://www.slideshare.net/KirkPepperdine/trouble-with-memory
+
+## Method Under 
 
 Here's the method under benchmark.
 
@@ -10,8 +20,6 @@ class LoggingBenchmark {
   }
 }
 ```
-
-We're looking for memory churn.  https://www.infoq.com/presentations/jvm-60-memory
 
 We use 20 iterations of warmup and 10 iterations using `-prof gc`.
 
