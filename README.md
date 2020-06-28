@@ -68,9 +68,11 @@ logger.info("Logs with argument {}", bobj("array" -> Seq("one", "two", "three"))
 ```scala
 val dayOfWeek = "Monday"
 val temp = 72 
-val statement: Statement = st"It is ${dayOfWeek} and the temperature is ${temp} degrees."
+
 // macro expands this to:
-// logger.info("It is {} and the temperature is {} degrees.", dayOfWeek, temp)
+// Statement("It is {} and the temperature is {} degrees.", Arguments(dayOfWeek, temp))
+val statement: Statement = st"It is ${dayOfWeek} and the temperature is ${temp} degrees."
+
 logger.info(statement)
 ```
 
@@ -104,7 +106,10 @@ logger.info("message {}", lotto) // auto-converted to structured output
 [Fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html):
 
 ```scala
-logger.fluent.info.message("The Magic Words are").argument(Arguments("Squeamish", "Ossifrage")).logWithPlaceholders()
+logger.fluent.info
+  .message("The Magic Words are")
+  .argument(Arguments("Squeamish", "Ossifrage"))
+  .logWithPlaceholders()
 ```
 
 [Semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html):
@@ -127,7 +132,9 @@ import com.tersesystems.blindsight.flow._
 
 implicit def flowBehavior[B]: FlowBehavior[B] = new SimpleFlowBehavior
 
-val result = logger.flow.trace(arg1 + arg2)
+val arg1: Int = 1
+val arg2: Int = 2
+val result:Int = logger.flow.trace(arg1 + arg2)
 ```
 
 [Conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html):
@@ -141,7 +148,15 @@ logger.info.when(booleanCondition) { info => info("when true") }
 And [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html):
 
 ```scala
-logger.withMarker(bobj("userId" -> userId)).info("Logging with user id added as a context marker!")
+import DSL._
+
+// Add key/value pairs with DSL and return a logger
+val markerLogger = logger.withMarker(bobj("userId" -> userId))
+
+// log with generated logger
+markerLogger.info("Logging with user id added as a context marker!")
+
+// can retrieve state markers
 val contextMarkers: Markers = logger.markers
 ```
 
