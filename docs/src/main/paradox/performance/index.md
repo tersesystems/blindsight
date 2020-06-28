@@ -9,7 +9,7 @@
 
 Blindsight has a full set of JMH benchmarks that cover creating statements, adding markers, and using conditional and contextual logging.
 
-The high level summary is that Blindsight takes less than 100 nanoseconds for any given operation.  It does this through a combination of optimizations.
+The high level summary is that most operations in Blindsight take less than 100 nanoseconds.  It does this through a combination of optimizations.
  
 First, Blindsight makes heavy use of [value classes](https://docs.scala-lang.org/overviews/core/value-classes.html), so that types only exist at compile time.
 
