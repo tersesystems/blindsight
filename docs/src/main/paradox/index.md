@@ -3,7 +3,7 @@
 * [Setup](setup/index.md)
 * [Usage](usage/index.md)
 * [Extending](extending/index.md)
-* [Benchmarks](benchmarks.md)
+* [Performance](performance/index.md)
 * [Principles](principles.md)
 
 @@@

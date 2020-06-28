@@ -48,6 +48,12 @@ val logger = LoggerFactory.getLogger
 logger.info("I am an SLF4J-like logger")
 ```
 
+or in block form for diagnostic logging:
+
+```scala
+logger.debug { debug => debug("I am an SLF4J-like logger") }
+```
+
 [Structured DSL](https://tersesystems.github.io/blindsight/usage/dsl.html):
 
 ```scala
@@ -55,6 +61,17 @@ import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.DSL._
 
 logger.info("Logs with argument {}", bobj("array" -> Seq("one", "two", "three")))
+```
+
+[Statement Interpolation](https://tersesystems.github.io/blindsight/usage/interpolation.html): 
+
+```scala
+val dayOfWeek = "Monday"
+val temp = 72 
+val statement: Statement = st"It is ${dayOfWeek} and the temperature is ${temp} degrees."
+// macro expands this to:
+// logger.info("It is {} and the temperature is {} degrees.", dayOfWeek, temp)
+logger.info(statement)
 ```
 
 [Marker/Argument Type Classes](https://tersesystems.github.io/blindsight/usage/typeclass.html):

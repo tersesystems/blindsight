@@ -1,7 +1,10 @@
 # CHANGELOG
 
-## 1.3.x [diff](https://github.com/tersesystems/blindsight/compare/v1.2.1...master)
+## 1.3.0 [diff](https://github.com/tersesystems/blindsight/compare/v1.2.1...1.3.0)
 
+* Replace `AsArugments` with macro expansion [#137](https://github.com/tersesystems/blindsight/pull/149)
+* Add lazy methods to slf4j [#146](https://github.com/tersesystems/blindsight/pull/146)
+* Add page on memory usage
 * Add this changelog
 * Optimizations to `Arguments` and `Arguments` to remove wrapping `Seq` and `foldLeft`. [#141](https://github.com/tersesystems/blindsight/pull/141)
 * Add `prof gc` to JMH benchmarks to see memory churn. [#136](https://github.com/tersesystems/blindsight/pull/136)
