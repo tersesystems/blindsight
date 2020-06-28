@@ -57,6 +57,18 @@ val e = new Exception("something is horribly wrong")
 logger.error("this is an error with argument {}", Arguments("a" -> "b"), e)
 ```
 
+## Lazy Blocks
+
+There is a block oriented API available.  This is useful for diagnostic logging and @ref:[conditional logging](conditional.md) to avoid unnecessary @ref:[memory allocation](../performance/memory.md).  The block is only executed if the conditions for logging have been met, and returns a handle to the method itself.
+
+```scala
+// block only executed if logger is DEBUG or TRACE level.
+logger.debug { debug =>
+  val debugInfo = ...
+  debug(st"I am a debugging statement with lots of extra $debugInfo")
+}
+```
+
 ## Unchecked API
 
 An unchecked API is available that does not use type class inference at all, and looks just like SLF4J with the additions of conditions and markers.

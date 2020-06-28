@@ -1,8 +1,7 @@
 @@@ index
 
 * [Benchmarks](benchmarks.md)
-* [Memory Churn](churn.md)
-* [Best Practices](bestpractices.md)
+* [Memory Usage](memory.md)
 
 @@@
 
@@ -21,3 +20,11 @@ Third, Blindsight makes use of macros to optimize inconvenient cases, such as he
 Fourth, Blindsight short-circuits conditional logging when `Condition.never` is seen in the chain. 
  
 Fifth, Blindsight ensures that features that may cause additional overhead, such as source code markers, are disabled by default. 
+
+## Memory Allocation
+
+There is a section that discusses @ref:[memory usage](memory.md) in depth using JMH benchmarks and profilers.
+
+## Execution Time
+
+There is a section that discusses the total time elapsed for each operation in @ref:[benchmarks](benchmarks.md) in depth using JMH.
