@@ -2,7 +2,7 @@
 
 ## 1.3.0 [diff](https://github.com/tersesystems/blindsight/compare/v1.2.1...1.3.0)
 
-* Replace `AsArugments` with macro expansion [#137](https://github.com/tersesystems/blindsight/pull/149)
+* Replace `AsArguments` with macro expansion [#149](https://github.com/tersesystems/blindsight/pull/149)
 * Add lazy methods to slf4j [#146](https://github.com/tersesystems/blindsight/pull/146)
 * Add page on memory usage
 * Add this changelog
