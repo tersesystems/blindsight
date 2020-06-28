@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>String Interpolation · Blindsight</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='docs'/>
+<link rel="canonical" href="/blindsight/usage/interpolation.html"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../js/page.js"></script>
+<script type="text/javascript" src="../js/warnOldVersion.js"></script>
+<script type="text/javascript" src="../js/groups.js"></script>
+<link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="../css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="../images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.3.0
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="active page">String Interpolation</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="../index.html">Blindsight</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.3.0
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="active page">String Interpolation</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<span id="version-warning"></span>
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+<div class="nav-breadcrumbs">
+<ul>
+  <li><a href="../index.html">Blindsight</a></li>
+  <li><a href="../usage/index.html">Usage</a></li>
+  <li>String Interpolation</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#string-interpolation" name="string-interpolation" class="anchor"><span class="anchor-link"></span></a>String Interpolation</h1>
+<p>You may be familiar with Scala&rsquo;s <a href="https://docs.scala-lang.org/overviews/core/string-interpolation.html">string interpolation</a>, using the <code>s</code> interpolator.</p>
+<p>With Blindsight, you can log statements as strings using the <code>st</code> interpolator. This creates a complete <a href="/blindsight/api/com/tersesystems/blindsight/Statement.html" title="com.tersesystems.blindsight.Statement"><code>Statement</code></a> that can be used in logging. The <code>st</code> interpolator has full support for <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a>, and exceptions, and will create an <a href="http://slf4j.org/faq.html#logging_performance">SLF4J parameterized message</a> as the <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a>.</p>
+<h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
+<p>To use the <code>st</code> interpolator, you must import the package object, which you can do with a wildcar import:</p>
+<pre class="prettyprint"><code class="nocode">import com.tersesystems.blindsight._
+</code></pre>
+<h2><a href="#messages" name="messages" class="anchor"><span class="anchor-link"></span></a>Messages</h2>
+<p>Plain messages work just as you&rsquo;d expect.</p>
+<pre class="prettyprint"><code class="language-scala">val statement: Statement = st&quot;This is a plain message&quot;
+logger.info(statement)
+</code></pre>
+<h2><a href="#markers" name="markers" class="anchor"><span class="anchor-link"></span></a>Markers</h2>
+<p>Using <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> has a few special cases. There can only be one <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> instance in the message, and it must come before any arguments or exceptions. The marker is not parameterized in the message.</p>
+<p>You should use the <code>${markers}</code> form when interpolating, as this prevents any leading whitespace in the message.</p>
+<pre class="prettyprint"><code class="language-scala">val marker1 = org.slf4j.MarkerFactory.getMarker(&quot;MARKER1&quot;)
+val markers = Markers(marker1)
+val statement: Statement = st&quot;${markers}This is a message with a marker.&quot;
+logger.info(statement)
+</code></pre>
+<p>If you have more than one marker, you can collate them in situ:</p>
+<pre class="prettyprint"><code class="language-scala">logger.info(st&quot;${Markers(marker1) + Markers(marker2)}a single Markers will compile&quot;)
+</code></pre>
+<h2><a href="#arguments" name="arguments" class="anchor"><span class="anchor-link"></span></a>Arguments</h2>
+<p>You can have multiple <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a> instances in the message. The interpolator will swap out the argument for the <code>{}</code> placeholder in the parameterized string, and roll them up into an <a href="/blindsight/api/com/tersesystems/blindsight/Arguments.html" title="com.tersesystems.blindsight.Arguments"><code>Arguments</code></a> instance.</p>
+<p>In practice, you will be passing in either basic types or instances that have a <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a> <a href="typeclasses.html">type class instance</a>.</p>
+<pre class="prettyprint"><code class="language-scala">val dayOfWeek = &quot;Monday&quot;
+val temp = 72 
+val statement: Statement = st&quot;It is ${dayOfWeek} and the temperature is ${temp} degrees.&quot;
+logger.info(statement)
+</code></pre>
+<p>This works in conjunction with the <a href="dsl.html">DSL</a>:</p>
+<pre class="prettyprint"><code class="language-scala">import DSL._
+logger.info(st&quot;Time since epoch is ${bobj(&quot;instant_tse&quot; -&gt; Instant.now.toEpochMilli)}&quot;)
+</code></pre>
+<h2><a href="#exceptions" name="exceptions" class="anchor"><span class="anchor-link"></span></a>Exceptions</h2>
+<p>You can pass an exception in anywhere in the statement, and the interpolator will create a <code>toString</code> argument and pass the exception as the last argument, as per the <a href="http://www.slf4j.org/faq.html#paramException">SLF4J parameterized exception</a> guidelines.</p>
+<pre class="prettyprint"><code class="language-scala">val throwable = new IllegalStateException(&quot;illegal state&quot;)
+logger.info(st&quot;this is an $throwable&quot;)
+</code></pre>
+<p>You can pass in multiple exceptions. The last exception seen will be passed in as the designated throwable.</p>
+<pre class="prettyprint"><code class="language-scala">val ex1 = new IllegalStateException(&quot;ex1&quot;)
+val ex2 = new IllegalStateException(&quot;ex2&quot;)
+val ex3 = new IllegalStateException(&quot;ex3&quot;)
+logger.info(st&quot;$ex1 $ex2 $ex3&quot;) // ex3 will be chosen as the exception.
+</code></pre>
+<div class="source-github">
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/main/paradox/usage/interpolation.md">here</a>.
+</div>
+
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../usage/slf4j.html">SLF4J API</a></p>
+</div>
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/interpolation.html#string-interpolation" class="header">String Interpolation</a>
+  <ul>
+    <li><a href="../usage/interpolation.html#usage" class="header">Usage</a></li>
+    <li><a href="../usage/interpolation.html#messages" class="header">Messages</a></li>
+    <li><a href="../usage/interpolation.html#markers" class="header">Markers</a></li>
+    <li><a href="../usage/interpolation.html#arguments" class="header">Arguments</a></li>
+    <li><a href="../usage/interpolation.html#exceptions" class="header">Exceptions</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2020</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="../lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="../js/magellan.js"></script>
+
+<style type="text/css">@import "../lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="../lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.3.0', 'https://tersesystems.github.io/blindsight')});</script>
+
+
+</html>

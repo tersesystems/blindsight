@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.2.1
+1.3.0
 </div>
 </div>
 <div class="nav-toc">
@@ -47,6 +47,7 @@
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -59,7 +60,11 @@
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
-  <li><a href="../benchmarks.html" class="page">Benchmarks</a></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
   <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
@@ -92,7 +97,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.2.1
+1.3.0
 </div>
 </div>
 <div class="nav-toc">
@@ -108,6 +113,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -120,7 +126,11 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../extending/overview.html" class="page">Overview</a></li>
   </ul></li>
-  <li><a href="../benchmarks.html" class="page">Benchmarks</a></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
   <li><a href="../principles.html" class="page">Principles</a></li>
 </ul>
 </div>
@@ -158,12 +168,12 @@ val flowLogger: FlowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
   flowLogger.trace {
     arg1 + arg2
   }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
   flowLogger.trace {
     Person(name = &quot;Will&quot;, age = arg1 + arg2)
   }
@@ -238,7 +248,7 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 <p>See <a href="http://github.com/wsargent/play-blindsight">play-blindsight</a> for a worked example.</p>
 <p><img src="trace.png" alt="trace.png" /></p>
 <p>You can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -347,7 +357,7 @@ object HoneycombFlowBehavior {
   val markerFactory = new SpanMarkerFactory
 }</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.2.1/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -432,7 +442,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.2.1', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.3.0', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

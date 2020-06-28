@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>Memory Usage · Blindsight</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='docs'/>
+<link rel="canonical" href="/blindsight/performance/memory.html"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../js/page.js"></script>
+<script type="text/javascript" src="../js/warnOldVersion.js"></script>
+<script type="text/javascript" src="../js/groups.js"></script>
+<link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="../css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="../images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.3.0
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="active page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="../index.html">Blindsight</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.3.0
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a>
+  <ul>
+    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
+    <li><a href="../setup/generic.html" class="page">Generic</a></li>
+  </ul></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="active page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<span id="version-warning"></span>
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+<div class="nav-breadcrumbs">
+<ul>
+  <li><a href="../index.html">Blindsight</a></li>
+  <li><a href="../performance/index.html">Performance</a></li>
+  <li>Memory Usage</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#memory-usage" name="memory-usage" class="anchor"><span class="anchor-link"></span></a>Memory Usage</h1>
+<p>Kirk Pepperdine gives a very interesting presentation called <strong>The Trouble with Memory</strong> ( <a href="https://www.infoq.com/presentations/memory-jvm">transcript</a> / <a href="https://youtu.be/mfS-P49FSbY?t=549">video</a> / <a href="https://qconsf.com/system/files/presentation-slides/trouble_with_memory.pdf">slides</a> ), which discusses &ldquo;memory churn&rdquo; &ndash; excessive amounts of allocation and release of heap in the JVM. The performance impact of memory is not well-known, but according to Pepperdine it can have severe effects on applications, while being very difficult to spot.</p>
+<p>One anecdote stood out in particular:</p>
+<blockquote>
+  <p>So I gave my usual logging rant at a workshop that I gave. I was in the Netherlands about a year or so ago. And that night, they went and stripped all the logging out of their transactional monitoring framework that they&rsquo;re using, which wasn&rsquo;t getting them the performance they wanted, which is why I was there giving the workshop in the first place. And when they stripped out all their logging, the throughput jumped by a factor of four. And they&rsquo;re going like, &ldquo;Oh, so now our performance problem not only went away, we&rsquo;ve been tuning this thing so long that actually, when they got rid of the real problem, it went much faster than they needed, like twice as fast as what they needed to go.&rdquo;</p>
+</blockquote>
+<p>So it&rsquo;s clear that logging can play a part in memory allocation pressure. If there is too much memory allocation, then the tenure system may suffer from premature promotion, and short-lived objects may be part of a major GC, which will hurt throughput and cause longer GC pauses.</p>
+<p>Pepperdine is clear that each operation may only allocate a small number of bytes, but can be called at such high rates that it impacts the JVM:</p>
+<blockquote>
+  <p>You get all of these funny downstream costs that you don&rsquo;t even think about. In terms of the allocation, it&rsquo;s still quick. If the objects die very quickly, there&rsquo;s zero cost to collect them, so that&rsquo;s true. That&rsquo;s what garbage collection people have been telling you all the time, &ldquo;Go, don&rsquo;t worry about it. Just create objects. It&rsquo;s free to collect them.&rdquo; It may be free to collect them, but <strong>quick times a large number does equal slow</strong>. If you have high creation rates, it&rsquo;s not free to create. It may be free to collect, but it&rsquo;s not free to create at the higher rate.</p>
+</blockquote>
+<p>If you want a general look and feel, allocation pressure can be viewed from <a href="http://hirt.se/blog/?p=381">Java Mission Control</a>, which will show the inside TLAB allocations. (Note that it was <a href="https://stackoverflow.com/questions/51274072/how-to-get-allocation-pressure-in-java-mission-control-that-ships-with-java-10">removed</a> and then added back in later version of JMC, so you may want to download a later version.) The ideal allocation rate is below 300 MB/second, but generally anything under 1 GB/second is fine &ndash; <a href="https://srvaroa.github.io/assets/frugal_memory_management_on_the_jvm.pdf">Frugal Memory Management on the JVM</a> is another good presentatation on the topic.</p>
+<p>The question is how much churn logging can produce, and how to best prevent it. </p>
+<h2><a href="#schools-of-performant-logging" name="schools-of-performant-logging" class="anchor"><span class="anchor-link"></span></a>Schools of Performant Logging</h2>
+<p>There are two schools of thought when it comes to logging efficiently: explicit guard statements vs lazy evaluation.</p>
+<p>The first approach says that logging should be done up front inside a guard statement, and all computation and memory will be inside the block:</p>
+<pre class="prettyprint"><code class="language-scala">if (logger.isLoggingInfo()) {
+  val arg1 = ...
+  val arg2 = ...
+  val arg3 = ...
+  val arguments = Arguments(arg1, arg2, arg3)
+  logger.info(&quot;My message with {} {} {}&quot;, arguments)
+}
+</code></pre>
+<p>The issue with guard statements is that they don&rsquo;t flow very well, and it&rsquo;s easy to forget them. There&rsquo;s also the argument that if you&rsquo;re logging at info level, you&rsquo;re checking the guard twice (since it gets checked in <code>logger.info</code> itself), and so you may as well eliminate the condition altogether. </p>
+<p>The second approach says that logging should be done inside a function block, with lazy evaluation:</p>
+<pre class="prettyprint"><code class="language-scala">logger.info { info =&gt;
+  val arg1 = ...
+  val arg2 = ...
+  val arg3 = ...
+  val arguments = Arguments(arg1, arg2, arg3)
+  info(&quot;My message with {} {} {}&quot;, arguments)
+}
+</code></pre>
+<p>The issue with lazy evaluation is that in situations where logging should happen, the function itself causes extra allocation and so may be simply adding to the memory allocation pressure.</p>
+<h2><a href="#testing-with-jmh" name="testing-with-jmh" class="anchor"><span class="anchor-link"></span></a>Testing with JMH</h2>
+<p>JMH lets you benchmark for <a href="https://shipilev.net/blog/2016/arrays-wisdom-ancients/#_not_an_allocation_pressure">GC allocation pressure</a> using the <code>-prof gc</code> option. This provides some nice options for JMH, notably the following metrics:</p>
+<ul>
+  <li><code>gc.alloc.rate</code></li>
+  <li><code>gc.alloc.rate.norm</code></li>
+  <li><code>gc.churn.PS_Eden_Space</code></li>
+  <li><code>gc.churn.PS_Eden_Space.norm</code></li>
+  <li><code>gc.churn.PS_Survivor_Space</code></li>
+  <li><code>gc.churn.PS_Survivor_Space.norm</code></li>
+  <li><code>gc.count</code></li>
+  <li><code>gc.time</code></li>
+</ul>
+<h3><a href="#jmh-benchmarks" name="jmh-benchmarks" class="anchor"><span class="anchor-link"></span></a>JMH Benchmarks</h3>
+<p>The details of the JMH Benchmark are [here]( <a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200627T142114/openjdk11.json)">https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200627T142114/openjdk11.json)</a>.</p>
+<p>There are two methods under benchmark here, one which logs state logging</p>
+<p>There&rsquo;s <a href="https://github.com/tersesystems/blindsight/blob/master/benchmarks/src/main/scala/com/tersesystems/blindsight/LoggingBenchmark.scala#L81"><code>LoggingBenchmark.infoWithArgs</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">@Benchmark
+def infoWithArgs(): Unit = {
+  logger.info(&quot;Hello world {}, {}, {}&quot;, args)
+}
+</code></pre>
+<p>and <a href="https://github.com/tersesystems/blindsight/blob/master/benchmarks/src/main/scala/com/tersesystems/blindsight/LoggingBenchmark.scala#L91"><code>LoggingBenchmark.lazyInfoWithArgs</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">@Benchmark
+def lazyInfoWithArgs(): Unit = {
+  logger.info { log =&gt;
+    log(&quot;Hello world {}, {}, {}&quot;, args)
+  }
+}
+</code></pre>
+<p>For the sake of completeness, there&rsquo;s also the trace variants, <a href="https://github.com/tersesystems/blindsight/blob/master/benchmarks/src/main/scala/com/tersesystems/blindsight/LoggingBenchmark.scala#L32"><code>LoggingBenchmark.traceWithArgs</code></a> and <a href="https://github.com/tersesystems/blindsight/blob/master/benchmarks/src/main/scala/com/tersesystems/blindsight/LoggingBenchmark.scala#L42"><code>LoggingBenchmark.lazyTraceWithArgs</code></a>. These are the same style, but using a logging level which is disabled and so should produce no output.</p>
+<h2><a href="#results" name="results" class="anchor"><span class="anchor-link"></span></a>Results</h2>
+<p>Looking at <code>infoWithArgs</code>, we see the following GC rates:</p>
+<ul>
+  <li><code>gc.alloc.rate</code> - 751 MB/second</li>
+  <li><code>gc.alloc.rate.norm</code> - 80 B/second</li>
+  <li><code>gc.churn.G1_Eden_Space</code> - 801 MB/second</li>
+  <li><code>gc.churn.G1_Eden_Space.norm</code> - 80 B/second</li>
+  <li><code>gc.churn.G1_Old_Gen</code> - ~ 0</li>
+  <li><code>gc.churn.G1_Old_Gen.norm</code> - ~ 0</li>
+  <li><code>gc.count</code> - 52</li>
+  <li><code>gc.time</code> - 26 ms</li>
+</ul>
+<p>So far so good. We can see that we&rsquo;re less than 1GB/second and very few instances are making it into Old Gen space. On average, we&rsquo;re allocating 80 bytes per invocation, although this is a derived value and has some edge cases.</p>
+<p>Now let&rsquo;s look at <code>lazyInfoWithArgs</code>:</p>
+<ul>
+  <li><code>gc.alloc.rate</code> - 1065 MB/second</li>
+  <li><code>gc.alloc.rate.norm</code> - 152 B/second</li>
+  <li><code>gc.churn.G1_Eden_Space</code> - 1066 MB/second</li>
+  <li><code>gc.churn.G1_Eden_Space.norm</code> - 152 B/second</li>
+  <li><code>gc.churn.G1_Old_Gen</code> - ~ 0</li>
+  <li><code>gc.churn.G1_Old_Gen.norm</code> - ~ 0</li>
+  <li><code>gc.count</code> - 51</li>
+  <li><code>gc.time</code> - 36 ms</li>
+</ul>
+<p>Running the exact same method inside a block raises the allocation rate from 751 MB/s to 1065 MB/s, and kicks up the eden churn rate from 801 MB/s to 1066 MB/s. </p>
+<p>Now let&rsquo;s look at the <code>traceWithArgs</code> and <code>lazyTraceWithArgs</code> benchmarks:</p>
+<p><code>traceWithArgs</code>:</p>
+<ul>
+  <li><code>gc.alloc.rate</code> - 0</li>
+  <li><code>gc.alloc.rate.norm</code> - 0</li>
+  <li><code>gc.churn.G1_Eden_Space</code> - 0</li>
+  <li><code>gc.churn.G1_Eden_Space.norm</code> - 0</li>
+  <li><code>gc.churn.G1_Old_Gen</code> - ~ 0</li>
+  <li><code>gc.churn.G1_Old_Gen.norm</code> - ~ 0</li>
+  <li><code>gc.count</code> - 0</li>
+  <li><code>gc.time</code> - 0</li>
+</ul>
+<p><code>lazyTraceWithArgs</code>:</p>
+<ul>
+  <li><code>gc.alloc.rate</code> - 0</li>
+  <li><code>gc.alloc.rate.norm</code> - 0</li>
+  <li><code>gc.churn.G1_Eden_Space</code> - 0</li>
+  <li><code>gc.churn.G1_Eden_Space.norm</code> - 0</li>
+  <li><code>gc.churn.G1_Old_Gen</code> - ~ 0</li>
+  <li><code>gc.churn.G1_Old_Gen.norm</code> - ~ 0</li>
+  <li><code>gc.count</code> - 0</li>
+  <li><code>gc.time</code> - 0 ms</li>
+</ul>
+<p>In both scenarios, if there&rsquo;s no allocation inside the benchmark itself &ndash; there&rsquo;s no GC. At all.</p>
+<p>However, this isn&rsquo;t the full story. When memory is allocated inside a benchmark which takes 4 ns normally, it quickly becomes the bottleneck. For example, you can see that <code>gc.alloc.rate</code> for <code>traceWithStatement</code> is 3,036 MB/second! So if there&rsquo;s no guard or lazy block managing diagnostic logging, it will quickly become an issue.</p>
+<h2><a href="#conclusions" name="conclusions" class="anchor"><span class="anchor-link"></span></a>Conclusions</h2>
+<p>For operational logging &ndash; statements that are <code>INFO</code>, <code>WARN</code>, or <code>ERROR</code> &ndash; the expectation is that creating a logging statement will result in a log entry. Simply calling <code>logger.info</code> is enough:</p>
+<pre class="prettyprint"><code class="language-scala">// event that is always logged once per request on completion
+logger.info(markers, &quot;Request served with {}&quot;, response)
+</code></pre>
+<p>Using a block in this situation will add extra memory allocation with no benefit.</p>
+<p>In <a href="../usage/conditional.html">conditional logging</a> scenarios, where sampling or circuit breakers may prevent logging, you should use the lazy form:</p>
+<pre class="prettyprint"><code class="language-scala">logger.onCondition(condition).info { info =&gt;
+  val sampledArgs = ...
+  info(&quot;This may be sampled {}&quot;, sampledArgs)
+}
+</code></pre>
+<p>For diagnostic logging, you should likewise always wrap allocations and use the lazy form:</p>
+<pre class="prettyprint"><code class="language-scala">logger.trace { trace =&gt;
+  val debugInfo = ...
+  trace(st&quot;This can be an expensive ${response} with ${debugInfo} information&quot;)
+}
+</code></pre>
+<div class="source-github">
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/main/paradox/performance/memory.md">here</a>.
+</div>
+
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../principles.html">Principles</a></p>
+</div>
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../performance/memory.html#memory-usage" class="header">Memory Usage</a>
+  <ul>
+    <li><a href="../performance/memory.html#schools-of-performant-logging" class="header">Schools of Performant Logging</a></li>
+    <li><a href="../performance/memory.html#testing-with-jmh" class="header">Testing with JMH</a></li>
+    <li><a href="../performance/memory.html#results" class="header">Results</a></li>
+    <li><a href="../performance/memory.html#conclusions" class="header">Conclusions</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2020</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="../lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="../js/magellan.js"></script>
+
+<style type="text/css">@import "../lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="../lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.3.0', 'https://tersesystems.github.io/blindsight')});</script>
+
+
+</html>
