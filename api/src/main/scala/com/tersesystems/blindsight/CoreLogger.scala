@@ -63,13 +63,11 @@ object CoreLogger {
       Condition.always,
       sourceInfoBehavior
     )
-    new Impl(state)
+    new Impl(state, ParameterList.lists(underlying))
   }
 
-  abstract class Abstract extends CoreLogger {
+  abstract class Abstract(parameterLists: Array[ParameterList]) extends CoreLogger {
     val state: State
-
-    private val parameterLists = ParameterList.lists(underlying)
 
     override def predicate(level: Level): SimplePredicate =
       new SimplePredicate.Impl(level, this)
@@ -105,28 +103,31 @@ object CoreLogger {
       if (c == Condition.never) {
         new Noop(state)
       } else {
-        new Conditional(new Impl(state.onCondition(c)))
+        new Conditional(new Impl(state.onCondition(c), parameterLists), parameterLists)
       }
     }
   }
 
-  class Impl(val state: State) extends Abstract {
+  class Impl(val state: State, parameterLists: Array[ParameterList]) extends Abstract(parameterLists) {
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
-      new Impl(state.withMarker(m))
+      new Impl(state.withMarker(m), parameterLists)
     }
 
     override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
-      this
+      val newParameterLists: Array[ParameterList] = new Array(5)
+      parameterLists.copyToArray(newParameterLists)
+      newParameterLists(level.ordinal()) = new ParameterList.Proxy(parameterList(level), f)
+      new Impl(state, newParameterLists)
     }
   }
 
-  class Conditional(impl: Impl) extends Impl(impl.state) {
+  class Conditional(impl: Impl, parameterLists: Array[ParameterList]) extends Impl(impl.state, parameterLists) {
     @inline
     override def parameterList(level: Level): ParameterList =
       new ParameterList.Conditional(level, impl)
 
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
-      new Conditional(new Impl(state.withMarker(m)))
+      new Conditional(new Impl(state.withMarker(m), parameterLists), parameterLists)
     }
 
     override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
@@ -134,7 +135,7 @@ object CoreLogger {
     }
   }
 
-  class Noop(val state: State) extends Abstract {
+  class Noop(val state: State) extends Abstract(Array.empty) {
     override def parameterList(level: Level): ParameterList = ParameterList.Noop
 
     override def when(level: Level, condition: Condition): Boolean = false
