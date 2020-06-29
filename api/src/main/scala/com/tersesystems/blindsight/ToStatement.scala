@@ -32,7 +32,7 @@ package com.tersesystems.blindsight
  * @tparam T the type to convert to a `Statement`
  */
 trait ToStatement[T] {
-  def toStatement(instance: => T): Statement
+  def toStatement(instance: T): Statement
 }
 
 trait LowPriorityToStatementImplicits {
@@ -49,6 +49,6 @@ trait LowPriorityToStatementImplicits {
 object ToStatement extends LowPriorityToStatementImplicits {
   def apply[T, S <: Statement: NotNothing](f: T => S): ToStatement[T] =
     new ToStatement[T] {
-      override def toStatement(instance: => T): Statement = f(instance)
+      override def toStatement(instance: T): Statement = f(instance)
     }
 }

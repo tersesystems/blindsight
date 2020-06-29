@@ -29,7 +29,7 @@ package com.tersesystems.blindsight
  * @tparam T the type to convert to Message
  */
 trait ToMessage[T] {
-  def toMessage(instance: => T): Message
+  def toMessage(instance: T): Message
 }
 
 trait LowPriorityToMessageImplicits {
@@ -47,6 +47,6 @@ trait LowPriorityToMessageImplicits {
 object ToMessage extends LowPriorityToMessageImplicits {
   def apply[T: NotNothing](f: T => Message): ToMessage[T] =
     new ToMessage[T] {
-      override def toMessage(instance: => T): Message = f(instance)
+      override def toMessage(instance: T): Message = f(instance)
     }
 }
