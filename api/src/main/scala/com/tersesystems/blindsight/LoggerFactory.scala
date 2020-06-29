@@ -42,6 +42,7 @@ trait LoggerFactory {
     import com.tersesystems.blindsight.LoggerFactory.classNameFromSource
     getLogger(classNameFromSource)
   }
+
 }
 
 object LoggerFactory {
@@ -71,10 +72,10 @@ object LoggerFactory {
     loggerFactory.getLogger
   }
 
-  private def classNameFromSource(implicit
-      enc: sourcecode.Enclosing,
-      name: sourcecode.Name
-  ): String = {
+  def classNameFromSource(implicit
+                          enc: sourcecode.Enclosing,
+                          name: sourcecode.Name
+                         ): String = {
     val value = enc.value.stripSuffix(s".${name.value}")
     val index = value.indexOf('#')
     val className = if (index > 0) {

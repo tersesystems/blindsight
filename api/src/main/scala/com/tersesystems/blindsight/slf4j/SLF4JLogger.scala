@@ -19,6 +19,7 @@ package com.tersesystems.blindsight.slf4j
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight._
 import org.slf4j.Logger
+import org.slf4j.event.Level
 import org.slf4j.event.Level._
 
 /**
@@ -38,6 +39,7 @@ trait SLF4JLogger[M]
     extends SLF4JLoggerAPI[SimplePredicate, M]
     with MarkerMixin
     with UnderlyingMixin
+    with TransformStatementMixin
     with OnConditionMixin {
   override type Self <: SLF4JLogger[M]
 }
@@ -80,10 +82,13 @@ object SLF4JLogger {
     override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, core)
     override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
 
+    override def withTransform(level: Level, f: RawStatement => RawStatement): Self =
+      new Strict(core.withTransform(level, f))
+
     override def withMarker[T: ToMarkers](markerInst: T): Self =
       new Strict(core.withMarker(markerInst))
 
-    override def onCondition(condition: Condition): SLF4JLogger[StrictSLF4JMethod] =
+    override def onCondition(condition: Condition): Self =
       new Strict(core.onCondition(condition))
   }
 
@@ -106,6 +111,9 @@ object SLF4JLogger {
      */
     override def withMarker[T: ToMarkers](instance: T): SLF4JLogger[UncheckedSLF4JMethod] =
       new Unchecked(core.withMarker(instance))
+
+    override def withTransform(level: Level, transform: RawStatement => RawStatement): SLF4JLogger[UncheckedSLF4JMethod] =
+      new Unchecked(core.withTransform(level, transform))
 
     override def onCondition(condition: Condition): SLF4JLogger[UncheckedSLF4JMethod] =
       new Unchecked(core.onCondition(condition))

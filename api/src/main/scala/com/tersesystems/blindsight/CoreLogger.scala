@@ -1,9 +1,9 @@
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.mixins.{MarkerMixin, OnConditionMixin, UnderlyingMixin}
+import com.tersesystems.blindsight.mixins.{MarkerMixin, OnConditionMixin, TransformStatementMixin, UnderlyingMixin}
 import org.slf4j.event.Level
 
-trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin {
+trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin with TransformStatementMixin {
   type Self = CoreLogger
 
   def state: CoreLogger.State
@@ -30,18 +30,15 @@ object CoreLogger {
     def withMarker[M: ToMarkers](m: M): State
 
     def onCondition(c: Condition): State
-
-    def listFunction: Level => ParameterList
   }
 
   object State {
 
     final case class Impl(
-        markers: Markers,
-        underlying: org.slf4j.Logger,
-        condition: Condition,
-        sourceInfoBehavior: SourceInfoBehavior,
-        listFunction: Level => ParameterList
+                           markers: Markers,
+                           underlying: org.slf4j.Logger,
+                           condition: Condition,
+                           sourceInfoBehavior: SourceInfoBehavior,
     ) extends State {
       def withMarker[M: ToMarkers](m: M): State = {
         val markers = implicitly[ToMarkers[M]].toMarkers(m)
@@ -60,33 +57,19 @@ object CoreLogger {
   }
 
   def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior): CoreLogger = {
-    val parameterLists = ParameterList.lists(underlying)
     val state = State.Impl(
       Markers.empty,
       underlying,
       Condition.always,
-      sourceInfoBehavior,
-      level => parameterLists(level.ordinal())
+      sourceInfoBehavior
     )
     new Impl(state)
   }
-
-  def proxy(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior, sinks: Array[Statement => Unit]): CoreLogger = {
-    val parameterLists = ParameterList.lists(underlying)
-    val proxies = ParameterList.proxies(parameterLists, sinks)
-    val state = State.Impl(
-      Markers.empty,
-      underlying,
-      Condition.always,
-      sourceInfoBehavior,
-      level => proxies(level.ordinal())
-    )
-    new Impl(state)
-  }
-
 
   abstract class Abstract extends CoreLogger {
     val state: State
+
+    private val parameterLists = ParameterList.lists(underlying)
 
     override def predicate(level: Level): SimplePredicate =
       new SimplePredicate.Impl(level, this)
@@ -99,7 +82,9 @@ object CoreLogger {
 
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
 
-    override def parameterList(level: Level): ParameterList = state.listFunction(level)
+    override def parameterList(level: Level): ParameterList = {
+      parameterLists(level.ordinal())
+    }
 
     override def when(level: Level, condition: Condition): Boolean = {
       // because conditions are AND, if there's a never in the condition we
@@ -120,7 +105,6 @@ object CoreLogger {
       if (c == Condition.never) {
         new Noop(state)
       } else {
-        // XXX don't hardcode new Impl here
         new Conditional(new Impl(state.onCondition(c)))
       }
     }
@@ -129,6 +113,10 @@ object CoreLogger {
   class Impl(val state: State) extends Abstract {
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Impl(state.withMarker(m))
+    }
+
+    override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
+      this
     }
   }
 
@@ -139,6 +127,10 @@ object CoreLogger {
 
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Conditional(new Impl(state.withMarker(m)))
+    }
+
+    override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
+      this
     }
   }
 
@@ -152,6 +144,10 @@ object CoreLogger {
 
     override def withMarker[T: ToMarkers](instance: T): CoreLogger =
       new Noop(state.withMarker(instance))
+
+    override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
+      this
+    }
   }
 
 }

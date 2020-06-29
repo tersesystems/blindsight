@@ -20,6 +20,7 @@ import com.tersesystems.blindsight.flow.FlowLogger
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.semantic.SemanticLogger
 import com.tersesystems.blindsight.slf4j._
+import org.slf4j.event.Level
 
 /**
  * The Blindsight logger trait.
@@ -51,6 +52,10 @@ object Logger {
 
     override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
 
+    override def markers: Markers = core.markers
+
+    override def underlying: org.slf4j.Logger = core.underlying
+
     override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
       new SLF4JLogger.Unchecked(core)
     }
@@ -75,9 +80,9 @@ object Logger {
       new Impl(core.withMarker(markerInstance))
     }
 
-    override def markers: Markers = core.markers
-
-    override def underlying: org.slf4j.Logger = core.underlying
+    override def withTransform(level: Level, f: RawStatement => RawStatement): Logger = {
+      new Impl(core.withTransform(level, f))
+    }
   }
 
 }

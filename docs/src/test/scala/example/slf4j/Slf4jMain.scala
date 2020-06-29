@@ -24,9 +24,12 @@ import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.slf4j._
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 import org.slf4j.MarkerFactory
+import org.slf4j.event.Level
 
 object Slf4jMain {
-  val logger = LoggerFactory.getLogger(getClass)
+  private val logger = LoggerFactory.getLogger(getClass).withTransform(Level.INFO, st =>
+    st.copy(message = st.message + " IN BED")
+  )
 
   final case class FeatureFlag(flagName: String)
 

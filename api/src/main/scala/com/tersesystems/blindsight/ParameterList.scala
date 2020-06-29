@@ -50,12 +50,12 @@ object ParameterList {
       new ParameterList.Trace(logger)
     )
 
-  def proxies(lists: Array[ParameterList], sinks: Array[Statement => Unit]): Array[ParameterList] = {
-    val error = new ParameterList.Proxy(lists(Level.ERROR.ordinal()), sinks(Level.ERROR.ordinal()))
-    val warn = new ParameterList.Proxy(lists(Level.WARN.ordinal()), sinks(Level.WARN.ordinal()))
-    val info = new ParameterList.Proxy(lists(Level.INFO.ordinal()), sinks(Level.INFO.ordinal()))
-    val debug = new ParameterList.Proxy(lists(Level.DEBUG.ordinal()), sinks(Level.DEBUG.ordinal()))
-    val trace = new ParameterList.Proxy(lists(Level.TRACE.ordinal()), sinks(Level.TRACE.ordinal()))
+  def proxies(lists: Array[ParameterList], transforms: Array[RawStatement => RawStatement]): Array[ParameterList] = {
+    val error = new ParameterList.Proxy(lists(Level.ERROR.ordinal()), transforms(Level.ERROR.ordinal()))
+    val warn = new ParameterList.Proxy(lists(Level.WARN.ordinal()), transforms(Level.WARN.ordinal()))
+    val info = new ParameterList.Proxy(lists(Level.INFO.ordinal()), transforms(Level.INFO.ordinal()))
+    val debug = new ParameterList.Proxy(lists(Level.DEBUG.ordinal()), transforms(Level.DEBUG.ordinal()))
+    val trace = new ParameterList.Proxy(lists(Level.TRACE.ordinal()), transforms(Level.TRACE.ordinal()))
     Array(error, warn, info, debug, trace)
   }
 
@@ -195,9 +195,7 @@ object ParameterList {
       logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
-
-
-  class Proxy(delegate: ParameterList, sink: Statement => Unit) extends ParameterList with ExecuteStatement {
+  class Proxy(delegate: ParameterList, transform: RawStatement => RawStatement) extends ParameterList {
     override def executePredicate(): Boolean = delegate.executePredicate()
 
     override def executePredicate(marker: Marker): Boolean = {
@@ -205,43 +203,61 @@ object ParameterList {
     }
 
     override def message(msg: String): Unit = {
-      delegate.message(msg)
-      sink(Statement(msg))
+      executeRaw(transform(RawStatement(None, msg, Array.empty)))
     }
 
     override def messageArg1(msg: String, arg: Any): Unit = {
-      delegate.messageArg1(msg, arg)
-      sink(Statement(msg, Arguments(arg)))
+      executeRaw(transform(RawStatement(None, msg, Array(arg))))
     }
 
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit = {
-      delegate.messageArg1Arg2(msg, arg1, arg2)
-      sink(Statement(msg, Arguments(arg1, arg2)))
+      executeRaw(transform(RawStatement(None, msg, Array(arg1, arg2))))
     }
 
     override def messageArgs(msg: String, args: Array[Any]): Unit = {
-      delegate.messageArgs(msg, args)
-      sink(Statement(msg, Arguments(args)))
+      executeRaw(transform(RawStatement(None, msg, Array(args))))
     }
 
     override def markerMessage(marker: Marker, msg: String): Unit = {
-      delegate.markerMessage(marker, msg)
-      sink(Statement(Markers(marker), msg))
+      executeRaw(transform(RawStatement(Some(marker), msg, Array.empty)))
     }
 
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit = {
-      delegate.markerMessageArg1(marker, msg, arg)
-      sink(Statement(Markers(marker), msg, Arguments(arg)))
+      executeRaw(transform(RawStatement(Some(marker), msg, Array(arg))))
     }
 
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit = {
-      delegate.markerMessageArg1Arg2(marker, msg, arg1, arg2)
-      sink(Statement(Markers(marker), msg, Arguments(arg1, arg2)))
+      executeRaw(transform(RawStatement(Some(marker), msg, Array(arg1, arg2))))
     }
 
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit = {
-      delegate.markerMessageArgs(marker, msg, args)
-      sink(Statement(Markers(marker), msg, Arguments(args)))
+      executeRaw(transform(RawStatement(Some(marker), msg, args)))
+    }
+
+    override def executeStatement(statement: Statement): Unit = {
+      val markers = if (statement.markers.isEmpty) None else Some(statement.markers.marker)
+      val message = statement.message.toString
+      val args = statement.throwable match {
+        case Some(t) =>
+          statement.arguments.toArray :+ t
+        case None =>
+          statement.arguments.toArray
+      }
+      val raw = RawStatement(markers, message, args)
+      executeRaw(transform(raw))
+    }
+
+    def executeRaw(raw: RawStatement): Unit = {
+      raw match {
+        case RawStatement(None, m, Array()) =>
+          delegate.message(m)
+        case RawStatement(None, m, args) =>
+          delegate.messageArgs(m, args)
+        case RawStatement(Some(marker), m, Array()) =>
+          delegate.markerMessage(marker, m)
+        case RawStatement(Some(marker), m, args) =>
+          delegate.markerMessageArgs(marker, m, args)
+      }
     }
   }
 
