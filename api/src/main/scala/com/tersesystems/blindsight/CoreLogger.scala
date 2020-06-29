@@ -30,6 +30,8 @@ object CoreLogger {
     def withMarker[M: ToMarkers](m: M): State
 
     def onCondition(c: Condition): State
+
+    def listFunction: Level => ParameterList
   }
 
   object State {
@@ -38,7 +40,8 @@ object CoreLogger {
         markers: Markers,
         underlying: org.slf4j.Logger,
         condition: Condition,
-        sourceInfoBehavior: SourceInfoBehavior
+        sourceInfoBehavior: SourceInfoBehavior,
+        listFunction: Level => ParameterList
     ) extends State {
       def withMarker[M: ToMarkers](m: M): State = {
         val markers = implicitly[ToMarkers[M]].toMarkers(m)
@@ -57,9 +60,30 @@ object CoreLogger {
   }
 
   def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior): CoreLogger = {
-    val state = State.Impl(Markers.empty, underlying, Condition.always, sourceInfoBehavior)
+    val parameterLists = ParameterList.lists(underlying)
+    val state = State.Impl(
+      Markers.empty,
+      underlying,
+      Condition.always,
+      sourceInfoBehavior,
+      level => parameterLists(level.ordinal())
+    )
     new Impl(state)
   }
+
+  def proxy(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior, sinks: Array[Statement => Unit]): CoreLogger = {
+    val parameterLists = ParameterList.lists(underlying)
+    val proxies = ParameterList.proxies(parameterLists, sinks)
+    val state = State.Impl(
+      Markers.empty,
+      underlying,
+      Condition.always,
+      sourceInfoBehavior,
+      level => proxies(level.ordinal())
+    )
+    new Impl(state)
+  }
+
 
   abstract class Abstract extends CoreLogger {
     val state: State
@@ -74,6 +98,8 @@ object CoreLogger {
     override def condition: Condition = state.condition
 
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
+
+    override def parameterList(level: Level): ParameterList = state.listFunction(level)
 
     override def when(level: Level, condition: Condition): Boolean = {
       // because conditions are AND, if there's a never in the condition we
@@ -94,16 +120,13 @@ object CoreLogger {
       if (c == Condition.never) {
         new Noop(state)
       } else {
+        // XXX don't hardcode new Impl here
         new Conditional(new Impl(state.onCondition(c)))
       }
     }
   }
 
   class Impl(val state: State) extends Abstract {
-    private val parameterLists: Array[ParameterList] = ParameterList.lists(this.underlying)
-
-    override def parameterList(level: Level): ParameterList = parameterLists(level.ordinal)
-
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Impl(state.withMarker(m))
     }
