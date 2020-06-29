@@ -54,11 +54,11 @@ This converts to a @scaladoc[Message](com.tersesystems.blindsight.Message) class
 
 ```scala
 val infoMethod: InfoMethod = logger.info
-infoMethod.apply(() => Message("I am an SLF4J-like logger"))
+infoMethod.apply(Message("I am an SLF4J-like logger"))
 
 // rough implementation
 class InfoMethod {
-  def apply(msg: => Message) {
+  def apply(msg: Message) {
     if (slf4jLogger.isInfoEnabled()) {
        slf4jLogger.info(msg.toString)
     }
