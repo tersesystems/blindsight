@@ -23,6 +23,7 @@ import com.tersesystems.blindsight.{Markers, ToMarkers}
  *
  * @tparam StatementType the type class instance of [[com.tersesystems.blindsight.ToStatement]].
  */
+// XXX This should be moved to semantic package
 trait SemanticMarkerMixin[StatementType] {
   type Self[T]
 

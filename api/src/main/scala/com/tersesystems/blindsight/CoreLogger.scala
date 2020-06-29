@@ -131,7 +131,10 @@ object CoreLogger {
     }
 
     override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
-      this
+      val newParameterLists: Array[ParameterList] = new Array(5)
+      parameterLists.copyToArray(newParameterLists)
+      newParameterLists(level.ordinal()) = new ParameterList.Proxy(parameterList(level), f)
+      new Conditional(new Impl(state, parameterLists), parameterLists)
     }
   }
 
