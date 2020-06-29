@@ -10,7 +10,7 @@ The assumption is that you will be using the @ref:[structured logging](dsl.md) a
 
 ## General Principles
 
-Mark McBride has a blog post on [how to best what context is useful in your logging](https://www.honeycomb.io/blog/event-foo-moar-context-better-events/).
+Mark McBride has a blog post on [adding context to events using the Five Ws](https://www.honeycomb.io/blog/event-foo-moar-context-better-events/).
 
 ## Marker Context
 
