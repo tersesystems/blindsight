@@ -50,23 +50,6 @@ object ParameterList {
       new ParameterList.Trace(logger)
     )
 
-  def proxies(
-      lists: Array[ParameterList],
-      transforms: Array[LogEntry => LogEntry]
-  ): Array[ParameterList] = {
-    val error =
-      new ParameterList.Proxy(lists(Level.ERROR.ordinal()), transforms(Level.ERROR.ordinal()))
-    val warn =
-      new ParameterList.Proxy(lists(Level.WARN.ordinal()), transforms(Level.WARN.ordinal()))
-    val info =
-      new ParameterList.Proxy(lists(Level.INFO.ordinal()), transforms(Level.INFO.ordinal()))
-    val debug =
-      new ParameterList.Proxy(lists(Level.DEBUG.ordinal()), transforms(Level.DEBUG.ordinal()))
-    val trace =
-      new ParameterList.Proxy(lists(Level.TRACE.ordinal()), transforms(Level.TRACE.ordinal()))
-    Array(error, warn, info, debug, trace)
-  }
-
   trait ExecuteStatement { self: ParameterList =>
     def executeStatement(statement: Statement): Unit =
       statement match {
@@ -203,7 +186,13 @@ object ParameterList {
       logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
-  class Proxy(delegate: ParameterList, transform: LogEntry => LogEntry)
+  /**
+   * A spy can intercept log entries before they're sent to SLF4J and change the contents.
+   *
+   * @param delegate the delegate parameter list.
+   * @param transform the transformation log entry.
+   */
+  class Spy(delegate: ParameterList, transform: LogEntry => LogEntry)
       extends ParameterList {
     override def executePredicate(): Boolean = delegate.executePredicate()
 
@@ -212,35 +201,35 @@ object ParameterList {
     }
 
     override def message(msg: String): Unit = {
-      executeRaw(transform(LogEntry(None, msg, Array.empty)))
+      executeLogEntry(transform(LogEntry(None, msg, Array.empty)))
     }
 
     override def messageArg1(msg: String, arg: Any): Unit = {
-      executeRaw(transform(LogEntry(None, msg, Array(arg))))
+      executeLogEntry(transform(LogEntry(None, msg, Array(arg))))
     }
 
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit = {
-      executeRaw(transform(LogEntry(None, msg, Array(arg1, arg2))))
+      executeLogEntry(transform(LogEntry(None, msg, Array(arg1, arg2))))
     }
 
     override def messageArgs(msg: String, args: Array[Any]): Unit = {
-      executeRaw(transform(LogEntry(None, msg, Array(args))))
+      executeLogEntry(transform(LogEntry(None, msg, Array(args))))
     }
 
     override def markerMessage(marker: Marker, msg: String): Unit = {
-      executeRaw(transform(LogEntry(Some(marker), msg, Array.empty)))
+      executeLogEntry(transform(LogEntry(Some(marker), msg, Array.empty)))
     }
 
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit = {
-      executeRaw(transform(LogEntry(Some(marker), msg, Array(arg))))
+      executeLogEntry(transform(LogEntry(Some(marker), msg, Array(arg))))
     }
 
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit = {
-      executeRaw(transform(LogEntry(Some(marker), msg, Array(arg1, arg2))))
+      executeLogEntry(transform(LogEntry(Some(marker), msg, Array(arg1, arg2))))
     }
 
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit = {
-      executeRaw(transform(LogEntry(Some(marker), msg, args)))
+      executeLogEntry(transform(LogEntry(Some(marker), msg, args)))
     }
 
     override def executeStatement(statement: Statement): Unit = {
@@ -253,11 +242,11 @@ object ParameterList {
           statement.arguments.toArray
       }
       val raw = LogEntry(markers, message, args)
-      executeRaw(transform(raw))
+      executeLogEntry(transform(raw))
     }
 
-    def executeRaw(raw: LogEntry): Unit = {
-      raw match {
+    def executeLogEntry(entry: LogEntry): Unit = {
+      entry match {
         case LogEntry(None, m, Array()) =>
           delegate.message(m)
         case LogEntry(None, m, args) =>
