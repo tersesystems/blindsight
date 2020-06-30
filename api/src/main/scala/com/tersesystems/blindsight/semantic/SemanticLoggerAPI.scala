@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.{NotNothing, UnderlyingStatement, ToStatement}
+import com.tersesystems.blindsight.{NotNothing, LogEntry, ToStatement}
 import org.slf4j.event.Level
 
 trait SemanticLoggerComponent[StatementType, P, M[_]] {
@@ -42,7 +42,7 @@ trait SemanticTransformStatementMixin[StatementType] {
 
   def withTransform(
       level: Level,
-      f: UnderlyingStatement => UnderlyingStatement
+      f: LogEntry => LogEntry
   ): Self[StatementType]
 }
 

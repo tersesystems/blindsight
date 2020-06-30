@@ -53,7 +53,7 @@ trait FlowLogger
     extends SLF4JLoggerAPI[SimplePredicate, FlowMethod]
     with UnderlyingMixin
     with MarkerMixin
-    with TransformStatementMixin
+    with TransformLogEntry
     with OnConditionMixin {
   override type Self      = FlowLogger
   override type Method    = FlowMethod
@@ -102,7 +102,7 @@ object FlowLogger {
 
     override def withTransform(
         level: Level,
-        f: UnderlyingStatement => UnderlyingStatement
+        f: LogEntry => LogEntry
     ): Self = {
       new Impl(core.withTransform(level, f))
     }
@@ -126,7 +126,7 @@ object FlowLogger {
 
     override def withMarker[T: ToMarkers](instance: T): FlowLogger = this
 
-    override def withTransform(level: Level, f: UnderlyingStatement => UnderlyingStatement): Self =
+    override def withTransform(level: Level, f: LogEntry => LogEntry): Self =
       this
 
     override def markers: Markers = core.markers

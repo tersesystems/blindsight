@@ -3,7 +3,7 @@ package com.tersesystems.blindsight
 import com.tersesystems.blindsight.mixins.{
   MarkerMixin,
   OnConditionMixin,
-  TransformStatementMixin,
+  TransformLogEntry,
   UnderlyingMixin
 }
 import org.slf4j.event.Level
@@ -12,7 +12,7 @@ trait CoreLogger
     extends UnderlyingMixin
     with MarkerMixin
     with OnConditionMixin
-    with TransformStatementMixin {
+    with TransformLogEntry {
   type Self = CoreLogger
 
   def state: CoreLogger.State
@@ -133,7 +133,7 @@ object CoreLogger {
 
     override def withTransform(
         level: Level,
-        f: UnderlyingStatement => UnderlyingStatement
+        f: LogEntry => LogEntry
     ): CoreLogger = {
       val newParameterLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newParameterLists)
@@ -153,7 +153,7 @@ object CoreLogger {
 
     override def withTransform(
         level: Level,
-        f: UnderlyingStatement => UnderlyingStatement
+        f: LogEntry => LogEntry
     ): CoreLogger = {
       val newParameterLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newParameterLists)
@@ -175,7 +175,7 @@ object CoreLogger {
 
     override def withTransform(
         level: Level,
-        f: UnderlyingStatement => UnderlyingStatement
+        f: LogEntry => LogEntry
     ): CoreLogger = {
       this
     }

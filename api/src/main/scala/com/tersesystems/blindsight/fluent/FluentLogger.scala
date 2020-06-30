@@ -34,7 +34,7 @@ trait FluentLogger
     extends SLF4JLoggerAPI[SimplePredicate, FluentMethod]
     with MarkerMixin
     with UnderlyingMixin
-    with TransformStatementMixin
+    with TransformLogEntry
     with OnConditionMixin {
   override type Self      = FluentLogger
   override type Method    = FluentMethod
@@ -74,7 +74,7 @@ object FluentLogger {
 
     override def withTransform(
         level: Level,
-        f: UnderlyingStatement => UnderlyingStatement
+        f: LogEntry => LogEntry
     ): FluentLogger = {
       new Impl(core.withTransform(level, f))
     }

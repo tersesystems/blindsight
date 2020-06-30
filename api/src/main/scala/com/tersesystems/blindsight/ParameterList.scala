@@ -52,7 +52,7 @@ object ParameterList {
 
   def proxies(
       lists: Array[ParameterList],
-      transforms: Array[UnderlyingStatement => UnderlyingStatement]
+      transforms: Array[LogEntry => LogEntry]
   ): Array[ParameterList] = {
     val error =
       new ParameterList.Proxy(lists(Level.ERROR.ordinal()), transforms(Level.ERROR.ordinal()))
@@ -203,7 +203,7 @@ object ParameterList {
       logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
-  class Proxy(delegate: ParameterList, transform: UnderlyingStatement => UnderlyingStatement)
+  class Proxy(delegate: ParameterList, transform: LogEntry => LogEntry)
       extends ParameterList {
     override def executePredicate(): Boolean = delegate.executePredicate()
 
@@ -212,35 +212,35 @@ object ParameterList {
     }
 
     override def message(msg: String): Unit = {
-      executeRaw(transform(UnderlyingStatement(None, msg, Array.empty)))
+      executeRaw(transform(LogEntry(None, msg, Array.empty)))
     }
 
     override def messageArg1(msg: String, arg: Any): Unit = {
-      executeRaw(transform(UnderlyingStatement(None, msg, Array(arg))))
+      executeRaw(transform(LogEntry(None, msg, Array(arg))))
     }
 
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit = {
-      executeRaw(transform(UnderlyingStatement(None, msg, Array(arg1, arg2))))
+      executeRaw(transform(LogEntry(None, msg, Array(arg1, arg2))))
     }
 
     override def messageArgs(msg: String, args: Array[Any]): Unit = {
-      executeRaw(transform(UnderlyingStatement(None, msg, Array(args))))
+      executeRaw(transform(LogEntry(None, msg, Array(args))))
     }
 
     override def markerMessage(marker: Marker, msg: String): Unit = {
-      executeRaw(transform(UnderlyingStatement(Some(marker), msg, Array.empty)))
+      executeRaw(transform(LogEntry(Some(marker), msg, Array.empty)))
     }
 
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit = {
-      executeRaw(transform(UnderlyingStatement(Some(marker), msg, Array(arg))))
+      executeRaw(transform(LogEntry(Some(marker), msg, Array(arg))))
     }
 
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit = {
-      executeRaw(transform(UnderlyingStatement(Some(marker), msg, Array(arg1, arg2))))
+      executeRaw(transform(LogEntry(Some(marker), msg, Array(arg1, arg2))))
     }
 
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit = {
-      executeRaw(transform(UnderlyingStatement(Some(marker), msg, args)))
+      executeRaw(transform(LogEntry(Some(marker), msg, args)))
     }
 
     override def executeStatement(statement: Statement): Unit = {
@@ -252,19 +252,19 @@ object ParameterList {
         case None =>
           statement.arguments.toArray
       }
-      val raw = UnderlyingStatement(markers, message, args)
+      val raw = LogEntry(markers, message, args)
       executeRaw(transform(raw))
     }
 
-    def executeRaw(raw: UnderlyingStatement): Unit = {
+    def executeRaw(raw: LogEntry): Unit = {
       raw match {
-        case UnderlyingStatement(None, m, Array()) =>
+        case LogEntry(None, m, Array()) =>
           delegate.message(m)
-        case UnderlyingStatement(None, m, args) =>
+        case LogEntry(None, m, args) =>
           delegate.messageArgs(m, args)
-        case UnderlyingStatement(Some(marker), m, Array()) =>
+        case LogEntry(Some(marker), m, Array()) =>
           delegate.markerMessage(marker, m)
-        case UnderlyingStatement(Some(marker), m, args) =>
+        case LogEntry(Some(marker), m, args) =>
           delegate.markerMessageArgs(marker, m, args)
       }
     }

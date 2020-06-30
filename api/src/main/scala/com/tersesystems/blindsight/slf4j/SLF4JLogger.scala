@@ -39,7 +39,7 @@ trait SLF4JLogger[M]
     extends SLF4JLoggerAPI[SimplePredicate, M]
     with MarkerMixin
     with UnderlyingMixin
-    with TransformStatementMixin
+    with TransformLogEntry
     with OnConditionMixin {
   override type Self <: SLF4JLogger[M]
 }
@@ -82,7 +82,7 @@ object SLF4JLogger {
     override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, core)
     override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
 
-    override def withTransform(level: Level, f: UnderlyingStatement => UnderlyingStatement): Self =
+    override def withTransform(level: Level, f: LogEntry => LogEntry): Self =
       new Strict(core.withTransform(level, f))
 
     override def withMarker[T: ToMarkers](markerInst: T): Self =
@@ -114,7 +114,7 @@ object SLF4JLogger {
 
     override def withTransform(
         level: Level,
-        transform: UnderlyingStatement => UnderlyingStatement
+        transform: LogEntry => LogEntry
     ): SLF4JLogger[UncheckedSLF4JMethod] =
       new Unchecked(core.withTransform(level, transform))
 
