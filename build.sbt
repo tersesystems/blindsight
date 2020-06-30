@@ -4,6 +4,7 @@ import com.typesafe.tools.mima.core.{
   IncompatibleMethTypeProblem,
   IncompatibleResultTypeProblem,
   IncompatibleTemplateDefProblem,
+  InheritedNewAbstractMethodProblem,
   MissingClassProblem,
   MissingTypesProblem,
   ProblemFilters,
@@ -185,7 +186,48 @@ lazy val api = (project in file("api"))
       ProblemFilters
         .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ToMessage.toMessage"),
       ProblemFilters
-        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ToMessage.toMessage")
+        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ToMessage.toMessage"),
+      ProblemFilters
+        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Error"),
+      ProblemFilters
+        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Debug"),
+      ProblemFilters
+        .exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger#Impl.this"),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#Abstract.this"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#Abstract.withTransform"
+      ),
+      ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Warn"),
+      ProblemFilters.exclude[MissingClassProblem]("com.tersesystems.blindsight.ParameterList$Impl"),
+      ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Info"),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#Conditional.this"
+      ),
+      ProblemFilters
+        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Trace"),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.Logger.withTransform"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger.withTransform"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.flow.FlowLogger.withTransform"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.slf4j.SLF4JLogger.withTransform"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.slf4j.SLF4JLogger#Base.withTransform"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentLogger.withTransform"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.semantic.SemanticLogger.withTransform"
+      )
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,

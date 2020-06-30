@@ -112,7 +112,10 @@ object SLF4JLogger {
     override def withMarker[T: ToMarkers](instance: T): SLF4JLogger[UncheckedSLF4JMethod] =
       new Unchecked(core.withMarker(instance))
 
-    override def withTransform(level: Level, transform: RawStatement => RawStatement): SLF4JLogger[UncheckedSLF4JMethod] =
+    override def withTransform(
+        level: Level,
+        transform: RawStatement => RawStatement
+    ): SLF4JLogger[UncheckedSLF4JMethod] =
       new Unchecked(core.withTransform(level, transform))
 
     override def onCondition(condition: Condition): SLF4JLogger[UncheckedSLF4JMethod] =

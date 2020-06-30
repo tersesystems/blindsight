@@ -50,12 +50,20 @@ object ParameterList {
       new ParameterList.Trace(logger)
     )
 
-  def proxies(lists: Array[ParameterList], transforms: Array[RawStatement => RawStatement]): Array[ParameterList] = {
-    val error = new ParameterList.Proxy(lists(Level.ERROR.ordinal()), transforms(Level.ERROR.ordinal()))
-    val warn = new ParameterList.Proxy(lists(Level.WARN.ordinal()), transforms(Level.WARN.ordinal()))
-    val info = new ParameterList.Proxy(lists(Level.INFO.ordinal()), transforms(Level.INFO.ordinal()))
-    val debug = new ParameterList.Proxy(lists(Level.DEBUG.ordinal()), transforms(Level.DEBUG.ordinal()))
-    val trace = new ParameterList.Proxy(lists(Level.TRACE.ordinal()), transforms(Level.TRACE.ordinal()))
+  def proxies(
+      lists: Array[ParameterList],
+      transforms: Array[RawStatement => RawStatement]
+  ): Array[ParameterList] = {
+    val error =
+      new ParameterList.Proxy(lists(Level.ERROR.ordinal()), transforms(Level.ERROR.ordinal()))
+    val warn =
+      new ParameterList.Proxy(lists(Level.WARN.ordinal()), transforms(Level.WARN.ordinal()))
+    val info =
+      new ParameterList.Proxy(lists(Level.INFO.ordinal()), transforms(Level.INFO.ordinal()))
+    val debug =
+      new ParameterList.Proxy(lists(Level.DEBUG.ordinal()), transforms(Level.DEBUG.ordinal()))
+    val trace =
+      new ParameterList.Proxy(lists(Level.TRACE.ordinal()), transforms(Level.TRACE.ordinal()))
     Array(error, warn, info, debug, trace)
   }
 
@@ -195,7 +203,8 @@ object ParameterList {
       logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
-  class Proxy(delegate: ParameterList, transform: RawStatement => RawStatement) extends ParameterList {
+  class Proxy(delegate: ParameterList, transform: RawStatement => RawStatement)
+      extends ParameterList {
     override def executePredicate(): Boolean = delegate.executePredicate()
 
     override def executePredicate(marker: Marker): Boolean = {

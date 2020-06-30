@@ -27,9 +27,9 @@ import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
 
 object Slf4jMain {
-  private val logger = LoggerFactory.getLogger(getClass).withTransform(Level.INFO, st =>
-    st.copy(message = st.message + " IN BED")
-  )
+  private val logger = LoggerFactory
+    .getLogger(getClass)
+    .withTransform(Level.INFO, st => st.copy(message = st.message + " IN BED"))
 
   final case class FeatureFlag(flagName: String)
 

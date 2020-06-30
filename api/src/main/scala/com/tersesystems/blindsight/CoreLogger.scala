@@ -1,9 +1,18 @@
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.mixins.{MarkerMixin, OnConditionMixin, TransformStatementMixin, UnderlyingMixin}
+import com.tersesystems.blindsight.mixins.{
+  MarkerMixin,
+  OnConditionMixin,
+  TransformStatementMixin,
+  UnderlyingMixin
+}
 import org.slf4j.event.Level
 
-trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin with TransformStatementMixin {
+trait CoreLogger
+    extends UnderlyingMixin
+    with MarkerMixin
+    with OnConditionMixin
+    with TransformStatementMixin {
   type Self = CoreLogger
 
   def state: CoreLogger.State
@@ -35,10 +44,10 @@ object CoreLogger {
   object State {
 
     final case class Impl(
-                           markers: Markers,
-                           underlying: org.slf4j.Logger,
-                           condition: Condition,
-                           sourceInfoBehavior: SourceInfoBehavior,
+        markers: Markers,
+        underlying: org.slf4j.Logger,
+        condition: Condition,
+        sourceInfoBehavior: SourceInfoBehavior
     ) extends State {
       def withMarker[M: ToMarkers](m: M): State = {
         val markers = implicitly[ToMarkers[M]].toMarkers(m)
@@ -108,7 +117,8 @@ object CoreLogger {
     }
   }
 
-  class Impl(val state: State, parameterLists: Array[ParameterList]) extends Abstract(parameterLists) {
+  class Impl(val state: State, parameterLists: Array[ParameterList])
+      extends Abstract(parameterLists) {
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Impl(state.withMarker(m), parameterLists)
     }
@@ -121,7 +131,8 @@ object CoreLogger {
     }
   }
 
-  class Conditional(impl: Impl, parameterLists: Array[ParameterList]) extends Impl(impl.state, parameterLists) {
+  class Conditional(impl: Impl, parameterLists: Array[ParameterList])
+      extends Impl(impl.state, parameterLists) {
     @inline
     override def parameterList(level: Level): ParameterList =
       new ParameterList.Conditional(level, impl)

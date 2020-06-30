@@ -73,9 +73,9 @@ object LoggerFactory {
   }
 
   def classNameFromSource(implicit
-                          enc: sourcecode.Enclosing,
-                          name: sourcecode.Name
-                         ): String = {
+      enc: sourcecode.Enclosing,
+      name: sourcecode.Name
+  ): String = {
     val value = enc.value.stripSuffix(s".${name.value}")
     val index = value.indexOf('#')
     val className = if (index > 0) {
