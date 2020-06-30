@@ -56,7 +56,7 @@ ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / headerLicense := None
 
-val previousVersion = "1.2.1"
+val previousVersion = "1.3.0"
 
 val disableDocs = Seq[Setting[_]](
   sources in (Compile, doc) := Seq.empty,
@@ -176,136 +176,16 @@ lazy val api = (project in file("api"))
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     mimaBinaryIssueFilters := Seq(
-      ProblemFilters
-        .exclude[IncompatibleTemplateDefProblem]("com.tersesystems.blindsight.Statement"),
-      ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.Statement$"),
-      ProblemFilters
-        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Statement.apply"),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.apply"
+      ProblemFilters.exclude[IncompatibleMethTypeProblem](
+        "com.tersesystems.blindsight.ToStatement.toStatement"
       ),
       ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod.apply"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentAPI.statement"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.ArgumentResolver.apply"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.ArgumentEnrichment#RichToArgument.asArgument"
+        "com.tersesystems.blindsight.ToStatement.toStatement"
       ),
       ProblemFilters
-        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.empty"),
+        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ToMessage.toMessage"),
       ProblemFilters
-        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.apply"),
-      ProblemFilters
-        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Argument.apply"),
-      ProblemFilters
-        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.Arguments.this"),
-      ProblemFilters
-        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Argument.arguments"),
-      ProblemFilters
-        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.+"),
-      ProblemFilters
-        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.Arguments.add"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.Message.withPlaceHolders"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.ArgumentResolver.resolve"
-      ),
-      ProblemFilters
-        .exclude[IncompatibleResultTypeProblem]("com.tersesystems.blindsight.AsArgument.argument"),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.ToArgument.toArgument"
-      ),
-      ProblemFilters
-        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.AsArgument.this"),
-      ProblemFilters
-        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ToArgument.toArgument"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.Message.withPlaceHolders$extension"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.ArgumentResolver.resolve"
-      ),
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.ArgumentResolver#Passthrough.resolve"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod.apply"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.slf4j.UncheckedSLF4JMethod#Impl.apply"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod.apply"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.slf4j.StrictSLF4JMethod#Impl.apply"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Conditional.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Conditional.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Error.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Error.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Debug.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Debug.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.ParameterList.messageArgs"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Noop.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Noop.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Warn.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Warn.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Info.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Info.markerMessageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Trace.messageArgs"
-      ),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"
-      ),
-      ProblemFilters
-        .exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.Arguments.apply"),
-      ProblemFilters
-        .exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.Arguments.apply"),
-      ProblemFilters.exclude[MissingClassProblem]("com.tersesystems.blindsight.AsArgument"),
-      ProblemFilters.exclude[MissingClassProblem]("com.tersesystems.blindsight.AsArgument$")
+        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ToMessage.toMessage")
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
@@ -368,52 +248,3 @@ lazy val root = (project in file("."))
   .settings(disableDocs)
   .settings(disablePublishing)
   .aggregate(api, docs, fixtures, benchmarks, logstash, generic)
-
-//lazy val mimaExclusions = Seq(
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Trace.messageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Debug.messageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Info.messageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Warn.messageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Error.messageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Trace.markerMessageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Debug.markerMessageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Info.markerMessageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Warn.markerMessageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Error.markerMessageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Conditional.messageArgs"
-//  ),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList#Conditional.markerMessageArgs"
-//  ),
-//  ProblemFilters
-//    .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
-//  ProblemFilters.exclude[ReversedMissingMethodProblem](
-//    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
-//  ),
-//  ProblemFilters
-//    .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ParameterList.messageArgs"),
-//  ProblemFilters.exclude[IncompatibleMethTypeProblem](
-//    "com.tersesystems.blindsight.ParameterList.markerMessageArgs"
-//  )
-//)
