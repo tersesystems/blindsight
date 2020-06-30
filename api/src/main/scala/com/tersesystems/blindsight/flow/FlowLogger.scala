@@ -20,6 +20,7 @@ import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
 import org.slf4j
+import org.slf4j.event.Level
 import org.slf4j.event.Level._
 
 /**
@@ -52,6 +53,7 @@ trait FlowLogger
     extends SLF4JLoggerAPI[SimplePredicate, FlowMethod]
     with UnderlyingMixin
     with MarkerMixin
+    with TransformStatementMixin
     with OnConditionMixin {
   override type Self      = FlowLogger
   override type Method    = FlowMethod
@@ -97,6 +99,13 @@ object FlowLogger {
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {
       new Impl(core.withMarker(markerInstance))
     }
+
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): Self = {
+      new Impl(core.withTransform(level, f))
+    }
   }
 
   final class Noop(core: CoreLogger) extends FlowLogger {
@@ -116,6 +125,9 @@ object FlowLogger {
     override val error: Method             = FlowMethod.Noop
 
     override def withMarker[T: ToMarkers](instance: T): FlowLogger = this
+
+    override def withTransform(level: Level, f: UnderlyingStatement => UnderlyingStatement): Self =
+      this
 
     override def markers: Markers = core.markers
 

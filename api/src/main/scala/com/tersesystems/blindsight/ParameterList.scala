@@ -39,11 +39,35 @@ trait ParameterList {
 object ParameterList {
 
   /**
-   * This is the calling site of the SLF4J method.
-   *
-   * You should not need to use this as an end user, but it is very useful for extending loggers.
+   * Indexed by enum ordinal, i.e. to look up, use Level.TRACE.ordinal() as index.
    */
-  abstract class Impl(val level: Level, val logger: org.slf4j.Logger) extends ParameterList {
+  def lists(logger: org.slf4j.Logger): Array[ParameterList] =
+    Array(
+      new ParameterList.Error(logger),
+      new ParameterList.Warn(logger),
+      new ParameterList.Info(logger),
+      new ParameterList.Debug(logger),
+      new ParameterList.Trace(logger)
+    )
+
+  def proxies(
+      lists: Array[ParameterList],
+      transforms: Array[UnderlyingStatement => UnderlyingStatement]
+  ): Array[ParameterList] = {
+    val error =
+      new ParameterList.Proxy(lists(Level.ERROR.ordinal()), transforms(Level.ERROR.ordinal()))
+    val warn =
+      new ParameterList.Proxy(lists(Level.WARN.ordinal()), transforms(Level.WARN.ordinal()))
+    val info =
+      new ParameterList.Proxy(lists(Level.INFO.ordinal()), transforms(Level.INFO.ordinal()))
+    val debug =
+      new ParameterList.Proxy(lists(Level.DEBUG.ordinal()), transforms(Level.DEBUG.ordinal()))
+    val trace =
+      new ParameterList.Proxy(lists(Level.TRACE.ordinal()), transforms(Level.TRACE.ordinal()))
+    Array(error, warn, info, debug, trace)
+  }
+
+  trait ExecuteStatement { self: ParameterList =>
     def executeStatement(statement: Statement): Unit =
       statement match {
         case Statement(markers, m, args, None) =>
@@ -78,6 +102,172 @@ object ParameterList {
             }
           }
       }
+  }
+
+  class Trace(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+    override def executePredicate(): Boolean = {
+      logger.isTraceEnabled()
+    }
+    override def executePredicate(marker: Marker): Boolean = {
+      logger.isTraceEnabled(marker)
+    }
+
+    override def message(msg: String): Unit               = logger.trace(msg)
+    override def messageArg1(msg: String, arg: Any): Unit = logger.trace(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      logger.trace(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Array[Any]): Unit =
+      logger.trace(msg, args.asInstanceOf[Array[Object]]: _*)
+    override def markerMessage(marker: Marker, msg: String): Unit = logger.trace(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      logger.trace(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      logger.trace(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
+      logger.trace(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+  }
+
+  class Debug(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+    override def executePredicate(): Boolean               = logger.isDebugEnabled()
+    override def executePredicate(marker: Marker): Boolean = logger.isDebugEnabled(marker)
+
+    override def message(msg: String): Unit               = logger.debug(msg)
+    override def messageArg1(msg: String, arg: Any): Unit = logger.debug(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      logger.debug(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Array[Any]): Unit =
+      logger.debug(msg, args.asInstanceOf[Array[Object]]: _*)
+    override def markerMessage(marker: Marker, msg: String): Unit = logger.debug(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      logger.debug(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      logger.debug(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
+      logger.debug(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+  }
+
+  class Info(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+    override def executePredicate(): Boolean               = logger.isInfoEnabled
+    override def executePredicate(marker: Marker): Boolean = logger.isInfoEnabled(marker)
+
+    override def message(msg: String): Unit               = logger.info(msg)
+    override def messageArg1(msg: String, arg: Any): Unit = logger.info(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      logger.info(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Array[Any]): Unit =
+      logger.info(msg, args.asInstanceOf[Array[Object]]: _*)
+    override def markerMessage(marker: Marker, msg: String): Unit = logger.info(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      logger.info(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      logger.info(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
+      logger.info(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+  }
+
+  class Warn(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+    override def executePredicate(): Boolean               = logger.isWarnEnabled()
+    override def executePredicate(marker: Marker): Boolean = logger.isWarnEnabled(marker)
+
+    override def message(msg: String): Unit               = logger.warn(msg)
+    override def messageArg1(msg: String, arg: Any): Unit = logger.warn(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      logger.warn(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Array[Any]): Unit =
+      logger.warn(msg, args.asInstanceOf[Array[Object]]: _*)
+    override def markerMessage(marker: Marker, msg: String): Unit = logger.warn(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      logger.warn(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      logger.warn(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
+      logger.warn(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+  }
+
+  class Error(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+    override def executePredicate(): Boolean               = logger.isErrorEnabled
+    override def executePredicate(marker: Marker): Boolean = logger.isErrorEnabled(marker)
+
+    override def message(msg: String): Unit               = logger.error(msg)
+    override def messageArg1(msg: String, arg: Any): Unit = logger.error(msg, arg)
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
+      logger.error(msg, arg1, arg2)
+    override def messageArgs(msg: String, args: Array[Any]): Unit =
+      logger.error(msg, args.asInstanceOf[Array[Object]]: _*)
+    override def markerMessage(marker: Marker, msg: String): Unit = logger.error(marker, msg)
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
+      logger.error(marker, msg, arg)
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
+      logger.error(marker, msg, arg1, arg2)
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
+      logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+  }
+
+  class Proxy(delegate: ParameterList, transform: UnderlyingStatement => UnderlyingStatement)
+      extends ParameterList {
+    override def executePredicate(): Boolean = delegate.executePredicate()
+
+    override def executePredicate(marker: Marker): Boolean = {
+      delegate.executePredicate(marker)
+    }
+
+    override def message(msg: String): Unit = {
+      executeRaw(transform(UnderlyingStatement(None, msg, Array.empty)))
+    }
+
+    override def messageArg1(msg: String, arg: Any): Unit = {
+      executeRaw(transform(UnderlyingStatement(None, msg, Array(arg))))
+    }
+
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit = {
+      executeRaw(transform(UnderlyingStatement(None, msg, Array(arg1, arg2))))
+    }
+
+    override def messageArgs(msg: String, args: Array[Any]): Unit = {
+      executeRaw(transform(UnderlyingStatement(None, msg, Array(args))))
+    }
+
+    override def markerMessage(marker: Marker, msg: String): Unit = {
+      executeRaw(transform(UnderlyingStatement(Some(marker), msg, Array.empty)))
+    }
+
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit = {
+      executeRaw(transform(UnderlyingStatement(Some(marker), msg, Array(arg))))
+    }
+
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit = {
+      executeRaw(transform(UnderlyingStatement(Some(marker), msg, Array(arg1, arg2))))
+    }
+
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit = {
+      executeRaw(transform(UnderlyingStatement(Some(marker), msg, args)))
+    }
+
+    override def executeStatement(statement: Statement): Unit = {
+      val markers = if (statement.markers.isEmpty) None else Some(statement.markers.marker)
+      val message = statement.message.toString
+      val args = statement.throwable match {
+        case Some(t) =>
+          statement.arguments.toArray :+ t
+        case None =>
+          statement.arguments.toArray
+      }
+      val raw = UnderlyingStatement(markers, message, args)
+      executeRaw(transform(raw))
+    }
+
+    def executeRaw(raw: UnderlyingStatement): Unit = {
+      raw match {
+        case UnderlyingStatement(None, m, Array()) =>
+          delegate.message(m)
+        case UnderlyingStatement(None, m, args) =>
+          delegate.messageArgs(m, args)
+        case UnderlyingStatement(Some(marker), m, Array()) =>
+          delegate.markerMessage(marker, m)
+        case UnderlyingStatement(Some(marker), m, args) =>
+          delegate.markerMessageArgs(marker, m, args)
+      }
+    }
   }
 
   object Noop extends ParameterList {
@@ -136,116 +326,5 @@ object ParameterList {
 
     override def executeStatement(statement: Statement): Unit =
       if (core.condition(level, core.state)) core.parameterList(level).executeStatement(statement)
-  }
-
-  /**
-   * Indexed by enum ordinal, i.e. to look up, use Level.TRACE.ordinal() as index.
-   */
-  def lists(logger: org.slf4j.Logger): Array[ParameterList] =
-    Array(
-      new ParameterList.Error(logger),
-      new ParameterList.Warn(logger),
-      new ParameterList.Info(logger),
-      new ParameterList.Debug(logger),
-      new ParameterList.Trace(logger)
-    )
-
-  class Trace(logger: org.slf4j.Logger) extends Impl(Level.TRACE, logger) {
-    override def executePredicate(): Boolean = {
-      logger.isTraceEnabled()
-    }
-    override def executePredicate(marker: Marker): Boolean = {
-      logger.isTraceEnabled(marker)
-    }
-
-    override def message(msg: String): Unit               = logger.trace(msg)
-    override def messageArg1(msg: String, arg: Any): Unit = logger.trace(msg, arg)
-    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
-      logger.trace(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.trace(msg, args.asInstanceOf[Array[Object]]: _*)
-    override def markerMessage(marker: Marker, msg: String): Unit = logger.trace(marker, msg)
-    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
-      logger.trace(marker, msg, arg)
-    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
-      logger.trace(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.trace(marker, msg, args.asInstanceOf[Array[Object]]: _*)
-  }
-
-  class Debug(logger: org.slf4j.Logger) extends Impl(Level.DEBUG, logger) {
-    override def executePredicate(): Boolean               = logger.isDebugEnabled()
-    override def executePredicate(marker: Marker): Boolean = logger.isDebugEnabled(marker)
-
-    override def message(msg: String): Unit               = logger.debug(msg)
-    override def messageArg1(msg: String, arg: Any): Unit = logger.debug(msg, arg)
-    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
-      logger.debug(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.debug(msg, args.asInstanceOf[Array[Object]]: _*)
-    override def markerMessage(marker: Marker, msg: String): Unit = logger.debug(marker, msg)
-    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
-      logger.debug(marker, msg, arg)
-    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
-      logger.debug(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.debug(marker, msg, args.asInstanceOf[Array[Object]]: _*)
-  }
-
-  class Info(logger: org.slf4j.Logger) extends Impl(Level.INFO, logger) {
-    override def executePredicate(): Boolean               = logger.isInfoEnabled
-    override def executePredicate(marker: Marker): Boolean = logger.isInfoEnabled(marker)
-
-    override def message(msg: String): Unit               = logger.info(msg)
-    override def messageArg1(msg: String, arg: Any): Unit = logger.info(msg, arg)
-    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
-      logger.info(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.info(msg, args.asInstanceOf[Array[Object]]: _*)
-    override def markerMessage(marker: Marker, msg: String): Unit = logger.info(marker, msg)
-    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
-      logger.info(marker, msg, arg)
-    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
-      logger.info(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.info(marker, msg, args.asInstanceOf[Array[Object]]: _*)
-  }
-
-  class Warn(logger: org.slf4j.Logger) extends Impl(Level.WARN, logger) {
-    override def executePredicate(): Boolean               = logger.isWarnEnabled()
-    override def executePredicate(marker: Marker): Boolean = logger.isWarnEnabled(marker)
-
-    override def message(msg: String): Unit               = logger.warn(msg)
-    override def messageArg1(msg: String, arg: Any): Unit = logger.warn(msg, arg)
-    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
-      logger.warn(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.warn(msg, args.asInstanceOf[Array[Object]]: _*)
-    override def markerMessage(marker: Marker, msg: String): Unit = logger.warn(marker, msg)
-    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
-      logger.warn(marker, msg, arg)
-    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
-      logger.warn(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.warn(marker, msg, args.asInstanceOf[Array[Object]]: _*)
-  }
-
-  class Error(logger: org.slf4j.Logger) extends Impl(Level.ERROR, logger) {
-    override def executePredicate(): Boolean               = logger.isErrorEnabled
-    override def executePredicate(marker: Marker): Boolean = logger.isErrorEnabled(marker)
-
-    override def message(msg: String): Unit               = logger.error(msg)
-    override def messageArg1(msg: String, arg: Any): Unit = logger.error(msg, arg)
-    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit =
-      logger.error(msg, arg1, arg2)
-    override def messageArgs(msg: String, args: Array[Any]): Unit =
-      logger.error(msg, args.asInstanceOf[Array[Object]]: _*)
-    override def markerMessage(marker: Marker, msg: String): Unit = logger.error(marker, msg)
-    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit =
-      logger.error(marker, msg, arg)
-    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit =
-      logger.error(marker, msg, arg1, arg2)
-    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit =
-      logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 }

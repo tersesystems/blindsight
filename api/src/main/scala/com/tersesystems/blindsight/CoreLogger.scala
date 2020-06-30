@@ -1,9 +1,18 @@
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.mixins.{MarkerMixin, OnConditionMixin, UnderlyingMixin}
+import com.tersesystems.blindsight.mixins.{
+  MarkerMixin,
+  OnConditionMixin,
+  TransformStatementMixin,
+  UnderlyingMixin
+}
 import org.slf4j.event.Level
 
-trait CoreLogger extends UnderlyingMixin with MarkerMixin with OnConditionMixin {
+trait CoreLogger
+    extends UnderlyingMixin
+    with MarkerMixin
+    with OnConditionMixin
+    with TransformStatementMixin {
   type Self = CoreLogger
 
   def state: CoreLogger.State
@@ -26,6 +35,9 @@ object CoreLogger {
     def underlying: org.slf4j.Logger
     def condition: Condition
     def sourceInfoBehavior: SourceInfoBehavior
+    def parameterLists: Array[ParameterList]
+
+    def withParameterLists(lists: Array[ParameterList]): State
 
     def withMarker[M: ToMarkers](m: M): State
 
@@ -38,7 +50,8 @@ object CoreLogger {
         markers: Markers,
         underlying: org.slf4j.Logger,
         condition: Condition,
-        sourceInfoBehavior: SourceInfoBehavior
+        sourceInfoBehavior: SourceInfoBehavior,
+        parameterLists: Array[ParameterList]
     ) extends State {
       def withMarker[M: ToMarkers](m: M): State = {
         val markers = implicitly[ToMarkers[M]].toMarkers(m)
@@ -49,6 +62,10 @@ object CoreLogger {
         val f = (level: Level, s: State) => condition(level, s) && c(level, s)
         copy(condition = Condition(f))
       }
+
+      def withParameterLists(lists: Array[ParameterList]): State = {
+        copy(parameterLists = lists)
+      }
     }
   }
 
@@ -57,7 +74,13 @@ object CoreLogger {
   }
 
   def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior): CoreLogger = {
-    val state = State.Impl(Markers.empty, underlying, Condition.always, sourceInfoBehavior)
+    val state = State.Impl(
+      Markers.empty,
+      underlying,
+      Condition.always,
+      sourceInfoBehavior,
+      ParameterList.lists(underlying)
+    )
     new Impl(state)
   }
 
@@ -74,6 +97,10 @@ object CoreLogger {
     override def condition: Condition = state.condition
 
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
+
+    override def parameterList(level: Level): ParameterList = {
+      state.parameterLists(level.ordinal())
+    }
 
     override def when(level: Level, condition: Condition): Boolean = {
       // because conditions are AND, if there's a never in the condition we
@@ -100,12 +127,18 @@ object CoreLogger {
   }
 
   class Impl(val state: State) extends Abstract {
-    private val parameterLists: Array[ParameterList] = ParameterList.lists(this.underlying)
-
-    override def parameterList(level: Level): ParameterList = parameterLists(level.ordinal)
-
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Impl(state.withMarker(m))
+    }
+
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): CoreLogger = {
+      val newParameterLists: Array[ParameterList] = new Array(5)
+      state.parameterLists.copyToArray(newParameterLists)
+      newParameterLists(level.ordinal()) = new ParameterList.Proxy(parameterList(level), f)
+      new Impl(state.withParameterLists(newParameterLists))
     }
   }
 
@@ -116,6 +149,16 @@ object CoreLogger {
 
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Conditional(new Impl(state.withMarker(m)))
+    }
+
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): CoreLogger = {
+      val newParameterLists: Array[ParameterList] = new Array(5)
+      state.parameterLists.copyToArray(newParameterLists)
+      newParameterLists(level.ordinal()) = new ParameterList.Proxy(parameterList(level), f)
+      new Conditional(new Impl(state.withParameterLists(newParameterLists)))
     }
   }
 
@@ -129,6 +172,13 @@ object CoreLogger {
 
     override def withMarker[T: ToMarkers](instance: T): CoreLogger =
       new Noop(state.withMarker(instance))
+
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): CoreLogger = {
+      this
+    }
   }
 
 }

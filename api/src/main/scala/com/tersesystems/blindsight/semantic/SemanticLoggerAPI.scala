@@ -16,7 +16,8 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.{NotNothing, ToStatement}
+import com.tersesystems.blindsight.{NotNothing, UnderlyingStatement, ToStatement}
+import org.slf4j.event.Level
 
 trait SemanticLoggerComponent[StatementType, P, M[_]] {
   type Predicate = P
@@ -34,6 +35,15 @@ trait SemanticRefineMixin[StatementType] {
    * @return a semantic logger with the new type
    */
   def refine[T <: StatementType: ToStatement: NotNothing]: Self[T]
+}
+
+trait SemanticTransformStatementMixin[StatementType] {
+  type Self[T]
+
+  def withTransform(
+      level: Level,
+      f: UnderlyingStatement => UnderlyingStatement
+  ): Self[StatementType]
 }
 
 /**

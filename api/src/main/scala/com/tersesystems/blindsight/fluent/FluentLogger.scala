@@ -19,6 +19,7 @@ package com.tersesystems.blindsight.fluent
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
+import org.slf4j.event.Level
 import org.slf4j.event.Level._
 
 /**
@@ -33,6 +34,7 @@ trait FluentLogger
     extends SLF4JLoggerAPI[SimplePredicate, FluentMethod]
     with MarkerMixin
     with UnderlyingMixin
+    with TransformStatementMixin
     with OnConditionMixin {
   override type Self      = FluentLogger
   override type Method    = FluentMethod
@@ -42,13 +44,10 @@ trait FluentLogger
 object FluentLogger {
 
   class Impl(core: CoreLogger) extends FluentLogger {
-    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(core.withMarker(markerInstance))
-    }
 
-    override def onCondition(condition: Condition): FluentLogger = {
-      new Impl(core.onCondition(condition))
-    }
+    override def markers: Markers = core.markers
+
+    override def underlying: org.slf4j.Logger = core.underlying
 
     override val isTraceEnabled: Predicate = core.predicate(TRACE)
     override val trace: Method             = new FluentMethod.Impl(TRACE, core)
@@ -65,8 +64,19 @@ object FluentLogger {
     override val isErrorEnabled: Predicate = core.predicate(ERROR)
     override val error: Method             = new FluentMethod.Impl(ERROR, core)
 
-    override def markers: Markers = core.markers
+    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
+      new Impl(core.withMarker(markerInstance))
+    }
 
-    override def underlying: org.slf4j.Logger = core.underlying
+    override def onCondition(condition: Condition): FluentLogger = {
+      new Impl(core.onCondition(condition))
+    }
+
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): FluentLogger = {
+      new Impl(core.withTransform(level, f))
+    }
   }
 }

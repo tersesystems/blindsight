@@ -284,4 +284,81 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
   }
 
+  "logger.withTransform" should {
+
+    "be called when logging" in {
+      var called = false;
+      val logger = createLogger.withTransform(Level.INFO, st => { called = true; st })
+      logger.info("test message")
+      called must be(true)
+    }
+
+    "not change anything on identity" in {
+      val logger = createLogger.withTransform(Level.INFO, identity)
+      logger.info("test message")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("test message")
+    }
+
+    "transform info message" in {
+      val logger =
+        createLogger.withTransform(Level.INFO, st => st.copy(message = st.message.toUpperCase))
+      logger.info("test message")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("TEST MESSAGE")
+    }
+
+    "transform info message with argument" in {
+      val logger = createLogger.withTransform(
+        Level.INFO,
+        st => st.copy(message = st.message.toUpperCase, args = Array("IN BED"))
+      )
+      logger.info("test message")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("TEST MESSAGE")
+      event.getArgumentArray.head must equal("IN BED")
+    }
+
+    "transform info message with marker" in {
+      val security = MarkerFactory.getMarker("SECURITY")
+      val logger = createLogger.withTransform(
+        Level.INFO,
+        st => st.copy(marker = Some(security), message = st.message.toUpperCase)
+      )
+      logger.info("test message")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("TEST MESSAGE")
+      event.getMarker must equal(security)
+      event.getArgumentArray must be(null)
+    }
+
+    "transform info message with marker and argument" in {
+      val security = MarkerFactory.getMarker("SECURITY")
+      val logger = createLogger.withTransform(
+        Level.INFO,
+        st =>
+          st.copy(marker = Some(security), message = st.message.toUpperCase, args = Array("IN BED"))
+      )
+      logger.info("test message")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("TEST MESSAGE")
+      event.getMarker must equal(security)
+      event.getArgumentArray.head must equal("IN BED")
+    }
+
+    "not transform warn message" in {
+      val logger =
+        createLogger.withTransform(Level.WARN, st => st.copy(message = st.message.toUpperCase))
+      logger.info("warn message")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("warn message")
+    }
+  }
+
 }

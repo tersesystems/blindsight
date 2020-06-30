@@ -42,6 +42,7 @@ trait LoggerFactory {
     import com.tersesystems.blindsight.LoggerFactory.classNameFromSource
     getLogger(classNameFromSource)
   }
+
 }
 
 object LoggerFactory {
@@ -71,7 +72,7 @@ object LoggerFactory {
     loggerFactory.getLogger
   }
 
-  private def classNameFromSource(implicit
+  def classNameFromSource(implicit
       enc: sourcecode.Enclosing,
       name: sourcecode.Name
   ): String = {

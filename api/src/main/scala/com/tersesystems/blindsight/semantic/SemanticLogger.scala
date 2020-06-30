@@ -18,6 +18,7 @@ package com.tersesystems.blindsight.semantic
 
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.mixins._
+import org.slf4j.event.Level
 import org.slf4j.event.Level._
 
 /**
@@ -35,6 +36,7 @@ import org.slf4j.event.Level._
 trait SemanticLogger[StatementType]
     extends SemanticLoggerAPI[StatementType, SimplePredicate, SemanticMethod]
     with UnderlyingMixin
+    with SemanticTransformStatementMixin[StatementType]
     with SemanticMarkerMixin[StatementType]
     with SemanticRefineMixin[StatementType] {
   type Self[T] = SemanticLogger[T]
@@ -60,6 +62,13 @@ object SemanticLogger {
       new Impl[StatementType](core.onCondition(condition))
     }
 
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): Self[StatementType] = {
+      new Impl[StatementType](core.withTransform(level, f))
+    }
+
     override val isTraceEnabled: Predicate = core.predicate(TRACE)
     override val trace: SemanticMethod[StatementType] =
       new SemanticMethod.Impl[StatementType](TRACE, core)
@@ -79,7 +88,6 @@ object SemanticLogger {
     override val isErrorEnabled: Predicate = core.predicate(ERROR)
     override val error: SemanticMethod[StatementType] =
       new SemanticMethod.Impl[StatementType](ERROR, core)
-
   }
 
 }
