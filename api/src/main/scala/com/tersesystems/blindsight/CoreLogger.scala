@@ -3,7 +3,7 @@ package com.tersesystems.blindsight
 import com.tersesystems.blindsight.mixins.{
   MarkerMixin,
   OnConditionMixin,
-  TransformLogEntry,
+  TransformLogEntryMixin,
   UnderlyingMixin
 }
 import org.slf4j.event.Level
@@ -12,7 +12,7 @@ trait CoreLogger
     extends UnderlyingMixin
     with MarkerMixin
     with OnConditionMixin
-    with TransformLogEntry {
+    with TransformLogEntryMixin {
   type Self = CoreLogger
 
   def state: CoreLogger.State

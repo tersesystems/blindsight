@@ -7,7 +7,7 @@ import org.slf4j.event.Level
  * Adds the ability for logged statements to go though a transformation
  * before being sent to SLF4J.
  */
-trait TransformLogEntry {
+trait TransformLogEntryMixin {
   type Self
 
   def withTransform(level: Level, f: LogEntry => LogEntry): Self

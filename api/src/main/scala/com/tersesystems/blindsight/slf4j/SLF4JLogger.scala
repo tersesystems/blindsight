@@ -39,7 +39,7 @@ trait SLF4JLogger[M]
     extends SLF4JLoggerAPI[SimplePredicate, M]
     with MarkerMixin
     with UnderlyingMixin
-    with TransformLogEntry
+    with TransformLogEntryMixin
     with OnConditionMixin {
   override type Self <: SLF4JLogger[M]
 }
