@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.org/tersesystems/blindsight.svg?branch=master)](https://travis-ci.org/tersesystems/blindsight) ![Bintray](https://img.shields.io/bintray/v/tersesystems/maven/blindsight-api) [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 
+> Suffering in silence, you check the logs for fresh telemetry.
+>
+> You think: *That can't be right*.
+>
+> -- [Blindsight](https://www.rifters.com/real/Blindsight.htm#Prologue), Peter Watts
+
 Blindsight is "observability through logging" where observability is defined as [baked in high cardinality structured data with field types](https://www.honeycomb.io/blog/observability-a-manifesto/).  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
 Blindsight is a logging library written in Scala that wraps SLF4J to add [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
