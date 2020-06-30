@@ -228,12 +228,23 @@ lazy val api = (project in file("api"))
       ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
         "com.tersesystems.blindsight.semantic.SemanticLogger.withTransform"
       ),
-      ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.CoreLogger$State$Impl$"),
-      ProblemFilters.exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger#State#Impl.apply"),
-      ProblemFilters.exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger#State#Impl.copy"),
-      ProblemFilters.exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger#State#Impl.this"),
-      ProblemFilters.exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger#State.parameterLists"),
-      ProblemFilters.exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger#State.withParameterLists"),
+      ProblemFilters
+        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.CoreLogger$State$Impl$"),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State#Impl.apply"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State#Impl.copy"
+      ),
+      ProblemFilters.exclude[DirectMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State#Impl.this"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State.parameterLists"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State.withParameterLists"
+      )
     ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
