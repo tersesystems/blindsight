@@ -10,6 +10,12 @@
 
 # Blindsight
 
+> Suffering in silence, you check the logs for fresh telemetry.
+>
+> You think: *That can't be right*.
+>
+> -- [Blindsight](https://www.rifters.com/real/Blindsight.htm#Prologue), Peter Watts
+
 Blindsight is "observability through logging" where observability is defined as [baked in high cardinality structured data with field types](https://www.honeycomb.io/blog/observability-a-manifesto/).  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
 Blindsight is a logging library written in Scala that wraps SLF4J to add @ref:[useful features](usage/overview.md) that solve several outstanding problems with logging:
