@@ -82,7 +82,7 @@ object Logger {
 
     override def withTransform(
         level: Level,
-        f: UnderlyingStatement => UnderlyingStatement
+        f: LogEntry => LogEntry
     ): Logger = {
       new Impl(core.withTransform(level, f))
     }
