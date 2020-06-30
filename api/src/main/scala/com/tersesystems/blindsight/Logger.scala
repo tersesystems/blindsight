@@ -80,7 +80,10 @@ object Logger {
       new Impl(core.withMarker(markerInstance))
     }
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): Logger = {
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): Logger = {
       new Impl(core.withTransform(level, f))
     }
   }

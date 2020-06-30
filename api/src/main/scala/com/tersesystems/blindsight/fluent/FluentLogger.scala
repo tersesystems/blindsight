@@ -72,7 +72,10 @@ object FluentLogger {
       new Impl(core.onCondition(condition))
     }
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): FluentLogger = {
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): FluentLogger = {
       new Impl(core.withTransform(level, f))
     }
   }

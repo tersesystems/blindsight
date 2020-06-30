@@ -100,7 +100,10 @@ object FlowLogger {
       new Impl(core.withMarker(markerInstance))
     }
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): Self = {
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): Self = {
       new Impl(core.withTransform(level, f))
     }
   }
@@ -123,7 +126,8 @@ object FlowLogger {
 
     override def withMarker[T: ToMarkers](instance: T): FlowLogger = this
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): Self = this
+    override def withTransform(level: Level, f: UnderlyingStatement => UnderlyingStatement): Self =
+      this
 
     override def markers: Markers = core.markers
 

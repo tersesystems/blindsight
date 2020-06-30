@@ -35,6 +35,9 @@ object CoreLogger {
     def underlying: org.slf4j.Logger
     def condition: Condition
     def sourceInfoBehavior: SourceInfoBehavior
+    def parameterLists: Array[ParameterList]
+
+    def withParameterLists(lists: Array[ParameterList]): State
 
     def withMarker[M: ToMarkers](m: M): State
 
@@ -47,7 +50,8 @@ object CoreLogger {
         markers: Markers,
         underlying: org.slf4j.Logger,
         condition: Condition,
-        sourceInfoBehavior: SourceInfoBehavior
+        sourceInfoBehavior: SourceInfoBehavior,
+        parameterLists: Array[ParameterList]
     ) extends State {
       def withMarker[M: ToMarkers](m: M): State = {
         val markers = implicitly[ToMarkers[M]].toMarkers(m)
@@ -57,6 +61,10 @@ object CoreLogger {
       def onCondition(c: Condition): State = {
         val f = (level: Level, s: State) => condition(level, s) && c(level, s)
         copy(condition = Condition(f))
+      }
+
+      def withParameterLists(lists: Array[ParameterList]): State = {
+        copy(parameterLists = lists)
       }
     }
   }
@@ -70,12 +78,13 @@ object CoreLogger {
       Markers.empty,
       underlying,
       Condition.always,
-      sourceInfoBehavior
+      sourceInfoBehavior,
+      ParameterList.lists(underlying)
     )
-    new Impl(state, ParameterList.lists(underlying))
+    new Impl(state)
   }
 
-  abstract class Abstract(parameterLists: Array[ParameterList]) extends CoreLogger {
+  abstract class Abstract extends CoreLogger {
     val state: State
 
     override def predicate(level: Level): SimplePredicate =
@@ -90,7 +99,7 @@ object CoreLogger {
     override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
 
     override def parameterList(level: Level): ParameterList = {
-      parameterLists(level.ordinal())
+      state.parameterLists(level.ordinal())
     }
 
     override def when(level: Level, condition: Condition): Boolean = {
@@ -112,44 +121,48 @@ object CoreLogger {
       if (c == Condition.never) {
         new Noop(state)
       } else {
-        new Conditional(new Impl(state.onCondition(c), parameterLists), parameterLists)
+        new Conditional(new Impl(state.onCondition(c)))
       }
     }
   }
 
-  class Impl(val state: State, parameterLists: Array[ParameterList])
-      extends Abstract(parameterLists) {
+  class Impl(val state: State) extends Abstract {
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
-      new Impl(state.withMarker(m), parameterLists)
+      new Impl(state.withMarker(m))
     }
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): CoreLogger = {
       val newParameterLists: Array[ParameterList] = new Array(5)
-      parameterLists.copyToArray(newParameterLists)
+      state.parameterLists.copyToArray(newParameterLists)
       newParameterLists(level.ordinal()) = new ParameterList.Proxy(parameterList(level), f)
-      new Impl(state, newParameterLists)
+      new Impl(state.withParameterLists(newParameterLists))
     }
   }
 
-  class Conditional(impl: Impl, parameterLists: Array[ParameterList])
-      extends Impl(impl.state, parameterLists) {
+  class Conditional(impl: Impl) extends Impl(impl.state) {
     @inline
     override def parameterList(level: Level): ParameterList =
       new ParameterList.Conditional(level, impl)
 
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
-      new Conditional(new Impl(state.withMarker(m), parameterLists), parameterLists)
+      new Conditional(new Impl(state.withMarker(m)))
     }
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): CoreLogger = {
       val newParameterLists: Array[ParameterList] = new Array(5)
-      parameterLists.copyToArray(newParameterLists)
+      state.parameterLists.copyToArray(newParameterLists)
       newParameterLists(level.ordinal()) = new ParameterList.Proxy(parameterList(level), f)
-      new Conditional(new Impl(state, parameterLists), parameterLists)
+      new Conditional(new Impl(state.withParameterLists(newParameterLists)))
     }
   }
 
-  class Noop(val state: State) extends Abstract(Array.empty) {
+  class Noop(val state: State) extends Abstract {
     override def parameterList(level: Level): ParameterList = ParameterList.Noop
 
     override def when(level: Level, condition: Condition): Boolean = false
@@ -160,7 +173,10 @@ object CoreLogger {
     override def withMarker[T: ToMarkers](instance: T): CoreLogger =
       new Noop(state.withMarker(instance))
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): CoreLogger = {
+    override def withTransform(
+        level: Level,
+        f: UnderlyingStatement => UnderlyingStatement
+    ): CoreLogger = {
       this
     }
   }

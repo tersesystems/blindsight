@@ -64,7 +64,7 @@ object SemanticLogger {
 
     override def withTransform(
         level: Level,
-        f: RawStatement => RawStatement
+        f: UnderlyingStatement => UnderlyingStatement
     ): Self[StatementType] = {
       new Impl[StatementType](core.withTransform(level, f))
     }

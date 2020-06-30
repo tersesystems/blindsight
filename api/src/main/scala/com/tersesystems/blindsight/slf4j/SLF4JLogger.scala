@@ -82,7 +82,7 @@ object SLF4JLogger {
     override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, core)
     override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
 
-    override def withTransform(level: Level, f: RawStatement => RawStatement): Self =
+    override def withTransform(level: Level, f: UnderlyingStatement => UnderlyingStatement): Self =
       new Strict(core.withTransform(level, f))
 
     override def withMarker[T: ToMarkers](markerInst: T): Self =
@@ -114,7 +114,7 @@ object SLF4JLogger {
 
     override def withTransform(
         level: Level,
-        transform: RawStatement => RawStatement
+        transform: UnderlyingStatement => UnderlyingStatement
     ): SLF4JLogger[UncheckedSLF4JMethod] =
       new Unchecked(core.withTransform(level, transform))
 
