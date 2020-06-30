@@ -133,8 +133,14 @@ object UncheckedSLF4JMethod {
     override def apply(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog)
-        markerMessage(markersPlusSource.marker, msg)
+      if (shouldLog) {
+        val mps = markersPlusSource
+        if (mps.isEmpty) {
+          message(msg)
+        } else {
+          markerMessage(mps.marker, msg)
+        }
+      }
     }
 
     override def apply(
@@ -145,7 +151,12 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(format, Argument(arg)) as Any cannot be type checked"
         )
-        markerMessageArg1(markersPlusSource.marker, format, arg)
+        val mps = markersPlusSource
+        if (mps.isEmpty) {
+          messageArg1(format, arg)
+        } else {
+          markerMessageArg1(mps.marker, format, arg)
+        }
       }
     }
 
@@ -158,7 +169,12 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
-        markerMessageArg1Arg2(markersPlusSource.marker, format, arg1, arg2)
+        val mps = markersPlusSource
+        if (mps.isEmpty) {
+          messageArg1Arg2(format, arg1, arg2)
+        } else {
+          markerMessageArg1Arg2(mps.marker, format, arg1, arg2)
+        }
       }
     }
 
@@ -167,7 +183,12 @@ object UncheckedSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        markerMessageArgs(markersPlusSource.marker, format, args.toArray)
+        val mps = markersPlusSource
+        if (mps.isEmpty) {
+          messageArgs(format, args.toArray)
+        } else {
+          markerMessageArgs(mps.marker, format, args.toArray)
+        }
       }
     }
 

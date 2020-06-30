@@ -7,4 +7,4 @@ package com.tersesystems.blindsight
  * @param message the string message format
  * @param args the array of arguments, or `Array.empty` if none.
  */
-case class LogEntry(marker: Option[org.slf4j.Marker], message: String, args: Array[Any])
+case class Entry(marker: Option[org.slf4j.Marker], message: String, args: Array[Any])

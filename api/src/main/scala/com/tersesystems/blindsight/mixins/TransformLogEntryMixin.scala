@@ -1,6 +1,6 @@
 package com.tersesystems.blindsight.mixins
 
-import com.tersesystems.blindsight.LogEntry
+import com.tersesystems.blindsight.Entry
 import org.slf4j.event.Level
 
 /**
@@ -10,5 +10,7 @@ import org.slf4j.event.Level
 trait TransformLogEntryMixin {
   type Self
 
-  def withTransform(level: Level, f: LogEntry => LogEntry): Self
+  def withTransform(level: Level, f: Entry => Entry): Self
+
+  def withTransform(f: Entry => Entry): Self
 }

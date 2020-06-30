@@ -106,7 +106,7 @@ lazy val docs = (project in file("docs"))
     addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
   )
   .settings(disablePublishing)
-  .dependsOn(api, logstash)
+  .dependsOn(api, logstash, ringbuffer)
 
 lazy val fixtures = (project in file("fixtures"))
   .disablePlugins(MimaPlugin)
@@ -146,7 +146,7 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:postfixOps",
     "-Xlint",
     // "-Xfatal-warnings", https://github.com/scala/bug/issues/7707 still broken in 2.12
-    "-Ywarn-dead-code",
+    "-Ywarn-dead-code"
     "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, n)) if n >= 13 =>
@@ -244,6 +244,59 @@ lazy val api = (project in file("api"))
       ),
       ProblemFilters.exclude[ReversedMissingMethodProblem](
         "com.tersesystems.blindsight.CoreLogger#State.withParameterLists"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#Abstract.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.Logger.withEntryBuffer"
+      ),
+      ProblemFilters
+        .exclude[InheritedNewAbstractMethodProblem]("com.tersesystems.blindsight.Logger.entries"),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.flow.FlowLogger.entries"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State.entries"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.slf4j.SLF4JLogger#Base.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State.entries,"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger.entries"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.flow.FlowLogger.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.slf4j.SLF4JLogger.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.slf4j.SLF4JLogger.entries"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.slf4j.SLF4JLogger#Base.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentLogger.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.fluent.FluentLogger.entries"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.semantic.SemanticLogger.withEntryBuffer"
+      ),
+      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
+        "com.tersesystems.blindsight.semantic.SemanticLogger.entries"
       )
     ),
     libraryDependencies += slf4jApi,
@@ -256,6 +309,14 @@ lazy val api = (project in file("api"))
     autoAPIMappings := true
   )
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
+
+lazy val ringbuffer = (project in file("ringbuffer"))
+  .settings(
+    name := "blindsight-ringbuffer",
+    mimaPreviousArtifacts := Set.empty,
+    libraryDependencies += "org.jctools" % "jctools-core" % "3.0.0"
+  )
+  .dependsOn(api)
 
 lazy val logstash = (project in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
@@ -306,4 +367,4 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, benchmarks, logstash, generic)
+  .aggregate(api, docs, fixtures, benchmarks, logstash, ringbuffer, generic)

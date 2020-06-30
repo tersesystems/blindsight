@@ -361,4 +361,58 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
   }
 
+  "logger.withBuffer" should {
+
+    "work with no buffer by default" in {
+      val logger = createLogger
+      logger.entries must be(None)
+    }
+
+    "set a buffer" in {
+      val queueBuffer = new TestEntryBuffer
+      val logger      = createLogger.withEntryBuffer(queueBuffer)
+      logger.entries.get must be(queueBuffer)
+    }
+
+    "log something and see it in buffer" in {
+      val queueBuffer = new TestEntryBuffer
+      val logger      = createLogger.withEntryBuffer(queueBuffer)
+
+      logger.info("Hello world")
+
+      val entry = logger.entries.get.headOption.get
+      entry.marker must be(None)
+      entry.message must be("Hello world")
+      entry.args must be(empty)
+    }
+
+    "clear buffer" in {
+      val queueBuffer = new TestEntryBuffer
+      val logger      = createLogger.withEntryBuffer(queueBuffer)
+
+      logger.info("Hello world")
+      queueBuffer.clear() // should not be part of buffer interface
+      logger.entries.get.size must be(0)
+    }
+  }
+}
+
+class TestEntryBuffer extends EntryBuffer {
+  private val queue = scala.collection.mutable.Queue[Entry]()
+
+  override def size: Int = queue.size
+
+  override def take(count: Int): Seq[Entry] = queue.slice(0, count).toSeq
+
+  def clear(): Unit = queue.clear()
+
+  override def headOption: Option[Entry] = queue.headOption
+
+  override def offer(entry: Entry): Unit = queue.addOne(entry)
+
+  override def capacity: Int = Int.MaxValue
+
+  override def isEmpty: Boolean = queue.isEmpty
+
+  override def head: Entry = queue.head
 }

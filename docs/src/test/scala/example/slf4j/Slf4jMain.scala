@@ -27,9 +27,10 @@ import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
 
 object Slf4jMain {
+
   private val logger = LoggerFactory
     .getLogger(getClass)
-    .withTransform(Level.INFO, st => st.copy(message = st.message + " IN BED"))
+    .withEntryBuffer(EntryBuffer(50))
 
   final case class FeatureFlag(flagName: String)
 
@@ -60,37 +61,20 @@ object Slf4jMain {
 
     val m1 = MarkerFactory.getMarker("M1")
 
+    logger.info("this is strict {} {}", 42, 53)
+    logger.info("arg {}, arg {}, arg 3 {}", Arguments(1, "2", false))
+
     val e = new Exception("derp")
-    //    //    val unchecked = logger.unchecked
-    //    //    unchecked.error("Exception occured", e)
-    //    //    val creditCard = CreditCard("4111111111111")
-    //
-    //    // case class tostring renders CC number
-    //    unchecked.info("this is risky unchecked {}", creditCard)
-    //
-    //    unchecked.info("this is unchecked {} {}", Arguments(42, 53))
-    //    unchecked.info(
-    //      m1,
-    //      "unchecked with argument and marker {}, creditCard = {}",
-    //      42,
-    //      creditCard
-    //    )
-
-    val strict: SLF4JLogger[StrictSLF4JMethod] = logger.strict
-
-    strict.info("this is strict {} {}", 42, 53)
-    strict.info("arg {}, arg {}, arg 3 {}", Arguments(1, "2", false))
-
-    strict.error("this is an error", e)
-    strict.error("this is an error with argument {}", "arg1", e)
-    strict.error(
+    logger.error("this is an error", e)
+    logger.error("this is an error with argument {}", "arg1", e)
+    logger.error(
       "this is an error with two arguments {} {}",
       "arg1",
       "arg2"
     )
-    //strict.info("won't compile, must define ToArguments[CreditCard]", creditCard)
+    //logger.info("won't compile, must define ToArguments[CreditCard]", creditCard)
 
-    strict.info(
+    logger.info(
       Markers(LogstashMarkers.append("key", "value")),
       "marker and argument {}",
       "argumentKey=argumentValue"
@@ -108,18 +92,10 @@ object Slf4jMain {
     logger.info("date is {}", new java.util.Date())
     logger.info("instant is {}", Instant.now())
 
-    val m2   = MarkerFactory.getMarker("M2")
-    val base = logger.withMarker(m1).withMarker(m2)
-    base.info("I should have two markers")
+    val m2                = MarkerFactory.getMarker("M2")
+    val loggerWithMarkers = logger.withMarker(m1).withMarker(m2)
+    loggerWithMarkers.info("I should have two markers")
 
-    val onlyInfo = new SLF4JLoggerAPI.Info[base.Predicate, base.Method] {
-      override type Self      = base.Self
-      override type Predicate = base.Predicate
-      override type Method    = base.Method
-
-      override def isInfoEnabled: Predicate = base.isInfoEnabled
-      override def info: Method             = base.info
-    }
-    onlyInfo.info("good")
+    println(s"There are ${logger.entries.get.size} entries in the buffer")
   }
 }

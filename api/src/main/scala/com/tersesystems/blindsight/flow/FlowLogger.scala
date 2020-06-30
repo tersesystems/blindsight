@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.mixins._
+import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
 import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
 import org.slf4j
@@ -54,6 +54,7 @@ trait FlowLogger
     with UnderlyingMixin
     with MarkerMixin
     with TransformLogEntryMixin
+    with EntryBufferMixin
     with OnConditionMixin {
   override type Self      = FlowLogger
   override type Method    = FlowMethod
@@ -80,6 +81,8 @@ object FlowLogger {
 
     override def markers: Markers = core.markers
 
+    override def entries: Option[EntryBuffer] = core.entries
+
     override def underlying: org.slf4j.Logger = core.underlying
 
     /**
@@ -102,10 +105,14 @@ object FlowLogger {
 
     override def withTransform(
         level: Level,
-        f: LogEntry => LogEntry
+        f: Entry => Entry
     ): Self = {
       new Impl(core.withTransform(level, f))
     }
+
+    override def withTransform(f: Entry => Entry): Self = new Impl(core.withTransform(f))
+
+    override def withEntryBuffer(buffer: EntryBuffer): Self = new Impl(core.withEntryBuffer(buffer))
   }
 
   final class Noop(core: CoreLogger) extends FlowLogger {
@@ -124,16 +131,22 @@ object FlowLogger {
     override val isErrorEnabled: Predicate = core.predicate(ERROR)
     override val error: Method             = FlowMethod.Noop
 
-    override def withMarker[T: ToMarkers](instance: T): FlowLogger = this
-
-    override def withTransform(level: Level, f: LogEntry => LogEntry): Self =
-      this
-
     override def markers: Markers = core.markers
 
     override def underlying: slf4j.Logger = core.underlying
 
-    override def onCondition(condition: Condition): FlowLogger = this
+    override def entries: Option[EntryBuffer] = core.entries
+
+    override def onCondition(condition: Condition): FlowLogger = this // XXX is this right?
+
+    override def withEntryBuffer(buffer: EntryBuffer): FlowLogger = this // XXX is this right?
+
+    override def withMarker[T: ToMarkers](instance: T): FlowLogger = this // XXX is this right?
+
+    override def withTransform(level: Level, f: Entry => Entry): Self =
+      this // XXX is this right?
+
+    override def withTransform(f: Entry => Entry): FlowLogger = this
   }
 
 }

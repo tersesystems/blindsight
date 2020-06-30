@@ -38,6 +38,9 @@ import org.slf4j.{Marker, MarkerFactory}
 final class Markers(private val internal: Set[Marker]) {
 
   lazy val marker: Marker = {
+    if (internal.isEmpty) {
+      throw new IllegalStateException("No markers specified!")
+    }
     val init = MarkerFactory.getDetachedMarker(Integer.toHexString(internal.hashCode))
     internal.foldLeft(init) { (acc, el) => acc.add(el); acc; }
   }
