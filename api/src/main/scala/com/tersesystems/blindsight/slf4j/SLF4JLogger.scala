@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.mixins._
+import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
 import com.tersesystems.blindsight._
 import org.slf4j.Logger
 import org.slf4j.event.Level
@@ -39,7 +39,8 @@ trait SLF4JLogger[M]
     extends SLF4JLoggerAPI[SimplePredicate, M]
     with MarkerMixin
     with UnderlyingMixin
-    with TransformLogEntryMixin
+    with EntryTransformMixin
+    with EntryBufferMixin
     with OnConditionMixin {
   override type Self <: SLF4JLogger[M]
 }
@@ -65,6 +66,8 @@ object SLF4JLogger {
      */
     override val markers: Markers = core.markers
 
+    override def entries: Option[EntryBuffer] = core.entries
+
     override val isTraceEnabled: Predicate = core.predicate(TRACE)
     override val isDebugEnabled: Predicate = core.predicate(DEBUG)
     override val isInfoEnabled: Predicate  = core.predicate(INFO)
@@ -82,14 +85,20 @@ object SLF4JLogger {
     override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, core)
     override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
 
-    override def withTransform(level: Level, f: LogEntry => LogEntry): Self =
-      new Strict(core.withTransform(level, f))
-
     override def withMarker[T: ToMarkers](markerInst: T): Self =
       new Strict(core.withMarker(markerInst))
 
     override def onCondition(condition: Condition): Self =
       new Strict(core.onCondition(condition))
+
+    override def withTransform(level: Level, f: Entry => Entry): Self =
+      new Strict(core.withTransform(level, f))
+
+    override def withTransform(f: Entry => Entry): Self =
+      new Strict(core.withTransform(f))
+
+    override def withEntryBuffer(buffer: EntryBuffer): Self =
+      new Strict(core.withEntryBuffer(buffer))
   }
 
   /**
@@ -109,17 +118,23 @@ object SLF4JLogger {
      * @tparam T the instance type.
      * @return a new instance of the logger that has this marker.
      */
-    override def withMarker[T: ToMarkers](instance: T): SLF4JLogger[UncheckedSLF4JMethod] =
+    override def withMarker[T: ToMarkers](instance: T): Self =
       new Unchecked(core.withMarker(instance))
+
+    override def onCondition(condition: Condition): Self =
+      new Unchecked(core.onCondition(condition))
 
     override def withTransform(
         level: Level,
-        transform: LogEntry => LogEntry
+        transform: Entry => Entry
     ): SLF4JLogger[UncheckedSLF4JMethod] =
       new Unchecked(core.withTransform(level, transform))
 
-    override def onCondition(condition: Condition): SLF4JLogger[UncheckedSLF4JMethod] =
-      new Unchecked(core.onCondition(condition))
+    override def withTransform(f: Entry => Entry): Self =
+      new Unchecked(core.withTransform(f))
+
+    override def withEntryBuffer(buffer: EntryBuffer): Self =
+      new Unchecked(core.withEntryBuffer(buffer))
   }
 
 }

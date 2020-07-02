@@ -16,13 +16,21 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.{NotNothing, LogEntry, ToStatement}
+import com.tersesystems.blindsight.{EntryBuffer, Entry, NotNothing, ToStatement}
 import org.slf4j.event.Level
 
 trait SemanticLoggerComponent[StatementType, P, M[_]] {
   type Predicate = P
   type Method[T] = M[T]
   type Self[T]
+}
+
+trait SemanticEntryBufferMixin[StatementType] {
+  type Self[T]
+
+  def withEntryBuffer(buffer: EntryBuffer): Self[StatementType]
+
+  def entries: Option[EntryBuffer]
 }
 
 trait SemanticRefineMixin[StatementType] {
@@ -42,7 +50,7 @@ trait SemanticTransformStatementMixin[StatementType] {
 
   def withTransform(
       level: Level,
-      f: LogEntry => LogEntry
+      f: Entry => Entry
   ): Self[StatementType]
 }
 

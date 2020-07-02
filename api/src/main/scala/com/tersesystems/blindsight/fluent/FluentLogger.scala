@@ -17,7 +17,7 @@
 package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.mixins._
+import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
 import com.tersesystems.blindsight.slf4j._
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
@@ -34,7 +34,8 @@ trait FluentLogger
     extends SLF4JLoggerAPI[SimplePredicate, FluentMethod]
     with MarkerMixin
     with UnderlyingMixin
-    with TransformLogEntryMixin
+    with EntryTransformMixin
+    with EntryBufferMixin
     with OnConditionMixin {
   override type Self      = FluentLogger
   override type Method    = FluentMethod
@@ -46,6 +47,8 @@ object FluentLogger {
   class Impl(core: CoreLogger) extends FluentLogger {
 
     override def markers: Markers = core.markers
+
+    override def entries: Option[EntryBuffer] = core.entries
 
     override def underlying: org.slf4j.Logger = core.underlying
 
@@ -68,15 +71,20 @@ object FluentLogger {
       new Impl(core.withMarker(markerInstance))
     }
 
-    override def onCondition(condition: Condition): FluentLogger = {
+    override def onCondition(condition: Condition): Self = {
       new Impl(core.onCondition(condition))
     }
 
     override def withTransform(
         level: Level,
-        f: LogEntry => LogEntry
+        f: Entry => Entry
     ): FluentLogger = {
       new Impl(core.withTransform(level, f))
     }
+
+    override def withTransform(f: Entry => Entry): Self = new Impl(core.withTransform(f))
+
+    override def withEntryBuffer(buffer: EntryBuffer): Self =
+      new Impl(core.withEntryBuffer(buffer))
   }
 }
