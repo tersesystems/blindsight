@@ -89,7 +89,8 @@ object Logger {
       new Impl(core.withEntryTransform(level, f))
     }
 
-    override def withEntryTransform(f: Entry => Entry): Logger = new Impl(core.withEntryTransform(f))
+    override def withEntryTransform(f: Entry => Entry): Logger =
+      new Impl(core.withEntryTransform(f))
 
     override def withEntryBuffer(buffer: EntryBuffer): Logger =
       new Impl(core.withEntryBuffer(buffer))
