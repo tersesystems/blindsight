@@ -55,7 +55,7 @@ object ParameterList {
       transformF: Entry => Entry
   ): Array[ParameterList] = {
     def delegate(level: Level): ParameterList = {
-      new ParameterList.Spy(lists(level.ordinal()), transformF)
+      new ParameterList.Proxy(lists(level.ordinal()), transformF)
     }
 
     Array(
@@ -224,12 +224,12 @@ object ParameterList {
   }
 
   /**
-   * A spy can intercept log entries before they're sent to SLF4J and change the contents.
+   * A proxy can intercept log entries before they're sent to SLF4J and change the contents.
    *
    * @param delegate the delegate parameter list.
    * @param transform the transformation log entry.
    */
-  class Spy(delegate: ParameterList, val transform: Entry => Entry) extends ParameterList {
+  class Proxy(delegate: ParameterList, val transform: Entry => Entry) extends ParameterList {
     override def executePredicate(): Boolean = delegate.executePredicate()
 
     override def executePredicate(marker: Marker): Boolean = {
@@ -296,30 +296,6 @@ object ParameterList {
     }
   }
 
-  object Noop extends ParameterList {
-    override def executePredicate(): Boolean = false
-
-    override def executePredicate(marker: Marker): Boolean = false
-
-    override def message(msg: String): Unit = ()
-
-    override def messageArg1(msg: String, arg: Any): Unit = ()
-
-    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit = ()
-
-    override def messageArgs(msg: String, args: Array[Any]): Unit = ()
-
-    override def markerMessage(marker: Marker, msg: String): Unit = ()
-
-    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit = ()
-
-    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit = ()
-
-    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit = ()
-
-    override def executeStatement(statement: Statement): Unit = ()
-  }
-
   class Conditional(level: Level, core: CoreLogger) extends ParameterList {
 
     override def executePredicate(): Boolean = {
@@ -362,4 +338,29 @@ object ParameterList {
       if (core.condition(level, core.state))
         core.parameterList(level).executeStatement(statement)
   }
+
+  object Noop extends ParameterList {
+    override def executePredicate(): Boolean = false
+
+    override def executePredicate(marker: Marker): Boolean = false
+
+    override def message(msg: String): Unit = ()
+
+    override def messageArg1(msg: String, arg: Any): Unit = ()
+
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any): Unit = ()
+
+    override def messageArgs(msg: String, args: Array[Any]): Unit = ()
+
+    override def markerMessage(marker: Marker, msg: String): Unit = ()
+
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any): Unit = ()
+
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any): Unit = ()
+
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any]): Unit = ()
+
+    override def executeStatement(statement: Statement): Unit = ()
+  }
+
 }

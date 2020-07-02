@@ -258,6 +258,12 @@ lazy val api = (project in file("api"))
       ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
         "com.tersesystems.blindsight.Logger.withEntryBuffer"
       ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State.withEntryTransform"
+      ),
+      ProblemFilters.exclude[ReversedMissingMethodProblem](
+        "com.tersesystems.blindsight.CoreLogger#State.withEntryTransform"
+      ),
       ProblemFilters
         .exclude[InheritedNewAbstractMethodProblem]("com.tersesystems.blindsight.Logger.entries"),
       ProblemFilters.exclude[InheritedNewAbstractMethodProblem](

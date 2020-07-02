@@ -3,6 +3,11 @@ package com.tersesystems.blindsight
 import com.tersesystems.blindsight.mixins._
 import org.slf4j.event.Level
 
+/**
+ * The core logger.
+ *
+ * This should not be used directly by end users.
+ */
 trait CoreLogger
     extends UnderlyingMixin
     with MarkerMixin
@@ -27,8 +32,10 @@ trait CoreLogger
 
 object CoreLogger {
 
+  /**
+   * The state of the core logger.
+   */
   trait State {
-
     def underlying: org.slf4j.Logger
 
     def markers: Markers
@@ -46,6 +53,10 @@ object CoreLogger {
     def onCondition(c: Condition): State
 
     def withEntryBuffer(buffer: EntryBuffer): State
+
+    def withEntryTransform(level: Level, f: Entry => Entry): State
+
+    def withEntryTransform(f: Entry => Entry): State
 
     def withParameterLists(lists: Array[ParameterList]): State
   }
@@ -75,9 +86,22 @@ object CoreLogger {
         copy(parameterLists = lists)
       }
 
-      // XXX Add a withTransform here?
+      override def withEntryBuffer(buffer: EntryBuffer): State = {
+        val bufferedLists = ParameterList.buffered(parameterLists, buffer)
+        copy(entries = Option(buffer), parameterLists = bufferedLists)
+      }
 
-      override def withEntryBuffer(buffer: EntryBuffer): State = copy(entries = Option(buffer))
+      override def withEntryTransform(f: Entry => Entry): State = {
+        withParameterLists(ParameterList.transform(parameterLists, f))
+      }
+
+      override def withEntryTransform(level: Level, f: Entry => Entry): State = {
+        val newParameterLists: Array[ParameterList] = new Array(parameterLists.length)
+        parameterLists.copyToArray(newParameterLists)
+        val i = level.ordinal()
+        newParameterLists(i) = new ParameterList.Proxy(newParameterLists(i), f)
+        withParameterLists(newParameterLists)
+      }
     }
   }
 
@@ -97,6 +121,9 @@ object CoreLogger {
     new Impl(state)
   }
 
+  /**
+   * Common core logger behavior.
+   */
   abstract class Abstract extends CoreLogger {
     val state: State
 
@@ -141,34 +168,35 @@ object CoreLogger {
     }
   }
 
+  /**
+   * Implementation of core logger.
+   *
+   * @param state the core logger's state.
+   */
   class Impl(val state: State) extends Abstract {
     override def withMarker[M: ToMarkers](m: M): CoreLogger = {
       new Impl(state.withMarker(m))
     }
 
-    // transform works on an individual level.
-    override def withEntryTransform(
-        level: Level,
-        f: Entry => Entry
-    ): CoreLogger = {
-      val newParameterLists: Array[ParameterList] = new Array(5)
-      state.parameterLists.copyToArray(newParameterLists)
-      val i = level.ordinal()
-      newParameterLists(i) = new ParameterList.Spy(newParameterLists(i), f)
-      new Impl(state.withParameterLists(newParameterLists))
-    }
-
-    // buffer works on a logger, so everything gets swapped out.
-    override def withEntryBuffer(buffer: EntryBuffer): CoreLogger = {
-      val bufferedLists = ParameterList.buffered(state.parameterLists, buffer)
-      new Impl(state.withParameterLists(bufferedLists).withEntryBuffer(buffer))
+    override def withEntryTransform(level: Level, f: Entry => Entry): CoreLogger = {
+      new Impl(state.withEntryTransform(level, f))
     }
 
     override def withEntryTransform(f: Entry => Entry): CoreLogger = {
-      new Impl(state.withParameterLists(ParameterList.transform(state.parameterLists, f)))
+      new Impl(state.withEntryTransform(f))
     }
+
+    override def withEntryBuffer(buffer: EntryBuffer): CoreLogger = {
+      new Impl(state.withEntryBuffer(buffer))
+    }
+
   }
 
+  /**
+   * A core logger running conditionals.
+   *
+   * @param impl the implementation
+   */
   class Conditional(impl: Impl) extends Impl(impl.state) {
     @inline
     override def parameterList(level: Level): ParameterList =
@@ -182,22 +210,20 @@ object CoreLogger {
         level: Level,
         f: Entry => Entry
     ): CoreLogger = {
-      val newParameterLists: Array[ParameterList] = new Array(5)
-      state.parameterLists.copyToArray(newParameterLists)
-      newParameterLists(level.ordinal()) = new ParameterList.Spy(parameterList(level), f)
-      new Conditional(new Impl(state.withParameterLists(newParameterLists)))
+      new Conditional(new Impl(state.withEntryTransform(level, f)))
     }
 
     override def withEntryTransform(f: Entry => Entry): CoreLogger = {
-      new Conditional(
-        new Impl(state.withParameterLists(ParameterList.transform(state.parameterLists, f)))
-      )
+      new Conditional(new Impl(state.withEntryTransform(f)))
     }
 
     override def withEntryBuffer(buffer: EntryBuffer): CoreLogger =
       new Conditional(new Impl(state.withEntryBuffer(buffer)))
   }
 
+  /**
+   * A core logger that does nothing.
+   */
   class Noop(val state: State) extends Abstract {
     override def parameterList(level: Level): ParameterList = ParameterList.Noop
 
@@ -209,6 +235,8 @@ object CoreLogger {
     override def withMarker[T: ToMarkers](instance: T): CoreLogger =
       new Noop(state.withMarker(instance))
 
+    override def withEntryTransform(f: Entry => Entry): CoreLogger = this
+
     override def withEntryTransform(level: Level, f: Entry => Entry): CoreLogger = {
       this // XXX do some testing on this
     }
@@ -216,7 +244,6 @@ object CoreLogger {
     override def withEntryBuffer(buffer: EntryBuffer): CoreLogger =
       new Noop(state.withEntryBuffer(buffer))
 
-    override def withEntryTransform(f: Entry => Entry): CoreLogger = this
   }
 
 }
