@@ -13,7 +13,9 @@ class RingEntryBuffer(initCapacity: Int) extends EntryBuffer {
 
   override def size: Int = queue.size()
 
-  override def take(count: Int): Seq[Entry] = queue.iterator().asScala.take(count).toSeq
+  override def take(count: Int): scala.collection.immutable.Seq[Entry] = {
+    queue.iterator.asScala.take(count).toIndexedSeq
+  }
 
   override def headOption: Option[Entry] = Option(queue.relaxedPeek())
 
