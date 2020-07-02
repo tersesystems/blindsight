@@ -105,7 +105,10 @@ object CoreLogger {
     apply(underlying, None)
   }
 
-  def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: Option[SourceInfoBehavior]): CoreLogger = {
+  def apply(
+      underlying: org.slf4j.Logger,
+      sourceInfoBehavior: Option[SourceInfoBehavior]
+  ): CoreLogger = {
     val state = State.Impl(
       Markers.empty,
       underlying,

@@ -83,17 +83,17 @@ object FluentMethod {
     }
 
     private def executeStatement(
-                                  statement: Statement
-                                )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+        statement: Statement
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       parameterList.executeStatement(statement)
     }
 
     case class BuilderImpl(
-                            mkrs: () => Markers,
-                            m: () => Message,
-                            args: () => Arguments,
-                            e: Option[Throwable]
-                          ) extends FluentMethod.Builder {
+        mkrs: () => Markers,
+        m: () => Message,
+        args: () => Arguments,
+        e: Option[Throwable]
+    ) extends FluentMethod.Builder {
 
       override def statement(statement: => Statement): FluentMethod.Builder = {
         copy(
