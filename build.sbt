@@ -147,19 +147,21 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:postfixOps",
     "-Xlint",
     "-Ywarn-dead-code",
-    "-Yrangepos",
+    "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, n)) if n >= 13 =>
       Seq(
         "-Xsource:2.13",
         "-Xfatal-warnings",
-        "-release", "8"
+        "-release",
+        "8"
       ) ++ optimizeInline
     case Some((2, n)) if n == 12 =>
       Seq(
         "-Xsource:2.12",
         "-Yno-adapted-args",
-        "-release", "8"
+        "-release",
+        "8"
         // "-Xfatal-warnings" https://github.com/scala/bug/issues/7707 still broken in 2.12
       ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
