@@ -153,7 +153,8 @@ object CoreLogger {
     ): CoreLogger = {
       val newParameterLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newParameterLists)
-      newParameterLists(level.ordinal()) = new ParameterList.Spy(parameterList(level), f)
+      val i = level.ordinal()
+      newParameterLists(i) = new ParameterList.Spy(newParameterLists(i), f)
       new Impl(state.withParameterLists(newParameterLists))
     }
 

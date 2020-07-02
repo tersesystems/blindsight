@@ -28,7 +28,10 @@ object Slf4jMain {
 
   private val logger = LoggerFactory
     .getLogger(getClass)
-    .withEntryTransform(e => e.copy(message = e.message + " IN BED")) // XXX repeated twice?
+    .withEntryTransform(e => {
+      val message = e.message + " IN BED"
+      e.copy(message = message)
+    })
     .withEntryBuffer(EntryBuffer(50))
 
   final case class FeatureFlag(flagName: String)
