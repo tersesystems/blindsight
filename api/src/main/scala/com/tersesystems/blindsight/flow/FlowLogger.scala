@@ -53,7 +53,7 @@ trait FlowLogger
     extends SLF4JLoggerAPI[SimplePredicate, FlowMethod]
     with UnderlyingMixin
     with MarkerMixin
-    with TransformLogEntryMixin
+    with EntryTransformMixin
     with EntryBufferMixin
     with OnConditionMixin {
   override type Self      = FlowLogger

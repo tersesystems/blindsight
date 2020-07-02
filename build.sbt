@@ -146,7 +146,7 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:postfixOps",
     "-Xlint",
     // "-Xfatal-warnings", https://github.com/scala/bug/issues/7707 still broken in 2.12
-    "-Ywarn-dead-code"
+    "-Ywarn-dead-code",
     "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, n)) if n >= 13 =>

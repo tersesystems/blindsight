@@ -39,7 +39,7 @@ trait SLF4JLogger[M]
     extends SLF4JLoggerAPI[SimplePredicate, M]
     with MarkerMixin
     with UnderlyingMixin
-    with TransformLogEntryMixin
+    with EntryTransformMixin
     with EntryBufferMixin
     with OnConditionMixin {
   override type Self <: SLF4JLogger[M]
@@ -97,7 +97,8 @@ object SLF4JLogger {
     override def withTransform(f: Entry => Entry): Self =
       new Strict(core.withTransform(f))
 
-    override def withEntryBuffer(buffer: EntryBuffer): Self = new Strict(core.withEntryBuffer(buffer))
+    override def withEntryBuffer(buffer: EntryBuffer): Self =
+      new Strict(core.withEntryBuffer(buffer))
   }
 
   /**

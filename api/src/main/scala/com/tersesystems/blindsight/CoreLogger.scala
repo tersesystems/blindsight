@@ -8,7 +8,7 @@ trait CoreLogger
     with MarkerMixin
     with OnConditionMixin
     with EntryBufferMixin
-    with TransformLogEntryMixin {
+    with EntryTransformMixin {
 
   type Self = CoreLogger
 
@@ -53,12 +53,12 @@ object CoreLogger {
   object State {
 
     final case class Impl(
-                           markers: Markers,
-                           underlying: org.slf4j.Logger,
-                           condition: Condition,
-                           sourceInfoBehavior: SourceInfoBehavior,
-                           parameterLists: Array[ParameterList],
-                           entries: Option[EntryBuffer]
+        markers: Markers,
+        underlying: org.slf4j.Logger,
+        condition: Condition,
+        sourceInfoBehavior: SourceInfoBehavior,
+        parameterLists: Array[ParameterList],
+        entries: Option[EntryBuffer]
     ) extends State {
 
       def withMarker[M: ToMarkers](m: M): State = {
@@ -212,7 +212,8 @@ object CoreLogger {
       this // XXX do some testing on this
     }
 
-    override def withEntryBuffer(buffer: EntryBuffer): CoreLogger = new Noop(state.withEntryBuffer(buffer))
+    override def withEntryBuffer(buffer: EntryBuffer): CoreLogger =
+      new Noop(state.withEntryBuffer(buffer))
 
     override def withTransform(f: Entry => Entry): CoreLogger = this
   }

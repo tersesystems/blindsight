@@ -32,7 +32,7 @@ object EntryBuffer {
 
   private lazy val bufferFactory: EntryBufferFactory = {
     import javax.management.ServiceNotFoundException
-    val iter                   = bufferFactoryLoader.iterator()
+    val iter                        = bufferFactoryLoader.iterator()
     var factory: EntryBufferFactory = null;
     while (iter.hasNext && factory == null) {
       factory = iter.next()

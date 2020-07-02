@@ -34,7 +34,7 @@ trait FluentLogger
     extends SLF4JLoggerAPI[SimplePredicate, FluentMethod]
     with MarkerMixin
     with UnderlyingMixin
-    with TransformLogEntryMixin
+    with EntryTransformMixin
     with EntryBufferMixin
     with OnConditionMixin {
   override type Self      = FluentLogger
