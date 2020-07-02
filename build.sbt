@@ -124,7 +124,8 @@ lazy val fixtures = (project in file("fixtures"))
 // https://docs.scala-lang.org/overviews/compiler-options/index.html
 val optimizeInline = Seq(
   "-opt:l:inline",
-  "-opt-inline-from:com.tersesystems.blindsight.**"
+  "-opt-inline-from:com.tersesystems.blindsight.**",
+  "-opt-warnings:none"
   // have to comment this out as it fails on this:
   //Error:(51, 53) com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; could not be inlined:
   //The callee com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; contains the instruction INVOKESPECIAL com/tersesystems/blindsight/LoggerFactory$.loggerFactory ()Lcom/tersesystems/blindsight/LoggerFactory;
@@ -145,23 +146,25 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:existentials",
     "-language:postfixOps",
     "-Xlint",
-    // "-Xfatal-warnings", https://github.com/scala/bug/issues/7707 still broken in 2.12
     "-Ywarn-dead-code",
     "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, n)) if n >= 13 =>
       Seq(
-        "-Xsource:2.13"
+        "-Xsource:2.13",
+        "-Xfatal-warnings"
       ) ++ optimizeInline
     case Some((2, n)) if n == 12 =>
       Seq(
         "-Xsource:2.12",
         "-Yno-adapted-args"
+        // "-Xfatal-warnings" https://github.com/scala/bug/issues/7707 still broken in 2.12
       ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
       Seq(
         "-Xsource:2.11",
-        "-Yno-adapted-args"
+        "-Yno-adapted-args",
+        "-Xfatal-warnings"
       )
   })
 }
