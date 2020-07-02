@@ -55,12 +55,7 @@ object ParameterList {
       transformF: Entry => Entry
   ): Array[ParameterList] = {
     def delegate(level: Level): ParameterList = {
-      lists(level.ordinal()) match {
-        case spy: ParameterList.Spy =>
-          new ParameterList.Spy(spy, spy.transform.andThen(transformF))
-        case notspy =>
-          new ParameterList.Spy(notspy, transformF)
-      }
+      new ParameterList.Spy(lists(level.ordinal()), transformF)
     }
 
     Array(

@@ -37,7 +37,7 @@ trait SemanticLogger[StatementType]
     extends SemanticLoggerAPI[StatementType, SimplePredicate, SemanticMethod]
     with UnderlyingMixin
     with SemanticEntryBufferMixin[StatementType]
-    with SemanticTransformStatementMixin[StatementType]
+    with SemanticEntryTransformMixin[StatementType]
     with SemanticMarkerMixin[StatementType]
     with SemanticRefineMixin[StatementType] {
   type Self[T] = SemanticLogger[T]
@@ -66,7 +66,7 @@ object SemanticLogger {
       new Impl[StatementType](core.onCondition(condition))
     }
 
-    override def withTransform(
+    override def withEntryTransform(
         level: Level,
         f: Entry => Entry
     ): Self[StatementType] = {
