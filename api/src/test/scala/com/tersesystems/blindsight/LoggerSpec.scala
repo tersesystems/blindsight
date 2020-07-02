@@ -402,13 +402,13 @@ class TestEntryBuffer extends EntryBuffer {
 
   override def size: Int = queue.size
 
-  override def take(count: Int): Seq[Entry] = queue.slice(0, count).toSeq
+  override def take(count: Int) = queue.slice(0, count).toIndexedSeq
 
   def clear(): Unit = queue.clear()
 
   override def headOption: Option[Entry] = queue.headOption
 
-  override def offer(entry: Entry): Unit = queue.addOne(entry)
+  override def offer(entry: Entry): Unit = queue.enqueue(entry)
 
   override def capacity: Int = Int.MaxValue
 
