@@ -45,10 +45,10 @@ trait SemanticRefineMixin[StatementType] {
   def refine[T <: StatementType: ToStatement: NotNothing]: Self[T]
 }
 
-trait SemanticTransformStatementMixin[StatementType] {
+trait SemanticEntryTransformMixin[StatementType] {
   type Self[T]
 
-  def withTransform(
+  def withEntryTransform(
       level: Level,
       f: Entry => Entry
   ): Self[StatementType]
