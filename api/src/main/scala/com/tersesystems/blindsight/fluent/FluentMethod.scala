@@ -37,18 +37,63 @@ object FluentMethod {
 
   class Impl(val level: Level, core: CoreLogger) extends FluentMethod {
 
-    def when(condition: Condition)(block: FluentMethod => Unit): Unit = {
+    private val parameterList: ParameterList = core.parameterList(level)
+
+    override def when(condition: Condition)(block: FluentMethod => Unit): Unit = {
       if (core.when(level, condition)) {
         block(this)
       }
     }
 
+    override def statement(statement: => Statement): FluentMethod.Builder = {
+      BuilderImpl(
+        mkrs = () => statement.markers,
+        m = () => statement.message,
+        args = () => statement.arguments,
+        e = statement.throwable
+      )
+    }
+
+    override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
+      BuilderImpl(
+        () => Markers.empty,
+        () => Message.empty,
+        () => Arguments.fromInstance(instance),
+        None
+      )
+    }
+
+    override def cause(e: Throwable): FluentMethod.Builder = {
+      BuilderImpl(() => Markers.empty, () => Message.empty, () => Arguments.empty, Some(e))
+    }
+
+    override def message[T: ToMessage](instance: => T): FluentMethod.Builder = {
+      BuilderImpl(() => Markers.empty, () => Message(instance), () => Arguments.empty, None)
+    }
+
+    override def marker[T: ToMarkers](instance: => T): FluentMethod.Builder =
+      BuilderImpl(() => Markers(instance), () => Message.empty, () => Arguments.empty, None)
+
+    protected def isEnabled(markers: Markers): Boolean = {
+      if (markers.nonEmpty) {
+        parameterList.executePredicate(markers.marker)
+      } else {
+        parameterList.executePredicate()
+      }
+    }
+
+    private def executeStatement(
+                                  statement: Statement
+                                )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
+      parameterList.executeStatement(statement)
+    }
+
     case class BuilderImpl(
-        mkrs: () => Markers,
-        m: () => Message,
-        args: () => Arguments,
-        e: Option[Throwable]
-    ) extends FluentMethod.Builder {
+                            mkrs: () => Markers,
+                            m: () => Message,
+                            args: () => Arguments,
+                            e: Option[Throwable]
+                          ) extends FluentMethod.Builder {
 
       override def statement(statement: => Statement): FluentMethod.Builder = {
         copy(
@@ -99,58 +144,5 @@ object FluentMethod {
       val empty: BuilderImpl =
         BuilderImpl(() => Markers.empty, () => Message.empty, () => Arguments.empty, None)
     }
-
-    override def statement(statement: => Statement): FluentMethod.Builder = {
-      BuilderImpl(
-        mkrs = () => statement.markers,
-        m = () => statement.message,
-        args = () => statement.arguments,
-        e = statement.throwable
-      )
-    }
-
-    override def argument[T: ToArgument](instance: => T): FluentMethod.Builder = {
-      BuilderImpl(
-        () => Markers.empty,
-        () => Message.empty,
-        () => Arguments.fromInstance(instance),
-        None
-      )
-    }
-
-    override def cause(e: Throwable): FluentMethod.Builder = {
-      BuilderImpl(() => Markers.empty, () => Message.empty, () => Arguments.empty, Some(e))
-    }
-
-    override def message[T: ToMessage](instance: => T): FluentMethod.Builder = {
-      BuilderImpl(() => Markers.empty, () => Message(instance), () => Arguments.empty, None)
-    }
-
-    override def marker[T: ToMarkers](instance: => T): FluentMethod.Builder =
-      BuilderImpl(() => Markers(instance), () => Message.empty, () => Arguments.empty, None)
-
-    private def executeStatement(
-        statement: Statement
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val sourceMarkers = collateMarkers(statement.markers)
-      parameterList.executeStatement(statement.withMarkers(sourceMarkers))
-    }
-
-    protected def collateMarkers(
-        markers: Markers
-    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
-      sourceMarkers + core.markers + markers
-    }
-
-    protected def isEnabled(markers: Markers): Boolean = {
-      if (markers.nonEmpty) {
-        parameterList.executePredicate(markers.marker)
-      } else {
-        parameterList.executePredicate()
-      }
-    }
-
-    private val parameterList: ParameterList = core.parameterList(level)
   }
 }

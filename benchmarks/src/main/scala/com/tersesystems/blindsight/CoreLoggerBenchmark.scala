@@ -51,9 +51,4 @@ class CoreLoggerBenchmark {
       .executeStatement(st"Hello world ${arg1}, ${arg2}, ${arg3}")
   }
 
-  @Benchmark
-  def sourceInfoBehavior(blackhole: Blackhole): Unit = {
-    blackhole.consume(coreLogger.sourceInfoBehavior(SLF4JLevel.INFO, line, file, enclosing))
-  }
-
 }

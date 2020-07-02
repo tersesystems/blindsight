@@ -21,8 +21,6 @@ trait CoreLogger
 
   def condition: Condition
 
-  def sourceInfoBehavior: SourceInfoBehavior
-
   def predicate(level: Level): SimplePredicate
 
   def parameterList(level: Level): ParameterList
@@ -41,8 +39,6 @@ object CoreLogger {
     def markers: Markers
 
     def condition: Condition
-
-    def sourceInfoBehavior: SourceInfoBehavior
 
     def parameterLists: Array[ParameterList]
 
@@ -67,7 +63,7 @@ object CoreLogger {
         markers: Markers,
         underlying: org.slf4j.Logger,
         condition: Condition,
-        sourceInfoBehavior: SourceInfoBehavior,
+        sourceInfoBehavior: Option[SourceInfoBehavior],
         parameterLists: Array[ParameterList],
         entries: Option[EntryBuffer]
     ) extends State {
@@ -106,10 +102,10 @@ object CoreLogger {
   }
 
   def apply(underlying: org.slf4j.Logger): CoreLogger = {
-    apply(underlying, SourceInfoBehavior.empty)
+    apply(underlying, None)
   }
 
-  def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior): CoreLogger = {
+  def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: Option[SourceInfoBehavior]): CoreLogger = {
     val state = State.Impl(
       Markers.empty,
       underlying,
@@ -136,10 +132,12 @@ object CoreLogger {
 
     override def condition: Condition = state.condition
 
-    override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
-
     override def parameterList(level: Level): ParameterList = {
-      state.parameterLists(level.ordinal())
+      if (state.markers.isEmpty) {
+        state.parameterLists(level.ordinal())
+      } else {
+        new ParameterList.StateMarker(state.markers, state.parameterLists(level.ordinal()))
+      }
     }
 
     override def entries: Option[EntryBuffer] = state.entries

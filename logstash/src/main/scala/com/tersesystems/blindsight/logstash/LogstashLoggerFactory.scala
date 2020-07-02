@@ -29,11 +29,11 @@ class LogstashLoggerFactory extends LoggerFactory {
     new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior(underlying)))
   }
 
-  private def sourceInfoBehavior(underlying: org.slf4j.Logger): SourceInfoBehavior = {
+  private def sourceInfoBehavior(underlying: org.slf4j.Logger): Option[SourceInfoBehavior] = {
     if (sourceInfoEnabled(underlying)) {
-      sourceInfoAsMarker
+      Some(sourceInfoAsMarker)
     } else {
-      SourceInfoBehavior.empty
+      None
     }
   }
 

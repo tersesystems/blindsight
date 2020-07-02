@@ -11,10 +11,3 @@ trait SourceInfoBehavior {
       enclosing: Enclosing
   ): Markers
 }
-
-object SourceInfoBehavior {
-  val empty: SourceInfoBehavior = new SourceInfoBehavior {
-    override def apply(level: Level, line: Line, file: File, enclosing: Enclosing): Markers =
-      Markers.empty
-  }
-}

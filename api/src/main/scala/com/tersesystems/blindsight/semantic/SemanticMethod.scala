@@ -51,11 +51,7 @@ object SemanticMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
       if (shouldLog(statement.markers)) {
-        parameterList.executeStatement(
-          statement
-            .withMarkers(markersPlusSource(statement.markers))
-            .withThrowable(t)
-        )
+        parameterList.executeStatement(statement.withThrowable(t))
       }
     }
 
@@ -65,9 +61,7 @@ object SemanticMethod {
       val statement: Statement =
         implicitly[ToStatement[T]].toStatement(instance)
       if (shouldLog(statement.markers)) {
-        parameterList.executeStatement(
-          statement.withMarkers(markersPlusSource(statement.markers))
-        )
+        parameterList.executeStatement(statement)
       }
     }
 
@@ -84,13 +78,5 @@ object SemanticMethod {
         parameterList.executePredicate()
       }
     }
-
-    protected def markersPlusSource(
-        markers: Markers
-    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      val sourceMarkers = core.sourceInfoBehavior(level, line, file, enclosing)
-      sourceMarkers + core.markers + markers
-    }
-
   }
 }
