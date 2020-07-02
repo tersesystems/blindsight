@@ -103,14 +103,14 @@ object FlowLogger {
       new Impl(core.withMarker(markerInstance))
     }
 
-    override def withTransform(
+    override def withEntryTransform(
         level: Level,
         f: Entry => Entry
     ): Self = {
-      new Impl(core.withTransform(level, f))
+      new Impl(core.withEntryTransform(level, f))
     }
 
-    override def withTransform(f: Entry => Entry): Self = new Impl(core.withTransform(f))
+    override def withEntryTransform(f: Entry => Entry): Self = new Impl(core.withEntryTransform(f))
 
     override def withEntryBuffer(buffer: EntryBuffer): Self = new Impl(core.withEntryBuffer(buffer))
   }
@@ -143,10 +143,10 @@ object FlowLogger {
 
     override def withMarker[T: ToMarkers](instance: T): FlowLogger = this // XXX is this right?
 
-    override def withTransform(level: Level, f: Entry => Entry): Self =
+    override def withEntryTransform(level: Level, f: Entry => Entry): Self =
       this // XXX is this right?
 
-    override def withTransform(f: Entry => Entry): FlowLogger = this
+    override def withEntryTransform(f: Entry => Entry): FlowLogger = this
   }
 
 }

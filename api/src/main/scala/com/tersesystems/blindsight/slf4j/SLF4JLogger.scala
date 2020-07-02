@@ -91,11 +91,11 @@ object SLF4JLogger {
     override def onCondition(condition: Condition): Self =
       new Strict(core.onCondition(condition))
 
-    override def withTransform(level: Level, f: Entry => Entry): Self =
-      new Strict(core.withTransform(level, f))
+    override def withEntryTransform(level: Level, f: Entry => Entry): Self =
+      new Strict(core.withEntryTransform(level, f))
 
-    override def withTransform(f: Entry => Entry): Self =
-      new Strict(core.withTransform(f))
+    override def withEntryTransform(f: Entry => Entry): Self =
+      new Strict(core.withEntryTransform(f))
 
     override def withEntryBuffer(buffer: EntryBuffer): Self =
       new Strict(core.withEntryBuffer(buffer))
@@ -124,14 +124,14 @@ object SLF4JLogger {
     override def onCondition(condition: Condition): Self =
       new Unchecked(core.onCondition(condition))
 
-    override def withTransform(
+    override def withEntryTransform(
         level: Level,
         transform: Entry => Entry
     ): SLF4JLogger[UncheckedSLF4JMethod] =
-      new Unchecked(core.withTransform(level, transform))
+      new Unchecked(core.withEntryTransform(level, transform))
 
-    override def withTransform(f: Entry => Entry): Self =
-      new Unchecked(core.withTransform(f))
+    override def withEntryTransform(f: Entry => Entry): Self =
+      new Unchecked(core.withEntryTransform(f))
 
     override def withEntryBuffer(buffer: EntryBuffer): Self =
       new Unchecked(core.withEntryBuffer(buffer))

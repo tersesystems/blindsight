@@ -147,7 +147,7 @@ object CoreLogger {
     }
 
     // transform works on an individual level.
-    override def withTransform(
+    override def withEntryTransform(
         level: Level,
         f: Entry => Entry
     ): CoreLogger = {
@@ -163,7 +163,7 @@ object CoreLogger {
       new Impl(state.withParameterLists(bufferedLists).withEntryBuffer(buffer))
     }
 
-    override def withTransform(f: Entry => Entry): CoreLogger = {
+    override def withEntryTransform(f: Entry => Entry): CoreLogger = {
       new Impl(state.withParameterLists(ParameterList.transform(state.parameterLists, f)))
     }
   }
@@ -177,7 +177,7 @@ object CoreLogger {
       new Conditional(new Impl(state.withMarker(m)))
     }
 
-    override def withTransform(
+    override def withEntryTransform(
         level: Level,
         f: Entry => Entry
     ): CoreLogger = {
@@ -187,7 +187,7 @@ object CoreLogger {
       new Conditional(new Impl(state.withParameterLists(newParameterLists)))
     }
 
-    override def withTransform(f: Entry => Entry): CoreLogger = {
+    override def withEntryTransform(f: Entry => Entry): CoreLogger = {
       new Conditional(
         new Impl(state.withParameterLists(ParameterList.transform(state.parameterLists, f)))
       )
@@ -208,14 +208,14 @@ object CoreLogger {
     override def withMarker[T: ToMarkers](instance: T): CoreLogger =
       new Noop(state.withMarker(instance))
 
-    override def withTransform(level: Level, f: Entry => Entry): CoreLogger = {
+    override def withEntryTransform(level: Level, f: Entry => Entry): CoreLogger = {
       this // XXX do some testing on this
     }
 
     override def withEntryBuffer(buffer: EntryBuffer): CoreLogger =
       new Noop(state.withEntryBuffer(buffer))
 
-    override def withTransform(f: Entry => Entry): CoreLogger = this
+    override def withEntryTransform(f: Entry => Entry): CoreLogger = this
   }
 
 }

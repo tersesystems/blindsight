@@ -75,14 +75,14 @@ object FluentLogger {
       new Impl(core.onCondition(condition))
     }
 
-    override def withTransform(
+    override def withEntryTransform(
         level: Level,
         f: Entry => Entry
     ): FluentLogger = {
-      new Impl(core.withTransform(level, f))
+      new Impl(core.withEntryTransform(level, f))
     }
 
-    override def withTransform(f: Entry => Entry): Self = new Impl(core.withTransform(f))
+    override def withEntryTransform(f: Entry => Entry): Self = new Impl(core.withEntryTransform(f))
 
     override def withEntryBuffer(buffer: EntryBuffer): Self =
       new Impl(core.withEntryBuffer(buffer))
