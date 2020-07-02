@@ -82,14 +82,14 @@ object Logger {
       new Impl(core.withMarker(markerInstance))
     }
 
-    override def withTransform(
+    override def withEntryTransform(
         level: Level,
         f: Entry => Entry
     ): Logger = {
-      new Impl(core.withTransform(level, f))
+      new Impl(core.withEntryTransform(level, f))
     }
 
-    override def withTransform(f: Entry => Entry): Logger = new Impl(core.withTransform(f))
+    override def withEntryTransform(f: Entry => Entry): Logger = new Impl(core.withEntryTransform(f))
 
     override def withEntryBuffer(buffer: EntryBuffer): Logger =
       new Impl(core.withEntryBuffer(buffer))

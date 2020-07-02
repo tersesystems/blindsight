@@ -21,15 +21,14 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.slf4j._
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 import org.slf4j.MarkerFactory
-import org.slf4j.event.Level
 
 object Slf4jMain {
 
   private val logger = LoggerFactory
     .getLogger(getClass)
+    .withEntryTransform(e => e.copy(message = e.message + " IN BED")) // XXX repeated twice?
     .withEntryBuffer(EntryBuffer(50))
 
   final case class FeatureFlag(flagName: String)

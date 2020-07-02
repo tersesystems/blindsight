@@ -70,7 +70,7 @@ object SemanticLogger {
         level: Level,
         f: Entry => Entry
     ): Self[StatementType] = {
-      new Impl[StatementType](core.withTransform(level, f))
+      new Impl[StatementType](core.withEntryTransform(level, f))
     }
 
     override def withEntryBuffer(buffer: EntryBuffer): Self[StatementType] =

@@ -288,13 +288,13 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
     "be called when logging" in {
       var called = false;
-      val logger = createLogger.withTransform(Level.INFO, st => { called = true; st })
+      val logger = createLogger.withEntryTransform(Level.INFO, st => { called = true; st })
       logger.info("test message")
       called must be(true)
     }
 
     "not change anything on identity" in {
-      val logger = createLogger.withTransform(Level.INFO, identity)
+      val logger = createLogger.withEntryTransform(Level.INFO, identity)
       logger.info("test message")
 
       val event = listAppender.list.get(0)
@@ -303,7 +303,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
     "transform info message" in {
       val logger =
-        createLogger.withTransform(Level.INFO, st => st.copy(message = st.message.toUpperCase))
+        createLogger.withEntryTransform(Level.INFO, st => st.copy(message = st.message.toUpperCase))
       logger.info("test message")
 
       val event = listAppender.list.get(0)
@@ -311,7 +311,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
 
     "transform info message with argument" in {
-      val logger = createLogger.withTransform(
+      val logger = createLogger.withEntryTransform(
         Level.INFO,
         st => st.copy(message = st.message.toUpperCase, args = Array("IN BED"))
       )
@@ -324,7 +324,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
     "transform info message with marker" in {
       val security = MarkerFactory.getMarker("SECURITY")
-      val logger = createLogger.withTransform(
+      val logger = createLogger.withEntryTransform(
         Level.INFO,
         st => st.copy(marker = Some(security), message = st.message.toUpperCase)
       )
@@ -338,7 +338,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
     "transform info message with marker and argument" in {
       val security = MarkerFactory.getMarker("SECURITY")
-      val logger = createLogger.withTransform(
+      val logger = createLogger.withEntryTransform(
         Level.INFO,
         st =>
           st.copy(marker = Some(security), message = st.message.toUpperCase, args = Array("IN BED"))
@@ -353,7 +353,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
     "not transform warn message" in {
       val logger =
-        createLogger.withTransform(Level.WARN, st => st.copy(message = st.message.toUpperCase))
+        createLogger.withEntryTransform(Level.WARN, st => st.copy(message = st.message.toUpperCase))
       logger.info("warn message")
 
       val event = listAppender.list.get(0)
