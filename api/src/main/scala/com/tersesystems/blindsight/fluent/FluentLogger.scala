@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
 import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
 import com.tersesystems.blindsight.slf4j._
 import org.slf4j.event.Level
@@ -31,7 +32,7 @@ import org.slf4j.event.Level._
  * }}}
  */
 trait FluentLogger
-    extends SLF4JLoggerAPI[SimplePredicate, FluentMethod]
+    extends SLF4JLoggerAPI[CorePredicate, FluentMethod]
     with MarkerMixin
     with UnderlyingMixin
     with EntryTransformMixin
@@ -39,7 +40,7 @@ trait FluentLogger
     with OnConditionMixin {
   override type Self      = FluentLogger
   override type Method    = FluentMethod
-  override type Predicate = SimplePredicate
+  override type Predicate = CorePredicate
 }
 
 object FluentLogger {

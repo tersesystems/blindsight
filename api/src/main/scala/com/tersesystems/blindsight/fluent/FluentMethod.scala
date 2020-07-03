@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, ParameterList}
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
@@ -74,7 +75,8 @@ object FluentMethod {
     override def marker[T: ToMarkers](instance: => T): FluentMethod.Builder =
       BuilderImpl(() => Markers(instance), () => Message.empty, () => Arguments.empty, None)
 
-    protected def isEnabled(markers: Markers): Boolean = {
+    @inline
+    private def shouldLog(markers: Markers): Boolean = {
       if (markers.nonEmpty) {
         parameterList.executePredicate(markers.marker)
       } else {
@@ -82,6 +84,7 @@ object FluentMethod {
       }
     }
 
+    @inline
     private def executeStatement(
         statement: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
@@ -120,7 +123,7 @@ object FluentMethod {
 
       override def log(): Unit = {
         val markers = mkrs()
-        if (isEnabled(markers)) {
+        if (shouldLog(markers)) {
           val statement = e
             .map(ee => Statement(markers, m(), args(), ee))
             .getOrElse(Statement(markers, m(), args()))
@@ -130,7 +133,7 @@ object FluentMethod {
 
       override def logWithPlaceholders(): Unit = {
         val markers = mkrs()
-        if (isEnabled(markers)) {
+        if (shouldLog(markers)) {
           val message = m().withPlaceHolders(args())
           val statement = e
             .map(ee => Statement(markers, message, args(), ee))

@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.CoreLogger
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.slf4j.SLF4JLogger.Strict
 import org.scalatest.matchers.must.Matchers

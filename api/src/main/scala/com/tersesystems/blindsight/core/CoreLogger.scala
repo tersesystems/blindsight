@@ -1,6 +1,7 @@
-package com.tersesystems.blindsight
+package com.tersesystems.blindsight.core
 
 import com.tersesystems.blindsight.mixins._
+import com.tersesystems.blindsight.{Condition, Entry, EntryBuffer, Markers, ToMarkers}
 import org.slf4j.event.Level
 
 /**
@@ -21,7 +22,7 @@ trait CoreLogger
 
   def condition: Condition
 
-  def predicate(level: Level): SimplePredicate
+  def predicate(level: Level): CorePredicate
 
   def parameterList(level: Level): ParameterList
 
@@ -74,7 +75,7 @@ object CoreLogger {
       }
 
       def onCondition(c: Condition): State = {
-        val f = (level: Level, s: State) => condition(level, s) && c(level, s)
+        val f = (level: Level, markers: Markers) => condition(level, markers) && c(level, markers)
         copy(condition = Condition(f))
       }
 
@@ -134,8 +135,8 @@ object CoreLogger {
   abstract class Abstract extends CoreLogger {
     val state: State
 
-    override def predicate(level: Level): SimplePredicate =
-      new SimplePredicate.Impl(level, this)
+    override def predicate(level: Level): CorePredicate =
+      new CorePredicate.Impl(level, this)
 
     override def markers: Markers = state.markers
 
@@ -156,7 +157,7 @@ object CoreLogger {
     override def when(level: Level, condition: Condition): Boolean = {
       // because conditions are AND, if there's a never in the condition we
       // can always return false right off the bat.
-      if (condition != Condition.never && condition(level, state)) {
+      if (condition != Condition.never && condition(level, state.markers)) {
         parameterList(level).executePredicate()
       } else {
         false

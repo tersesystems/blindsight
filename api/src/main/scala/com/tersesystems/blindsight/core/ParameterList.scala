@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight
+package com.tersesystems.blindsight.core
 
+import com.tersesystems.blindsight.{Entry, EntryBuffer, Markers, Statement}
 import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -723,20 +724,21 @@ object ParameterList {
   }
 
   class Conditional(level: Level, core: CoreLogger) extends ParameterList {
+    private val parameterList: ParameterList = core.parameterList(level)
 
     override def executePredicate(): Boolean = {
-      core.condition(level, core.state) && core.parameterList(level).executePredicate()
+      core.condition(level, core.markers) && parameterList.executePredicate()
     }
 
     override def executePredicate(marker: Marker): Boolean = {
-      core.condition(level, core.state) && core.parameterList(level).executePredicate(marker)
+      core.condition(level, core.markers) && parameterList.executePredicate(marker)
     }
 
     override def message(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).message(msg)
+      if (core.condition(level, core.markers))
+        parameterList.message(msg)
     }
 
     override def messageArg1(msg: String, arg: Any)(implicit
@@ -744,8 +746,8 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).messageArg1(msg, arg)
+      if (core.condition(level, core.markers))
+        parameterList.messageArg1(msg, arg)
     }
 
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
@@ -753,8 +755,8 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).messageArg1Arg2(msg, arg1, arg2)
+      if (core.condition(level, core.markers))
+        parameterList.messageArg1Arg2(msg, arg1, arg2)
     }
 
     override def messageArgs(msg: String, args: Array[Any])(implicit
@@ -762,8 +764,8 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).messageArgs(msg, args)
+      if (core.condition(level, core.markers))
+        parameterList.messageArgs(msg, args)
     }
 
     override def markerMessage(marker: Marker, msg: String)(implicit
@@ -771,8 +773,8 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).markerMessage(marker, msg)
+      if (core.condition(level, core.markers))
+        parameterList.markerMessage(marker, msg)
     }
 
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
@@ -780,8 +782,8 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).markerMessageArg1(marker, msg, arg)
+      if (core.condition(level, core.markers))
+        parameterList.markerMessageArg1(marker, msg, arg)
     }
 
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
@@ -789,8 +791,8 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).markerMessageArg1Arg2(marker, msg, arg1, arg2)
+      if (core.condition(level, core.markers))
+        parameterList.markerMessageArg1Arg2(marker, msg, arg1, arg2)
     }
 
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
@@ -798,15 +800,15 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).markerMessageArgs(marker, msg, args)
+      if (core.condition(level, core.markers))
+        parameterList.markerMessageArgs(marker, msg, args)
     }
 
     override def executeStatement(
         statement: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (core.condition(level, core.state))
-        core.parameterList(level).executeStatement(statement)
+      if (core.condition(level, core.markers))
+        parameterList.executeStatement(statement)
     }
   }
 

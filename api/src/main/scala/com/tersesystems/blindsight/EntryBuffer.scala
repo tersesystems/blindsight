@@ -26,19 +26,20 @@ trait EntryBufferFactory {
   def createEntryBuffer(capacity: Int): EntryBuffer
 }
 
+// XXX should be EntryBufferFactory
 object EntryBuffer {
 
   import java.util.ServiceLoader
 
   private lazy val bufferFactory: EntryBufferFactory = {
-    import javax.management.ServiceNotFoundException
-    val iter                        = bufferFactoryLoader.iterator()
     var factory: EntryBufferFactory = null;
+
+    val iter = bufferFactoryLoader.iterator()
     while (iter.hasNext && factory == null) {
       factory = iter.next()
     }
     if (factory == null) {
-      throw new ServiceNotFoundException("No buffer factory found!")
+      throw new javax.management.ServiceNotFoundException("No buffer factory found!")
     } else {
       factory
     }

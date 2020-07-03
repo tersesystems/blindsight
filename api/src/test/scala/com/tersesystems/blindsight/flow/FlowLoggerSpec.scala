@@ -1,7 +1,8 @@
 package com.tersesystems.blindsight.flow
 
+import com.tersesystems.blindsight.core.CoreLogger
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
-import com.tersesystems.blindsight.{CoreLogger, Statement, ToArgument}
+import com.tersesystems.blindsight.{Statement, ToArgument}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.event.Level

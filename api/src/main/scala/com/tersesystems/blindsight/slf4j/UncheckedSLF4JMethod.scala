@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, ParameterList}
 import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -121,19 +122,19 @@ object UncheckedSLF4JMethod {
     }
 
     def apply(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (shouldLog) block(this)
+      if (executePredicate()) block(this)
     }
 
     override def apply(
         st: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) executeStatement(st)
+      if (executePredicate()) executeStatement(st)
     }
 
     override def apply(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         message(msg)
       }
     }
@@ -142,7 +143,7 @@ object UncheckedSLF4JMethod {
         format: String,
         arg: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         warnIfChecked(
           "Use apply(format, Argument(arg)) as Any cannot be type checked"
         )
@@ -155,7 +156,7 @@ object UncheckedSLF4JMethod {
         arg1: Any,
         arg2: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         warnIfChecked(
           "Use apply(format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
@@ -167,7 +168,7 @@ object UncheckedSLF4JMethod {
         format: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArgs(format, args.toArray)
       }
     }
@@ -176,7 +177,7 @@ object UncheckedSLF4JMethod {
         marker: Marker,
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(marker)) {
+      if (executePredicate(marker)) {
         markerMessage(marker, msg)
       }
     }
@@ -186,7 +187,7 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (shouldLog(marker)) {
+      if (executePredicate(marker)) {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
@@ -199,7 +200,7 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (shouldLog(marker)) {
+      if (executePredicate(marker)) {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
@@ -212,17 +213,10 @@ object UncheckedSLF4JMethod {
         format: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(marker)) {
+      if (executePredicate(marker)) {
         markerMessageArgs(marker, format, args.toArray)
       }
     }
-
-    @inline
-    private def shouldLog: Boolean = executePredicate()
-
-    // optimize for the conditional, even if we have to reconstruct the marker twice
-    @inline
-    private def shouldLog(marker: Marker): Boolean = executePredicate(marker)
 
     override def toString: String = {
       s"${getClass.getName}(logger=$core)"

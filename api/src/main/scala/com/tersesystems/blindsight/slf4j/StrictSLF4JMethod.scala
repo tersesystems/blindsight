@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, ParameterList}
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
@@ -155,17 +156,17 @@ object StrictSLF4JMethod {
     override def apply(
         st: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) parameterList.executeStatement(st)
+      if (executePredicate()) parameterList.executeStatement(st)
     }
 
     def apply(block: StrictSLF4JMethod => Unit): Unit = {
-      if (shouldLog) block(this)
+      if (executePredicate()) block(this)
     }
 
     override def apply(
         msg: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         message(msg.toString)
       }
     }
@@ -173,7 +174,7 @@ object StrictSLF4JMethod {
     override def apply(
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArg1("", throwable)
       }
     }
@@ -182,7 +183,7 @@ object StrictSLF4JMethod {
         message: Message,
         arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArg1(message.toString, Argument(arg).value)
       }
     }
@@ -191,7 +192,7 @@ object StrictSLF4JMethod {
         message: Message,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArg1(message.toString, throwable)
       }
     }
@@ -201,7 +202,7 @@ object StrictSLF4JMethod {
         arg: A,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArg1Arg2(
           message.toString,
           Argument(arg).value,
@@ -215,7 +216,7 @@ object StrictSLF4JMethod {
         arg1: A1,
         arg2: A2
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArg1Arg2(
           message.toString,
           Argument(arg1).value,
@@ -228,7 +229,7 @@ object StrictSLF4JMethod {
         message: Message,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArgs(message.toString, args.toArray)
       }
     }
@@ -238,7 +239,7 @@ object StrictSLF4JMethod {
         args: Arguments,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) {
+      if (executePredicate()) {
         messageArgs(message.toString, args.toArray :+ throwable)
       }
     }
@@ -246,7 +247,7 @@ object StrictSLF4JMethod {
     override def apply(
         markers: Markers
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessage(markers.marker, "")
       }
     }
@@ -255,7 +256,7 @@ object StrictSLF4JMethod {
         markers: Markers,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessageArg1(markers.marker, "", throwable)
       }
     }
@@ -264,7 +265,7 @@ object StrictSLF4JMethod {
         markers: Markers,
         message1: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessage(markers.marker, message1.toString)
       }
     }
@@ -274,7 +275,7 @@ object StrictSLF4JMethod {
         message1: Message,
         arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessageArg1(markers.marker, message1.toString, Argument(arg).value)
       }
     }
@@ -284,7 +285,7 @@ object StrictSLF4JMethod {
         message: Message,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessageArg1(markers.marker, message.toString, throwable)
       }
     }
@@ -295,7 +296,7 @@ object StrictSLF4JMethod {
         arg1: A1,
         arg2: A2
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessageArg1Arg2(
           markers.marker,
           message.toString,
@@ -311,7 +312,7 @@ object StrictSLF4JMethod {
         arg: A,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessageArg1Arg2(
           markers.marker,
           message.toString,
@@ -326,7 +327,7 @@ object StrictSLF4JMethod {
         message: Message,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessageArgs(markers.marker, message.toString, args.toArray)
       }
     }
@@ -337,18 +338,9 @@ object StrictSLF4JMethod {
         args: Arguments,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog(markers)) {
+      if (executePredicate(markers.marker)) {
         markerMessageArgs(markers.marker, message.toString, args.toArray :+ throwable)
       }
-    }
-
-    @inline
-    private def shouldLog: Boolean = executePredicate()
-
-    // optimize for the conditional, even if we have to reconstruct the marker twice
-    @inline
-    private def shouldLog(markers: Markers): Boolean = {
-      executePredicate(markers.marker)
     }
 
     override def toString: String = {
