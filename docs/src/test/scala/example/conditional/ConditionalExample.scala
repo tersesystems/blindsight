@@ -2,7 +2,7 @@ package example.conditional
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.tersesystems.blindsight.{Argument, Condition, CoreLogger, LoggerFactory}
+import com.tersesystems.blindsight._
 import io.timeandspace.cronscheduler.CronTask
 import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
@@ -19,13 +19,13 @@ object SimpleConditionalExample {
 
     // #marker-conditional
     val fooMarker              = MarkerFactory.getMarker("FOO")
-    val markerCondition        = Condition((state: CoreLogger.State) => state.markers.contains(fooMarker))
+    val markerCondition        = Condition((stateMarkers: Markers) => stateMarkers.contains(fooMarker))
     val conditionalOnFooMarker = logger.onCondition(markerCondition)
     // #marker-conditional
 
     // #level-marker-conditional
-    val levelMarkerCondition = Condition((level, state) =>
-      (level.compareTo(Level.DEBUG) >= 0) && state.markers.contains(fooMarker)
+    val levelMarkerCondition = Condition((level, markers) =>
+      (level.compareTo(Level.DEBUG) >= 0) && markers.contains(fooMarker)
     )
     val conditionalOnLevelAndMarker = logger.onCondition(levelMarkerCondition)
     // #level-marker-conditional

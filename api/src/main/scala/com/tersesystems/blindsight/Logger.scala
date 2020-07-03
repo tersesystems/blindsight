@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight
 
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
 import com.tersesystems.blindsight.flow.FlowLogger
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.semantic.SemanticLogger
@@ -43,7 +44,7 @@ object Logger {
 
   class Impl(core: CoreLogger)
       extends Logger
-      with SLF4JLoggerAPI.Proxy[SimplePredicate, StrictSLF4JMethod] {
+      with SLF4JLoggerAPI.Proxy[CorePredicate, StrictSLF4JMethod] {
 
     override type Parent = SLF4JLogger[StrictSLF4JMethod]
     override type Self   = Logger

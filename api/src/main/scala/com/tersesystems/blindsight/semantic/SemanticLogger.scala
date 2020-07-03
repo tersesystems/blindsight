@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight.semantic
 
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
 import com.tersesystems.blindsight.{EntryBuffer, _}
 import com.tersesystems.blindsight.mixins._
 import org.slf4j.event.Level
@@ -34,7 +35,7 @@ import org.slf4j.event.Level._
  * @tparam StatementType the type class instance of [[com.tersesystems.blindsight.ToStatement]].
  */
 trait SemanticLogger[StatementType]
-    extends SemanticLoggerAPI[StatementType, SimplePredicate, SemanticMethod]
+    extends SemanticLoggerAPI[StatementType, CorePredicate, SemanticMethod]
     with UnderlyingMixin
     with SemanticEntryBufferMixin[StatementType]
     with SemanticEntryTransformMixin[StatementType]

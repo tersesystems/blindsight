@@ -16,13 +16,8 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.{
-  Condition,
-  CoreLogger,
-  ParameterList,
-  SimplePredicate,
-  ToArgument
-}
+import com.tersesystems.blindsight.core.{CoreLogger, ParameterList, CorePredicate}
+import com.tersesystems.blindsight.{Condition, ToArgument}
 import org.slf4j.event.Level
 import sourcecode.{Args, Enclosing, File, Line}
 
@@ -64,7 +59,7 @@ object FlowMethod {
    */
   class Impl(level: Level, core: CoreLogger) extends FlowMethod {
 
-    private val predicate: SimplePredicate = core.predicate(level)
+    private val predicate: CorePredicate = core.predicate(level)
 
     override def when(condition: Condition): FlowMethod = {
       if (condition == Condition.never) {

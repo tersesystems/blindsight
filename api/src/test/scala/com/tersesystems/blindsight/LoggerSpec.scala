@@ -2,6 +2,7 @@ package com.tersesystems.blindsight
 
 import ch.qos.logback.classic.LoggerContext
 import com.tersesystems.blindsight
+import com.tersesystems.blindsight.core.CoreLogger
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.flow.SimpleFlowBehavior
 import com.tersesystems.blindsight.slf4j.StrictSLF4JMethod
@@ -47,7 +48,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val condition                            = true
       implicit def flowBehavior[B: ToArgument] = new SimpleFlowBehavior[B]
       def calcInt: Int =
-        logger.flow.info.when(condition) { // line 49 :-)
+        logger.flow.info.when(condition) { // line 51 :-)
           1 + 2
         }
       val result = calcInt
@@ -55,7 +56,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       result must be(3)
       val event = listAppender.list.get(0)
       event.getFormattedMessage must equal(
-        " => 3     at com.tersesystems.blindsight.LoggerSpec#calcInt(LoggerSpec.scala:50)"
+        " => 3     at com.tersesystems.blindsight.LoggerSpec#calcInt(LoggerSpec.scala:51)"
       )
     }
 
@@ -99,7 +100,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val fooMarker = MarkerFactory.getMarker("FOO")
       val markerCondition =
-        Condition((state: CoreLogger.State) => state.markers.contains(fooMarker))
+        Condition((markers: Markers) => markers.contains(fooMarker))
       logger.withMarker(fooMarker).onCondition(markerCondition).error("this should be logged")
       val event = listAppender.list.get(0)
       event.getMessage must equal("this should be logged")
@@ -110,7 +111,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val fooMarker = MarkerFactory.getMarker("FOO")
       val markerCondition =
-        Condition((state: CoreLogger.State) => state.markers.contains(fooMarker))
+        Condition((markers: Markers) => markers.contains(fooMarker))
       logger.onCondition(markerCondition).error("this should not be logged")
       listAppender.list must be(empty)
     }
@@ -221,7 +222,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       // the condition can only see marker in the logger state, not in the statement
       val someMarker    = MarkerFactory.getMarker("SOME_MARKER")
-      val infoCondition = Condition((level, state) => state.markers.contains(someMarker))
+      val infoCondition = Condition((level, markers) => markers.contains(someMarker))
       val conditional   = logger.onCondition(infoCondition)
       conditional.info(Markers(someMarker), "do not log")
 
@@ -232,7 +233,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val someMarker    = MarkerFactory.getMarker("SOME_MARKER")
-      val infoCondition = Condition((level, state) => state.markers.contains(someMarker))
+      val infoCondition = Condition((level, markers) => markers.contains(someMarker))
       val conditional   = logger.onCondition(infoCondition)
       conditional.info("do not log because no marker")
       listAppender.list must be(empty)
@@ -242,7 +243,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val someMarker    = MarkerFactory.getMarker("SOME_MARKER")
-      val infoCondition = Condition((level, state) => state.markers.contains(someMarker))
+      val infoCondition = Condition((level, markers) => markers.contains(someMarker))
       val conditional   = logger.onCondition(infoCondition)
       conditional.withMarker(someMarker).info("log because state has marker")
 

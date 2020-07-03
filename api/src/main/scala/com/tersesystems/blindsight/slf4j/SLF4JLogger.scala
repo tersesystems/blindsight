@@ -18,6 +18,7 @@ package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
 import org.slf4j.Logger
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
@@ -36,7 +37,7 @@ import org.slf4j.event.Level._
  * @tparam M the type of method.
  */
 trait SLF4JLogger[M]
-    extends SLF4JLoggerAPI[SimplePredicate, M]
+    extends SLF4JLoggerAPI[CorePredicate, M]
     with MarkerMixin
     with UnderlyingMixin
     with EntryTransformMixin
@@ -55,7 +56,7 @@ object SLF4JLogger {
   abstract class Base[M](core: CoreLogger) extends SLF4JLogger[M] {
     override type Self      = SLF4JLogger[M]
     override type Method    = M
-    override type Predicate = SimplePredicate
+    override type Predicate = CorePredicate
 
     override val underlying: Logger = core.underlying
 

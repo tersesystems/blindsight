@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight
+package com.tersesystems.blindsight.core
 
+import com.tersesystems.blindsight.{Markers, ToMarkers}
 import org.slf4j.event.Level
 
 /**
@@ -23,7 +24,7 @@ import org.slf4j.event.Level
  *
  * It corresponds to the SLF4J "isLoggingDebug" / "isLoggingDebug(marker)" calls.
  */
-trait SimplePredicate {
+trait CorePredicate {
 
   /**
    * "isLogging*()" with no arguments.
@@ -42,12 +43,12 @@ trait SimplePredicate {
   def apply[T: ToMarkers](instance: T): Boolean
 }
 
-object SimplePredicate {
+object CorePredicate {
 
   /**
    * This class does the work of calling the predicate methods on SLF4J: no-args and marker essentially.
    */
-  class Impl(val level: Level, logger: CoreLogger) extends SimplePredicate {
+  class Impl(val level: Level, logger: CoreLogger) extends CorePredicate {
     protected val parameterList: ParameterList = logger.parameterList(level)
 
     override def apply(): Boolean = {

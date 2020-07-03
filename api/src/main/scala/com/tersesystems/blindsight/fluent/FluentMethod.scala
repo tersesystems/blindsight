@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, ParameterList}
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 

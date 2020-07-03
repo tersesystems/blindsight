@@ -17,7 +17,7 @@
 package com.tersesystems.blindsight.logstash
 
 import com.tersesystems.blindsight.AST._
-import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.{MarkersResolver, _}
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 
 class LogstashMarkersResolver extends MarkersResolver {

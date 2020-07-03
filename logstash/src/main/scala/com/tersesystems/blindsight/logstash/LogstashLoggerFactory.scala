@@ -17,6 +17,7 @@
 package com.tersesystems.blindsight.logstash
 
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, SourceInfoBehavior}
 import sourcecode.{Enclosing, File, Line}
 
 /**
@@ -50,7 +51,7 @@ class LogstashLoggerFactory extends LoggerFactory {
     override def apply(line: Line, file: File, enclosing: Enclosing): Markers = {
       import com.tersesystems.blindsight.AST.BField
       import com.tersesystems.blindsight.DSL._
-      import com.tersesystems.blindsight.SourceCodeImplicits._
+      import com.tersesystems.blindsight.core.SourceCodeImplicits._
       Markers((line: BField) ~ file ~ enclosing)
     }
   }

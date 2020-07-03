@@ -16,6 +16,8 @@
 
 package com.tersesystems.blindsight
 
+import com.tersesystems.blindsight.core.CoreLogger
+
 /**
  * The logger factory is a trait that returns a Blindsight logger, using a
  * type class instance of [[LoggerResolver]].

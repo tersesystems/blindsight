@@ -1,8 +1,9 @@
 package com.tersesystems.blindsight
 
+import com.tersesystems.blindsight.core.ParameterList
 import org.slf4j.event.Level
 
-trait Condition extends ((Level, CoreLogger.State) => Boolean)
+trait Condition extends ((Level, Markers) => Boolean)
 
 object Condition {
 
@@ -11,29 +12,29 @@ object Condition {
   def apply(logger: org.slf4j.Logger): Condition =
     new Condition {
       val parameterLists: Array[ParameterList] = ParameterList.lists(logger)
-      override def apply(level: Level, state: CoreLogger.State): Boolean = {
+      override def apply(level: Level, markers: Markers): Boolean = {
         parameterLists.apply(level.ordinal).executePredicate()
       }
     }
 
   def apply(f: => Boolean): Condition =
     new Condition {
-      override def apply(level: Level, state: CoreLogger.State): Boolean = f
+      override def apply(level: Level, markers: Markers): Boolean = f
     }
 
   def apply(predicate: java.util.function.Predicate[Level]): Condition =
     new Condition {
-      override def apply(level: Level, state: CoreLogger.State): Boolean = predicate.test(level)
+      override def apply(level: Level, markers: Markers): Boolean = predicate.test(level)
     }
 
-  def apply(f: CoreLogger.State => Boolean): Condition =
+  def apply(f: Markers => Boolean): Condition =
     new Condition {
-      override def apply(level: Level, state: CoreLogger.State): Boolean = f(state)
+      override def apply(level: Level, markers: Markers): Boolean = f(markers)
     }
 
-  def apply(f: (Level, CoreLogger.State) => Boolean): Condition =
+  def apply(f: (Level, Markers) => Boolean): Condition =
     new Condition {
-      override def apply(level: Level, state: CoreLogger.State): Boolean = f(level, state)
+      override def apply(level: Level, markers: Markers): Boolean = f(level, markers)
     }
 
   val always: Condition = Condition(true)

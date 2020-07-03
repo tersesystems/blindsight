@@ -19,6 +19,7 @@ package com.tersesystems.blindsight.flow
 import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
 import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
 import org.slf4j
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
@@ -50,7 +51,7 @@ import org.slf4j.event.Level._
  * }}}
  */
 trait FlowLogger
-    extends SLF4JLoggerAPI[SimplePredicate, FlowMethod]
+    extends SLF4JLoggerAPI[CorePredicate, FlowMethod]
     with UnderlyingMixin
     with MarkerMixin
     with EntryTransformMixin
@@ -58,7 +59,7 @@ trait FlowLogger
     with OnConditionMixin {
   override type Self      = FlowLogger
   override type Method    = FlowMethod
-  override type Predicate = SimplePredicate
+  override type Predicate = CorePredicate
 }
 
 object FlowLogger {
