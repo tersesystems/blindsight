@@ -101,6 +101,8 @@ object Slf4jMain {
     loggerWithMarkers.info("I should have two markers")
 
     println(s"There are ${buffer.size} entries in the buffer")
-    println(s"The last entered entry was ${buffer.head}")
+    buffer.take(buffer.size).foreach { event =>
+      println(s"event $event")
+    }
   }
 }
