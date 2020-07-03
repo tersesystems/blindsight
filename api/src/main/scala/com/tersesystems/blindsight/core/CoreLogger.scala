@@ -188,7 +188,10 @@ object CoreLogger {
     }
 
     override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
-      ???
+      val newLists: Array[ParameterList] = new Array(5)
+      state.parameterLists.copyToArray(newLists)
+      newLists(level.ordinal()) = buffered(this, buffer, level, () => clock.instant())
+      new Impl(state.withParameterLists(newLists))
     }
   }
 
@@ -221,6 +224,13 @@ object CoreLogger {
       val bufferedLists = buffered(this, buffer, () => clock.instant())
       new Conditional(new Impl(state.withParameterLists(bufferedLists)))
     }
+
+    override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
+      val newLists: Array[ParameterList] = new Array(5)
+      state.parameterLists.copyToArray(newLists)
+      newLists(level.ordinal()) = buffered(this, buffer, level, () => clock.instant())
+      new Conditional(new Impl(state.withParameterLists(newLists)))
+    }
   }
 
   /**
@@ -248,13 +258,18 @@ object CoreLogger {
       new Noop(state.withParameterLists(bufferedLists))
     }
 
-    override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = ???
+    override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
+      val newLists: Array[ParameterList] = new Array(5)
+      state.parameterLists.copyToArray(newLists)
+      newLists(level.ordinal()) = buffered(this, buffer, level, () => clock.instant())
+      new Noop(state.withParameterLists(newLists))
+    }
   }
 
   /**
    * Indexed by enum ordinal, i.e. to look up, use Level.TRACE.ordinal() as index.
    */
-  private def lists(logger: org.slf4j.Logger): Array[ParameterList] =
+  def lists(logger: org.slf4j.Logger): Array[ParameterList] =
     Array(
       new ParameterList.Error(logger),
       new ParameterList.Warn(logger),
@@ -267,9 +282,9 @@ object CoreLogger {
    * Adds source info to the parameter lists.
    */
   private def sourceInfo(
-                  behavior: SourceInfoBehavior,
-                  lists: Array[ParameterList]
-                ): Array[ParameterList] = {
+      behavior: SourceInfoBehavior,
+      lists: Array[ParameterList]
+  ): Array[ParameterList] = {
     Array(
       new ParameterList.WithSource(behavior, lists(Level.ERROR.ordinal())),
       new ParameterList.WithSource(behavior, lists(Level.WARN.ordinal())),
@@ -283,9 +298,9 @@ object CoreLogger {
    * Adds an entry transformation step to parameter lists.
    */
   private def transform(
-                 lists: Array[ParameterList],
-                 transformF: Entry => Entry
-               ): Array[ParameterList] = {
+      lists: Array[ParameterList],
+      transformF: Entry => Entry
+  ): Array[ParameterList] = {
     def delegate(level: Level): ParameterList = {
       new ParameterList.Proxy(lists(level.ordinal()), transformF)
     }
@@ -307,10 +322,10 @@ object CoreLogger {
    * @return array of lists that offer entry to the buffer.
    */
   private def buffered(
-                coreLogger: CoreLogger,
-                buffer: EventBuffer,
-                clock: () => Instant
-              ): Array[ParameterList] = {
+      coreLogger: CoreLogger,
+      buffer: EventBuffer,
+      clock: () => Instant
+  ): Array[ParameterList] = {
     Array(
       buffered(coreLogger, buffer, Level.ERROR, clock),
       buffered(coreLogger, buffer, Level.WARN, clock),
@@ -329,11 +344,11 @@ object CoreLogger {
    * @return a single parameter list
    */
   private def buffered(
-                coreLogger: CoreLogger,
-                buffer: EventBuffer,
-                level: Level,
-                clock: () => Instant
-              ): ParameterList = {
+      coreLogger: CoreLogger,
+      buffer: EventBuffer,
+      level: Level,
+      clock: () => Instant
+  ): ParameterList = {
     val loggerName = coreLogger.state.underlying.getName
     val bufferF = (entry: Entry) => {
       val event = EventBuffer.Event(clock(), loggerName = loggerName, level = level, entry)

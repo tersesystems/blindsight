@@ -93,6 +93,9 @@ object Logger {
 
     override def withEventBuffer(buffer: EventBuffer): Logger =
       new Impl(core.withEventBuffer(buffer))
+
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Logger =
+      new Impl(core.withEventBuffer(level, buffer))
   }
 
 }

@@ -6,5 +6,5 @@ package com.tersesystems.blindsight
 final case class Entry(
     marker: Option[org.slf4j.Marker],
     message: String,
-    args: Array[Any]
+    args: Option[Array[Any]]
 )

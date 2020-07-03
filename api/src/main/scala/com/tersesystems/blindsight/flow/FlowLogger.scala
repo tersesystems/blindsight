@@ -20,7 +20,6 @@ import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
-import org.slf4j
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
 
@@ -112,7 +111,12 @@ object FlowLogger {
     override def withEntryTransform(f: Entry => Entry): Self = new Impl(core.withEntryTransform(f))
 
     override def withEventBuffer(buffer: EventBuffer): Self = new Impl(core.withEventBuffer(buffer))
+
+    override def withEventBuffer(level: Level, buffer: EventBuffer): FlowLogger =
+      new Impl(core.withEventBuffer(level, buffer))
   }
+
+  object Impl {}
 
   final class Noop(core: CoreLogger) extends FlowLogger {
     override val isTraceEnabled: Predicate = core.predicate(TRACE)
@@ -132,18 +136,20 @@ object FlowLogger {
 
     override def markers: Markers = core.markers
 
-    override def underlying: slf4j.Logger = core.underlying
+    override def underlying: org.slf4j.Logger = core.underlying
 
-    override def onCondition(condition: Condition): FlowLogger = this // XXX is this right?
+    override def onCondition(condition: Condition): Self = this // XXX is this right?
 
-    override def withEventBuffer(buffer: EventBuffer): FlowLogger = this // XXX is this right?
+    override def withEventBuffer(buffer: EventBuffer): Self = this // XXX is this right?
 
-    override def withMarker[T: ToMarkers](instance: T): FlowLogger = this // XXX is this right?
+    override def withMarker[T: ToMarkers](instance: T): Self = this // XXX is this right?
 
     override def withEntryTransform(level: Level, f: Entry => Entry): Self =
       this // XXX is this right?
 
-    override def withEntryTransform(f: Entry => Entry): FlowLogger = this
+    override def withEntryTransform(f: Entry => Entry): Self = this
+
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self = this
   }
 
 }

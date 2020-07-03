@@ -23,6 +23,7 @@ import java.util.Date
 import com.tersesystems.blindsight._
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 import org.slf4j.MarkerFactory
+import org.slf4j.event.Level
 
 object Slf4jMain {
 
@@ -34,7 +35,8 @@ object Slf4jMain {
       val message = e.message + " IN BED"
       e.copy(message = message)
     })
-    .withEventBuffer(buffer)
+    .withEventBuffer(Level.DEBUG, buffer)
+    .withEventBuffer(Level.TRACE, buffer)
 
   final case class FeatureFlag(flagName: String)
 
@@ -58,6 +60,10 @@ object Slf4jMain {
     // Cannot use ToMarkers here
     import MarkersEnrichment._
     logger.debug(featureFlag.asMarkers, "markers must be explicit here to prevent API confusion")
+
+    logger.trace { trace =>
+      trace("A trace statement can be written lazy style")
+    }
 
     logger.info.when(System.currentTimeMillis() % 2 == 0) { log => log("I am divisable by two") }
 

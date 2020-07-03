@@ -98,6 +98,10 @@ object SLF4JLogger {
 
     override def withEventBuffer(buffer: EventBuffer): Self =
       new Strict(core.withEventBuffer(buffer))
+
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self = {
+      new Strict(core.withEventBuffer(level, buffer))
+    }
   }
 
   /**
@@ -134,6 +138,10 @@ object SLF4JLogger {
 
     override def withEventBuffer(buffer: EventBuffer): Self =
       new Unchecked(core.withEventBuffer(buffer))
+
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
+      new Unchecked(core.withEventBuffer(level, buffer))
+
   }
 
 }

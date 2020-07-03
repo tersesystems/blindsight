@@ -489,7 +489,7 @@ object ParameterList {
     override def message(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      executeEntry(transform(Entry(None, msg, Array.empty)))
+      executeEntry(transform(Entry(None, msg, None)))
     }
 
     override def messageArg1(msg: String, arg: Any)(implicit
@@ -497,7 +497,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(None, msg, Array(arg))))
+      executeEntry(transform(Entry(None, msg, Some(Array(arg)))))
     }
 
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
@@ -505,7 +505,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(None, msg, Array(arg1, arg2))))
+      executeEntry(transform(Entry(None, msg, Some(Array(arg1, arg2)))))
     }
 
     override def messageArgs(msg: String, args: Array[Any])(implicit
@@ -513,7 +513,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(None, msg, args)))
+      executeEntry(transform(Entry(None, msg, Some(args))))
     }
 
     override def markerMessage(marker: Marker, msg: String)(implicit
@@ -521,7 +521,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, Array.empty)))
+      executeEntry(transform(Entry(Some(marker), msg, Some(Array.empty))))
     }
 
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
@@ -529,7 +529,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, Array(arg))))
+      executeEntry(transform(Entry(Some(marker), msg, Some(Array(arg)))))
     }
 
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
@@ -537,7 +537,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, Array(arg1, arg2))))
+      executeEntry(transform(Entry(Some(marker), msg, Some(Array(arg1, arg2)))))
     }
 
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
@@ -545,7 +545,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, args)))
+      executeEntry(transform(Entry(Some(marker), msg, Some(args))))
     }
 
     override def executeStatement(
@@ -560,19 +560,19 @@ object ParameterList {
         case None =>
           statement.arguments.toArray
       }
-      val raw = Entry(markers, message, args)
+      val raw = Entry(markers, message, Option(args))
       executeEntry(transform(raw))
     }
 
     def executeEntry(entry: Entry)(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       entry match {
-        case Entry(None, m, Array()) =>
+        case Entry(None, m, None) =>
           delegate.message(m)
-        case Entry(None, m, args) =>
+        case Entry(None, m, Some(args)) =>
           delegate.messageArgs(m, args)
-        case Entry(Some(marker), m, Array()) =>
+        case Entry(Some(marker), m, None) =>
           delegate.markerMessage(marker, m)
-        case Entry(Some(marker), m, args) =>
+        case Entry(Some(marker), m, Some(args)) =>
           delegate.markerMessageArgs(marker, m, args)
       }
     }
