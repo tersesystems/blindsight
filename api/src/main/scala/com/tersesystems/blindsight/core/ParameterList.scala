@@ -140,7 +140,11 @@ object ParameterList {
    * @param clock an instant producing function
    * @return array of lists that offer entry to the buffer.
    */
-  def buffered(coreLogger: CoreLogger, buffer: EventBuffer, clock: () => Instant): Array[ParameterList] = {
+  def buffered(
+      coreLogger: CoreLogger,
+      buffer: EventBuffer,
+      clock: () => Instant
+  ): Array[ParameterList] = {
     Array(
       buffered(coreLogger, buffer, Level.ERROR, clock),
       buffered(coreLogger, buffer, Level.WARN, clock),
@@ -158,7 +162,12 @@ object ParameterList {
    * @param clock an instant producing function
    * @return a single parameter list
    */
-  def buffered(coreLogger: CoreLogger, buffer: EventBuffer, level: Level, clock: () => Instant): ParameterList = {
+  def buffered(
+      coreLogger: CoreLogger,
+      buffer: EventBuffer,
+      level: Level,
+      clock: () => Instant
+  ): ParameterList = {
     val loggerName = coreLogger.state.underlying.getName
     val bufferF = (entry: Entry) => {
       val event = EventBuffer.Event(clock(), loggerName = loggerName, level = level, entry)

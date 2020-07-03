@@ -21,7 +21,7 @@ object EventBufferFactory {
     val bufferFactoryLoader = ServiceLoader.load(classOf[EventBufferFactory])
 
     var factory: EventBufferFactory = null;
-    val iter = bufferFactoryLoader.iterator()
+    val iter                        = bufferFactoryLoader.iterator()
     while (iter.hasNext && factory == null) {
       factory = iter.next()
     }

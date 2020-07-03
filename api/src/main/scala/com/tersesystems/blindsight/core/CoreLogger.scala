@@ -59,11 +59,11 @@ object CoreLogger {
   object State {
 
     final case class Impl(
-                           markers: Markers,
-                           underlying: org.slf4j.Logger,
-                           condition: Condition,
-                           sourceInfoBehavior: Option[SourceInfoBehavior],
-                           parameterLists: Array[ParameterList]
+        markers: Markers,
+        underlying: org.slf4j.Logger,
+        condition: Condition,
+        sourceInfoBehavior: Option[SourceInfoBehavior],
+        parameterLists: Array[ParameterList]
     ) extends State {
 
       def withMarker[M: ToMarkers](m: M): State = {

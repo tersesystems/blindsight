@@ -9,8 +9,7 @@ import com.tersesystems.blindsight.EventBuffer
  * @param initCapacity the initial capacity of the ring buffer.
  * @param clock the clock to use to create instants.
  */
-class RingEventBuffer(initCapacity: Int)
-  extends EventBuffer {
+class RingEventBuffer(initCapacity: Int) extends EventBuffer {
 
   import org.jctools.queues.MpmcArrayQueue
 

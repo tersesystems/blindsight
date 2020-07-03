@@ -381,7 +381,8 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 }
 
 class TestEventBuffer extends EventBuffer {
-  private val queue: mutable.Queue[EventBuffer.Event] = scala.collection.mutable.Queue[EventBuffer.Event]()
+  private val queue: mutable.Queue[EventBuffer.Event] =
+    scala.collection.mutable.Queue[EventBuffer.Event]()
 
   override def size: Int = queue.size
 
