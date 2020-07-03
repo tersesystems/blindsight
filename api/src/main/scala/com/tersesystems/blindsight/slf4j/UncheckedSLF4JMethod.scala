@@ -127,19 +127,14 @@ object UncheckedSLF4JMethod {
     override def apply(
         st: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) parameterList.executeStatement(st)
+      if (shouldLog) executeStatement(st)
     }
 
     override def apply(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          message(msg)
-        } else {
-          markerMessage(mps.marker, msg)
-        }
+        message(msg)
       }
     }
 
@@ -151,12 +146,7 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(format, Argument(arg)) as Any cannot be type checked"
         )
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArg1(format, arg)
-        } else {
-          markerMessageArg1(mps.marker, format, arg)
-        }
+        messageArg1(format, arg)
       }
     }
 
@@ -169,12 +159,7 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArg1Arg2(format, arg1, arg2)
-        } else {
-          markerMessageArg1Arg2(mps.marker, format, arg1, arg2)
-        }
+        messageArg1Arg2(format, arg1, arg2)
       }
     }
 
@@ -183,12 +168,7 @@ object UncheckedSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArgs(format, args.toArray)
-        } else {
-          markerMessageArgs(mps.marker, format, args.toArray)
-        }
+        messageArgs(format, args.toArray)
       }
     }
 
@@ -197,7 +177,7 @@ object UncheckedSLF4JMethod {
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(marker)) {
-        markerMessage(markersPlusSource(marker).marker, msg)
+        markerMessage(marker, msg)
       }
     }
 
@@ -210,7 +190,7 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
-        markerMessageArg1(markersPlusSource(marker).marker, msg, arg)
+        markerMessageArg1(marker, msg, arg)
       }
     }
 
@@ -223,7 +203,7 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
-        markerMessageArg1Arg2(markersPlusSource(marker).marker, format, arg1, arg2)
+        markerMessageArg1Arg2(marker, format, arg1, arg2)
       }
     }
 
@@ -233,42 +213,20 @@ object UncheckedSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(marker)) {
-        markerMessageArgs(markersPlusSource(marker).marker, format, args.toArray)
+        markerMessageArgs(marker, format, args.toArray)
       }
     }
 
     @inline
-    private def shouldLog: Boolean = {
-      val m: Markers = core.state.markers
-      if (m.isEmpty) executePredicate() else executePredicate(m.marker)
-    }
+    private def shouldLog: Boolean = executePredicate()
 
     // optimize for the conditional, even if we have to reconstruct the marker twice
     @inline
-    private def shouldLog(marker: Marker): Boolean = {
-      val m: Markers = core.state.markers + marker
-      executePredicate(m.marker)
-    }
-
-    @inline
-    private def markersPlusSource(implicit
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = {
-      val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
-      core.state.markers + sourceMarker
-    }
-
-    @inline
-    private def markersPlusSource[MR: ToMarkers](
-        marker: MR
-    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      markersPlusSource + implicitly[ToMarkers[MR]].toMarkers(marker)
-    }
+    private def shouldLog(marker: Marker): Boolean = executePredicate(marker)
 
     override def toString: String = {
       s"${getClass.getName}(logger=$core)"
     }
   }
+
 }

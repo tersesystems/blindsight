@@ -21,8 +21,6 @@ trait CoreLogger
 
   def condition: Condition
 
-  def sourceInfoBehavior: SourceInfoBehavior
-
   def predicate(level: Level): SimplePredicate
 
   def parameterList(level: Level): ParameterList
@@ -41,8 +39,6 @@ object CoreLogger {
     def markers: Markers
 
     def condition: Condition
-
-    def sourceInfoBehavior: SourceInfoBehavior
 
     def parameterLists: Array[ParameterList]
 
@@ -67,7 +63,7 @@ object CoreLogger {
         markers: Markers,
         underlying: org.slf4j.Logger,
         condition: Condition,
-        sourceInfoBehavior: SourceInfoBehavior,
+        sourceInfoBehavior: Option[SourceInfoBehavior],
         parameterLists: Array[ParameterList],
         entries: Option[EntryBuffer]
     ) extends State {
@@ -106,16 +102,27 @@ object CoreLogger {
   }
 
   def apply(underlying: org.slf4j.Logger): CoreLogger = {
-    apply(underlying, SourceInfoBehavior.empty)
+    apply(underlying, None)
   }
 
-  def apply(underlying: org.slf4j.Logger, sourceInfoBehavior: SourceInfoBehavior): CoreLogger = {
+  def apply(
+      underlying: org.slf4j.Logger,
+      sourceInfoBehavior: Option[SourceInfoBehavior]
+  ): CoreLogger = {
+
+    val parameterLists = sourceInfoBehavior match {
+      case Some(behavior) =>
+        ParameterList.sourceInfo(behavior, ParameterList.lists(underlying))
+      case None =>
+        ParameterList.lists(underlying)
+    }
+
     val state = State.Impl(
       Markers.empty,
       underlying,
       Condition.always,
       sourceInfoBehavior,
-      ParameterList.lists(underlying),
+      parameterLists,
       None
     )
     new Impl(state)
@@ -136,10 +143,12 @@ object CoreLogger {
 
     override def condition: Condition = state.condition
 
-    override def sourceInfoBehavior: SourceInfoBehavior = state.sourceInfoBehavior
-
     override def parameterList(level: Level): ParameterList = {
-      state.parameterLists(level.ordinal())
+      if (state.markers.isEmpty) {
+        state.parameterLists(level.ordinal())
+      } else {
+        new ParameterList.StateMarker(state.markers, state.parameterLists(level.ordinal()))
+      }
     }
 
     override def entries: Option[EntryBuffer] = state.entries
@@ -148,12 +157,7 @@ object CoreLogger {
       // because conditions are AND, if there's a never in the condition we
       // can always return false right off the bat.
       if (condition != Condition.never && condition(level, state)) {
-        val list = parameterList(level)
-        if (state.markers.isEmpty) {
-          list.executePredicate()
-        } else {
-          list.executePredicate(state.markers.marker)
-        }
+        parameterList(level).executePredicate()
       } else {
         false
       }

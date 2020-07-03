@@ -175,143 +175,15 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
 
 // API that provides a logger with everything
 lazy val api = (project in file("api"))
+  .disablePlugins(MimaPlugin)
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
   .settings(
     name := "blindsight-api",
-    mimaPreviousArtifacts := Set(
-      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
-    ),
+    //    mimaPreviousArtifacts := Set(
+    //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
+    //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-    mimaBinaryIssueFilters := Seq(
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "com.tersesystems.blindsight.ToStatement.toStatement"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.ToStatement.toStatement"
-      ),
-      ProblemFilters
-        .exclude[IncompatibleMethTypeProblem]("com.tersesystems.blindsight.ToMessage.toMessage"),
-      ProblemFilters
-        .exclude[ReversedMissingMethodProblem]("com.tersesystems.blindsight.ToMessage.toMessage"),
-      ProblemFilters
-        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Error"),
-      ProblemFilters
-        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Debug"),
-      ProblemFilters
-        .exclude[DirectMissingMethodProblem]("com.tersesystems.blindsight.CoreLogger#Impl.this"),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#Abstract.this"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#Abstract.withEntryTransform"
-      ),
-      ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Warn"),
-      ProblemFilters.exclude[MissingClassProblem]("com.tersesystems.blindsight.ParameterList$Impl"),
-      ProblemFilters.exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Info"),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#Conditional.this"
-      ),
-      ProblemFilters
-        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.ParameterList$Trace"),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.Logger.withEntryTransform"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger.withEntryTransform"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.flow.FlowLogger.withEntryTransform"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.slf4j.SLF4JLogger.withEntryTransform"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.slf4j.SLF4JLogger#Base.withEntryTransform"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentLogger.withEntryTransform"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.semantic.SemanticLogger.withEntryTransform"
-      ),
-      ProblemFilters
-        .exclude[MissingTypesProblem]("com.tersesystems.blindsight.CoreLogger$State$Impl$"),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State#Impl.apply"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State#Impl.copy"
-      ),
-      ProblemFilters.exclude[DirectMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State#Impl.this"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State.parameterLists"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State.withParameterLists"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#Abstract.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.Logger.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State.withEntryTransform"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State.withEntryTransform"
-      ),
-      ProblemFilters
-        .exclude[InheritedNewAbstractMethodProblem]("com.tersesystems.blindsight.Logger.entries"),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.flow.FlowLogger.entries"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State.entries"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.slf4j.SLF4JLogger#Base.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State.entries,"
-      ),
-      ProblemFilters.exclude[ReversedMissingMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger#State.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.CoreLogger.entries"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.flow.FlowLogger.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.slf4j.SLF4JLogger.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.slf4j.SLF4JLogger.entries"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.slf4j.SLF4JLogger#Base.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentLogger.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.fluent.FluentLogger.entries"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.semantic.SemanticLogger.withEntryBuffer"
-      ),
-      ProblemFilters.exclude[InheritedNewAbstractMethodProblem](
-        "com.tersesystems.blindsight.semantic.SemanticLogger.entries"
-      )
-    ),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaCollectionCompat,
@@ -332,17 +204,18 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   .dependsOn(api)
 
 lazy val logstash = (project in file("logstash"))
+  .disablePlugins(MimaPlugin)
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
     name := "blindsight-logstash",
-    mimaPreviousArtifacts := Set(
-      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
-    ),
-    mimaBinaryIssueFilters := Seq(
-      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-        "com.tersesystems.blindsight.logstash.LogstashArgumentResolver.resolve"
-      )
-    ),
+    //    mimaPreviousArtifacts := Set(
+    //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
+    //    ),
+    //    mimaBinaryIssueFilters := Seq(
+    //      ProblemFilters.exclude[IncompatibleResultTypeProblem](
+    //        "com.tersesystems.blindsight.logstash.LogstashArgumentResolver.resolve"
+    //      )
+    //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder,

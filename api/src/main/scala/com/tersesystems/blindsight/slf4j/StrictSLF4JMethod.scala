@@ -142,11 +142,15 @@ object StrictSLF4JMethod {
    * Strict method implementation.
    */
   class Impl(val level: Level, core: CoreLogger) extends StrictSLF4JMethod {
-    import core.markers
-
     protected val parameterList: ParameterList = core.parameterList(level)
 
     import parameterList._
+
+    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
+      if (core.when(level, condition)) {
+        block(this)
+      }
+    }
 
     override def apply(
         st: Statement
@@ -162,12 +166,7 @@ object StrictSLF4JMethod {
         msg: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          message(msg.toString)
-        } else {
-          markerMessage(mps.marker, msg.toString)
-        }
+        message(msg.toString)
       }
     }
 
@@ -175,12 +174,7 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArg1("", throwable)
-        } else {
-          markerMessageArg1(mps.marker, "", throwable)
-        }
+        messageArg1("", throwable)
       }
     }
 
@@ -189,12 +183,7 @@ object StrictSLF4JMethod {
         arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArg1(message.toString, Argument(arg).value)
-        } else {
-          markerMessageArg1(mps.marker, message.toString, Argument(arg).value)
-        }
+        messageArg1(message.toString, Argument(arg).value)
       }
     }
 
@@ -203,11 +192,7 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArg1(message.toString, throwable)
-        } else
-          markerMessageArg1(mps.marker, message.toString, throwable)
+        messageArg1(message.toString, throwable)
       }
     }
 
@@ -217,21 +202,11 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArg1Arg2(
-            message.toString,
-            Argument(arg).value,
-            throwable
-          )
-        } else {
-          markerMessageArg1Arg2(
-            mps.marker,
-            message.toString,
-            Argument(arg).value,
-            throwable
-          )
-        }
+        messageArg1Arg2(
+          message.toString,
+          Argument(arg).value,
+          throwable
+        )
       }
     }
 
@@ -241,21 +216,11 @@ object StrictSLF4JMethod {
         arg2: A2
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArg1Arg2(
-            message.toString,
-            Argument(arg1).value,
-            Argument(arg2).value
-          )
-        } else {
-          markerMessageArg1Arg2(
-            mps.marker,
-            message.toString,
-            Argument(arg1).value,
-            Argument(arg2).value
-          )
-        }
+        messageArg1Arg2(
+          message.toString,
+          Argument(arg1).value,
+          Argument(arg2).value
+        )
       }
     }
 
@@ -264,12 +229,7 @@ object StrictSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArgs(message.toString, args.toArray)
-        } else {
-          markerMessageArgs(mps.marker, message.toString, args.toArray)
-        }
+        messageArgs(message.toString, args.toArray)
       }
     }
 
@@ -279,12 +239,7 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog) {
-        val mps = markersPlusSource
-        if (mps.isEmpty) {
-          messageArgs(message.toString, args.toArray :+ throwable)
-        } else {
-          markerMessageArgs(mps.marker, message.toString, args.toArray :+ throwable)
-        }
+        messageArgs(message.toString, args.toArray :+ throwable)
       }
     }
 
@@ -292,7 +247,7 @@ object StrictSLF4JMethod {
         markers: Markers
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(markers)) {
-        markerMessage(markersPlusSource(markers).marker, "")
+        markerMessage(markers.marker, "")
       }
     }
 
@@ -301,7 +256,7 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(markers)) {
-        markerMessageArg1(markersPlusSource(markers).marker, "", throwable)
+        markerMessageArg1(markers.marker, "", throwable)
       }
     }
 
@@ -310,7 +265,7 @@ object StrictSLF4JMethod {
         message1: Message
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(markers)) {
-        markerMessage(markersPlusSource(markers).marker, message1.toString)
+        markerMessage(markers.marker, message1.toString)
       }
     }
 
@@ -320,7 +275,7 @@ object StrictSLF4JMethod {
         arg: A
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(markers)) {
-        markerMessageArg1(markersPlusSource(markers).marker, message1.toString, Argument(arg).value)
+        markerMessageArg1(markers.marker, message1.toString, Argument(arg).value)
       }
     }
 
@@ -330,7 +285,7 @@ object StrictSLF4JMethod {
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(markers)) {
-        markerMessageArg1(markersPlusSource(markers).marker, message.toString, throwable)
+        markerMessageArg1(markers.marker, message.toString, throwable)
       }
     }
 
@@ -342,7 +297,7 @@ object StrictSLF4JMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(markers)) {
         markerMessageArg1Arg2(
-          markersPlusSource(markers).marker,
+          markers.marker,
           message.toString,
           Argument(arg1).value,
           Argument(arg2).value
@@ -356,10 +311,9 @@ object StrictSLF4JMethod {
         arg: A,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val m = markersPlusSource(markers)
-      if (executePredicate(m.marker)) {
+      if (shouldLog(markers)) {
         markerMessageArg1Arg2(
-          m.marker,
+          markers.marker,
           message.toString,
           Argument(arg).value,
           throwable
@@ -372,9 +326,8 @@ object StrictSLF4JMethod {
         message: Message,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val m = markersPlusSource(markers)
-      if (executePredicate(m.marker)) {
-        markerMessageArgs(m.marker, message.toString, args.toArray)
+      if (shouldLog(markers)) {
+        markerMessageArgs(markers.marker, message.toString, args.toArray)
       }
     }
 
@@ -384,50 +337,23 @@ object StrictSLF4JMethod {
         args: Arguments,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      val m = markersPlusSource(markers)
-      if (executePredicate(m.marker)) {
-        markerMessageArgs(m.marker, message.toString, args.toArray :+ throwable)
+      if (shouldLog(markers)) {
+        markerMessageArgs(markers.marker, message.toString, args.toArray :+ throwable)
       }
     }
 
     @inline
-    private def shouldLog: Boolean = {
-      val m: Markers = core.state.markers
-      if (m.isEmpty) executePredicate() else executePredicate(m.marker)
-    }
+    private def shouldLog: Boolean = executePredicate()
 
     // optimize for the conditional, even if we have to reconstruct the marker twice
     @inline
     private def shouldLog(markers: Markers): Boolean = {
-      val m: Markers = core.state.markers + markers
-      executePredicate(m.marker)
-    }
-
-    @inline
-    private def markersPlusSource(implicit
-        line: Line,
-        file: File,
-        enclosing: Enclosing
-    ): Markers = {
-      val sourceMarker: Markers = core.sourceInfoBehavior(level, line, file, enclosing)
-      sourceMarker + markers
-    }
-
-    @inline
-    private def markersPlusSource[MR: ToMarkers](
-        marker: MR
-    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
-      markersPlusSource + implicitly[ToMarkers[MR]].toMarkers(marker)
-    }
-
-    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (core.when(level, condition)) {
-        block(this)
-      }
+      executePredicate(markers.marker)
     }
 
     override def toString: String = {
       s"${getClass.getName}(logger=$core)"
     }
   }
+
 }
