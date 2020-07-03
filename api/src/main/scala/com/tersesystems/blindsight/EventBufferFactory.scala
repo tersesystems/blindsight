@@ -1,36 +1,36 @@
 package com.tersesystems.blindsight
 
-trait EntryBufferFactory {
+trait EventBufferFactory {
 
   /**
-   * Create entry buffer with a fixed capacity.
+   * Create event buffer with a fixed capacity.
    *
    * @param capacity the maximum entries in the entry buffer.
    * @return a new entry buffer.
    */
-  def create(capacity: Int): EntryBuffer
+  def create(capacity: Int): EventBuffer
 }
 
-object EntryBufferFactory {
+object EventBufferFactory {
 
   import java.util.ServiceLoader
 
-  private lazy val bufferFactory: EntryBufferFactory = {
+  private lazy val bufferFactory: EventBufferFactory = {
     // We don't need a buffer factory loaded, so don't throw
     // until we're asked for one...
-    val bufferFactoryLoader = ServiceLoader.load(classOf[EntryBufferFactory])
+    val bufferFactoryLoader = ServiceLoader.load(classOf[EventBufferFactory])
 
-    var factory: EntryBufferFactory = null;
+    var factory: EventBufferFactory = null;
     val iter = bufferFactoryLoader.iterator()
     while (iter.hasNext && factory == null) {
       factory = iter.next()
     }
     if (factory == null) {
-      throw new javax.management.ServiceNotFoundException("No buffer factory found!")
+      throw new javax.management.ServiceNotFoundException("No event buffer factory found!")
     } else {
       factory
     }
   }
 
-  def apply(): EntryBufferFactory = bufferFactory
+  def apply(): EventBufferFactory = bufferFactory
 }

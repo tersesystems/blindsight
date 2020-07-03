@@ -57,8 +57,6 @@ object Logger {
 
     override def underlying: org.slf4j.Logger = core.underlying
 
-    override def entries: Option[EntryBuffer] = core.entries
-
     override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
       new SLF4JLogger.Unchecked(core)
     }
@@ -93,8 +91,8 @@ object Logger {
     override def withEntryTransform(f: Entry => Entry): Logger =
       new Impl(core.withEntryTransform(f))
 
-    override def withEntryBuffer(buffer: EntryBuffer): Logger =
-      new Impl(core.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): Logger =
+      new Impl(core.withEventBuffer(buffer))
   }
 
 }

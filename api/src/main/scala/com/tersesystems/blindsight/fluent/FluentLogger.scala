@@ -18,7 +18,7 @@ package com.tersesystems.blindsight.fluent
 
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
-import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
+import com.tersesystems.blindsight.mixins.{EventBufferMixin, _}
 import com.tersesystems.blindsight.slf4j._
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
@@ -36,7 +36,7 @@ trait FluentLogger
     with MarkerMixin
     with UnderlyingMixin
     with EntryTransformMixin
-    with EntryBufferMixin
+    with EventBufferMixin
     with OnConditionMixin {
   override type Self      = FluentLogger
   override type Method    = FluentMethod
@@ -48,8 +48,6 @@ object FluentLogger {
   class Impl(core: CoreLogger) extends FluentLogger {
 
     override def markers: Markers = core.markers
-
-    override def entries: Option[EntryBuffer] = core.entries
 
     override def underlying: org.slf4j.Logger = core.underlying
 
@@ -85,7 +83,7 @@ object FluentLogger {
 
     override def withEntryTransform(f: Entry => Entry): Self = new Impl(core.withEntryTransform(f))
 
-    override def withEntryBuffer(buffer: EntryBuffer): Self =
-      new Impl(core.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): Self =
+      new Impl(core.withEventBuffer(buffer))
   }
 }

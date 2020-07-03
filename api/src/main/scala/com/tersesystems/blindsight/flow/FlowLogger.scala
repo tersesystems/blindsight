@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
+import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
@@ -55,7 +55,7 @@ trait FlowLogger
     with UnderlyingMixin
     with MarkerMixin
     with EntryTransformMixin
-    with EntryBufferMixin
+    with EventBufferMixin
     with OnConditionMixin {
   override type Self      = FlowLogger
   override type Method    = FlowMethod
@@ -81,8 +81,6 @@ object FlowLogger {
     override val error: Method             = new FlowMethod.Impl(ERROR, core)
 
     override def markers: Markers = core.markers
-
-    override def entries: Option[EntryBuffer] = core.entries
 
     override def underlying: org.slf4j.Logger = core.underlying
 
@@ -113,7 +111,7 @@ object FlowLogger {
 
     override def withEntryTransform(f: Entry => Entry): Self = new Impl(core.withEntryTransform(f))
 
-    override def withEntryBuffer(buffer: EntryBuffer): Self = new Impl(core.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): Self = new Impl(core.withEventBuffer(buffer))
   }
 
   final class Noop(core: CoreLogger) extends FlowLogger {
@@ -136,11 +134,9 @@ object FlowLogger {
 
     override def underlying: slf4j.Logger = core.underlying
 
-    override def entries: Option[EntryBuffer] = core.entries
-
     override def onCondition(condition: Condition): FlowLogger = this // XXX is this right?
 
-    override def withEntryBuffer(buffer: EntryBuffer): FlowLogger = this // XXX is this right?
+    override def withEventBuffer(buffer: EventBuffer): FlowLogger = this // XXX is this right?
 
     override def withMarker[T: ToMarkers](instance: T): FlowLogger = this // XXX is this right?
 
