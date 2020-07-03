@@ -20,42 +20,51 @@ import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
+/**
+ */
 trait ParameterList {
 
   def executePredicate(): Boolean
   def executePredicate(marker: Marker): Boolean
 
   def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit
+
   def messageArg1(msg: String, arg: Any)(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
   ): Unit
+
   def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
   ): Unit
+
   def messageArgs(msg: String, args: Array[Any])(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
   ): Unit
+
   def markerMessage(marker: Marker, msg: String)(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
   ): Unit
+
   def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
   ): Unit
+
   def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
       line: Line,
       file: File,
       enclosing: Enclosing
   ): Unit
+
   def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
       line: Line,
       file: File,
@@ -81,6 +90,24 @@ object ParameterList {
       new ParameterList.Trace(logger)
     )
 
+  def sourceInfo(
+      behavior: SourceInfoBehavior,
+      lists: Array[ParameterList]
+  ): Array[ParameterList] = {
+    Array(
+      new ParameterList.WithSource(behavior, lists(Level.ERROR.ordinal())),
+      new ParameterList.WithSource(behavior, lists(Level.WARN.ordinal())),
+      new ParameterList.WithSource(behavior, lists(Level.INFO.ordinal())),
+      new ParameterList.WithSource(behavior, lists(Level.DEBUG.ordinal())),
+      new ParameterList.WithSource(behavior, lists(Level.TRACE.ordinal()))
+    )
+  }
+
+  /**
+   * @param lists
+   * @param transformF
+   * @return
+   */
   def transform(
       lists: Array[ParameterList],
       transformF: Entry => Entry
@@ -98,6 +125,11 @@ object ParameterList {
     )
   }
 
+  /**
+   * @param lists
+   * @param buffer
+   * @return
+   */
   def buffered(lists: Array[ParameterList], buffer: EntryBuffer): Array[ParameterList] = {
     val bufferF = (entry: Entry) => {
       buffer.offer(entry)
@@ -106,6 +138,8 @@ object ParameterList {
     transform(lists, bufferF)
   }
 
+  /**
+   */
   trait ExecuteStatement { self: ParameterList =>
     def executeStatement(
         statement: Statement
@@ -143,111 +177,127 @@ object ParameterList {
       }
   }
 
+  /**
+   * Trace level.
+   *
+   * @param logger the SLF4J logger.
+   */
   class Trace(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
-    override def executePredicate(): Boolean = {
-      logger.isTraceEnabled()
-    }
-    override def executePredicate(marker: Marker): Boolean = {
+
+    override def executePredicate(): Boolean = logger.isTraceEnabled()
+
+    override def executePredicate(marker: Marker): Boolean =
       logger.isTraceEnabled(marker)
-    }
 
     override def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit =
       logger.trace(msg)
+
     override def messageArg1(msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.trace(msg, arg)
+    ): Unit = logger.trace(msg, arg)
+
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.trace(msg, arg1, arg2)
+    ): Unit = logger.trace(msg, arg1, arg2)
+
     override def messageArgs(msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.trace(msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.trace(msg, args.asInstanceOf[Array[Object]]: _*)
+
     override def markerMessage(marker: Marker, msg: String)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.trace(marker, msg)
+    ): Unit = logger.trace(marker, msg)
+
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.trace(marker, msg, arg)
+    ): Unit = logger.trace(marker, msg, arg)
+
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.trace(marker, msg, arg1, arg2)
+    ): Unit = logger.trace(marker, msg, arg1, arg2)
+
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.trace(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.trace(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
+  /**
+   * Debug level.
+   *
+   * @param logger the SLF4J logger.
+   */
   class Debug(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+
     override def executePredicate(): Boolean = logger.isDebugEnabled()
+
     override def executePredicate(marker: Marker): Boolean =
       logger.isDebugEnabled(marker)
 
     override def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit =
       logger.debug(msg)
+
     override def messageArg1(msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.debug(msg, arg)
+    ): Unit = logger.debug(msg, arg)
+
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.debug(msg, arg1, arg2)
+    ): Unit = logger.debug(msg, arg1, arg2)
+
     override def messageArgs(msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.debug(msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.debug(msg, args.asInstanceOf[Array[Object]]: _*)
+
     override def markerMessage(marker: Marker, msg: String)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.debug(marker, msg)
+    ): Unit = logger.debug(marker, msg)
+
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.debug(marker, msg, arg)
+    ): Unit = logger.debug(marker, msg, arg)
+
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.debug(marker, msg, arg1, arg2)
+    ): Unit = logger.debug(marker, msg, arg1, arg2)
+
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.debug(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.debug(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
+  /**
+   * Info level.
+   *
+   * @param logger the SLF4J logger.
+   */
   class Info(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
     override def executePredicate(): Boolean = logger.isInfoEnabled
     override def executePredicate(marker: Marker): Boolean =
@@ -255,150 +305,230 @@ object ParameterList {
 
     override def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit =
       logger.info(msg)
+
     override def messageArg1(msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.info(msg, arg)
+    ): Unit = logger.info(msg, arg)
+
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.info(msg, arg1, arg2)
+    ): Unit = logger.info(msg, arg1, arg2)
+
     override def messageArgs(msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.info(msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.info(msg, args.asInstanceOf[Array[Object]]: _*)
+
     override def markerMessage(marker: Marker, msg: String)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.info(marker, msg)
+    ): Unit = logger.info(marker, msg)
+
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.info(marker, msg, arg)
+    ): Unit = logger.info(marker, msg, arg)
+
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.info(marker, msg, arg1, arg2)
+    ): Unit = logger.info(marker, msg, arg1, arg2)
+
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.info(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.info(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
+  /**
+   * Warn level.
+   *
+   * @param logger the SLF4J logger.
+   */
   class Warn(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+
     override def executePredicate(): Boolean = logger.isWarnEnabled()
+
     override def executePredicate(marker: Marker): Boolean =
       logger.isWarnEnabled(marker)
 
     override def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit =
       logger.warn(msg)
+
     override def messageArg1(msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.warn(msg, arg)
+    ): Unit = logger.warn(msg, arg)
+
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.warn(msg, arg1, arg2)
+    ): Unit = logger.warn(msg, arg1, arg2)
+
     override def messageArgs(msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.warn(msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.warn(msg, args.asInstanceOf[Array[Object]]: _*)
+
     override def markerMessage(marker: Marker, msg: String)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.warn(marker, msg)
+    ): Unit = logger.warn(marker, msg)
+
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.warn(marker, msg, arg)
+    ): Unit = logger.warn(marker, msg, arg)
+
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.warn(marker, msg, arg1, arg2)
+    ): Unit = logger.warn(marker, msg, arg1, arg2)
+
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.warn(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.warn(marker, msg, args.asInstanceOf[Array[Object]]: _*)
   }
 
+  /**
+   * Error level.
+   *
+   * @param logger the SLF4J logger.
+   */
   class Error(logger: org.slf4j.Logger) extends ParameterList with ExecuteStatement {
+
     override def executePredicate(): Boolean = logger.isErrorEnabled
+
     override def executePredicate(marker: Marker): Boolean =
       logger.isErrorEnabled(marker)
 
     override def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit =
       logger.error(msg)
+
     override def messageArg1(msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.error(msg, arg)
+    ): Unit = logger.error(msg, arg)
+
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.error(msg, arg1, arg2)
+    ): Unit = logger.error(msg, arg1, arg2)
+
     override def messageArgs(msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.error(msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.error(msg, args.asInstanceOf[Array[Object]]: _*)
+
     override def markerMessage(marker: Marker, msg: String)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.error(marker, msg)
+    ): Unit = logger.error(marker, msg)
+
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.error(marker, msg, arg)
+    ): Unit = logger.error(marker, msg, arg)
+
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.error(marker, msg, arg1, arg2)
+    ): Unit = logger.error(marker, msg, arg1, arg2)
+
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
-      logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+    ): Unit = logger.error(marker, msg, args.asInstanceOf[Array[Object]]: _*)
+  }
+
+  /**
+   */
+  class WithSource(behavior: SourceInfoBehavior, delegate: ParameterList)
+      extends ParameterList
+      with ExecuteStatement {
+
+    def sourceInfoMarker(implicit line: Line, file: File, enclosing: Enclosing): Markers =
+      behavior.apply(line, file, enclosing)
+
+    def sourceInfoMarker(
+        marker: org.slf4j.Marker
+    )(implicit line: Line, file: File, enclosing: Enclosing): Markers = {
+      Markers(marker) + behavior.apply(line, file, enclosing)
+    }
+
+    override def executePredicate(): Boolean = delegate.executePredicate()
+
+    override def executePredicate(marker: Marker): Boolean =
+      delegate.executePredicate(marker)
+
+    override def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+      delegate.markerMessage(sourceInfoMarker.marker, msg)
+
+    override def messageArg1(msg: String, arg: Any)(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Unit = delegate.markerMessageArg1(sourceInfoMarker.marker, msg, arg)
+
+    override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Unit = delegate.markerMessageArg1Arg2(sourceInfoMarker.marker, msg, arg1, arg2)
+
+    override def messageArgs(msg: String, args: Array[Any])(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Unit = delegate.markerMessageArgs(sourceInfoMarker.marker, msg, args)
+
+    override def markerMessage(marker: Marker, msg: String)(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Unit = delegate.markerMessage(sourceInfoMarker(marker).marker, msg)
+
+    override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Unit = delegate.markerMessageArg1(sourceInfoMarker(marker).marker, msg, arg)
+
+    override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Unit = delegate.markerMessageArg1Arg2(sourceInfoMarker(marker).marker, msg, arg1, arg2)
+
+    override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
+        line: Line,
+        file: File,
+        enclosing: Enclosing
+    ): Unit = delegate.markerMessageArgs(sourceInfoMarker(marker).marker, msg, args)
   }
 
   /**
@@ -408,6 +538,7 @@ object ParameterList {
    * @param transform the transformation log entry.
    */
   class Proxy(delegate: ParameterList, val transform: Entry => Entry) extends ParameterList {
+
     override def executePredicate(): Boolean = delegate.executePredicate()
 
     override def executePredicate(marker: Marker): Boolean = {
@@ -492,7 +623,7 @@ object ParameterList {
       executeEntry(transform(raw))
     }
 
-    def executeEntry(entry: Entry): Unit = {
+    def executeEntry(entry: Entry)(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       entry match {
         case Entry(None, m, Array()) =>
           delegate.message(m)
@@ -506,8 +637,15 @@ object ParameterList {
     }
   }
 
+  /**
+   * State marker parameter list
+   *
+   * @param m state marker
+   * @param delegate delegate parameter list
+   */
   class StateMarker(m: Markers, delegate: ParameterList) extends ParameterList {
-    override def executePredicate(): Boolean = delegate.executePredicate(m.marker)
+    override def executePredicate(): Boolean =
+      delegate.executePredicate(m.marker)
 
     override def executePredicate(marker: Marker): Boolean = {
       val markers: Markers = collateMarkers(marker)
@@ -521,19 +659,22 @@ object ParameterList {
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit = delegate.markerMessageArg1(m.marker, msg, arg)
+    ): Unit =
+      delegate.markerMessageArg1(m.marker, msg, arg)
 
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit = delegate.markerMessageArg1Arg2(m.marker, msg, arg1, arg2)
+    ): Unit =
+      delegate.markerMessageArg1Arg2(m.marker, msg, arg1, arg2)
 
     override def messageArgs(msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit = delegate.markerMessageArgs(m.marker, msg, args)
+    ): Unit =
+      delegate.markerMessageArgs(m.marker, msg, args)
 
     override def markerMessage(marker: Marker, msg: String)(implicit
         line: Line,
@@ -584,74 +725,89 @@ object ParameterList {
   class Conditional(level: Level, core: CoreLogger) extends ParameterList {
 
     override def executePredicate(): Boolean = {
-      core.condition(level, core.state) && core
-        .parameterList(level)
-        .executePredicate()
-    }
-    override def executePredicate(marker: Marker): Boolean = {
-      core.condition(level, core.state) && core
-        .parameterList(level)
-        .executePredicate(marker)
+      core.condition(level, core.state) && core.parameterList(level).executePredicate()
     }
 
-    override def message(msg: String)(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+    override def executePredicate(marker: Marker): Boolean = {
+      core.condition(level, core.state) && core.parameterList(level).executePredicate(marker)
+    }
+
+    override def message(
+        msg: String
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).message(msg)
+    }
+
     override def messageArg1(msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
+    ): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).messageArg1(msg, arg)
+    }
+
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
+    ): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).messageArg1Arg2(msg, arg1, arg2)
+    }
+
     override def messageArgs(msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
+    ): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).messageArgs(msg, args)
+    }
+
     override def markerMessage(marker: Marker, msg: String)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
+    ): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).markerMessage(marker, msg)
+    }
+
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
+    ): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).markerMessageArg1(marker, msg, arg)
+    }
+
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
+    ): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).markerMessageArg1Arg2(marker, msg, arg1, arg2)
+    }
+
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit =
+    ): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).markerMessageArgs(marker, msg, args)
+    }
 
     override def executeStatement(
         statement: Statement
-    )(implicit line: Line, file: File, enclosing: Enclosing): Unit =
+    )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (core.condition(level, core.state))
         core.parameterList(level).executeStatement(statement)
+    }
   }
 
   object Noop extends ParameterList {
@@ -696,7 +852,8 @@ object ParameterList {
         line: Line,
         file: File,
         enclosing: Enclosing
-    ): Unit = ()
+    ): Unit =
+      ()
 
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
         line: Line,

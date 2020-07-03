@@ -109,12 +109,20 @@ object CoreLogger {
       underlying: org.slf4j.Logger,
       sourceInfoBehavior: Option[SourceInfoBehavior]
   ): CoreLogger = {
+
+    val parameterLists = sourceInfoBehavior match {
+      case Some(behavior) =>
+        ParameterList.sourceInfo(behavior, ParameterList.lists(underlying))
+      case None =>
+        ParameterList.lists(underlying)
+    }
+
     val state = State.Impl(
       Markers.empty,
       underlying,
       Condition.always,
       sourceInfoBehavior,
-      ParameterList.lists(underlying),
+      parameterLists,
       None
     )
     new Impl(state)
@@ -149,12 +157,7 @@ object CoreLogger {
       // because conditions are AND, if there's a never in the condition we
       // can always return false right off the bat.
       if (condition != Condition.never && condition(level, state)) {
-        val list = parameterList(level)
-        if (state.markers.isEmpty) {
-          list.executePredicate()
-        } else {
-          list.executePredicate(state.markers.marker)
-        }
+        parameterList(level).executePredicate()
       } else {
         false
       }
