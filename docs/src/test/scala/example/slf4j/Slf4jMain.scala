@@ -99,5 +99,8 @@ object Slf4jMain {
     loggerWithMarkers.info("I should have two markers")
 
     println(s"There are ${logger.entries.get.size} entries in the buffer")
+    println(s"There are ${logger.entries.get.size} entries in the buffer")
+    val head = logger.entries.get.head
+    println(s"The last entered entry was $head")
   }
 }

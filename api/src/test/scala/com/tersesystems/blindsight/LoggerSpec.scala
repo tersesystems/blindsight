@@ -1,5 +1,7 @@
 package com.tersesystems.blindsight
 
+import java.time.Instant
+
 import ch.qos.logback.classic.LoggerContext
 import com.tersesystems.blindsight
 import com.tersesystems.blindsight.core.CoreLogger
@@ -10,6 +12,8 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
+
+import scala.collection.mutable
 
 class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
@@ -381,10 +385,10 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       logger.info("Hello world")
 
-      val entry = logger.entries.get.headOption.get
-      entry.marker must be(None)
-      entry.message must be("Hello world")
-      entry.args must be(empty)
+      val el = logger.entries.get.headOption.get
+      el.entry.marker must be(None)
+      el.entry.message must be("Hello world")
+      el.entry.args must be(empty)
     }
 
     "clear buffer" in {
@@ -399,21 +403,21 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 }
 
 class TestEntryBuffer extends EntryBuffer {
-  private val queue = scala.collection.mutable.Queue[BufferedEntry]()
+  private val queue: mutable.Queue[EntryBuffer.El] = scala.collection.mutable.Queue[EntryBuffer.El]()
 
   override def size: Int = queue.size
 
-  override def take(count: Int) = queue.slice(0, count).toIndexedSeq
+  override def take(count: Int): Seq[EntryBuffer.El] = queue.slice(0, count).toIndexedSeq
 
   def clear(): Unit = queue.clear()
 
-  override def headOption: Option[Entry] = queue.headOption
+  override def headOption: Option[EntryBuffer.El] = queue.headOption
 
-  override def offer(entry: Entry): Unit = queue.enqueue(entry)
+  override def offer(entry: Entry): Unit = queue.enqueue(EntryBuffer.El(Instant.now, entry))
 
   override def capacity: Int = Int.MaxValue
 
   override def isEmpty: Boolean = queue.isEmpty
 
-  override def head: Entry = queue.head
+  override def head: EntryBuffer.El = queue.head
 }
