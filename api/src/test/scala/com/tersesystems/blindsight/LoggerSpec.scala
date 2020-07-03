@@ -316,7 +316,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "transform info message with argument" in {
       val logger = createLogger.withEntryTransform(
         Level.INFO,
-        st => st.copy(message = st.message.toUpperCase, args = Array("IN BED"))
+        st => st.copy(message = st.message.toUpperCase, args = Some(Array("IN BED")))
       )
       logger.info("test message")
 
@@ -344,7 +344,11 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger.withEntryTransform(
         Level.INFO,
         st =>
-          st.copy(marker = Some(security), message = st.message.toUpperCase, args = Array("IN BED"))
+          st.copy(
+            marker = Some(security),
+            message = st.message.toUpperCase,
+            args = Some(Array("IN BED"))
+          )
       )
       logger.info("test message")
 

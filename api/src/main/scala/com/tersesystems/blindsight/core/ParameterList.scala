@@ -16,9 +16,7 @@
 
 package com.tersesystems.blindsight.core
 
-import java.time.Instant
-
-import com.tersesystems.blindsight.{Entry, EventBuffer, Markers, Statement}
+import com.tersesystems.blindsight.{Entry, Markers, Statement}
 import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
@@ -80,102 +78,6 @@ trait ParameterList {
 }
 
 object ParameterList {
-
-  /**
-   * Indexed by enum ordinal, i.e. to look up, use Level.TRACE.ordinal() as index.
-   */
-  def lists(logger: org.slf4j.Logger): Array[ParameterList] =
-    Array(
-      new ParameterList.Error(logger),
-      new ParameterList.Warn(logger),
-      new ParameterList.Info(logger),
-      new ParameterList.Debug(logger),
-      new ParameterList.Trace(logger)
-    )
-
-  /**
-   * Adds source info to the parameter lists.
-   *
-   * @param behavior
-   * @param lists
-   * @return
-   */
-  def sourceInfo(
-      behavior: SourceInfoBehavior,
-      lists: Array[ParameterList]
-  ): Array[ParameterList] = {
-    Array(
-      new ParameterList.WithSource(behavior, lists(Level.ERROR.ordinal())),
-      new ParameterList.WithSource(behavior, lists(Level.WARN.ordinal())),
-      new ParameterList.WithSource(behavior, lists(Level.INFO.ordinal())),
-      new ParameterList.WithSource(behavior, lists(Level.DEBUG.ordinal())),
-      new ParameterList.WithSource(behavior, lists(Level.TRACE.ordinal()))
-    )
-  }
-
-  /**
-   * Adds an entry transformation step to parameter lists.
-   */
-  def transform(
-      lists: Array[ParameterList],
-      transformF: Entry => Entry
-  ): Array[ParameterList] = {
-    def delegate(level: Level): ParameterList = {
-      new ParameterList.Proxy(lists(level.ordinal()), transformF)
-    }
-
-    Array(
-      delegate(Level.ERROR),
-      delegate(Level.WARN),
-      delegate(Level.INFO),
-      delegate(Level.DEBUG),
-      delegate(Level.TRACE)
-    )
-  }
-
-  /**
-   * Adds event buffers and returns parameter lists.
-   *
-   * @param coreLogger the core logger
-   * @param clock an instant producing function
-   * @return array of lists that offer entry to the buffer.
-   */
-  def buffered(
-      coreLogger: CoreLogger,
-      buffer: EventBuffer,
-      clock: () => Instant
-  ): Array[ParameterList] = {
-    Array(
-      buffered(coreLogger, buffer, Level.ERROR, clock),
-      buffered(coreLogger, buffer, Level.WARN, clock),
-      buffered(coreLogger, buffer, Level.INFO, clock),
-      buffered(coreLogger, buffer, Level.DEBUG, clock),
-      buffered(coreLogger, buffer, Level.TRACE, clock)
-    )
-  }
-
-  /**
-   * Adds an event offering function to a single parameter list.
-   *
-   * @param coreLogger the core logger
-   * @param level the level to log at
-   * @param clock an instant producing function
-   * @return a single parameter list
-   */
-  def buffered(
-      coreLogger: CoreLogger,
-      buffer: EventBuffer,
-      level: Level,
-      clock: () => Instant
-  ): ParameterList = {
-    val loggerName = coreLogger.state.underlying.getName
-    val bufferF = (entry: Entry) => {
-      val event = EventBuffer.Event(clock(), loggerName = loggerName, level = level, entry)
-      buffer.offer(event)
-      entry
-    }
-    new ParameterList.Proxy(coreLogger.parameterList(level), bufferF)
-  }
 
   /**
    */
@@ -587,7 +489,7 @@ object ParameterList {
     override def message(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      executeEntry(transform(Entry(None, msg, Array.empty)))
+      executeEntry(transform(Entry(None, msg, None)))
     }
 
     override def messageArg1(msg: String, arg: Any)(implicit
@@ -595,7 +497,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(None, msg, Array(arg))))
+      executeEntry(transform(Entry(None, msg, Some(Array(arg)))))
     }
 
     override def messageArg1Arg2(msg: String, arg1: Any, arg2: Any)(implicit
@@ -603,7 +505,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(None, msg, Array(arg1, arg2))))
+      executeEntry(transform(Entry(None, msg, Some(Array(arg1, arg2)))))
     }
 
     override def messageArgs(msg: String, args: Array[Any])(implicit
@@ -611,7 +513,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(None, msg, args)))
+      executeEntry(transform(Entry(None, msg, Some(args))))
     }
 
     override def markerMessage(marker: Marker, msg: String)(implicit
@@ -619,7 +521,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, Array.empty)))
+      executeEntry(transform(Entry(Some(marker), msg, Some(Array.empty))))
     }
 
     override def markerMessageArg1(marker: Marker, msg: String, arg: Any)(implicit
@@ -627,7 +529,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, Array(arg))))
+      executeEntry(transform(Entry(Some(marker), msg, Some(Array(arg)))))
     }
 
     override def markerMessageArg1Arg2(marker: Marker, msg: String, arg1: Any, arg2: Any)(implicit
@@ -635,7 +537,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, Array(arg1, arg2))))
+      executeEntry(transform(Entry(Some(marker), msg, Some(Array(arg1, arg2)))))
     }
 
     override def markerMessageArgs(marker: Marker, msg: String, args: Array[Any])(implicit
@@ -643,7 +545,7 @@ object ParameterList {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      executeEntry(transform(Entry(Some(marker), msg, args)))
+      executeEntry(transform(Entry(Some(marker), msg, Some(args))))
     }
 
     override def executeStatement(
@@ -658,19 +560,19 @@ object ParameterList {
         case None =>
           statement.arguments.toArray
       }
-      val raw = Entry(markers, message, args)
+      val raw = Entry(markers, message, Option(args))
       executeEntry(transform(raw))
     }
 
     def executeEntry(entry: Entry)(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       entry match {
-        case Entry(None, m, Array()) =>
+        case Entry(None, m, None) =>
           delegate.message(m)
-        case Entry(None, m, args) =>
+        case Entry(None, m, Some(args)) =>
           delegate.messageArgs(m, args)
-        case Entry(Some(marker), m, Array()) =>
+        case Entry(Some(marker), m, None) =>
           delegate.markerMessage(marker, m)
-        case Entry(Some(marker), m, args) =>
+        case Entry(Some(marker), m, Some(args)) =>
           delegate.markerMessageArgs(marker, m, args)
       }
     }

@@ -85,5 +85,8 @@ object FluentLogger {
 
     override def withEventBuffer(buffer: EventBuffer): Self =
       new Impl(core.withEventBuffer(buffer))
+
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
+      new Impl(core.withEventBuffer(level, buffer))
   }
 }
