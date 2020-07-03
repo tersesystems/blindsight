@@ -386,7 +386,7 @@ class TestEventBuffer extends EventBuffer {
 
   override def size: Int = queue.size
 
-  override def take(count: Int): Seq[EventBuffer.Event] = queue.slice(0, count).toIndexedSeq
+  override def take(count: Int) = queue.slice(0, count).toIndexedSeq
 
   def clear(): Unit = queue.clear()
 
