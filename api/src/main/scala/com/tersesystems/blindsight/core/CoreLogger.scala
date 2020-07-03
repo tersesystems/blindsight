@@ -1,7 +1,7 @@
 package com.tersesystems.blindsight.core
 
 import com.tersesystems.blindsight.mixins._
-import com.tersesystems.blindsight.{Condition, Entry, EntryBuffer, Markers, ToMarkers}
+import com.tersesystems.blindsight.{Condition, Entry, EventBuffer, Markers, ToMarkers}
 import org.slf4j.event.Level
 
 /**
@@ -13,7 +13,7 @@ trait CoreLogger
     extends UnderlyingMixin
     with MarkerMixin
     with OnConditionMixin
-    with EntryBufferMixin
+    with EventBufferMixin
     with EntryTransformMixin {
 
   type Self = CoreLogger
@@ -31,6 +31,8 @@ trait CoreLogger
 
 object CoreLogger {
 
+  private val clock = java.time.Clock.systemUTC()
+
   /**
    * The state of the core logger.
    */
@@ -43,13 +45,9 @@ object CoreLogger {
 
     def parameterLists: Array[ParameterList]
 
-    def entries: Option[EntryBuffer]
-
     def withMarker[M: ToMarkers](m: M): State
 
     def onCondition(c: Condition): State
-
-    def withEntryBuffer(buffer: EntryBuffer): State
 
     def withEntryTransform(level: Level, f: Entry => Entry): State
 
@@ -65,8 +63,7 @@ object CoreLogger {
         underlying: org.slf4j.Logger,
         condition: Condition,
         sourceInfoBehavior: Option[SourceInfoBehavior],
-        parameterLists: Array[ParameterList],
-        entries: Option[EntryBuffer]
+        parameterLists: Array[ParameterList]
     ) extends State {
 
       def withMarker[M: ToMarkers](m: M): State = {
@@ -81,11 +78,6 @@ object CoreLogger {
 
       def withParameterLists(lists: Array[ParameterList]): State = {
         copy(parameterLists = lists)
-      }
-
-      override def withEntryBuffer(buffer: EntryBuffer): State = {
-        val bufferedLists = ParameterList.buffered(parameterLists, buffer)
-        copy(entries = Option(buffer), parameterLists = bufferedLists)
       }
 
       override def withEntryTransform(f: Entry => Entry): State = {
@@ -123,8 +115,7 @@ object CoreLogger {
       underlying,
       Condition.always,
       sourceInfoBehavior,
-      parameterLists,
-      None
+      parameterLists
     )
     new Impl(state)
   }
@@ -151,8 +142,6 @@ object CoreLogger {
         new ParameterList.StateMarker(state.markers, state.parameterLists(level.ordinal()))
       }
     }
-
-    override def entries: Option[EntryBuffer] = state.entries
 
     override def when(level: Level, condition: Condition): Boolean = {
       // because conditions are AND, if there's a never in the condition we
@@ -191,8 +180,9 @@ object CoreLogger {
       new Impl(state.withEntryTransform(f))
     }
 
-    override def withEntryBuffer(buffer: EntryBuffer): CoreLogger = {
-      new Impl(state.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
+      val bufferedLists = ParameterList.buffered(this, buffer, () => clock.instant())
+      new Impl(state.withParameterLists(bufferedLists))
     }
 
   }
@@ -222,8 +212,10 @@ object CoreLogger {
       new Conditional(new Impl(state.withEntryTransform(f)))
     }
 
-    override def withEntryBuffer(buffer: EntryBuffer): CoreLogger =
-      new Conditional(new Impl(state.withEntryBuffer(buffer)))
+    override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
+      val bufferedLists = ParameterList.buffered(this, buffer, () => clock.instant())
+      new Conditional(new Impl(state.withParameterLists(bufferedLists)))
+    }
   }
 
   /**
@@ -246,8 +238,10 @@ object CoreLogger {
       this // XXX do some testing on this
     }
 
-    override def withEntryBuffer(buffer: EntryBuffer): CoreLogger =
-      new Noop(state.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
+      val bufferedLists = ParameterList.buffered(this, buffer, () => clock.instant())
+      new Noop(state.withParameterLists(bufferedLists))
+    }
 
   }
 

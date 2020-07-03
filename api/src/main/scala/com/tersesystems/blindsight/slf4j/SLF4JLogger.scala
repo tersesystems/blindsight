@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.slf4j
 
-import com.tersesystems.blindsight.mixins.{EntryBufferMixin, _}
+import com.tersesystems.blindsight.mixins.{EventBufferMixin, _}
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
 import org.slf4j.Logger
@@ -41,7 +41,7 @@ trait SLF4JLogger[M]
     with MarkerMixin
     with UnderlyingMixin
     with EntryTransformMixin
-    with EntryBufferMixin
+    with EventBufferMixin
     with OnConditionMixin {
   override type Self <: SLF4JLogger[M]
 }
@@ -66,8 +66,6 @@ object SLF4JLogger {
      * @return the accumulated markers, may be Markers.empty.
      */
     override val markers: Markers = core.markers
-
-    override def entries: Option[EntryBuffer] = core.entries
 
     override val isTraceEnabled: Predicate = core.predicate(TRACE)
     override val isDebugEnabled: Predicate = core.predicate(DEBUG)
@@ -98,8 +96,8 @@ object SLF4JLogger {
     override def withEntryTransform(f: Entry => Entry): Self =
       new Strict(core.withEntryTransform(f))
 
-    override def withEntryBuffer(buffer: EntryBuffer): Self =
-      new Strict(core.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): Self =
+      new Strict(core.withEventBuffer(buffer))
   }
 
   /**
@@ -134,8 +132,8 @@ object SLF4JLogger {
     override def withEntryTransform(f: Entry => Entry): Self =
       new Unchecked(core.withEntryTransform(f))
 
-    override def withEntryBuffer(buffer: EntryBuffer): Self =
-      new Unchecked(core.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): Self =
+      new Unchecked(core.withEventBuffer(buffer))
   }
 
 }

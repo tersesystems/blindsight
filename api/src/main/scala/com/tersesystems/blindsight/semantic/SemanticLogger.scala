@@ -17,7 +17,7 @@
 package com.tersesystems.blindsight.semantic
 
 import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
-import com.tersesystems.blindsight.{EntryBuffer, _}
+import com.tersesystems.blindsight.{EventBuffer, _}
 import com.tersesystems.blindsight.mixins._
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
@@ -37,7 +37,7 @@ import org.slf4j.event.Level._
 trait SemanticLogger[StatementType]
     extends SemanticLoggerAPI[StatementType, CorePredicate, SemanticMethod]
     with UnderlyingMixin
-    with SemanticEntryBufferMixin[StatementType]
+    with SemanticEventBufferMixin[StatementType]
     with SemanticEntryTransformMixin[StatementType]
     with SemanticMarkerMixin[StatementType]
     with SemanticRefineMixin[StatementType] {
@@ -53,8 +53,6 @@ object SemanticLogger {
     override def underlying: org.slf4j.Logger = core.underlying
 
     override def markers: Markers = core.markers
-
-    override def entries: Option[EntryBuffer] = core.entries
 
     override def withMarker[T: ToMarkers](markerInst: => T): Self[StatementType] = {
       val markers = implicitly[ToMarkers[T]].toMarkers(markerInst)
@@ -74,8 +72,8 @@ object SemanticLogger {
       new Impl[StatementType](core.withEntryTransform(level, f))
     }
 
-    override def withEntryBuffer(buffer: EntryBuffer): Self[StatementType] =
-      new Impl[StatementType](core.withEntryBuffer(buffer))
+    override def withEventBuffer(buffer: EventBuffer): Self[StatementType] =
+      new Impl[StatementType](core.withEventBuffer(buffer))
 
     override val isTraceEnabled: Predicate = core.predicate(TRACE)
     override val trace: SemanticMethod[StatementType] =

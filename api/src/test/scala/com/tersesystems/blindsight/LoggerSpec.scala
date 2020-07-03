@@ -11,6 +11,8 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
 
+import scala.collection.mutable
+
 class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   override def resourceName: String = "/logback-test-slf4j.xml"
@@ -48,7 +50,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val condition                            = true
       implicit def flowBehavior[B: ToArgument] = new SimpleFlowBehavior[B]
       def calcInt: Int =
-        logger.flow.info.when(condition) { // line 51 :-)
+        logger.flow.info.when(condition) { // line 53 :-)
           1 + 2
         }
       val result = calcInt
@@ -56,7 +58,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       result must be(3)
       val event = listAppender.list.get(0)
       event.getFormattedMessage must equal(
-        " => 3     at com.tersesystems.blindsight.LoggerSpec#calcInt(LoggerSpec.scala:51)"
+        " => 3     at com.tersesystems.blindsight.LoggerSpec#calcInt(LoggerSpec.scala:53)"
       )
     }
 
@@ -364,42 +366,23 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   "logger.withBuffer" should {
 
-    "work with no buffer by default" in {
-      val logger = createLogger
-      logger.entries must be(None)
-    }
-
-    "set a buffer" in {
-      val queueBuffer = new TestEntryBuffer
-      val logger      = createLogger.withEntryBuffer(queueBuffer)
-      logger.entries.get must be(queueBuffer)
-    }
-
     "log something and see it in buffer" in {
-      val queueBuffer = new TestEntryBuffer
-      val logger      = createLogger.withEntryBuffer(queueBuffer)
+      val queueBuffer = new TestEventBuffer
+      val logger      = createLogger.withEventBuffer(queueBuffer)
 
       logger.info("Hello world")
 
-      val entry = logger.entries.get.headOption.get
-      entry.marker must be(None)
-      entry.message must be("Hello world")
-      entry.args must be(empty)
-    }
-
-    "clear buffer" in {
-      val queueBuffer = new TestEntryBuffer
-      val logger      = createLogger.withEntryBuffer(queueBuffer)
-
-      logger.info("Hello world")
-      queueBuffer.clear() // should not be part of buffer interface
-      logger.entries.get.size must be(0)
+      val el = queueBuffer.headOption.get
+      el.entry.marker must be(None)
+      el.entry.message must be("Hello world")
+      el.entry.args must be(empty)
     }
   }
 }
 
-class TestEntryBuffer extends EntryBuffer {
-  private val queue = scala.collection.mutable.Queue[Entry]()
+class TestEventBuffer extends EventBuffer {
+  private val queue: mutable.Queue[EventBuffer.Event] =
+    scala.collection.mutable.Queue[EventBuffer.Event]()
 
   override def size: Int = queue.size
 
@@ -407,13 +390,13 @@ class TestEntryBuffer extends EntryBuffer {
 
   def clear(): Unit = queue.clear()
 
-  override def headOption: Option[Entry] = queue.headOption
+  override def headOption: Option[EventBuffer.Event] = queue.headOption
 
-  override def offer(entry: Entry): Unit = queue.enqueue(entry)
+  override def offer(event: EventBuffer.Event): Unit = queue.enqueue(event)
 
   override def capacity: Int = Int.MaxValue
 
   override def isEmpty: Boolean = queue.isEmpty
 
-  override def head: Entry = queue.head
+  override def head: EventBuffer.Event = queue.head
 }

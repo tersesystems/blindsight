@@ -26,13 +26,15 @@ import org.slf4j.MarkerFactory
 
 object Slf4jMain {
 
+  private val buffer = EventBuffer(50)
+
   private val logger = LoggerFactory
     .getLogger(getClass)
     .withEntryTransform(e => {
       val message = e.message + " IN BED"
       e.copy(message = message)
     })
-    .withEntryBuffer(EntryBuffer(50))
+    .withEventBuffer(buffer)
 
   final case class FeatureFlag(flagName: String)
 
@@ -98,6 +100,7 @@ object Slf4jMain {
     val loggerWithMarkers = logger.withMarker(m1).withMarker(m2)
     loggerWithMarkers.info("I should have two markers")
 
-    println(s"There are ${logger.entries.get.size} entries in the buffer")
+    println(s"There are ${buffer.size} entries in the buffer")
+    println(s"The last entered entry was ${buffer.head}")
   }
 }
