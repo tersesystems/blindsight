@@ -146,6 +146,12 @@ object StrictSLF4JMethod {
 
     import parameterList._
 
+    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
+      if (core.when(level, condition)) {
+        block(this)
+      }
+    }
+
     override def apply(
         st: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
@@ -305,7 +311,7 @@ object StrictSLF4JMethod {
         arg: A,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate(markers.marker)) {
+      if (shouldLog(markers)) {
         markerMessageArg1Arg2(
           markers.marker,
           message.toString,
@@ -320,7 +326,7 @@ object StrictSLF4JMethod {
         message: Message,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate(markers.marker)) {
+      if (shouldLog(markers)) {
         markerMessageArgs(markers.marker, message.toString, args.toArray)
       }
     }
@@ -331,27 +337,18 @@ object StrictSLF4JMethod {
         args: Arguments,
         throwable: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate(markers.marker)) {
+      if (shouldLog(markers)) {
         markerMessageArgs(markers.marker, message.toString, args.toArray :+ throwable)
       }
     }
 
     @inline
-    private def shouldLog: Boolean = {
-      val m: Markers = core.state.markers
-      if (m.isEmpty) executePredicate() else executePredicate(m.marker)
-    }
+    private def shouldLog: Boolean = executePredicate()
 
     // optimize for the conditional, even if we have to reconstruct the marker twice
     @inline
     private def shouldLog(markers: Markers): Boolean = {
       executePredicate(markers.marker)
-    }
-
-    override def when(condition: Condition)(block: StrictSLF4JMethod => Unit): Unit = {
-      if (core.when(level, condition)) {
-        block(this)
-      }
     }
 
     override def toString: String = {

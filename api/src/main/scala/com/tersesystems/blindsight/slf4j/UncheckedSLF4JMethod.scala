@@ -127,7 +127,7 @@ object UncheckedSLF4JMethod {
     override def apply(
         st: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (shouldLog) parameterList.executeStatement(st)
+      if (shouldLog) executeStatement(st)
     }
 
     override def apply(
@@ -177,7 +177,7 @@ object UncheckedSLF4JMethod {
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(marker)) {
-        markerMessage(markers(marker).marker, msg)
+        markerMessage(marker, msg)
       }
     }
 
@@ -190,7 +190,7 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
-        markerMessageArg1(markers(marker).marker, msg, arg)
+        markerMessageArg1(marker, msg, arg)
       }
     }
 
@@ -203,7 +203,7 @@ object UncheckedSLF4JMethod {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
-        markerMessageArg1Arg2(markers(marker).marker, format, arg1, arg2)
+        markerMessageArg1Arg2(marker, format, arg1, arg2)
       }
     }
 
@@ -213,26 +213,16 @@ object UncheckedSLF4JMethod {
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       if (shouldLog(marker)) {
-        markerMessageArgs(markers(marker).marker, format, args.toArray)
+        markerMessageArgs(marker, format, args.toArray)
       }
     }
 
-    private def markers(marker: Marker) = {
-      core.state.markers + marker
-    }
-
     @inline
-    private def shouldLog: Boolean = {
-      val m: Markers = core.state.markers
-      if (m.isEmpty) executePredicate() else executePredicate(m.marker)
-    }
+    private def shouldLog: Boolean = executePredicate()
 
     // optimize for the conditional, even if we have to reconstruct the marker twice
     @inline
-    private def shouldLog(marker: Marker): Boolean = {
-      val m: Markers = markers(marker)
-      executePredicate(m.marker)
-    }
+    private def shouldLog(marker: Marker): Boolean = executePredicate(marker)
 
     override def toString: String = {
       s"${getClass.getName}(logger=$core)"
