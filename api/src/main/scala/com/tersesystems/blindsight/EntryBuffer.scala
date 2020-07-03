@@ -1,5 +1,7 @@
 package com.tersesystems.blindsight
 
+import java.time.Instant
+
 /**
  * A client view of logging entries that were made recently.
  */
@@ -15,36 +17,19 @@ trait EntryBuffer {
 
   def clear(): Unit
 
-  def take(count: Int): scala.collection.immutable.Seq[Entry]
+  def take(count: Int): scala.collection.immutable.Seq[EntryBuffer.El]
 
-  def headOption: Option[Entry]
+  def headOption: Option[EntryBuffer.El]
 
-  def head: Entry
+  def head: EntryBuffer.El
 }
 
-trait EntryBufferFactory {
-  def createEntryBuffer(capacity: Int): EntryBuffer
-}
-
-// XXX should be EntryBufferFactory
 object EntryBuffer {
 
-  import java.util.ServiceLoader
+  final case class El(
+    bufferedAt: Instant,
+    entry: Entry
+  )
 
-  private lazy val bufferFactory: EntryBufferFactory = {
-    var factory: EntryBufferFactory = null;
-
-    val iter = bufferFactoryLoader.iterator()
-    while (iter.hasNext && factory == null) {
-      factory = iter.next()
-    }
-    if (factory == null) {
-      throw new javax.management.ServiceNotFoundException("No buffer factory found!")
-    } else {
-      factory
-    }
-  }
-  private val bufferFactoryLoader = ServiceLoader.load(classOf[EntryBufferFactory])
-
-  def apply(capacity: Int): EntryBuffer = bufferFactory.createEntryBuffer(capacity)
+  def apply(capacity: Int): EntryBuffer = EntryBufferFactory().create(capacity)
 }

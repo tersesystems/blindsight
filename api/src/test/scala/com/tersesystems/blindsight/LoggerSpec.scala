@@ -399,7 +399,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 }
 
 class TestEntryBuffer extends EntryBuffer {
-  private val queue = scala.collection.mutable.Queue[Entry]()
+  private val queue = scala.collection.mutable.Queue[BufferedEntry]()
 
   override def size: Int = queue.size
 
