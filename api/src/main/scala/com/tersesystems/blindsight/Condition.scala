@@ -1,6 +1,5 @@
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.core.{CoreLogger, ParameterList}
 import org.slf4j.event.Level
 
 trait Condition extends ((Level, Markers) => Boolean)
@@ -8,14 +7,6 @@ trait Condition extends ((Level, Markers) => Boolean)
 object Condition {
 
   implicit def functionToCondition(f: => Boolean): Condition = Condition(f)
-
-  def apply(logger: org.slf4j.Logger): Condition =
-    new Condition {
-      val parameterLists: Array[ParameterList] = CoreLogger.lists(logger)
-      override def apply(level: Level, markers: Markers): Boolean = {
-        parameterLists.apply(level.ordinal).executePredicate()
-      }
-    }
 
   def apply(f: => Boolean): Condition =
     new Condition {
