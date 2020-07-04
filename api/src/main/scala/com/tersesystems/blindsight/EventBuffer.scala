@@ -41,10 +41,10 @@ object EventBuffer {
    * @param entry the entry itself.
    */
   final case class Event(
-    timestamp: Instant,
-    loggerName: String,
-    level: Level,
-    entry: Entry
+      timestamp: Instant,
+      loggerName: String,
+      level: Level,
+      entry: Entry
   )
 
   def apply(capacity: Int): EventBuffer = EventBufferFactory().create(capacity)
