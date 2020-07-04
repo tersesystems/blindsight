@@ -155,7 +155,7 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
         "-Xfatal-warnings",
         "-release",
         "8"
-      ) // ++ optimizeInline
+      ) ++ optimizeInline
     case Some((2, n)) if n == 12 =>
       Seq(
         "-Xsource:2.12",

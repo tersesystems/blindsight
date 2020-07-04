@@ -432,7 +432,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val el = queueBuffer.headOption.get
       el.entry.marker must be(None)
-      el.entry.message must be("Hello world TRANFORM")
+      el.entry.message must be("Hello world TRANSFORM")
       el.entry.args must be(empty)
     }
   }

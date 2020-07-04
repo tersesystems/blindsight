@@ -188,14 +188,24 @@ object CoreLogger {
       )
     }
 
-    protected def buffered(buffer: EventBuffer, level: Level, clock: () => Instant): ParameterList = {
+    protected def buffered(
+        buffer: EventBuffer,
+        level: Level,
+        clock: () => Instant
+    ): ParameterList = {
       val loggerName = underlying.getName
       val bufferF = (entry: Entry) => {
         val event = EventBuffer.Event(clock(), loggerName = loggerName, level = level, entry)
         buffer.offer(event)
         entry
       }
-      new ParameterList.Proxy(parameterList(level), bufferF)
+
+      parameterList(level) match {
+        case proxy: ParameterList.Proxy =>
+          new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(bufferF))
+        case delegate =>
+          new ParameterList.Proxy(delegate, bufferF)
+      }
     }
   }
 
