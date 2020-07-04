@@ -2,6 +2,7 @@
 
 * [Logback](logstash.md)
 * [Generic](generic.md)
+* [Ring Buffer](ringbuffer.md)
 
 @@@
 

@@ -11,6 +11,8 @@
 * [Flow API](flow.md)
 * [Conditional Logging](conditional.md)
 * [Contextual Logging](context.md)
+* [Entry Transformation](transform.md)
+* [Event Buffers](buffer.md)
 * [Source Code](sourcecode.md)
 
 @@@

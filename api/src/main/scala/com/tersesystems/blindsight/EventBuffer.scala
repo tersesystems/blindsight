@@ -35,13 +35,13 @@ object EventBuffer {
   /**
    * An event is an entry that was added to a buffer.
    *
-   * @param created the instant the entry was added to the buffer
+   * @param timestamp the instant the entry was added to the buffer
    * @param loggerName the SLF4J logger name used to add to the buffer
    * @param level the level added to buffer
    * @param entry the entry itself.
    */
   final case class Event(
-      created: Instant,
+      timestamp: Instant,
       loggerName: String,
       level: Level,
       entry: Entry

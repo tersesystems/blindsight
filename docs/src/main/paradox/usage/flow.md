@@ -109,7 +109,7 @@ and the following dependencies:
   version="latest.version"
 }
 
-See [play-blindsight](http://github.com/wsargent/play-blindsight) for a worked example.
+See [play-blindsight](http://github.com/tersesystems/play-blindsight) for a worked example.
 
 ![trace.png](trace.png)
 
