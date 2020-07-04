@@ -82,16 +82,31 @@ object CoreLogger {
         copy(parameterLists = lists)
       }
 
-      override def withEntryTransform(f: Entry => Entry): State = {
-        withParameterLists(transform(parameterLists, f))
+      override def withEntryTransform(transformF: Entry => Entry): State = {
+        val newLists: Array[ParameterList] = parameterLists.map {
+          case proxy: ParameterList.Proxy =>
+            new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(transformF))
+          case delegate =>
+            new ParameterList.Proxy(delegate, transformF)
+        }
+        withParameterLists(newLists)
       }
 
-      override def withEntryTransform(level: Level, f: Entry => Entry): State = {
-        val newParameterLists: Array[ParameterList] = new Array(parameterLists.length)
-        parameterLists.copyToArray(newParameterLists)
-        val i = level.ordinal()
-        newParameterLists(i) = new ParameterList.Proxy(newParameterLists(i), f)
-        withParameterLists(newParameterLists)
+      override def withEntryTransform(level: Level, transformF: Entry => Entry): State = {
+        val newLists: Array[ParameterList] = parameterLists.zipWithIndex.map {
+          case (delegate, i) =>
+            if (i == level.ordinal()) {
+              delegate match {
+                case proxy: ParameterList.Proxy =>
+                  new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(transformF))
+                case delegate =>
+                  new ParameterList.Proxy(delegate, transformF)
+              }
+            } else {
+              delegate
+            }
+        }
+        withParameterLists(newLists)
       }
     }
   }
@@ -162,6 +177,36 @@ object CoreLogger {
         new Conditional(new Impl(state.onCondition(c)))
       }
     }
+
+    protected def buffered(buffer: EventBuffer, clock: () => Instant): Array[ParameterList] = {
+      Array(
+        buffered(buffer, Level.ERROR, clock),
+        buffered(buffer, Level.WARN, clock),
+        buffered(buffer, Level.INFO, clock),
+        buffered(buffer, Level.DEBUG, clock),
+        buffered(buffer, Level.TRACE, clock)
+      )
+    }
+
+    protected def buffered(
+        buffer: EventBuffer,
+        level: Level,
+        clock: () => Instant
+    ): ParameterList = {
+      val loggerName = underlying.getName
+      val bufferF = (entry: Entry) => {
+        val event = EventBuffer.Event(clock(), loggerName = loggerName, level = level, entry)
+        buffer.offer(event)
+        entry
+      }
+
+      parameterList(level) match {
+        case proxy: ParameterList.Proxy =>
+          new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(bufferF))
+        case delegate =>
+          new ParameterList.Proxy(delegate, bufferF)
+      }
+    }
   }
 
   /**
@@ -183,14 +228,14 @@ object CoreLogger {
     }
 
     override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
-      val bufferedLists = buffered(this, buffer, () => clock.instant())
+      val bufferedLists = buffered(buffer, () => clock.instant())
       new Impl(state.withParameterLists(bufferedLists))
     }
 
     override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
       val newLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newLists)
-      newLists(level.ordinal()) = buffered(this, buffer, level, () => clock.instant())
+      newLists(level.ordinal()) = buffered(buffer, level, () => clock.instant())
       new Impl(state.withParameterLists(newLists))
     }
   }
@@ -221,14 +266,14 @@ object CoreLogger {
     }
 
     override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
-      val bufferedLists = buffered(this, buffer, () => clock.instant())
+      val bufferedLists = buffered(buffer, () => clock.instant())
       new Conditional(new Impl(state.withParameterLists(bufferedLists)))
     }
 
     override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
       val newLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newLists)
-      newLists(level.ordinal()) = buffered(this, buffer, level, () => clock.instant())
+      newLists(level.ordinal()) = buffered(buffer, level, () => clock.instant())
       new Conditional(new Impl(state.withParameterLists(newLists)))
     }
   }
@@ -254,14 +299,14 @@ object CoreLogger {
     }
 
     override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
-      val bufferedLists = buffered(this, buffer, () => clock.instant())
+      val bufferedLists = buffered(buffer, () => clock.instant())
       new Noop(state.withParameterLists(bufferedLists))
     }
 
     override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
       val newLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newLists)
-      newLists(level.ordinal()) = buffered(this, buffer, level, () => clock.instant())
+      newLists(level.ordinal()) = buffered(buffer, level, () => clock.instant())
       new Noop(state.withParameterLists(newLists))
     }
   }
@@ -292,70 +337,6 @@ object CoreLogger {
       new ParameterList.WithSource(behavior, lists(Level.DEBUG.ordinal())),
       new ParameterList.WithSource(behavior, lists(Level.TRACE.ordinal()))
     )
-  }
-
-  /**
-   * Adds an entry transformation step to parameter lists.
-   */
-  private def transform(
-      lists: Array[ParameterList],
-      transformF: Entry => Entry
-  ): Array[ParameterList] = {
-    def delegate(level: Level): ParameterList = {
-      new ParameterList.Proxy(lists(level.ordinal()), transformF)
-    }
-
-    Array(
-      delegate(Level.ERROR),
-      delegate(Level.WARN),
-      delegate(Level.INFO),
-      delegate(Level.DEBUG),
-      delegate(Level.TRACE)
-    )
-  }
-
-  /**
-   * Adds event buffers and returns parameter lists.
-   *
-   * @param coreLogger the core logger
-   * @param clock an instant producing function
-   * @return array of lists that offer entry to the buffer.
-   */
-  private def buffered(
-      coreLogger: CoreLogger,
-      buffer: EventBuffer,
-      clock: () => Instant
-  ): Array[ParameterList] = {
-    Array(
-      buffered(coreLogger, buffer, Level.ERROR, clock),
-      buffered(coreLogger, buffer, Level.WARN, clock),
-      buffered(coreLogger, buffer, Level.INFO, clock),
-      buffered(coreLogger, buffer, Level.DEBUG, clock),
-      buffered(coreLogger, buffer, Level.TRACE, clock)
-    )
-  }
-
-  /**
-   * Adds an event offering function to a single parameter list.
-   *
-   * @param coreLogger the core logger
-   * @param level the level to log at
-   * @param clock an instant producing function
-   * @return a single parameter list
-   */
-  private def buffered(
-      coreLogger: CoreLogger,
-      buffer: EventBuffer,
-      level: Level,
-      clock: () => Instant
-  ): ParameterList = {
-    val loggerName = coreLogger.state.underlying.getName
-    val bufferF = (entry: Entry) => {
-      val event = EventBuffer.Event(clock(), loggerName = loggerName, level = level, entry)
-      buffer.offer(event)
-      entry
-    }
-    new ParameterList.Proxy(coreLogger.parameterList(level), bufferF)
   }
 
 }

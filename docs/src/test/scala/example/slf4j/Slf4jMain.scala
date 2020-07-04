@@ -27,15 +27,10 @@ import org.slf4j.event.Level
 
 object Slf4jMain {
 
-  private val buffer = EventBuffer(50)
+  private val buffer: EventBuffer = EventBuffer(50)
 
   private val logger = LoggerFactory
     .getLogger(getClass)
-    .withEntryTransform(e => {
-      val message = e.message + " IN BED"
-      e.copy(message = message)
-    })
-    .withEventBuffer(Level.DEBUG, buffer)
     .withEventBuffer(Level.TRACE, buffer)
 
   final case class FeatureFlag(flagName: String)
