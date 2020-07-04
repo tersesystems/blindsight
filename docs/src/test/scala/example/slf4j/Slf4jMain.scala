@@ -29,8 +29,16 @@ object Slf4jMain {
 
   private val buffer: EventBuffer = EventBuffer(50)
 
+  private val bufferEnabled = true
+
+  private val logCondition = Condition { (level: Level, markers: Markers) =>
+    level.toInt.compareTo(Level.DEBUG.toInt) > 0 || bufferEnabled
+  }
+
   private val logger = LoggerFactory
     .getLogger(getClass)
+    .onCondition(logCondition)
+    .withEventBuffer(Level.DEBUG, buffer)
     .withEventBuffer(Level.TRACE, buffer)
 
   final case class FeatureFlag(flagName: String)
@@ -102,8 +110,13 @@ object Slf4jMain {
     loggerWithMarkers.info("I should have two markers")
 
     println(s"There are ${buffer.size} entries in the buffer")
-    buffer.take(buffer.size).foreach { event =>
+    val bufferList = buffer.take(buffer.size)
+    bufferList.foreach { event =>
       println(s"event $event")
+    }
+
+    bufferList.find(_.entry.message.startsWith("A trace statement")).foreach { e =>
+      println(s"found special event $e")
     }
   }
 }
