@@ -27,16 +27,22 @@ import org.slf4j.event.Level
 
 object Slf4jMain {
 
-  private val buffer = EventBuffer(50)
+  private val buffer: EventBuffer = EventBuffer(50)
 
+  // The order of the transformation and buffering is
+  // surprising and needs to be worked out.
   private val logger = LoggerFactory
     .getLogger(getClass)
-    .withEntryTransform(e => {
-      val message = e.message + " IN BED"
-      e.copy(message = message)
-    })
     .withEventBuffer(Level.DEBUG, buffer)
     .withEventBuffer(Level.TRACE, buffer)
+    .withEntryTransform( e => {
+      val message = e.message + " TRANSFORM1"
+      e.copy(message = message)
+    })
+    .withEntryTransform(e => {
+      val message = e.message + " TRANSFORM2"
+      e.copy(message = message)
+    })
 
   final case class FeatureFlag(flagName: String)
 
