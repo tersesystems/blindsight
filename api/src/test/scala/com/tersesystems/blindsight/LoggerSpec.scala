@@ -366,6 +366,26 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val event = listAppender.list.get(0)
       event.getMessage must equal("warn message")
     }
+
+    "transform in the right order" in {
+      val logger = createLogger
+        .withEntryTransform(st => st.copy(message = st.message + " ONE"))
+        .withEntryTransform(st => st.copy(message = st.message + " TWO"))
+      logger.info("MESSAGE")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("MESSAGE ONE TWO")
+    }
+
+    "transform in the right order when level specific" in {
+      val logger = createLogger
+        .withEntryTransform(st => st.copy(message = st.message + " ONE"))
+        .withEntryTransform(Level.INFO, st => st.copy(message = st.message + " TWO"))
+      logger.info("MESSAGE")
+
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("MESSAGE ONE TWO")
+    }
   }
 
   "logger.withBuffer" should {
@@ -379,6 +399,40 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val el = queueBuffer.headOption.get
       el.entry.marker must be(None)
       el.entry.message must be("Hello world")
+      el.entry.args must be(empty)
+    }
+
+    "log something at a specific level and see it in buffer" in {
+      val queueBuffer = new TestEventBuffer
+      val logger      = createLogger.withEventBuffer(Level.INFO, queueBuffer)
+
+      logger.info("Hello world")
+
+      val el = queueBuffer.headOption.get
+      el.entry.marker must be(None)
+      el.entry.message must be("Hello world")
+      el.entry.args must be(empty)
+    }
+
+    "log something at a different level and not see it in buffer" in {
+      val queueBuffer = new TestEventBuffer
+      val logger      = createLogger.withEventBuffer(Level.INFO, queueBuffer)
+
+      logger.warn("Hello world")
+      queueBuffer.headOption must be(None)
+    }
+
+    "buffer should work with transform when placed after" in {
+      val queueBuffer = new TestEventBuffer
+
+      val logger = createLogger
+        .withEntryTransform(e => e.copy(message = e.message + " TRANSFORM"))
+        .withEventBuffer(queueBuffer)
+      logger.warn("Hello world")
+
+      val el = queueBuffer.headOption.get
+      el.entry.marker must be(None)
+      el.entry.message must be("Hello world TRANFORM")
       el.entry.args must be(empty)
     }
   }

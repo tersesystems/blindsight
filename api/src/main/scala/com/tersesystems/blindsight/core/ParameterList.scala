@@ -478,7 +478,7 @@ object ParameterList {
    * @param delegate the delegate parameter list.
    * @param transform the transformation log entry.
    */
-  class Proxy(delegate: ParameterList, val transform: Entry => Entry) extends ParameterList {
+  class Proxy(val delegate: ParameterList, val transform: Entry => Entry) extends ParameterList {
 
     override def executePredicate(): Boolean = delegate.executePredicate()
 

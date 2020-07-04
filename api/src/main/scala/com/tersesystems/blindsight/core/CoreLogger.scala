@@ -82,16 +82,31 @@ object CoreLogger {
         copy(parameterLists = lists)
       }
 
-      override def withEntryTransform(f: Entry => Entry): State = {
-        withParameterLists(transform(parameterLists, f))
+      override def withEntryTransform(transformF: Entry => Entry): State = {
+        val newLists: Array[ParameterList] = parameterLists.map {
+          case proxy: ParameterList.Proxy =>
+            new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(transformF))
+          case delegate =>
+            new ParameterList.Proxy(delegate, transformF)
+        }
+        withParameterLists(newLists)
       }
 
-      override def withEntryTransform(level: Level, f: Entry => Entry): State = {
-        val newParameterLists: Array[ParameterList] = new Array(parameterLists.length)
-        parameterLists.copyToArray(newParameterLists)
-        val i = level.ordinal()
-        newParameterLists(i) = new ParameterList.Proxy(newParameterLists(i), f)
-        withParameterLists(newParameterLists)
+      override def withEntryTransform(level: Level, transformF: Entry => Entry): State = {
+        val newLists: Array[ParameterList] = parameterLists.zipWithIndex.map {
+          case (delegate, i) =>
+            if (i == level.ordinal()) {
+              delegate match {
+                case proxy: ParameterList.Proxy =>
+                  new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(transformF))
+                case delegate =>
+                  new ParameterList.Proxy(delegate, transformF)
+              }
+            } else {
+              delegate
+            }
+        }
+        withParameterLists(newLists)
       }
     }
   }
@@ -291,26 +306,6 @@ object CoreLogger {
       new ParameterList.WithSource(behavior, lists(Level.INFO.ordinal())),
       new ParameterList.WithSource(behavior, lists(Level.DEBUG.ordinal())),
       new ParameterList.WithSource(behavior, lists(Level.TRACE.ordinal()))
-    )
-  }
-
-  /**
-   * Adds an entry transformation step to parameter lists.
-   */
-  private def transform(
-      lists: Array[ParameterList],
-      transformF: Entry => Entry
-  ): Array[ParameterList] = {
-    def delegate(level: Level): ParameterList = {
-      new ParameterList.Proxy(lists(level.ordinal()), transformF)
-    }
-
-    Array(
-      delegate(Level.ERROR),
-      delegate(Level.WARN),
-      delegate(Level.INFO),
-      delegate(Level.DEBUG),
-      delegate(Level.TRACE)
     )
   }
 
