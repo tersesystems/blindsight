@@ -70,8 +70,8 @@ object FluentLogger {
       new Impl(core.withMarker(markerInstance))
     }
 
-    override def onCondition(condition: Condition): Self = {
-      new Impl(core.onCondition(condition))
+    override def withCondition(condition: Condition): Self = {
+      new Impl(core.withCondition(condition))
     }
 
     override def withEntryTransform(

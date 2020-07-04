@@ -27,7 +27,7 @@ object ConditionalMain {
     val condition = Condition { (level: Level, markers: Markers) =>
       level != Level.WARN
     }
-    val logger = LoggerFactory.getLogger(getClass).onCondition(condition).withEventBuffer(buffer)
+    val logger = LoggerFactory.getLogger(getClass).withCondition(condition).withEventBuffer(buffer)
 
     val e = new RuntimeException
     logger.info("hello world, I render fine at {}", System.currentTimeMillis())

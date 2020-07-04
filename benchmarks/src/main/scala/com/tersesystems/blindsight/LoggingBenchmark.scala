@@ -15,8 +15,8 @@ class LoggingBenchmark {
 
   val logger: Logger               = LoggerFactory.getLogger
   val condition: Condition         = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val infoConditionLogger: Logger  = logger.onCondition(condition)
-  val neverConditionLogger: Logger = logger.onCondition(Condition.never)
+  val infoConditionLogger: Logger  = logger.withCondition(condition)
+  val neverConditionLogger: Logger = logger.withCondition(Condition.never)
 
   val arg1 = Argument("one")
   val arg2 = Argument("two")

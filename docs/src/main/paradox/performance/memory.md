@@ -160,7 +160,7 @@ Using a block in this situation will add extra memory allocation with no benefit
 In @ref:[conditional logging](../usage/conditional.md) scenarios, where sampling or circuit breakers may prevent logging, you should use the lazy form:
 
 ```scala
-logger.onCondition(condition).info { info =>
+logger.withCondition(condition).info { info =>
   val sampledArgs = ...
   info("This may be sampled {}", sampledArgs)
 }

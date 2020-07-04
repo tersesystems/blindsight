@@ -73,8 +73,8 @@ object Logger {
       new SemanticLogger.Impl[StatementType](core)
     }
 
-    override def onCondition(condition: Condition): Self = {
-      new Impl(core.onCondition(condition))
+    override def withCondition(condition: Condition): Self = {
+      new Impl(core.withCondition(condition))
     }
 
     override def withMarker[T: ToMarkers](markerInstance: T): Self = {

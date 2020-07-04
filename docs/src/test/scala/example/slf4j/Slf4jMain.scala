@@ -37,7 +37,7 @@ object Slf4jMain {
 
   private val logger = LoggerFactory
     .getLogger(getClass)
-    .onCondition(logCondition)
+    .withCondition(logCondition)
     .withEventBuffer(Level.DEBUG, buffer)
     .withEventBuffer(Level.TRACE, buffer)
 

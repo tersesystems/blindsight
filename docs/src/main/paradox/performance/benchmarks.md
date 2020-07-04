@@ -80,8 +80,8 @@ class LoggingBenchmark {
 
   val logger: Logger               = LoggerFactory.getLogger
   val condition: Condition         = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val infoConditionLogger: Logger  = logger.onCondition(condition)
-  val neverConditionLogger: Logger = logger.onCondition(Condition.never)
+  val infoConditionLogger: Logger  = logger.withCondition(condition)
+  val neverConditionLogger: Logger = logger.withCondition(Condition.never)
 
   @Benchmark
   def trace(): Unit = {
@@ -157,7 +157,7 @@ With Logback 1.2.3 and a no-op appender:
 class FlowBenchmark {
   val flow        = LoggerFactory.getLogger.flow
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val neverLogger = flow.onCondition(Condition.never)
+  val neverLogger = flow.withCondition(Condition.never)
 
   implicit def flowBehavior[B]: FlowBehavior[B] = FlowBehavior.noop
 
@@ -225,7 +225,7 @@ The flow logger is slightly slower even when disabled because of `sourcecode.Arg
 class FluentBenchmark {
   val fluent: FluentLogger = LoggerFactory.getLogger.fluent
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val neverConditionLogger = fluent.onCondition(Condition.never)
+  val neverConditionLogger = fluent.withCondition(Condition.never)
 
   @Benchmark
   def info(): Unit = {
@@ -333,8 +333,8 @@ With Logback 1.2.3 and a no-op appender:
 class UncheckedBenchmark {
   val logger               = LoggerFactory.getLogger.unchecked
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val infoConditionLogger  = logger.onCondition(condition)
-  val neverConditionLogger = logger.onCondition(Condition.never)
+  val infoConditionLogger  = logger.withCondition(condition)
+  val neverConditionLogger = logger.withCondition(Condition.never)
 
   val args = Arguments("one", "two", "three")
 

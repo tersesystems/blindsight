@@ -80,7 +80,7 @@ val resultIsThree: Int = logger.flow.trace(1 + 2)
 @ref:[Conditional Logging](conditional.md):
 
 ```scala
-logger.onCondition(booleanCondition).info("Only logs when condition is true")
+logger.withCondition(booleanCondition).info("Only logs when condition is true")
 
 logger.info.when(booleanCondition) { info => info("when true") }
 ```

@@ -25,8 +25,8 @@ object SimpleFlow {
 
   private def loggingEnabled: Boolean = true
 
-  private val logger                 = LoggerFactory.getLogger.onCondition(loggingEnabled)
-  private val flowLogger: FlowLogger = logger.flow.onCondition(loggingEnabled)
+  private val logger                 = LoggerFactory.getLogger.withCondition(loggingEnabled)
+  private val flowLogger: FlowLogger = logger.flow.withCondition(loggingEnabled)
 
   def main(args: Array[String]): Unit = {
     logger.info("About to execute number flow")

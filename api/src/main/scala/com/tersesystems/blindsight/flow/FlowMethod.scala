@@ -65,7 +65,7 @@ object FlowMethod {
       if (condition == Condition.never) {
         Noop
       } else {
-        new Impl(level, core.onCondition(condition))
+        new Impl(level, core.withCondition(condition))
       }
     }
 

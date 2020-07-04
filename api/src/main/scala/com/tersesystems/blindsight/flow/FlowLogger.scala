@@ -89,11 +89,11 @@ object FlowLogger {
      *
      * @return the new conditional logger instance.
      */
-    override def onCondition(condition: Condition): FlowLogger = {
+    override def withCondition(condition: Condition): FlowLogger = {
       if (condition == Condition.never) {
         new Noop(core)
       } else {
-        new Impl(core.onCondition(condition))
+        new Impl(core.withCondition(condition))
       }
     }
 
@@ -138,7 +138,7 @@ object FlowLogger {
 
     override def underlying: org.slf4j.Logger = core.underlying
 
-    override def onCondition(condition: Condition): Self = this // XXX is this right?
+    override def withCondition(condition: Condition): Self = this // XXX is this right?
 
     override def withEventBuffer(buffer: EventBuffer): Self = this // XXX is this right?
 

@@ -146,7 +146,7 @@ val result:Int = logger.flow.trace(arg1 + arg2)
 [Conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html):
 
 ```scala
-logger.onCondition(booleanCondition).info("Only logs when condition is true")
+logger.withCondition(booleanCondition).info("Only logs when condition is true")
 
 logger.info.when(booleanCondition) { info => info("when true") }
 ```

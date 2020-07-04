@@ -15,8 +15,8 @@ class UncheckedBenchmark {
 
   val logger               = LoggerFactory.getLogger.unchecked
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val infoConditionLogger  = logger.onCondition(condition)
-  val neverConditionLogger = logger.onCondition(Condition.never)
+  val infoConditionLogger  = logger.withCondition(condition)
+  val neverConditionLogger = logger.withCondition(Condition.never)
 
   val arg1 = Argument("one")
   val arg2 = Argument("two")
