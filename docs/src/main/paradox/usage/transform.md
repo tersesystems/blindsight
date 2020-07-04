@@ -48,7 +48,11 @@ val event = listAppender.list.get(0)
 event.getMessage must equal("MESSAGE ONE TWO")
 ```
 
-You can use entry transformations in conjunction with @ref:[event buffering](buffer.md).  Because event buffering is itself a case of entry transformation, the same rules apply.  This means that if you want the transformed entry, you must add the event buffer **after** the event transformation:
+## Transforms with Event Buffers
+
+You can use entry transformations in conjunction with @ref:[event buffering](buffer.md). 
+ 
+Because event buffering is itself a case of entry transformation, the same rules apply.  This means that if you want the transformed entry, you must add the event buffer **after** the event transformation:
 
 ```scala
 val logger = createLogger
