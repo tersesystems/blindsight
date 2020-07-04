@@ -42,6 +42,7 @@ trait SLF4JLogger[M]
     with UnderlyingMixin
     with EntryTransformMixin
     with EventBufferMixin
+    with ConditionMixin
     with OnConditionMixin {
   override type Self <: SLF4JLogger[M]
 }
@@ -87,8 +88,8 @@ object SLF4JLogger {
     override def withMarker[T: ToMarkers](markerInst: T): Self =
       new Strict(core.withMarker(markerInst))
 
-    override def onCondition(condition: Condition): Self =
-      new Strict(core.onCondition(condition))
+    override def withCondition(condition: Condition): Self =
+      new Strict(core.withCondition(condition))
 
     override def withEntryTransform(level: Level, f: Entry => Entry): Self =
       new Strict(core.withEntryTransform(level, f))
@@ -124,8 +125,8 @@ object SLF4JLogger {
     override def withMarker[T: ToMarkers](instance: T): Self =
       new Unchecked(core.withMarker(instance))
 
-    override def onCondition(condition: Condition): Self =
-      new Unchecked(core.onCondition(condition))
+    override def withCondition(condition: Condition): Self =
+      new Unchecked(core.withCondition(condition))
 
     override def withEntryTransform(
         level: Level,

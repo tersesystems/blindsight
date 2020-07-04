@@ -19,7 +19,7 @@ import org.slf4j.event.{Level => SLF4JLevel}
 class FluentBenchmark {
   val fluent: FluentLogger = LoggerFactory.getLogger.fluent
   val condition: Condition = Condition((level, _) => level.compareTo(SLF4JLevel.INFO) >= 0)
-  val neverConditionLogger = fluent.onCondition(Condition.never)
+  val neverConditionLogger = fluent.withCondition(Condition.never)
 
   val arg1 = Argument("one")
   val arg2 = Argument("two")

@@ -69,8 +69,8 @@ object SLF4JLogger {
     override def withMarker[T: ToMarkers](markerInst: T): Self =
       new Strict(core.withMarker(markerInst))
 
-    override def onCondition(condition: Condition): SLF4JLogger[StrictSLF4JMethod] =
-      new Strict(core.onCondition(condition))
+    override def withCondition(condition: Condition): SLF4JLogger[StrictSLF4JMethod] =
+      new Strict(core.withCondition(condition))
   }
 }
 ```

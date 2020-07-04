@@ -14,7 +14,7 @@ You should use `Condition.never` when disabling logging, as it will allow Blinds
 
 ## On Condition
 
-All loggers have an `onCondition` method that takes a @scaladoc[Condition](com.tersesystems.blindsight.Condition).  You can look at a marker from the logger state:
+All loggers have an `withCondition` method that takes a @scaladoc[Condition](com.tersesystems.blindsight.Condition).  You can look at a marker from the logger state:
 
 @@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #marker-conditional }
 
@@ -63,7 +63,7 @@ This means that you can bypass the logging system's levels, and be sure that log
 ```scala
 val tracerMarker = org.slf4j.MarkerFactory.getMarker("TRACER")
 val traceCondition = Condition(request.getQueryString("trace").nonEmpty)
-val traceBulletLogger = logger.onCondition(traceCondition).withMarker(tracerMarker)
+val traceBulletLogger = logger.withCondition(traceCondition).withMarker(tracerMarker)
 traceBulletLogger.trace("trace statement written even if loglevel is INFO!")
 ```
 

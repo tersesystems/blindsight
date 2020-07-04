@@ -225,13 +225,13 @@ See @ref:[Structured Logging](dsl.md) for more details.
 
 No matter how fast your logging is, it's always faster not to log a statement at all.  Blindsight does its best to allow the system to **not** log as much as it makes it possible to log, allowing you to dynamically manage the CPU and memory pressure demands of logging.
 
-Most of the loggers have an `onCondition` method that returns a conditional logger of the same type.
+Most of the loggers have an `withCondition` method that returns a conditional logger of the same type.
  
 This logger will only log if the condition is true:
 
 ```scala
 def booleanCondition: Boolean = ...
-val conditionalLogger = logger.onCondition(booleanCondition)
+val conditionalLogger = logger.withCondition(booleanCondition)
 conditionalLogger.info("Only logs when condition is true")
 ```
 

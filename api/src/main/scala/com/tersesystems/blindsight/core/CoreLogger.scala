@@ -49,7 +49,7 @@ object CoreLogger {
 
     def withMarker[M: ToMarkers](m: M): State
 
-    def onCondition(c: Condition): State
+    def withCondition(c: Condition): State
 
     def withEntryTransform(level: Level, f: Entry => Entry): State
 
@@ -73,7 +73,7 @@ object CoreLogger {
         copy(markers = this.markers + markers)
       }
 
-      def onCondition(c: Condition): State = {
+      def withCondition(c: Condition): State = {
         val f = (level: Level, markers: Markers) => condition(level, markers) && c(level, markers)
         copy(condition = Condition(f))
       }
@@ -170,11 +170,11 @@ object CoreLogger {
       }
     }
 
-    override def onCondition(c: Condition): CoreLogger = {
+    override def withCondition(c: Condition): CoreLogger = {
       if (c == Condition.never) {
         new Noop(state)
       } else {
-        new Conditional(new Impl(state.onCondition(c)))
+        new Conditional(new Impl(state.withCondition(c)))
       }
     }
 
@@ -286,8 +286,8 @@ object CoreLogger {
 
     override def when(level: Level, condition: Condition): Boolean = false
 
-    override def onCondition(condition: Condition): CoreLogger =
-      new Noop(state.onCondition(condition))
+    override def withCondition(condition: Condition): CoreLogger =
+      new Noop(state.withCondition(condition))
 
     override def withMarker[T: ToMarkers](instance: T): CoreLogger =
       new Noop(state.withMarker(instance))

@@ -13,26 +13,26 @@ object SimpleConditionalExample {
 
     // #simple-conditional
     def booleanCondition: Boolean = sys.props("java.version").startsWith("1.8")
-    val conditionalLogger         = logger.onCondition(booleanCondition)
+    val conditionalLogger         = logger.withCondition(booleanCondition)
     conditionalLogger.info("Only logs when condition is true")
     // #simple-conditional
 
     // #marker-conditional
     val fooMarker              = MarkerFactory.getMarker("FOO")
     val markerCondition        = Condition((stateMarkers: Markers) => stateMarkers.contains(fooMarker))
-    val conditionalOnFooMarker = logger.onCondition(markerCondition)
+    val conditionalOnFooMarker = logger.withCondition(markerCondition)
     // #marker-conditional
 
     // #level-marker-conditional
     val levelMarkerCondition = Condition((level, markers) =>
       (level.compareTo(Level.DEBUG) >= 0) && markers.contains(fooMarker)
     )
-    val conditionalOnLevelAndMarker = logger.onCondition(levelMarkerCondition)
+    val conditionalOnLevelAndMarker = logger.withCondition(levelMarkerCondition)
     // #level-marker-conditional
 
     // #composed-conditional
     def anotherCondition: Boolean = sys.props.get("user.home").isDefined
-    val bothConditionsLogger      = conditionalLogger.onCondition(anotherCondition)
+    val bothConditionsLogger      = conditionalLogger.withCondition(anotherCondition)
     bothConditionsLogger.info("Only logs when both conditions are true")
     // #composed-conditional
 
@@ -46,7 +46,7 @@ object SimpleConditionalExample {
     // #function-when-conditional
 
     // #circuitbreaker-conditional
-    val operationLogger = logger.onCondition(isCircuitBreakerClosed)
+    val operationLogger = logger.withCondition(isCircuitBreakerClosed)
     operationLogger.error("Only errors when circuit breaker is closed")
     // #circuitbreaker-conditional
 
@@ -64,7 +64,7 @@ object SimpleConditionalExample {
     def userFeatureFlag(implicit request: Request): Boolean = isUserDebugFlagOn(request)
 
     // the logger will debug if level=DEBUG and feature flag is enabled for user.
-    val userLogger = logger.onCondition(userFeatureFlag)
+    val userLogger = logger.withCondition(userFeatureFlag)
     userLogger.debug("user debug request", request.user)
     // #featureflag-conditional
 

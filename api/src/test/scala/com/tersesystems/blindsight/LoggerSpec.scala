@@ -78,13 +78,13 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
   }
 
-  "logger.onCondition" should {
+  "logger.withCondition" should {
 
     "log on true condition" in {
       val logger = createLogger
 
       val condition = true
-      logger.onCondition(condition).error("this should be logged")
+      logger.withCondition(condition).error("this should be logged")
       val event = listAppender.list.get(0)
       event.getMessage must equal("this should be logged")
     }
@@ -93,7 +93,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val condition = false
-      logger.onCondition(condition).error("this should not be logged")
+      logger.withCondition(condition).error("this should not be logged")
       listAppender.list must be(empty)
     }
 
@@ -103,7 +103,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val fooMarker = MarkerFactory.getMarker("FOO")
       val markerCondition =
         Condition((markers: Markers) => markers.contains(fooMarker))
-      logger.withMarker(fooMarker).onCondition(markerCondition).error("this should be logged")
+      logger.withMarker(fooMarker).withCondition(markerCondition).error("this should be logged")
       val event = listAppender.list.get(0)
       event.getMessage must equal("this should be logged")
     }
@@ -114,7 +114,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val fooMarker = MarkerFactory.getMarker("FOO")
       val markerCondition =
         Condition((markers: Markers) => markers.contains(fooMarker))
-      logger.onCondition(markerCondition).error("this should not be logged")
+      logger.withCondition(markerCondition).error("this should not be logged")
       listAppender.list must be(empty)
     }
 
@@ -123,7 +123,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val condition = true
       logger
-        .onCondition(condition)
+        .withCondition(condition)
         .fluent
         .error
         .message("this should be logged")
@@ -137,7 +137,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val condition = false
       logger
-        .onCondition(condition)
+        .withCondition(condition)
         .fluent
         .error
         .message("this should not be logged")
@@ -150,7 +150,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val condition                            = false
       implicit def flowBehavior[B: ToArgument] = new SimpleFlowBehavior[B]
-      logger.onCondition(condition).flow.info(1 + 2)
+      logger.withCondition(condition).flow.info(1 + 2)
       listAppender.list must be(empty)
     }
 
@@ -158,7 +158,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val condition = false
-      logger.onCondition(condition).strict.info("do not log")
+      logger.withCondition(condition).strict.info("do not log")
       listAppender.list must be(empty)
     }
 
@@ -166,7 +166,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val condition       = false
-      val uncheckedLogger = logger.onCondition(condition).unchecked
+      val uncheckedLogger = logger.withCondition(condition).unchecked
       val infoMethod      = uncheckedLogger.info
       infoMethod.apply("do not log")
       listAppender.list must be(empty)
@@ -176,7 +176,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val condition   = false
-      val conditional = logger.onCondition(condition)
+      val conditional = logger.withCondition(condition)
       val s           = conditional.semantic[Statement]
       s.info(Message("do not log").toStatement)
       listAppender.list must be(empty)
@@ -187,7 +187,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val condition       = false
       val someMarker      = MarkerFactory.getMarker("SOME_MARKER")
-      val falseWithMarker = logger.onCondition(condition).withMarker(someMarker)
+      val falseWithMarker = logger.withCondition(condition).withMarker(someMarker)
       falseWithMarker.info("do not log")
       listAppender.list must be(empty)
     }
@@ -195,7 +195,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "do not log with false and true conditional" in {
       val logger = createLogger
 
-      val twoConditions = logger.onCondition(false).onCondition(true)
+      val twoConditions = logger.withCondition(false).withCondition(true)
       twoConditions.info("do not log")
       listAppender.list must be(empty)
     }
@@ -203,7 +203,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "do not log with never and true conditional" in {
       val logger = createLogger
 
-      val twoConditions = logger.onCondition(Condition.never).onCondition(true)
+      val twoConditions = logger.withCondition(Condition.never).withCondition(true)
       twoConditions.info("do not log")
       listAppender.list must be(empty)
     }
@@ -212,7 +212,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val infoCondition = Condition((level, state) => level == Level.INFO)
-      val conditional   = logger.onCondition(infoCondition)
+      val conditional   = logger.withCondition(infoCondition)
       conditional.info("log on info")
 
       val event = listAppender.list.get(0)
@@ -225,7 +225,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       // the condition can only see marker in the logger state, not in the statement
       val someMarker    = MarkerFactory.getMarker("SOME_MARKER")
       val infoCondition = Condition((level, markers) => markers.contains(someMarker))
-      val conditional   = logger.onCondition(infoCondition)
+      val conditional   = logger.withCondition(infoCondition)
       conditional.info(Markers(someMarker), "do not log")
 
       listAppender.list must be(empty)
@@ -236,7 +236,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val someMarker    = MarkerFactory.getMarker("SOME_MARKER")
       val infoCondition = Condition((level, markers) => markers.contains(someMarker))
-      val conditional   = logger.onCondition(infoCondition)
+      val conditional   = logger.withCondition(infoCondition)
       conditional.info("do not log because no marker")
       listAppender.list must be(empty)
     }
@@ -246,7 +246,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val someMarker    = MarkerFactory.getMarker("SOME_MARKER")
       val infoCondition = Condition((level, markers) => markers.contains(someMarker))
-      val conditional   = logger.onCondition(infoCondition)
+      val conditional   = logger.withCondition(infoCondition)
       conditional.withMarker(someMarker).info("log because state has marker")
 
       val event = listAppender.list.get(0)
@@ -258,7 +258,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val tracerMarker   = MarkerFactory.getMarker("TRACER_MARKER")
       val traceCondition = Condition((level, _) => level == Level.TRACE)
-      val conditional    = logger.onCondition(traceCondition)
+      val conditional    = logger.withCondition(traceCondition)
       conditional.withMarker(tracerMarker).trace("trace statement")
 
       val event = listAppender.list.get(0)
@@ -270,7 +270,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
       val tracerMarker   = MarkerFactory.getMarker("TRACER_MARKER")
       val traceCondition = Condition((level, _) => level == Level.TRACE)
-      val conditional    = logger.onCondition(traceCondition)
+      val conditional    = logger.withCondition(traceCondition)
       conditional.withMarker(tracerMarker).debug("trace statement")
       listAppender.list must be(empty)
     }
@@ -279,7 +279,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
 
       val someMarker  = MarkerFactory.getMarker("SOME_MARKER")
-      val conditional = logger.onCondition(true).withMarker(someMarker).onCondition(true)
+      val conditional = logger.withCondition(true).withMarker(someMarker).withCondition(true)
       conditional.info("log with marker")
       val event = listAppender.list.get(0)
       event.getMessage must equal("log with marker")

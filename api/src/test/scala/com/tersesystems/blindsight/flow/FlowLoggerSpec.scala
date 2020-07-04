@@ -77,7 +77,7 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
         new FlowLogger.Impl(CoreLogger(underlying))
       import LowPriorityBehavior._
 
-      val condition = flow.onCondition(true)
+      val condition = flow.withCondition(true)
       val result = condition.info {
         1 + 1
       }
@@ -94,7 +94,7 @@ class FlowLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
         new FlowLogger.Impl(CoreLogger(underlying))
       import LowPriorityBehavior._
 
-      val condition = flow.onCondition(false)
+      val condition = flow.withCondition(false)
       val result = condition.info {
         1 + 1
       }

@@ -43,7 +43,10 @@ trait SemanticLogger[StatementType]
     with SemanticRefineMixin[StatementType] {
   type Self[T] = SemanticLogger[T]
 
-  def onCondition(condition: Condition): Self[StatementType]
+  def withCondition(condition: Condition): Self[StatementType]
+
+  @deprecated("use withCondition", "1.4.0")
+  def onCondition(condition: Condition): Self[StatementType] = withCondition(condition)
 }
 
 object SemanticLogger {
@@ -61,8 +64,8 @@ object SemanticLogger {
 
     override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = new Impl[T](core)
 
-    override def onCondition(condition: Condition): Self[StatementType] = {
-      new Impl[StatementType](core.onCondition(condition))
+    override def withCondition(condition: Condition): Self[StatementType] = {
+      new Impl[StatementType](core.withCondition(condition))
     }
 
     override def withEntryTransform(

@@ -121,7 +121,7 @@ val logCondition = Condition { (level: Level, markers: Markers) =>
 
 val logger = baseLogger
     .withMarkers(operationMarkers)
-    .onCondition(logCondition)
+    .withCondition(logCondition)
     .withEventBuffer(Level.DEBUG, buffer)
     .withEventBuffer(Level.TRACE, buffer)
 

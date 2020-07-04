@@ -21,12 +21,23 @@ import com.tersesystems.blindsight.Condition
 /**
  * A conditional logger mixin.
  */
-trait OnConditionMixin {
+trait ConditionMixin {
   type Self
 
   /**
    * Returns a new instance of the logger that will only log if the
    * condition is met.
    */
-  def onCondition(condition: Condition): Self
+  def withCondition(condition: Condition): Self
+}
+
+trait OnConditionMixin extends ConditionMixin {
+  type Self
+
+  /**
+   * Returns a new instance of the logger that will only log if the
+   * condition is met.
+   */
+  @deprecated("Use withCondition", "1.4.0")
+  def onCondition(condition: Condition): Self = withCondition(condition)
 }

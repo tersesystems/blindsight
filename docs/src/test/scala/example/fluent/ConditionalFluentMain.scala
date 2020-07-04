@@ -29,7 +29,7 @@ object ConditionalFluentMain {
       //println("test called at " + System.currentTimeMillis())
       latch.getAndSet(!latch.get())
     }
-    val logger: FluentLogger = LoggerFactory.getLogger(getClass).fluent.onCondition(test)
+    val logger: FluentLogger = LoggerFactory.getLogger(getClass).fluent.withCondition(test)
 
     logger.info
       .message("hello world, I render fine at")
@@ -55,7 +55,7 @@ object ConditionalFluentMain {
       counter == 1
     }
 
-    val moreLogger = logger.onCondition(mod4)
+    val moreLogger = logger.withCondition(mod4)
     moreLogger.info.message("1 {}").argument(System.currentTimeMillis().toString).log()
     moreLogger.info.message("2 {}").argument(System.currentTimeMillis().toString).log()
     moreLogger.info.message("3 {}").argument(System.currentTimeMillis().toString).log()
