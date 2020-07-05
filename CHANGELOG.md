@@ -4,8 +4,9 @@
 
 * Add entry transformation
 * Add event buffers, with JCTools arrayqueue implementation
-* Move core loggers and `ParameterList` to `core` package
 * Deprecate `logger.onCondition` for `withCondition` to make consistent
+* Move core loggers and `ParameterList` to `core` package
+* Replace `Condition(Level, CoreLogger.State)` to `Condition(Level, Markers)` so that core logger state is not exposed
 * Remove `Condition(slf4jLogger)` as it's useless in itself
 * Refactor state marker logic inside `ParameterList.StateMarker`
 * Refactor `ParameterList` static methods to be more `CoreLogger` based

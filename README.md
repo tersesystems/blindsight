@@ -153,7 +153,7 @@ logger.withCondition(booleanCondition).info("Only logs when condition is true")
 logger.info.when(booleanCondition) { info => info("when true") }
 ```
 
-And [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html):
+[Context aware logging](https://tersesystems.github.io/blindsight/usage/context.html):
 
 ```scala
 import DSL._
