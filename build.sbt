@@ -153,6 +153,7 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
       Seq(
         "-Xsource:2.13",
         "-Xfatal-warnings",
+        "-Wconf:any:warning-verbose",
         "-release",
         "8"
       ) ++ optimizeInline
@@ -196,10 +197,13 @@ lazy val api = (project in file("api"))
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
 lazy val ringbuffer = (project in file("ringbuffer"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
     mimaPreviousArtifacts := Set.empty,
-    libraryDependencies += "org.jctools" % "jctools-core" % "3.0.0"
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    libraryDependencies += "org.jctools" % "jctools-core" % "3.0.0",
+    autoAPIMappings := true
   )
   .dependsOn(api)
 
@@ -235,13 +239,14 @@ lazy val benchmarks = (project in file("benchmarks"))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .dependsOn(logstash)
+  .dependsOn(logstash, ringbuffer)
 
 // serviceloader implementation with only SLF4J dependencies.
 lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
     mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.1.0")
   )
   .dependsOn(api)

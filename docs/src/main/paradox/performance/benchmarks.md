@@ -23,16 +23,17 @@ OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.7+10)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.7+10, mixed mode
 ```
 
-## JMH Visualizer
+## Benchmark History
 
-You can see the benchmarks in more detail at [JMH Visualizer](https://jmh.morethan.io/):
+You can see the benchmarks in detail at [JMH Visualizer](https://jmh.morethan.io/):
 
-* [6/16](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200616T110241/openjdk11.json)
-* [6/22](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200622T222138/openjdk11.json)
-* [6/23](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200623T190617/openjdk11.json)
-* [6/24](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200624T092631/openjdk11.json)
-* [6/25](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200625T191639/openjdk11.json)
-* [6/27](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200627T142114/openjdk11.json)
+* [6/16/2020](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200616T110241/openjdk11.json)
+* [6/22/2020](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200622T222138/openjdk11.json)
+* [6/23/2020](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200623T190617/openjdk11.json)
+* [6/24/2020](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200624T092631/openjdk11.json)
+* [6/25/2020](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200625T191639/openjdk11.json)
+* [6/27/2020](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200627T142114/openjdk11.json)
+* [7/5/2020](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200705T084520/openjdk11.json)
 
 ## Raw SLF4J Logger
 

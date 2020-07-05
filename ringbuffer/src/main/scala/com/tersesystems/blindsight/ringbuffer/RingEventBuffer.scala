@@ -1,13 +1,13 @@
 package com.tersesystems.blindsight.ringbuffer
 
-import com.tersesystems.blindsight.EventBuffer.Event
+import java.util.stream.Collectors
+
 import com.tersesystems.blindsight.EventBuffer
 
 /**
  * Ring buffer backed by <a href="https://github.com/JCTools/JCTools">MpmcArrayQueue</a>.
  *
  * @param initCapacity the initial capacity of the ring buffer.
- * @param clock the clock to use to create instants.
  */
 class RingEventBuffer(initCapacity: Int) extends EventBuffer {
 
@@ -22,8 +22,11 @@ class RingEventBuffer(initCapacity: Int) extends EventBuffer {
   override def size: Int = queue.size()
 
   override def take(count: Int): scala.collection.immutable.Seq[EventBuffer.Event] = {
-    import scala.collection.JavaConverters._
-    queue.iterator.asScala.take(count).toIndexedSeq
+    import scala.collection.compat.immutable._
+    val events                             = queue.stream().limit(count).collect(Collectors.toList[EventBuffer.Event]())
+    val newArray: Array[EventBuffer.Event] = new Array(count)
+    events.toArray(newArray)
+    ArraySeq.unsafeWrapArray(newArray)
   }
 
   override def headOption: Option[EventBuffer.Event] = Option(queue.relaxedPeek())
