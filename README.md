@@ -20,6 +20,8 @@ Blindsight is a logging library written in Scala that wraps SLF4J to add [useful
 * Minimal-overhead tracing and causality tracking through [flow logging](https://tersesystems.github.io/blindsight/usage/flow.html).
 * Providing thread-safe context to logs through [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html).
 * Time-based and targeted diagnostic logging through [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html).
+* [Entry Transformation](https://tersesystems.github.io/blindsight/usage/transform.html)
+* [In Memory Event Buffers](https://tersesystems.github.io/blindsight/usage/buffer.html)
 
 ## Dependencies
 
@@ -164,6 +166,26 @@ markerLogger.info("Logging with user id added as a context marker!")
 
 // can retrieve state markers
 val contextMarkers: Markers = logger.markers
+```
+
+[Entry Transformation](https://tersesystems.github.io/blindsight/usage/transform.html):
+
+```scala
+val logger = LoggerFactory.getLogger.withEntryTransform(e =>
+              e.copy(message = e.message + " IN BED")
+            )
+logger.info("You will discover your hidden talents")
+```
+
+[Event Buffer](https://tersesystems.github.io/blindsight/usage/buffer.html):
+
+```scala
+val queueBuffer = EventBuffer(1)
+val logger      = LoggerFactory.getLogger.withEventBuffer(queueBuffer)
+
+logger.info("Hello world")
+
+val event = queueBuffer.head
 ```
 
 ## Example
