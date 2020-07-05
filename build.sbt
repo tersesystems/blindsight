@@ -160,9 +160,8 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     case Some((2, n)) if n == 12 =>
       Seq(
         "-Xsource:2.12",
-        "-Yno-adapted-args",
-        "-release",
-        "8"
+        "-Yno-adapted-args"
+        // "-release", "8" https://github.com/scala/bug/issues/11927 scaladoc is busted in 2.11.11
         // "-Xfatal-warnings" https://github.com/scala/bug/issues/7707 still broken in 2.12
       ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
