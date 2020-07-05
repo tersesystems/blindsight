@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.3.0
+1.4.0-RC4
 </div>
 </div>
 <div class="nav-toc">
@@ -40,6 +40,7 @@
   <ul>
     <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
+    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
@@ -54,6 +55,8 @@
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -97,7 +100,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.3.0
+1.4.0-RC4
 </div>
 </div>
 <div class="nav-toc">
@@ -106,6 +109,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
+    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
@@ -120,6 +124,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -188,11 +194,11 @@ val logger = LoggerFactory.getLogger(myRequest)
 </code></pre>
 <p>This converts to a <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a> class, and logs only if the level of the SLF4J logger is set to at least <code>INFO</code>. Very roughly:</p>
 <pre class="prettyprint"><code class="language-scala">val infoMethod: InfoMethod = logger.info
-infoMethod.apply(() =&gt; Message(&quot;I am an SLF4J-like logger&quot;))
+infoMethod.apply(Message(&quot;I am an SLF4J-like logger&quot;))
 
 // rough implementation
 class InfoMethod {
-  def apply(msg: =&gt; Message) {
+  def apply(msg: Message) {
     if (slf4jLogger.isInfoEnabled()) {
        slf4jLogger.info(msg.toString)
     }
@@ -300,10 +306,10 @@ def flowMethod(arg1: Int, arg2: Int): Int = logger.flow.trace {
 <p>See <a href="dsl.html">Structured Logging</a> for more details.</p>
 <h2><a href="#conditional-logging" name="conditional-logging" class="anchor"><span class="anchor-link"></span></a>Conditional Logging</h2>
 <p>No matter how fast your logging is, it&rsquo;s always faster not to log a statement at all. Blindsight does its best to allow the system to <strong>not</strong> log as much as it makes it possible to log, allowing you to dynamically manage the CPU and memory pressure demands of logging.</p>
-<p>Most of the loggers have an <code>onCondition</code> method that returns a conditional logger of the same type.</p>
+<p>Most of the loggers have an <code>withCondition</code> method that returns a conditional logger of the same type.</p>
 <p>This logger will only log if the condition is true:</p>
 <pre class="prettyprint"><code class="language-scala">def booleanCondition: Boolean = ...
-val conditionalLogger = logger.onCondition(booleanCondition)
+val conditionalLogger = logger.withCondition(booleanCondition)
 conditionalLogger.info(&quot;Only logs when condition is true&quot;)
 </code></pre>
 <p>By contrast, <code>when</code> is used on methods, rather than the logger, and provides a block that is executed only when the condition is true:</p>
@@ -318,6 +324,22 @@ conditionalLogger.info(&quot;Only logs when condition is true&quot;)
 val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;))
 </code></pre>
 <p>See <a href="context.html">Context</a> for more details.</p>
+<h2><a href="#entry-transformation" name="entry-transformation" class="anchor"><span class="anchor-link"></span></a>Entry Transformation</h2>
+<p>After a statement passes through predicates and just before it is sent off to SLF4J, there is an opportunity to change the <a href="/blindsight/api/com/tersesystems/blindsight/Entry.html" title="com.tersesystems.blindsight.Entry"><code>Entry</code></a> from a function using <a href="transform.html">Entry Transformation</a>. Entry transformation allows for hooks into the logging system for debugging, testing, and auditing.</p>
+<pre class="prettyprint"><code class="language-scala">val logger = LoggerFactory.getLogger
+               .withEntryTransform(e =&gt; e.copy(message = e.message + &quot; IN BED&quot;))
+
+logger.info(&quot;You will discover your hidden talents&quot;)
+</code></pre>
+<h2><a href="#event-buffer" name="event-buffer" class="anchor"><span class="anchor-link"></span></a>Event Buffer</h2>
+<p>An <a href="https://tersesystems.github.io/blindsight/usage/buffer.html">Event Buffer</a> is provided to an entry transformation that stores the <a href="/blindsight/api/com/tersesystems/blindsight/Entry.html" title="com.tersesystems.blindsight.Entry"><code>Entry</code></a> along with the timestamp, logging level, logger name, so that logging events are available to the application directly. Blindsight provides a prepackaged in-memory ring buffer implementation that is thread safe and performant.</p>
+<pre class="prettyprint"><code class="language-scala">val queueBuffer = EventBuffer(50000)
+val logger      = LoggerFactory.getLogger.withEventBuffer(queueBuffer)
+
+logger.info(&quot;Hello world&quot;)
+
+val event = queueBuffer.head
+</code></pre>
 <h2><a href="#source-code" name="source-code" class="anchor"><span class="anchor-link"></span></a>Source Code</h2>
 <p>SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive. Blindsight provides this information for free, at compile time, through <a href="https://github.com/lihaoyi/sourcecode">sourcecode</a> macros, using the <a href="/blindsight/api/com/tersesystems/blindsight/mixins/SourceInfoMixin.html" title="com.tersesystems.blindsight.mixins.SourceInfoMixin"><code>SourceInfoMixin</code></a> on the logger.</p>
 <p>When using <code>blindsight-generic</code>, this returns <code>Markers.empty</code>, but when using <code>blindsight-logstash</code>, this adds <code>source.line</code>, <code>source.file</code> and <code>source.enclosing</code> to the JSON logs automatically:</p>
@@ -337,7 +359,7 @@ val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append(&quot;user&quo
 <p>This is the default behavior, and you can override <code>sourceInfoMarker</code> in your own implementation to return whatever you like.</p>
 <p>See <a href="sourcecode.html">Source Code</a> for more details.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/main/paradox/usage/overview.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/main/paradox/usage/overview.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -360,6 +382,8 @@ The source code for this page can be found <a href="https://github.com/tersesyst
     <li><a href="../usage/overview.html#structured-logging" class="header">Structured Logging</a></li>
     <li><a href="../usage/overview.html#conditional-logging" class="header">Conditional Logging</a></li>
     <li><a href="../usage/overview.html#contextual-logging" class="header">Contextual Logging</a></li>
+    <li><a href="../usage/overview.html#entry-transformation" class="header">Entry Transformation</a></li>
+    <li><a href="../usage/overview.html#event-buffer" class="header">Event Buffer</a></li>
     <li><a href="../usage/overview.html#source-code" class="header">Source Code</a></li>
   </ul></li>
 </ul>
@@ -428,7 +452,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.3.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

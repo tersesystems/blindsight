@@ -31,7 +31,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.3.0
+1.4.0-RC4
 </div>
 </div>
 <div class="nav-toc">
@@ -40,6 +40,7 @@
   <ul>
     <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
+    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
@@ -54,6 +55,8 @@
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -97,7 +100,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.3.0
+1.4.0-RC4
 </div>
 </div>
 <div class="nav-toc">
@@ -106,6 +109,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   <ul>
     <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
     <li><a href="../setup/generic.html" class="page">Generic</a></li>
+    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
   </ul></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
@@ -120,6 +124,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/flow.html" class="page">Flow API</a></li>
     <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
     <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
@@ -165,17 +171,17 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>Although Blindsight does provide mappings of the basic primitive types, you may want to provide some more semantic detail about what the value represents, and use the DSL with a specific field name and type &ndash; for example, rather than representing an age as an integer, <code>logger.info(&quot;person age = {}&quot;, persion.age)</code> is easier if you use a specific class <code>Age</code> and have a type class instance that represents that <code>Age</code> as <code>bobj(&quot;age_year&quot; -&gt; ageInYear)</code></p>
 <h2><a href="#markers" name="markers" class="anchor"><span class="anchor-link"></span></a>Markers</h2>
 <p>You can pass in something that is not a marker, and provided you have a <a href="/blindsight/api/com/tersesystems/blindsight/ToMarkers.html" title="com.tersesystems.blindsight.ToMarkers"><code>ToMarkers</code></a> in implicit scope, you can get it auto-converted through type annotation. The various logging statement will only take a <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a>:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L13-L14" target="_blank" title="Go to snippet source"></a><code class="language-scala">val marker = MarkerFactory.getDetachedMarker(&quot;SOME_MARKER&quot;)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L13-L14" target="_blank" title="Go to snippet source"></a><code class="language-scala">val marker = MarkerFactory.getDetachedMarker(&quot;SOME_MARKER&quot;)
 logger.info(Markers(marker), &quot;message with marker&quot;)</code></pre>
 <p>You can also combine markers:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L18-L20" target="_blank" title="Go to snippet source"></a><code class="language-scala">val markers1: Markers          = Markers(MarkerFactory.getDetachedMarker(&quot;MARKER1&quot;))
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L18-L20" target="_blank" title="Go to snippet source"></a><code class="language-scala">val markers1: Markers          = Markers(MarkerFactory.getDetachedMarker(&quot;MARKER1&quot;))
 val markers2: Markers          = Markers(MarkerFactory.getDetachedMarker(&quot;MARKER2&quot;))
 val markersOnePlusTwo: Markers = markers1 + markers2</code></pre><div class="callout note "><div class="callout-title">Note</div>
 <p>You should <strong>not</strong> try to manipulate the marker through <code>marker.add</code> or <code>marker.remove</code>. It&rsquo;s better to treat a <code>org.slf4j.Marker</code> instance as completely immutable, and manage any composition through <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a>.</p></div>
 <p>Getting at the underlying marker is a <code>lazy val</code> that is computed once:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L24" target="_blank" title="Go to snippet source"></a><code class="language-scala">val combinedMarker: org.slf4j.Marker = markersOnePlusTwo.marker</code></pre>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L24" target="_blank" title="Go to snippet source"></a><code class="language-scala">val combinedMarker: org.slf4j.Marker = markersOnePlusTwo.marker</code></pre>
 <p>You can also convert your own objects into appropriate markers.</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L28-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">sealed trait Weekday {
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L28-L38" target="_blank" title="Go to snippet source"></a><code class="language-scala">sealed trait Weekday {
   def value: String
 }
 final case object Monday extends Weekday { val value = &quot;MONDAY&quot; }
@@ -190,15 +196,15 @@ logger.debug(Monday, &quot;this is a test&quot;)</code></pre>
 <h2><a href="#argument-and-arguments" name="argument-and-arguments" class="anchor"><span class="anchor-link"></span></a>Argument and Arguments</h2>
 <p>Arguments must be convertible to <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>. This is usually done with type class instances.</p>
 <p>Default <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a> are determined for the primitives (<code>String</code>, <code>Int</code>, etc):</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info(&quot;one argument {}&quot;, 42) // works, because default</code></pre>
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L42" target="_blank" title="Go to snippet source"></a><code class="language-scala">logger.info(&quot;one argument {}&quot;, 42) // works, because default</code></pre>
 <p>You can define your own argument type class instances:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L46-L50" target="_blank" title="Go to snippet source"></a><code class="language-scala">import java.time.temporal.ChronoUnit
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L46-L50" target="_blank" title="Go to snippet source"></a><code class="language-scala">import java.time.temporal.ChronoUnit
 implicit val chronoUnitToArgument: ToArgument[ChronoUnit] = ToArgument[ChronoUnit] { unit =&gt;
   new Argument(unit.toString)
 }
 logger.info(&quot;chronounit is {}&quot;, ChronoUnit.MILLIS)</code></pre>
 <p>Although it&rsquo;s usually better to use the <a href="dsl.html">DSL</a> and map to a <a href="/blindsight/api/com/tersesystems/blindsight/AST$$BObject.html" title="com.tersesystems.blindsight.AST.BObject"><code>BObject</code></a>:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L54-L59" target="_blank" title="Go to snippet source"></a><code class="language-scala">case class Person(name: String, age: Int)
+<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L54-L59" target="_blank" title="Go to snippet source"></a><code class="language-scala">case class Person(name: String, age: Int)
 implicit val personToArgument: ToArgument[Person] = ToArgument[Person] { person =&gt;
   import DSL._
   Argument((&quot;name&quot; -&gt; person.name) ~ (&quot;age_year&quot; -&gt; person.age))
@@ -246,7 +252,7 @@ import org.json4s.jackson.JsonMethods._
 logger.info(&quot;This message has json {}&quot;, parse(&quot;&quot;&quot; { &quot;numbers&quot; : [1, 2, 3, 4] } &quot;&quot;&quot;))
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.3.0/docs/src/main/paradox/usage/typeclasses.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/main/paradox/usage/typeclasses.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -333,7 +339,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.3.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
