@@ -17,6 +17,8 @@ jobs:
   - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please
       run 'scalafmtSbt' and commit the reformatted code."; false; }
     name: Build code style check (fixed with `sbt scalafmtSbt`)
+  - script: sbt docs/makeSite
+    name: Verify documentation
   - script: sbt mimaReportBinaryIssues
     name: Report binary incompatibilities
   - stage: deploy

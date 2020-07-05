@@ -258,7 +258,7 @@ See @ref:[Context](context.md) for more details.
 
 ## Entry Transformation
 
-After a statement passes through predicates and just before it is sent off to SLF4J, there is an opportunity to change the @scaladoc[Entry](com.tersesystems.blindsight.Entry) from a function using [Entry Transformation](transform.md).  Entry transformation allows for hooks into the logging system for debugging, testing, and auditing.
+After a statement passes through predicates and just before it is sent off to SLF4J, there is an opportunity to change the @scaladoc[Entry](com.tersesystems.blindsight.Entry) from a function using @ref:[Entry Transformation](transform.md).  Entry transformation allows for hooks into the logging system for debugging, testing, and auditing.
 
 ```scala
 val logger = LoggerFactory.getLogger

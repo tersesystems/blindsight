@@ -20,7 +20,7 @@ val logger = LoggerFactory.getLogger
 logger.info("You will discover your hidden talents")
 ```
 
-You can also specify an entry tranform for a particular level, which can be useful for integrating into metrics and error reporting systems:
+You can also specify an entry transform for a particular level, which can be useful for integrating into metrics and error reporting systems:
 
 ```scala
 val errorTransform: (Entry => Entry) = { entry =>
