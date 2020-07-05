@@ -196,10 +196,13 @@ lazy val api = (project in file("api"))
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
 lazy val ringbuffer = (project in file("ringbuffer"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
     mimaPreviousArtifacts := Set.empty,
-    libraryDependencies += "org.jctools" % "jctools-core" % "3.0.0"
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    libraryDependencies += "org.jctools" % "jctools-core" % "3.0.0",
+    autoAPIMappings := true
   )
   .dependsOn(api)
 
@@ -242,6 +245,7 @@ lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
     mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.1.0")
   )
   .dependsOn(api)
