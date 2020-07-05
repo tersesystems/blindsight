@@ -153,6 +153,7 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
       Seq(
         "-Xsource:2.13",
         "-Xfatal-warnings",
+        "-Wconf:any:warning-verbose",
         "-release",
         "8"
       ) ++ optimizeInline
