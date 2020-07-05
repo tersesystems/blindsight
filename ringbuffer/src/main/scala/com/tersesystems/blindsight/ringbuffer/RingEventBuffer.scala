@@ -1,6 +1,5 @@
 package com.tersesystems.blindsight.ringbuffer
 
-import com.tersesystems.blindsight.EventBuffer.Event
 import com.tersesystems.blindsight.EventBuffer
 
 /**
