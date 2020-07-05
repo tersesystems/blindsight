@@ -256,6 +256,30 @@ val loggerWithMarkers = logger.withMarkers(LogstashMarkers.append("user", "will"
 
 See @ref:[Context](context.md) for more details.
 
+## Entry Transformation
+
+After a statement passes through predicates and just before it is sent off to SLF4J, there is an opportunity to change the @scaladoc[Entry](com.tersesystems.blindsight.Entry) from a function using [Entry Transformation](transform.md).  Entry transformation allows for hooks into the logging system for debugging, testing, and auditing.
+
+```scala
+val logger = LoggerFactory.getLogger
+               .withEntryTransform(e => e.copy(message = e.message + " IN BED"))
+
+logger.info("You will discover your hidden talents")
+```
+
+## Event Buffer
+
+An [Event Buffer](https://tersesystems.github.io/blindsight/usage/buffer.html) is provided to an entry transformation that stores the @scaladoc[Entry](com.tersesystems.blindsight.Entry) along with the timestamp, logging level, logger name, so that logging events are available to the application directly.  Blindsight provides a prepackaged in-memory ring buffer implementation that is thread safe and performant.
+
+```scala
+val queueBuffer = EventBuffer(50000)
+val logger      = LoggerFactory.getLogger.withEventBuffer(queueBuffer)
+
+logger.info("Hello world")
+
+val event = queueBuffer.head
+```
+
 ## Source Code
 
 SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/lihaoyi/sourcecode) macros, using the @scaladoc[SourceInfoMixin](com.tersesystems.blindsight.mixins.SourceInfoMixin) on the logger.

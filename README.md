@@ -171,9 +171,9 @@ val contextMarkers: Markers = logger.markers
 [Entry Transformation](https://tersesystems.github.io/blindsight/usage/transform.html):
 
 ```scala
-val logger = LoggerFactory.getLogger.withEntryTransform(e =>
-              e.copy(message = e.message + " IN BED")
-            )
+val logger = LoggerFactory.getLogger
+               .withEntryTransform(e => e.copy(message = e.message + " IN BED"))
+
 logger.info("You will discover your hidden talents")
 ```
 
