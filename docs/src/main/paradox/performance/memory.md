@@ -63,8 +63,7 @@ JMH lets you benchmark for [GC allocation pressure](https://shipilev.net/blog/20
 
 ### JMH Benchmarks
 
-The details of the JMH Benchmark are [here](
-https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200627T142114/openjdk11.json).
+The details of the JMH Benchmark are [here](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/tersesystems/blindsight/master/benchmarks/results/20200627T142114/openjdk11.json).
 
 There are two methods under benchmark here, one which logs state logging
 
