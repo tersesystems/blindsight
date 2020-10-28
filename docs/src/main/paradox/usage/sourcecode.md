@@ -6,7 +6,7 @@ To enable this, use `blindsight-logstash` and add a `blindsight.source.enabled` 
 
 ```xml
 <configuration>
-  <property name="blindsight.source.enabled" value="true"/>
+  <property name="blindsight.source.enabled" value="true" scope="context"/>
  
   <!-- ... -->
 </configuration>
