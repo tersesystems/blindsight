@@ -31,4 +31,4 @@ addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.7.0")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
 
 // https://github.com/ktoso/sbt-jmh
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.3.7")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.0")
