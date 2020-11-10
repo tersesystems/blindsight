@@ -90,9 +90,8 @@ object FlowMethod {
           case Success(resultValue) =>
             exitStatement(resultValue, source).foreach(parameterList.executeStatement)
           case Failure(exception) =>
-            throwingStatement(exception, source).foreach {
-              case (level, stmt) =>
-                core.parameterList(level).executeStatement(stmt)
+            throwingStatement(exception, source).foreach { case (level, stmt) =>
+              core.parameterList(level).executeStatement(stmt)
             }
         }
         result.get // rethrow the exception

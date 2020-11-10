@@ -39,8 +39,8 @@ object SemanticMain {
           Arguments(
             bobj(
               "user-logged-out-event" ->
-                ("name"     -> instance.name) ~
-                  ("ipAddr" -> instance.ipAddr)
+                ("name"   -> instance.name) ~
+                ("ipAddr" -> instance.ipAddr)
             )
           )
         )
@@ -58,8 +58,8 @@ object SemanticMain {
           Arguments(
             bobj(
               "user-logged-out-event" ->
-                ("name"     -> instance.name) ~
-                  ("reason" -> instance.reason)
+                ("name"   -> instance.name) ~
+                ("reason" -> instance.reason)
             )
           )
         )
@@ -78,8 +78,8 @@ object SemanticMain {
           Arguments(
             bobj(
               "user-is-up-late-event" ->
-                ("name"     -> instance.name) ~
-                  ("excuse" -> instance.excuse)
+                ("name"   -> instance.name) ~
+                ("excuse" -> instance.excuse)
             )
           )
         )
