@@ -201,7 +201,7 @@ lazy val ringbuffer = (project in file("ringbuffer"))
     name := "blindsight-ringbuffer",
     mimaPreviousArtifacts := Set.empty,
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    libraryDependencies += "org.jctools" % "jctools-core" % "3.0.1",
+    libraryDependencies += "org.jctools" % "jctools-core" % "3.1.0",
     autoAPIMappings := true
   )
   .dependsOn(api)
