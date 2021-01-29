@@ -4,3 +4,4 @@ target/
 logs/
 .idea
 local.*
+.bsp/

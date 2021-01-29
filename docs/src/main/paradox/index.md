@@ -20,8 +20,9 @@ Blindsight is "observability through logging" where observability is defined as 
 
 Blindsight is a logging library written in Scala that wraps SLF4J to add @ref:[useful features](usage/overview.md) that solve several outstanding problems with logging:
 
+* Expressing domain specific objects as arguments through @ref:[type classes](usage/typeclasses.md).
 * Rendering structured logs in multiple formats through a format-independent @ref:[AST and DSL](usage/dsl.md).
-* Expressing domain specific objects as arguments through @ref:[type classes](usage/typeclasses.md). 
+* Enabling rich structured data through @ref:[JSON-LD](usage/jsonld.md).
 * Resolving operation-specific loggers through @ref:[logger resolvers](usage/resolvers.md).
 * Building up complex logging statements through @ref:[fluent logging](usage/fluent.md).
 * Enforcing user supplied type constraints through  @ref:[semantic logging](usage/semantic.md).

@@ -10,7 +10,7 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-final class StreamUtils {
+public final class StreamUtils {
 
     /**
      * Returns a stream containing the marker itself and the iterator belonging to the marker.
