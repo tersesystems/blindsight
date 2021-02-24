@@ -320,9 +320,9 @@ class MapBindingSpec extends BaseSpec {
       val name: ValueBinding[String] = schemaOrg("name").bindValue[String]
       val words: ValueBinding[Int]   = schemaOrg("words").bindValue[Int]
 
-      val post       = schemaOrg("post").bindIdMap
-      val iri = IRI("http://example.com/")
-      val exampleTerm = iri.term("example")
+      val post               = schemaOrg("post").bindIdMap
+      val iri                = IRI("http://example.com/")
+      val exampleTerm        = iri.term("example")
       val baseId: CompactIRI = exampleTerm("baseId")
       val node = NodeObject(
         `@id`   -> iri,
@@ -349,10 +349,10 @@ class MapBindingSpec extends BaseSpec {
       val name: ValueBinding[String] = schemaOrg("name").bindValue[String]
       val words: ValueBinding[Int]   = schemaOrg("words").bindValue[Int]
 
-      val post       = schemaOrg("post").bindIdMap
-      val exampleIRI = IRI("http://example.com/")
+      val post        = schemaOrg("post").bindIdMap
+      val exampleIRI  = IRI("http://example.com/")
       val exampleTerm = exampleIRI.term("example")
-      val baseId     = exampleTerm("baseId")
+      val baseId      = exampleTerm("baseId")
       val node = NodeObject(
         `@id`   -> exampleIRI,
         `@type` -> schemaOrg("Blog"),
@@ -548,7 +548,7 @@ class MapBindingSpec extends BaseSpec {
           ),
           None -> NodeObject(
             `@id` -> IRI("https://corpnone.com/"),
-            name -> "Corporation None"
+            name  -> "Corporation None"
           )
         )
       )

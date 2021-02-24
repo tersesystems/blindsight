@@ -110,7 +110,8 @@ object IRIValueMapper {
 
   implicit val identityMapper: IRIValueMapper[IRIValue] = IRIValueMapper(identity)
 
-  implicit def valueMapper[T <: IRIValue]: IRIValueMapper[T] = IRIValueMapper[T] { instance => IRI(instance.value) }
+  implicit def valueMapper[T <: IRIValue]: IRIValueMapper[T] =
+    IRIValueMapper[T] { instance => IRI(instance.value) }
 }
 
 /**

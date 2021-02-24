@@ -94,7 +94,7 @@ class ListBindingSpec extends BaseSpec with MyGeoContext {
 trait MyGeoContext {
   // geojson has coordinates, which are lists of lists:
   // https://w3c.github.io/json-ld-syntax/#example-83-coordinates-expressed-in-geojson
-  val geoJson    = IRI("https://purl.org/geojson/vocab#").vocab
+  val geoJson  = IRI("https://purl.org/geojson/vocab#").vocab
   val bbox     = geoJson("bbox").bindList[Double]
   val geometry = geoJson("geometry").bindObject[Geometry]
 

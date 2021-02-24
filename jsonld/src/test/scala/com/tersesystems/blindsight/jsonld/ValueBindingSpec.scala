@@ -214,7 +214,10 @@ class ValueBindingSpec extends BaseSpec {
       )
 
       val entries: NodeEntry = willPerson.value.head
-      entries.value should contain theSameElementsInOrderAs(Seq(StringLiteral("Me"), StringLiteral("You")))
+      entries.value should contain theSameElementsInOrderAs (Seq(
+        StringLiteral("Me"),
+        StringLiteral("You")
+      ))
     }
   }
 

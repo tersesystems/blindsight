@@ -7,7 +7,7 @@ class IRIBindingSpec extends BaseSpec {
 
   "IRI binding" should {
     "bind IRI from String" in {
-      val id          = Keyword.`@id`.bindIRI
+      val id = Keyword.`@id`.bindIRI
       val node = NodeObject(
         id -> IRI("http://www.wikidata.org/entity/Q76")
       )
@@ -39,9 +39,9 @@ class IRIBindingSpec extends BaseSpec {
     }
 
     "bind IRI from UUID" in {
-      val uuid = UUID.randomUUID()
+      val uuid         = UUID.randomUUID()
       val uuidIRI: IRI = IRI(uuid)
-      val id       = Keyword.`@id`.bindIRI
+      val id           = Keyword.`@id`.bindIRI
       val node = NodeObject(
         id -> uuidIRI
       )
