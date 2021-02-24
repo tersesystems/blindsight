@@ -108,7 +108,7 @@ trait XSDContext {
 }
 
 trait YourContext extends XSDContext {
-  ...
+  // ...
 }
 ```
 
@@ -117,10 +117,120 @@ Note that here, we're using @scaladoc[Term](com.tersesystems.blindsight.jsonld.T
 A [compact IRI](https://www.w3.org/TR/json-ld11/#compact-iris) expresses an IRI using a prefix and suffix separated by a
 colon as a shorthand.
 
-Using the context, we can go ahead and fill out our JSON-LD mapping, starting with simple values and working up to more
-advanced concepts.
+Using the context, we can go ahead and fill out our JSON-LD mapping, starting with defining properties with IRIs, using values and node objects, working up to list objects, set objects, and indexed values. 
 
-## Defining Values
+## IRIs
+
+IRIs are the foundation of linked data, and JSON-LD has several ways of representing a value that expands to a full IRI.  [IRI values](https://www.w3.org/TR/json-ld11/#iris) can show as compact IRIs, relative IRI references, or full IRIs.
+
+In Blindsight, the root trait is @scaladoc[IRIValue](com.tersesystems.blindsight.jsonld.IRIValue), which can expand out
+to a number of implementations.
+
+#### IRI, PropertyIRI
+
+The @scaladoc[IRI](com.tersesystems.blindsight.jsonld.IRI) in Blindsight refers to a full IRI.  An IRI can be created from a `java.net.URL`, a `java.net.URI`, or a `java.util.UUID` instance.  Blindsight only knows about the string representation, and does not keep any extra URL or URI information.
+
+```scala
+val textIRI = IRI("https://schema.org/")
+val uuidIRI: IRI = IRI(UUID.randomUUID())
+val uriIRI: IRI = IRI(new java.net.URI("https://schema.org"))
+```
+
+A @scaladoc[PropertyIRI](com.tersesystems.blindsight.jsonld.PropertyIRI) is created from an @scaladoc[IRI](com.tersesystems.blindsight.jsonld.IRI) and returns the full IRI plus property.
+
+```scala
+val niemCore = IRI("http://release.niem.gov/niem/niem-core/4.0/#")
+
+// value prints "http://release.niem.gov/niem/niem-core/4.0/#PersonGivenName"
+val personGivenName = niemCore.property("PersonGivenName")
+```
+
+Because full IRIs can be unwieldy in a document, JSON-LD has ways of compacting IRIs, by representing an IRI prefix as either a term or a default vocabulary in compact IRIs.
+
+A [term](https://www.w3.org/TR/json-ld11/#terms) is a prefix that is used as a "label" for an IRI.  Blindsight creates a @scaladoc[Term](com.tersesystems.blindsight.jsonld.Term) using `iri.term("prefix")`:
+
+```scala
+val xmlSchema = IRI("http://www.w3.org/2001/XMLSchema#")
+val xsd: Term = xmlSchema.term("xsd")
+```
+
+A [compact IRI](https://www.w3.org/TR/json-ld11/#dfn-compact-iri) can be created from a term and property.  In Blindsight, this is done using `term.apply("propertyName")` and creates a @scaladoc[CompactIRI](com.tersesystems.blindsight.jsonld.CompactIRI):
+
+```scala
+val xsdDateTime: CompactIRI = xsd("dateTime") // "xsd:dateTime"
+
+// Prints out the current instant as a typed value with xsd:dateTime
+val dateValue = Value(Instant.now.toString, xsdDateTime)
+```
+
+A [default vocabulary](https://www.w3.org/TR/json-ld11/#default-vocabulary) is used when a property name is presented without a prefix.  In Blindsight, this is done using `iri.vocab`, and returns a @scaladoc[Vocab](com.tersesystems.blindsight.jsonld.Vocab):
+
+```scala
+val schemaVocab = IRI("https://schema.org/").vocab
+val schemaPerson = schemaVocab("Person") // prints "Person"
+```
+
+There are also points where a [relative IRI reference](https://www.w3.org/TR/json-ld11/#iris) in the form "some/path/fragment" is defined.  In JSON-LD, relative IRIs are relative to the [base IRI](https://www.w3.org/TR/json-ld11/#base-iri).  A base IRI is created from an IRI using `base`, returning a @scaladoc[Base](com.tersesystems.blindsight.jsonld.Base), which can then return a [RelativeIRI](com.tersesystems.blindsight.jsonld.RelativeIRI)
+
+```scala
+val baseIRI: Base = IRI("http://example.com/").base
+val enPost: RelativeIRI = baseIRI("1/en") // returns "1/en"
+```
+
+Relative IRIs are often used in [ID Maps](https://w3c.github.io/json-ld-syntax/#node-identifier-indexing).
+
+### Binding IRI
+
+Binding an IRI is done through `bindIRI`:
+
+```scala
+val id          = Keyword.`@id`.bindIRI
+val node = NodeObject(
+  id -> IRI("http://www.wikidata.org/entity/Q76")
+)
+```
+
+You can bind to an array of IRIs using `bindIRIs`.  For example, you may want to specify multiple types to indicate that a node object has properties for both the "foaf" concept of a person and the "schema" concept of a person.
+
+```scala
+val schemaOrg: Vocab = IRI("https://schema.org/").vocab
+val foaf: Term = IRI("http://xmlns.com/foaf/0.1/").term("foaf")
+val foafPerson = foaf("Person")
+val schemaPerson = schemaOrg("Person")
+
+val `@type` = Keyword.`@type`.bindIRIs
+val node = NodeObject(
+  `@type` -> Seq(schemaPerson, foafPerson)
+)
+```
+
+### Custom IRI Mapper
+
+Creating a @scaladoc[CustomIRIMapper](com.tersesystems.blindsight.jsonld.CustomIRIMapper) is relatively simple if you
+have a unique ID field that can be exposed as an IRI:
+
+```scala
+case class Person(id: String, name: String)
+
+object Person {
+  implicit val personIRIMapper: IRIValueMapper[Person] = IRIValueMapper(p => IRI(p.id))
+}
+```
+
+Once you have the custom IRI mapper for `Person`, you can use `bindIRI[Person]` and then it will only bind to
+instances of `Person`:
+
+```sibling
+val sibling = schemaOrg("sibling").bindIRI[Person]
+val aumaObama: Person = Person("https://www.wikidata.org/wiki/Q773197", name = "Auma Obama")
+val barackObama = NodeObject(
+  `@id` -> IRI("https://www.wikidata.org/wiki/Q76"),
+  `@type` -> personType,
+  sibling -> aumaObama
+)
+```
+
+## Values
 
 A "value" in JSON-LD is a [leaf node](https://www.w3.org/TR/json-ld11/#describing-values) that describes an atomic value
 such as string, a number, a boolean, or a date. If JSON-LD can represent the value natively in JSON, it writes out the
@@ -308,117 +418,6 @@ val occupation = NodeObject(
 )
 ```
 
-## IRIs
-
-IRIs are the foundation of linked data, and JSON-LD has several ways of representing a value that expands to a full IRI.  [IRI values](https://www.w3.org/TR/json-ld11/#iris) can show as compact IRIs, relative IRI references, or full IRIs.
-
-In Blindsight, the root trait is @scaladoc[IRIValue](com.tersesystems.blindsight.jsonld.IRIValue), which can expand out
-to a number of implementations.
-
-#### IRI, PropertyIRI
-
-The @scaladoc[IRI](com.tersesystems.blindsight.jsonld.IRI) in Blindsight refers to a full IRI.  An IRI can be created from a `java.net.URL`, a `java.net.URI`, or a `java.util.UUID` instance.  Blindsight only knows about the string representation, and does not keep any extra URL or URI information.
-
-```scala
-val textIRI = IRI("https://schema.org/")
-val uuidIRI: IRI = IRI(UUID.randomUUID())
-val uriIRI: IRI = IRI(new java.net.URI("https://schema.org"))
-```
-
-A @scaladoc[PropertyIRI](com.tersesystems.blindsight.jsonld.PropertyIRI) is created from an @scaladoc[IRI](com.tersesystems.blindsight.jsonld.IRI) and returns the full IRI plus property.
-
-```scala
-val niemCore = IRI("http://release.niem.gov/niem/niem-core/4.0/#")
-
-// value prints "http://release.niem.gov/niem/niem-core/4.0/#PersonGivenName"
-val personGivenName = niemCore.property("PersonGivenName")
-```
-
-Because full IRIs can be unwieldy in a document, JSON-LD has ways of compacting IRIs, by representing an IRI prefix as either a term or a default vocabulary in compact IRIs.
-
-A [term](https://www.w3.org/TR/json-ld11/#terms) is a prefix that is used as a "label" for an IRI.  Blindsight creates a @scaladoc[Term](com.tersesystems.blindsight.jsonld.Term) using `iri.term("prefix")`:
-
-```scala
-val xmlSchema = IRI("http://www.w3.org/2001/XMLSchema#")
-val xsd: Term = xmlSchema.term("xsd")
-```
-
-A [compact IRI](https://www.w3.org/TR/json-ld11/#dfn-compact-iri) can be created from a term and property.  In Blindsight, this is done using `term.apply("propertyName")` and creates a @scaladoc[CompactIRI](com.tersesystems.blindsight.jsonld.CompactIRI):
-
-```scala
-val xsdDateTime: CompactIRI = xsd("dateTime") // "xsd:dateTime"
-
-// Prints out the current instant as a typed value with xsd:dateTime
-val dateValue = Value(Instant.now.toString, xsdDateTime)
-```
-
-A [default vocabulary](https://www.w3.org/TR/json-ld11/#default-vocabulary) is used when a property name is presented without a prefix.  In Blindsight, this is done using `iri.vocab`, and returns a @scaladoc[Vocab](com.tersesystems.blindsight.jsonld.Vocab):
-
-```scala
-val schemaVocab = IRI("https://schema.org/").vocab
-val schemaPerson = schemaVocab("Person") // prints "Person"
-```
-
-There are also points where a [relative IRI reference](https://www.w3.org/TR/json-ld11/#iris) in the form "some/path/fragment" is defined.  In JSON-LD, relative IRIs are relative to the [base IRI](https://www.w3.org/TR/json-ld11/#base-iri).  A base IRI is created from an IRI using `base`, returning a @scaladoc[Base](com.tersesystems.blindsight.jsonld.Base), which can then return a [RelativeIRI](com.tersesystems.blindsight.jsonld.RelativeIRI)
-
-```scala
-val baseIRI: Base = IRI("http://example.com/").base
-val enPost: RelativeIRI = baseIRI("1/en") // returns "1/en"
-```
-
-Relative IRIs are often used in [ID Maps](https://w3c.github.io/json-ld-syntax/#node-identifier-indexing).
-
-### Binding IRI
-
-Binding an IRI is done through `bindIRI`:
-
-```scala
-val id          = Keyword.`@id`.bindIRI
-val node = NodeObject(
-  id -> IRI("http://www.wikidata.org/entity/Q76")
-)
-```
-
-You can bind to an array of IRIs using `bindIRIs`.  For example, you may want to specify multiple types to indicate that a node object has properties for both the "foaf" concept of a person and the "schema" concept of a person.
-
-```scala
-val schemaOrg: Vocab = IRI("https://schema.org/").vocab
-val foaf: Term = IRI("http://xmlns.com/foaf/0.1/").term("foaf")
-val foafPerson = foaf("Person")
-val schemaPerson = schemaOrg("Person")
-
-val `@type` = Keyword.`@type`.bindIRIs
-val node = NodeObject(
-  `@type` -> Seq(schemaPerson, foafPerson)
-)
-```
-
-### Custom IRI Mapper
-
-Creating a @scaladoc[CustomIRIMapper](com.tersesystems.blindsight.jsonld.CustomIRIMapper) is relatively simple if you
-have a unique ID field that can be exposed as an IRI:
-
-```scala
-case class Person(id: String, name: String)
-
-object Person {
-  implicit val personIRIMapper: IRIValueMapper[Person] = IRIValueMapper(p => IRI(p.id))
-}
-```
-
-Once you have the custom IRI mapper for `[Person]`, you can use `bindIRI[Person]` and then it will only bind to
-instances of `Person`:
-
-```sibling
-val sibling = schemaOrg("sibling").bindIRI[Person]
-val aumaObama: Person = Person("https://www.wikidata.org/wiki/Q773197", name = "Auma Obama")
-val barackObama = NodeObject(
-  `@id` -> IRI("https://www.wikidata.org/wiki/Q76"),
-  `@type` -> personType,
-  sibling -> aumaObama
-)
-```
-
 ## List Objects
 
 [Lists](https://www.w3.org/TR/json-ld11/#lists) in JSON-LD indicate an ordered set of elements.  In the expanded form of JSON-LD they are represented as list objects, but may be rendered as JSON arrays when compacted.
@@ -527,7 +526,7 @@ JSON-LD contains an [indexing mechanism](https://www.w3.org/TR/json-ld11/#indexe
 indices with associated values. From a Scala perspective, these look like instances of
 `Map[Key, Value]`, where `Key` and `Value` are dependent on the kind of indexing.
 
-## Index Maps
+### Index Maps
 
 In [data indexing](https://www.w3.org/TR/json-ld11/#data-indexing), the `Key` is a string that represents a key. The
 result is an [index map](https://www.w3.org/TR/json-ld11/#index-maps).
@@ -585,8 +584,6 @@ val indexMapNode = NodeObject(
   )
 )
 ```
-
-#### Property Based Index Map
 
 If [property based index maps](https://www.w3.org/TR/json-ld11/#property-based-index-maps) are used for
 [indexing](https://www.w3.org/TR/json-ld11/#property-based-data-indexing), then there is still no change as the ID is
