@@ -23,10 +23,9 @@ object BObjectConverters {
 
   def asJava(bobj: BObject): java.util.Map[String, Any] = {
     bobj.obj
-      .map {
-        case (k, v) =>
-          val javaValue = bvalueToJava(v)
-          k -> javaValue
+      .map { case (k, v) =>
+        val javaValue = bvalueToJava(v)
+        k -> javaValue
       }
       .toMap
       .asJava

@@ -93,18 +93,17 @@ object CoreLogger {
       }
 
       override def withEntryTransform(level: Level, transformF: Entry => Entry): State = {
-        val newLists: Array[ParameterList] = parameterLists.zipWithIndex.map {
-          case (delegate, i) =>
-            if (i == level.ordinal()) {
-              delegate match {
-                case proxy: ParameterList.Proxy =>
-                  new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(transformF))
-                case delegate =>
-                  new ParameterList.Proxy(delegate, transformF)
-              }
-            } else {
-              delegate
+        val newLists: Array[ParameterList] = parameterLists.zipWithIndex.map { case (delegate, i) =>
+          if (i == level.ordinal()) {
+            delegate match {
+              case proxy: ParameterList.Proxy =>
+                new ParameterList.Proxy(proxy.delegate, proxy.transform.andThen(transformF))
+              case delegate =>
+                new ParameterList.Proxy(delegate, transformF)
             }
+          } else {
+            delegate
+          }
         }
         withParameterLists(newLists)
       }

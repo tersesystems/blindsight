@@ -38,9 +38,8 @@ trait LowPriorityToMessageImplicits {
 
   implicit val stringToMessage: ToMessage[String] = ToMessage { str => new Message(str) }
 
-  implicit val tupleToMessage: ToMessage[(String, String)] = ToMessage {
-    case (k, v) =>
-      Message(s"$k=$v")
+  implicit val tupleToMessage: ToMessage[(String, String)] = ToMessage { case (k, v) =>
+    Message(s"$k=$v")
   }
 }
 

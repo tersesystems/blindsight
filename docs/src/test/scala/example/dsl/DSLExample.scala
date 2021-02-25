@@ -30,10 +30,10 @@ object DSLExample {
       drawDate: Option[java.util.Date]
   ) {
     lazy val asBObject: BObject = "lotto" ->
-      ("lotto-id"          -> id) ~
-        ("winning-numbers" -> winningNumbers) ~
-        ("draw-date"       -> drawDate.map(_.toString)) ~
-        ("winners"         -> winners.map(w => w.asBObject))
+      ("lotto-id"        -> id) ~
+      ("winning-numbers" -> winningNumbers) ~
+      ("draw-date"       -> drawDate.map(_.toString)) ~
+      ("winners"         -> winners.map(w => w.asBObject))
   }
 
   object Lotto {
@@ -62,10 +62,10 @@ object SimpleDSLExample {
     import com.tersesystems.blindsight.AST._
     import com.tersesystems.blindsight.DSL._
     val complexArgument: BObject = "lotto" ->
-      ("lotto-id"          -> lotto.id) ~
-        ("winning-numbers" -> lotto.winningNumbers) ~
-        ("draw-date"       -> lotto.drawDate.map(_.toString)) ~
-        ("winners"         -> lotto.winners.map(w => ("winner-id" -> w.id) ~ ("numbers" -> w.numbers)))
+      ("lotto-id"        -> lotto.id) ~
+      ("winning-numbers" -> lotto.winningNumbers) ~
+      ("draw-date"       -> lotto.drawDate.map(_.toString)) ~
+      ("winners"         -> lotto.winners.map(w => ("winner-id" -> w.id) ~ ("numbers" -> w.numbers)))
     logger.info("Logs with an array as marker", complexArgument)
     // #simple-dsl-example
   }

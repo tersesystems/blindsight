@@ -39,9 +39,8 @@ class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
     }
 
     "run against a constructed statement" in {
-      implicit val tupleStringToMarkers: ToMarkers[(String, String)] = ToMarkers {
-        case (k, v) =>
-          Markers(MarkerFactory.getDetachedMarker(s"$k=$v"))
+      implicit val tupleStringToMarkers: ToMarkers[(String, String)] = ToMarkers { case (k, v) =>
+        Markers(MarkerFactory.getDetachedMarker(s"$k=$v"))
       }
 
       implicit val payloadToArguments: ToStatement[PayloadModel] = ToStatement { instance =>
