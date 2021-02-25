@@ -12,8 +12,9 @@ Blindsight is "observability through logging" where observability is defined as 
 
 Blindsight is a logging library written in Scala that wraps SLF4J to add [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
 
-* Rendering structured logs in multiple formats through a format-independent [AST and DSL](https://tersesystems.github.io/blindsight/usage/dsl.html) .
-* Expressing domain specific objects as arguments through [type classes](https://tersesystems.github.io/blindsight/usage/typeclasses.html). 
+* Rendering structured logs in multiple formats through a format-independent [AST and DSL](https://tersesystems.github.io/blindsight/usage/dsl.html).
+* Managing complex relationships and schema through [JSON-LD](https://tersesystems.github.io/blindsight/usage/jsonld.html).  
+* Expressing domain specific objects as arguments through [type classes](https://tersesystems.github.io/blindsight/usage/typeclasses.html).
 * Resolving operation-specific loggers through [logger resolvers](https://tersesystems.github.io/blindsight/usage/resolvers.html).
 * Building up complex logging statements through [fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html).
 * Enforcing user supplied type constraints through [semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html).
@@ -109,6 +110,41 @@ val winners =
 val lotto = Lotto(5, List(2, 45, 34, 23, 7, 5, 3), winners, None)
 
 logger.info("message {}", lotto) // auto-converted to structured output
+```
+
+[JSON-LD](https://tersesystems.github.io/blindsight/usage/jsonld.html):
+
+```scala
+implicit val nodeObjectToArgument: ToArgument[NodeObject] = ToArgument[NodeObject] { nodeObject =>
+  Argument(BlindsightASTMapping.toBObject(nodeObject))
+}
+
+implicit val nodeObjectToMarkers: ToMarkers[NodeObject] = ToMarkers { nodeObject =>
+  Markers(BlindsightASTMapping.toBObject(nodeObject))
+}
+
+implicit val nodeObjectToStatement: ToStatement[NodeObject] = ...
+
+class Foo extends LDContext { // LDContext contains all the type safe bindings
+  def sayHello(): Unit = {
+    val willPerson = NodeObject(
+      `@type`    -> "Person",
+      `@id`      -> willId,
+      givenName  -> "Will",
+      familyName -> "Sargent",
+      parent     -> parentId,
+      occupation -> Occupation(
+        estimatedSalary = MonetaryAmount(Currency.getInstance("USD"), 1),
+        name = "Code Monkey"
+      )
+    )
+
+    logger.info("as an argument {}", willPerson) // as an argument
+    logger.info(Markers(willPerson), "as a marker") // as a marker
+    
+    logger.semantic[NodeObject].info(willPerson) // or as a statement
+  }
+}
 ```
 
 [Fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html):

@@ -106,7 +106,7 @@ lazy val docs = (project in file("docs"))
     addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
   )
   .settings(disablePublishing)
-  .dependsOn(api, logstash, ringbuffer)
+  .dependsOn(api, logstash, jsonld, ringbuffer)
 
 lazy val fixtures = (project in file("fixtures"))
   .disablePlugins(MimaPlugin)
@@ -206,6 +206,17 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   )
   .dependsOn(api)
 
+lazy val jsonld = (project in file("jsonld"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.jsonld"))
+  .settings(
+    name := "blindsight-jsonld",
+    mimaPreviousArtifacts := Set.empty,
+    libraryDependencies += scalaTest % Test,
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    autoAPIMappings := true
+  )
+  .dependsOn(api)
+
 lazy val logstash = (project in file("logstash"))
   .disablePlugins(MimaPlugin)
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
@@ -257,4 +268,4 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, benchmarks, logstash, ringbuffer, generic)
+  .aggregate(api, docs, fixtures, benchmarks, logstash, ringbuffer, jsonld, generic)
