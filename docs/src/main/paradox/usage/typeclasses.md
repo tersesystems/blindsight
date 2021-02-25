@@ -10,6 +10,16 @@ Type classes let you represent your domain objects as structured logging data.
 
 Although Blindsight does provide mappings of the basic primitive types, you may want to provide some more semantic detail about what the value represents, and use the DSL with a specific field name and type -- for example, rather than representing an age as an integer, `logger.info("person age = {}", persion.age)` is easier if you use a specific class `Age` and have a type class instance that represents that `Age` as `bobj("age_year" -> ageInYear)`
 
+You can of course use type classes to render any given type in logging.  For example, to render a `Future` as an argument:
+
+```scala
+implicit val futureToArgument: ToArgument[Future[_]] = ToArgument[Future[_]] { future =>
+   new Argument(future.toString)
+}
+
+logger.info("future is {}", Future.successful(()))
+```
+
 ## Markers
 
 You can pass in something that is not a marker, and provided you have a @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) in implicit scope, you can get it auto-converted through type annotation.  The various logging statement will only take a @scaladoc[Markers](com.tersesystems.blindsight.Markers):
@@ -107,3 +117,4 @@ import org.json4s.jackson.JsonMethods._
 
 logger.info("This message has json {}", parse(""" { "numbers" : [1, 2, 3, 4] } """))
 ```
+
