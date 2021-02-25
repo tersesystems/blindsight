@@ -500,11 +500,10 @@ object IdMapBinding {
     implicit def straightMap[I: IRIValueMapper, T: NodeObjectMapper](elements: Map[I, T]): Input = {
       val iriMapper  = implicitly[IRIValueMapper[I]]
       val nodeMapper = implicitly[NodeObjectMapper[T]]
-      val value = elements.map {
-        case (k, v) =>
-          val key   = iriMapper.mapIRIValue(k)
-          val value = nodeMapper.mapNodeObject(v)
-          Option(key) -> Seq(value)
+      val value = elements.map { case (k, v) =>
+        val key   = iriMapper.mapIRIValue(k)
+        val value = nodeMapper.mapNodeObject(v)
+        Option(key) -> Seq(value)
       }
       Input(value)
     }
@@ -514,10 +513,9 @@ object IdMapBinding {
     ): Input = {
       val iriMapper  = implicitly[IRIValueMapper[I]]
       val nodeMapper = implicitly[NodeObjectMapper[T]]
-      val value = elements.map {
-        case (k, v) =>
-          val key = iriMapper.mapIRIValue(k)
-          Option(key) -> v.map(el => nodeMapper.mapNodeObject(el))
+      val value = elements.map { case (k, v) =>
+        val key = iriMapper.mapIRIValue(k)
+        Option(key) -> v.map(el => nodeMapper.mapNodeObject(el))
       }
       Input(value)
     }
@@ -594,11 +592,10 @@ object TypeMapBinding {
     implicit def straightMap[I: IRIValueMapper, T: NodeObjectMapper](elements: Map[I, T]): Input = {
       val iriMapper  = implicitly[IRIValueMapper[I]]
       val nodeMapper = implicitly[NodeObjectMapper[T]]
-      val value = elements.map {
-        case (k, v) =>
-          val key   = iriMapper.mapIRIValue(k)
-          val value = nodeMapper.mapNodeObject(v)
-          Option(key) -> Seq(value)
+      val value = elements.map { case (k, v) =>
+        val key   = iriMapper.mapIRIValue(k)
+        val value = nodeMapper.mapNodeObject(v)
+        Option(key) -> Seq(value)
       }
       Input(value)
     }
@@ -608,10 +605,9 @@ object TypeMapBinding {
     ): Input = {
       val iriMapper  = implicitly[IRIValueMapper[I]]
       val nodeMapper = implicitly[NodeObjectMapper[T]]
-      val value = elements.map {
-        case (k, v) =>
-          val key = iriMapper.mapIRIValue(k)
-          Option(key) -> v.map(el => nodeMapper.mapNodeObject(el))
+      val value = elements.map { case (k, v) =>
+        val key = iriMapper.mapIRIValue(k)
+        Option(key) -> v.map(el => nodeMapper.mapNodeObject(el))
       }
       Input(value)
     }
@@ -678,22 +674,22 @@ object LanguageMapBinding {
 
   object Input {
     implicit def stringInput(elements: Map[String, String]): Input = {
-      val value = elements.map {
-        case (k, v) => Option(k) -> Seq(v)
+      val value = elements.map { case (k, v) =>
+        Option(k) -> Seq(v)
       }
       Input(value)
     }
 
     implicit def stringSeqInput(elements: Map[String, Seq[String]]): Input = {
-      val value = elements.map {
-        case (k, v) => Option(k) -> v
+      val value = elements.map { case (k, v) =>
+        Option(k) -> v
       }
       Input(value)
     }
 
     implicit def optionStringInput(elements: Map[Option[String], String]): Input = {
-      val value = elements.map {
-        case (k, v) => k -> Seq(v)
+      val value = elements.map { case (k, v) =>
+        k -> Seq(v)
       }
       Input(value)
     }
