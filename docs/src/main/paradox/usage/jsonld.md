@@ -11,7 +11,7 @@ knowledge management and reasoning.
 
 Blindsight supports JSON-LD by binding Scala types to JSON-LD and providing type classes to map data to JSON-LD.
 
-> NOTE: This guide does not cover how to set up a JSON-LD context definition or creating an ontology. It is assumed that context is passed out of band from the individual log entries. Please see
+> NOTE: This guide does not cover how to set up a [JSON-LD context definition] or [creating an ontology](http://www-ksl.stanford.edu/people/dlm/papers/ontology101/ontology101-noy-mcguinness.html). It is assumed that context is passed out of band from the individual log entries. Please see
 [JSON-LD Best Practices](https://json-ld.org/spec/latest/json-ld-api-best-practices/) for a guide on building JSON-LD schema.
 
 ## Quick Start
@@ -29,8 +29,7 @@ val nodeObject = NodeObject(stringProperty -> "stringValue")
 
 The first line sets up an @scaladoc[IRI](com.tersesystems.blindsight.jsonld.IRI).
 An [IRI](https://www.w3.org/TR/json-ld11/#iris) defines a unique prefix for the properties. The IRI does not have to
-exist on the Internet, but it can be helpful, especially when using common schemas like [schema.org](https://schema.org)
-. The IRI is then turned into a @scaladoc[Vocab](com.tersesystems.blindsight.jsonld.Vocab) instance using `vocab` --
+exist on the Internet, but it can be helpful, especially when using common schemas like [schema.org](https://schema.org). The IRI is then turned into a @scaladoc[Vocab](com.tersesystems.blindsight.jsonld.Vocab) instance using `vocab` --
 this indicates that this is the [default vocabulary](https://www.w3.org/TR/json-ld11/#default-vocabulary) for the node
 object.
 
@@ -48,10 +47,11 @@ Finally, the fourth and fifth lines set up a @ref:[semantic logger](semantic.md)
 In practice, you will want to set up your IRIs and your bindings in one place so that only the last few lines are
 necessary.
 
-## Logging Node Objects
+## Converting Node Objects
 
-Once you have a node object, you will need to want to integrate it as a loggable statement. You can pass node objects
-around as arguments using @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument):
+Once you have a node object, you will want to integrate it as a loggable statement.  Blindsight does not do this for you automatically, as you may want to include the node object as a named graph or filter the node object for sensitive information before adding it as an argument.
+
+You can pass node objects around as arguments using @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument):
 
 ```scala
 implicit val nodeObjectToArgument: ToArgument[NodeObject] = ToArgument { nodeObject =>
@@ -142,7 +142,7 @@ IRIs are the foundation of linked data, and JSON-LD has several ways of represen
 In Blindsight, the root trait is @scaladoc[IRIValue](com.tersesystems.blindsight.jsonld.IRIValue), which can expand out
 to a number of implementations.
 
-#### IRI, PropertyIRI
+#### IRI
 
 The @scaladoc[IRI](com.tersesystems.blindsight.jsonld.IRI) in Blindsight refers to a full IRI.  An IRI can be created from a `java.net.URL`, a `java.net.URI`, or a `java.util.UUID` instance.  Blindsight only knows about the string representation, and does not keep any extra URL or URI information.
 
@@ -152,7 +152,7 @@ val uuidIRI: IRI = IRI(UUID.randomUUID())
 val uriIRI: IRI = IRI(new java.net.URI("https://schema.org"))
 ```
 
-A @scaladoc[PropertyIRI](com.tersesystems.blindsight.jsonld.PropertyIRI) is created from an @scaladoc[IRI](com.tersesystems.blindsight.jsonld.IRI) and returns the full IRI plus property.
+You can create IRIs from existing IRIs using `property`:
 
 ```scala
 val niemCore = IRI("http://release.niem.gov/niem/niem-core/4.0/#")
@@ -161,7 +161,7 @@ val niemCore = IRI("http://release.niem.gov/niem/niem-core/4.0/#")
 val personGivenName = niemCore.property("PersonGivenName")
 ```
 
-Because full IRIs can be unwieldy in a document, JSON-LD has ways of compacting IRIs, by representing an IRI prefix as either a term or a default vocabulary in compact IRIs.
+Because full IRIs can be unwieldy in a document, JSON-LD has ways of compacting IRIs by representing an IRI prefix as either a term or a default vocabulary in compact IRIs.
 
 A [term](https://www.w3.org/TR/json-ld11/#terms) is a prefix that is used as a "label" for an IRI.  Blindsight creates a @scaladoc[Term](com.tersesystems.blindsight.jsonld.Term) using `iri.term("prefix")`:
 
@@ -226,25 +226,36 @@ Creating a @scaladoc[CustomIRIMapper](com.tersesystems.blindsight.jsonld.CustomI
 have a unique ID field that can be exposed as an IRI:
 
 ```scala
-case class Person(id: String, name: String)
 
-object Person {
-  implicit val personIRIMapper: IRIValueMapper[Person] = IRIValueMapper(p => IRI(p.id))
+sealed trait Gender
+
+object Gender {
+  // https://schema.org/gender
+  implicit val maleMapper: IRIValueMapper[Gender] = IRIValueMapper {
+    case Male =>
+      schemaOrg("Male") // https://schema.org/Male
+    case Female =>
+      schemaOrg("Female") // https://schema.org/Female
+  }
+  
+  case object Male   extends Gender
+  case object Female extends Gender
 }
+
 ```
 
-Once you have the custom IRI mapper for `Person`, you can use `bindIRI[Person]` and then it will only bind to
-instances of `Person`:
+Once you have the custom IRI mapper for `Gender`, you can use `bindIRI[Gender]` and then it will only bind to
+instances of `Gender` like an enumeration:
 
-```sibling
-val sibling = schemaOrg("sibling").bindIRI[Person]
-val aumaObama: Person = Person("https://www.wikidata.org/wiki/Q773197", name = "Auma Obama")
-val barackObama = NodeObject(
-  `@id` -> IRI("https://www.wikidata.org/wiki/Q76"),
+```scala
+val gender = schemaOrg("gender").bindIRI[Gender]
+val person = NodeObject(
   `@type` -> personType,
-  sibling -> aumaObama
+  gender -> Gender.Male
 )
 ```
+
+This helps in JSON-LD for defining "Things not Strings" and avoiding stringly typed values.
 
 ## Values
 
@@ -339,7 +350,7 @@ val abridgedMobyDick = NodeObject(
 )
 ```
 
-Because all typed values look the same to the Scala compiler, it's better to use a custom value mapper.
+Because all typed values look the same to the Scala compiler, it's better to use a custom value mapper when binding.
 
 ### Custom Value Mapping
 
