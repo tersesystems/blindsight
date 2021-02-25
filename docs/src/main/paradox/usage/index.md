@@ -5,6 +5,7 @@
 * [Structured DSL](dsl.md)
 * [Type Classes](typeclasses.md)
 * [String Interpolation](interpolation.md)
+* [JSON-LD](jsonld.md)  
 * [SLF4J API](slf4j.md)
 * [Fluent API](fluent.md)
 * [Semantic API](semantic.md)
