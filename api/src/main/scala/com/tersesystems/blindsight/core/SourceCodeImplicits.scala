@@ -27,7 +27,12 @@ import sourcecode._
  * import implicits._
  * }}}
  */
-class SourceCodeImplicits(fileLabel: String, lineLabel: String, enclosingLabel: String, argsLabel: String) {
+class SourceCodeImplicits(
+    fileLabel: String,
+    lineLabel: String,
+    enclosingLabel: String,
+    argsLabel: String
+) {
   import AST._
   import DSL._
 
