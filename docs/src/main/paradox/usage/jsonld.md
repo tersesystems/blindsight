@@ -119,6 +119,22 @@ colon as a shorthand.
 
 Using the context, we can go ahead and fill out our JSON-LD mapping, starting with defining properties with IRIs, using values and node objects, working up to list objects, set objects, and indexed values. 
 
+## Keywords
+
+JSON-LD comes with a number of keywords.  The @scaladoc[Keyword](com.tersesystems.blindsight.jsonld.Keyword$) singleton object contains all the [defined keywords](https://www.w3.org/TR/json-ld11/#keywords), along with appropriate bindings.
+
+For example, the `@propagate` keyword must have the value of `true` or `false`, and so only the @scaladoc[ValueBindingKey](com.tersesystems.blindsight.jsonld.ValueBindingKey) is defined so `bindValue` is the only option.
+
+### Aliases
+
+JSON-LD allows [keyword aliasing](https://www.w3.org/TR/json-ld11/#aliasing-keywords).  You can alias a keyword using `alias`.  The alias will render with a different label, but will still have the same type.
+
+```scala
+val id: Keyword.Id = Keyword.`@id`.alias("id")
+```
+
+This is useful in situations where the keyword may collide with an existing property name.  Note that you must still define the keyword alias yourself in your JSON-LD context definition.
+
 ## IRIs
 
 IRIs are the foundation of linked data, and JSON-LD has several ways of representing a value that expands to a full IRI.  [IRI values](https://www.w3.org/TR/json-ld11/#iris) can show as compact IRIs, relative IRI references, or full IRIs.
