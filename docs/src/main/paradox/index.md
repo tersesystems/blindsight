@@ -32,6 +32,8 @@ Blindsight is a logging library written in Scala that wraps SLF4J to add @ref:[u
 
 The only hard dependency is the SLF4J API, but the DSL functionality is only implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder).
 
+Please see the [Setup](setup/index.md) page for artifacts and installation.
+
 Blindsight is a pure SLF4J wrapper: it delegates all logging through to the SLF4J API and does not configure or manage the SLF4J implementation at all.
 
 Versions are published for Scala 2.11, 2.12, and 2.13.
