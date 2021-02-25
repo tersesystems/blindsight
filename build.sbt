@@ -29,6 +29,8 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
   s
 }
 
+ThisBuild / resolvers += Resolver.JCenterRepository
+
 ThisBuild / scalafmtOnCompile := false
 
 // These settings seem not to work for sbt-release-early, so .travis.yml copies to
@@ -78,7 +80,7 @@ lazy val docs = (project in file("docs"))
   .settings(
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies += cronScheduler                   % Test,
-    libraryDependencies += scalaJava8Compat                % Test,
+    //libraryDependencies += scalaJava8Compat                % Test,
     libraryDependencies += logbackTracing                  % Test,
     libraryDependencies += refined(scalaVersion.value)     % Test,
     libraryDependencies += logbackUniqueId                 % Test,
@@ -111,7 +113,7 @@ lazy val docs = (project in file("docs"))
 lazy val fixtures = (project in file("fixtures"))
   .disablePlugins(MimaPlugin)
   .settings(
-    libraryDependencies += scalaJava8Compat       % Test,
+    //libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
     libraryDependencies += logstashLogbackEncoder % Test,
     libraryDependencies += scalaTest              % Test
@@ -149,6 +151,14 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-Ywarn-dead-code",
     "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
+    case Some((3, _)) =>
+      Seq(
+        "-Xsource:3.0",
+        "-Xfatal-warnings",
+        "-Wconf:any:warning-verbose",
+        "-release",
+        "8"
+      ) ++ optimizeInline
     case Some((2, n)) if n >= 13 =>
       Seq(
         "-Xsource:2.13",
@@ -188,7 +198,7 @@ lazy val api = (project in file("api"))
     libraryDependencies += sourcecode,
     libraryDependencies += scalaCollectionCompat,
     libraryDependencies += scalaTest              % Test,
-    libraryDependencies += scalaJava8Compat       % Test,
+    //libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
     libraryDependencies += logstashLogbackEncoder % Test,
     autoAPIMappings := true

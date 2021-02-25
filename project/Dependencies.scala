@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.2"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.3.0-SNAP3"
   val scalamock = "org.scalamock" %% "scalamock" % "4.4.0"
 
   val terseLogback = "0.16.1"
@@ -35,5 +35,5 @@ object Dependencies {
   lazy val logbackClassic         = "ch.qos.logback"           % "logback-classic"           % "1.2.3"
   lazy val logstashLogbackEncoder = "net.logstash.logback"     % "logstash-logback-encoder"  % "6.4"
   lazy val cronScheduler          = "io.timeandspace"          % "cron-scheduler"            % "0.1"
-  lazy val scalaJava8Compat       = "org.scala-lang.modules"  %% "scala-java8-compat"        % "0.9.1"
+  //lazy val scalaJava8Compat       = "org.scala-lang.modules"  %% "scala-java8-compat"        % "0.9.1"
 }
