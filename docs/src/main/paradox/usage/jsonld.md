@@ -379,6 +379,12 @@ implicit val currencyMapper: ValueMapper[Currency] = ValueMapper { currency =>
 val currency: ValueBinding[Currency] = schemaOrg("currency").bindValue[Currency]
 ```
 
+@@@ note
+
+You may find it helpful to use [Refined](https://github.com/fthomas/refined) and [Coulomb](https://github.com/erikerlandson/coulomb#documentation) to provide type-safe validation and unit representation of data to the DSL
+
+@@@
+
 ## Node Objects
 
 A @scaladoc[NodeObject](com.tersesystems.blindsight.jsonld.NodeObject) can also contain other node objects. This is

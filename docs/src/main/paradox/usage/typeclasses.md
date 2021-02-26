@@ -20,6 +20,12 @@ implicit val futureToArgument: ToArgument[Future[_]] = ToArgument[Future[_]] { f
 logger.info("future is {}", Future.successful(()))
 ```
 
+@@@ note
+
+You may find it helpful to use [Refined](https://github.com/fthomas/refined) and [Coulomb](https://github.com/erikerlandson/coulomb#documentation) to provide type-safe validation and unit representation of data to the DSL.
+
+@@@
+
 ## Markers
 
 You can pass in something that is not a marker, and provided you have a @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers) in implicit scope, you can get it auto-converted through type annotation.  The various logging statement will only take a @scaladoc[Markers](com.tersesystems.blindsight.Markers):
