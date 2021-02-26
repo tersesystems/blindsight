@@ -17,8 +17,7 @@
 package com.tersesystems.blindsight.logstash
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.core.{CoreLogger, SourceCodeImplicits, SourceInfoBehavior}
-import sourcecode.{Enclosing, File, Line}
+import com.tersesystems.blindsight.core.{CoreLogger, SourceInfoBehavior}
 
 /**
  * A logger factory that returns logstash enabled loggers.
