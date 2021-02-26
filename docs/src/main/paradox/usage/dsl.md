@@ -56,9 +56,7 @@ If you are using Java durations, then use `dur_iso` and the ISO-8601 duration fo
 
 @@snip [TimeExample.scala](../../../test/scala/example/dsl/TimeExample.scala) { #ride_dur_iso }
 
-This is because both JSON and logfmt do not come with any understanding of dates themselves, and logs are not always kept under tight control under a schema.  Keeping the units explicit lets the logs be self-documenting.
-
-You may find it helpful to use [Refined](https://github.com/fthomas/refined) and [Coulomb](https://github.com/erikerlandson/coulomb#documentation) to provide type-safe validation and unit representation of data to the DSL.
+This is because both JSON and logfmt do not come with any understanding of dates themselves, and logs are not always kept under tight control under a schema.  Keeping the units explicit lets the logs be self-documenting.  Using @ref:[JSON-LD](jsonld.md) can be more convenient, as there built-in understanding of date formatting with typed values.
 
 ## Representing Complex Data
 

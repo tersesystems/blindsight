@@ -14,7 +14,21 @@ val flowLogger: FlowLogger = logger.flow
 
 ## Usage
 
-The flow logger takes a block of execution, and returns the result transparently, according to the log level.  
+What happens in a flow is determined by the @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).  Implementing a flow behavior comes down to creating @scaladoc[Markers](com.tersesystems.blindsight.Markers) and @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) for entry, exit, and exceptions.
+
+There are two out of the box behaviors provided: @scaladoc[SimpleFlowBehavior](com.tersesystems.blindsight.flow.SimpleFlowBehavior) and @scaladoc[XLoggerFlowBehavior](com.tersesystems.blindsight.flow.XLoggerFlowBehavior).  These are modelled after [pos](https://github.com/JohnReedLOL/pos) and [XLogger](http://www.slf4j.org/extensions.html#extended_logger), respectively.
+
+For example, to add @scaladoc[XLoggerFlowBehavior](com.tersesystems.blindsight.flow.XLoggerFlowBehavior)
+
+```scala
+import com.tersesystems.blindsight.flow.XLoggerFlowBehavior
+
+trait LoggingTraits {
+  implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new XLoggerFlowBehavior()
+}
+```
+
+Once you have a flow behavior in scope, the flow logger takes a block of execution, and returns the result transparently, according to the log level.
 
 @@snip [Flow.scala](../../../test/scala/example/flow/SimpleFlow.scala) { #flow_method }
 
@@ -23,10 +37,6 @@ The result should have a type class instance of @scaladoc[ToArgument](com.terses
 @@snip [Flow.scala](../../../test/scala/example/flow/SimpleFlow.scala) { #flow_person_definition }
 
 If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown.  If the logging is not enabled (whether through conditional logging, explicit filtering, or threshold), then execution of the block still proceeds but is not wrapped by a `Try` block.
-
-## Flow Behavior
-
-What happens in a flow is determined by the @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).  Implementing a flow behavior comes down to creating @scaladoc[Markers](com.tersesystems.blindsight.Markers) and @scaladoc[Statement](com.tersesystems.blindsight.api.Statement) for entry, exit, and exceptions.
 
 The flow is safe to use with `withCondition`.  If disabled, the logger will short circuit to executing the block without adding any logging:
 
@@ -56,8 +66,6 @@ On an `i9-9990k`, the results are as follows:
 ```
 
 Evaluation of a no-op flow adds roughly 42 nanoseconds to execution -- the time it takes to create a `Seq` from `sourcecode.Args` and discard them.  Removing `sourcecode.Args` from the implicits takes the no-op down to 4.5 nanoseconds.  For comparison, evaluating a guard of `if (logger.isLoggingDebug())` using SLF4J is 1.5 nanoseconds.  I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.
-
-There are two out of the box behaviors provided: @scaladoc[SimpleFlowBehavior](com.tersesystems.blindsight.flow.SimpleFlowBehavior) and @scaladoc[XLoggerFlowBehavior](com.tersesystems.blindsight.flow.XLoggerFlowBehavior).  These are modelled after [pos](https://github.com/JohnReedLOL/pos) and [XLogger](http://www.slf4j.org/extensions.html#extended_logger), respectively.
 
 ## Integration
 
