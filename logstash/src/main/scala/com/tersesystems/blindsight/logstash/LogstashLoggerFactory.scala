@@ -47,28 +47,14 @@ class LogstashLoggerFactory extends LoggerFactory {
     Option(logbackLogger.getLoggerContext.getProperty(propertyName))
   }
 
-  private def sourceInfoAsMarker(underlying: org.slf4j.Logger): SourceInfoBehavior = {
+  def sourceInfoAsMarker(underlying: org.slf4j.Logger): SourceInfoBehavior = {
     import LogstashLoggerFactory._
     val fileLabel      = property(underlying, SourceFileProperty).getOrElse("source.file")
     val lineLabel      = property(underlying, SourceLineProperty).getOrElse("source.line")
     val enclosingLabel = property(underlying, SourceEnclosingProperty).getOrElse("source.enclosing")
-    val argsLabel      = property(underlying, SourceArgsProperty).getOrElse("source.args")
-    new MarkerSourceInfoBehavior(fileLabel, lineLabel, enclosingLabel, argsLabel)
+    new SourceInfoBehavior.Impl(fileLabel, lineLabel, enclosingLabel)
   }
 
-  final class MarkerSourceInfoBehavior(
-      fileLabel: String,
-      lineLabel: String,
-      enclosingLabel: String,
-      argsLabel: String
-  ) extends SourceCodeImplicits(fileLabel, lineLabel, enclosingLabel, argsLabel)
-      with SourceInfoBehavior {
-    override def apply(line: Line, file: File, enclosing: Enclosing): Markers = {
-      import com.tersesystems.blindsight.AST.BField
-      import com.tersesystems.blindsight.DSL._
-      Markers((line: BField) ~ file ~ enclosing)
-    }
-  }
 }
 
 object LogstashLoggerFactory {
@@ -76,5 +62,4 @@ object LogstashLoggerFactory {
   val SourceFileProperty      = "blindsight.source.file"
   val SourceLineProperty      = "blindsight.source.line"
   val SourceEnclosingProperty = "blindsight.source.enclosing"
-  val SourceArgsProperty      = "blindsight.source.args"
 }

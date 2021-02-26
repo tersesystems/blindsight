@@ -30,8 +30,7 @@ import sourcecode._
 class SourceCodeImplicits(
     fileLabel: String,
     lineLabel: String,
-    enclosingLabel: String,
-    argsLabel: String
+    enclosingLabel: String
 ) {
   import AST._
   import DSL._
@@ -42,10 +41,4 @@ class SourceCodeImplicits(
 
   implicit def enclosingToField(enclosing: Enclosing): BField =
     enclosingLabel -> enclosing.value
-
-  implicit def argsToField(sourceArgs: Args): BField = {
-    val args: Seq[BField] =
-      sourceArgs.value.flatMap(_.map(a => a.source -> BString(String.valueOf(a.value))))
-    BField(argsLabel, args)
-  }
 }
