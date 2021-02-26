@@ -20,24 +20,25 @@ import com.tersesystems.blindsight.{AST, DSL}
 import sourcecode._
 
 /**
- * This trait converts SourceCode to BFields
+ * This trait converts SourceCode to BFields, using labels.
+ *
+ * {{{
+ * val implicits = new SourceCodeImplicits(/* labels */)
+ * import implicits._
+ * }}}
  */
-trait SourceCodeImplicits {
+class SourceCodeImplicits(
+    fileLabel: String,
+    lineLabel: String,
+    enclosingLabel: String
+) {
   import AST._
   import DSL._
 
-  implicit def fileToBObject(file: File): BField = "source.file" -> file.value
+  implicit def fileToBObject(file: File): BField = fileLabel -> file.value
 
-  implicit def lineToField(line: Line): BField = "source.line" -> line.value
+  implicit def lineToField(line: Line): BField = lineLabel -> line.value
 
   implicit def enclosingToField(enclosing: Enclosing): BField =
-    "source.enclosing" -> enclosing.value
-
-  implicit def argsToField(sourceArgs: Args): BField = {
-    val args: Seq[BField] =
-      sourceArgs.value.flatMap(_.map(a => a.source -> BString(String.valueOf(a.value))))
-    BField("source.arguments", args)
-  }
+    enclosingLabel -> enclosing.value
 }
-
-object SourceCodeImplicits extends SourceCodeImplicits
