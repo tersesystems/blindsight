@@ -3,6 +3,7 @@
 Publishing a new version is done by updating `master` to the revision that you want, and then pushing the tag to `origin`:
 
 ```bash
+# must start with v, i.e. "v1.4.0"
 export RELEASE_TAG=...
 export RELEASE_SHA=...
 git tag -fa $RELEASE_TAG $RELEASE_SHA
