@@ -34,7 +34,7 @@ this indicates that this is the [default vocabulary](https://www.w3.org/TR/json-
 object.
 
 The second line sets up a @scaladoc[Term](com.tersesystems.blindsight.jsonld.Term) that is then bound
-using `bindValue[String]` returning a [ValueBinding](com.tersesystems.blindsight.jsonld.ValueBinding)
+using `bindValue[String]` returning a @scaladoc[ValueBinding](com.tersesystems.blindsight.jsonld.ValueBinding)
 called `stringProperty`.
 
 The third line defines a @scaladoc[NodeObject](com.tersesystems.blindsight.jsonld.NodeObject) and binds
@@ -186,7 +186,7 @@ val schemaVocab = IRI("https://schema.org/").vocab
 val schemaPerson = schemaVocab("Person") // prints "Person"
 ```
 
-There are also points where a [relative IRI reference](https://www.w3.org/TR/json-ld11/#iris) in the form "some/path/fragment" is defined.  In JSON-LD, relative IRIs are relative to the [base IRI](https://www.w3.org/TR/json-ld11/#base-iri).  A base IRI is created from an IRI using `base`, returning a @scaladoc[Base](com.tersesystems.blindsight.jsonld.Base), which can then return a [RelativeIRI](com.tersesystems.blindsight.jsonld.RelativeIRI)
+There are also points where a [relative IRI reference](https://www.w3.org/TR/json-ld11/#iris) in the form "some/path/fragment" is defined.  In JSON-LD, relative IRIs are relative to the [base IRI](https://www.w3.org/TR/json-ld11/#base-iri).  A base IRI is created from an IRI using `base`, returning a @scaladoc[Base](com.tersesystems.blindsight.jsonld.Base), which can then return a @scaladoc[RelativeIRI](com.tersesystems.blindsight.jsonld.RelativeIRI)
 
 ```scala
 val baseIRI: Base = IRI("http://example.com/").base
