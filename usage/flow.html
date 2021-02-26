@@ -12,6 +12,7 @@
 <script type="text/javascript" src="../js/page.js"></script>
 <script type="text/javascript" src="../js/warnOldVersion.js"></script>
 <script type="text/javascript" src="../js/groups.js"></script>
+<script type="text/javascript" src="../js/snippets.js"></script>
 <link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
 <link rel="stylesheet" type="text/css" href="../css/page.css"/>
 
@@ -31,17 +32,12 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4
+1.4.0-RC4+28-aee28a83
 </div>
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a>
-  <ul>
-    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
-    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
-  </ul></li>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
@@ -49,6 +45,7 @@
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -100,17 +97,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4
+1.4.0-RC4+28-aee28a83
 </div>
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a>
-  <ul>
-    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
-    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
-  </ul></li>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
@@ -118,6 +110,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -173,13 +166,22 @@ val logger = LoggerFactory.getLogger
 val flowLogger: FlowLogger = logger.flow
 </code></pre>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
-<p>The flow logger takes a block of execution, and returns the result transparently, according to the log level. </p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source"></a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
+<p>What happens in a flow is determined by the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
+<p>There are two out of the box behaviors provided: <a href="/blindsight/api/com/tersesystems/blindsight/flow/SimpleFlowBehavior.html" title="com.tersesystems.blindsight.flow.SimpleFlowBehavior"><code>SimpleFlowBehavior</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/flow/XLoggerFlowBehavior.html" title="com.tersesystems.blindsight.flow.XLoggerFlowBehavior"><code>XLoggerFlowBehavior</code></a>. These are modelled after <a href="https://github.com/JohnReedLOL/pos">pos</a> and <a href="http://www.slf4j.org/extensions.html#extended_logger">XLogger</a>, respectively.</p>
+<p>For example, to add <a href="/blindsight/api/com/tersesystems/blindsight/flow/XLoggerFlowBehavior.html" title="com.tersesystems.blindsight.flow.XLoggerFlowBehavior"><code>XLoggerFlowBehavior</code></a></p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.flow.XLoggerFlowBehavior
+
+trait LoggingTraits {
+  implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new XLoggerFlowBehavior()
+}
+</code></pre>
+<p>Once you have a flow behavior in scope, the flow logger takes a block of execution, and returns the result transparently, according to the log level.</p>
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
   flowLogger.trace {
     arg1 + arg2
   }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source"></a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
   flowLogger.trace {
     Person(name = &quot;Will&quot;, age = arg1 + arg2)
   }
@@ -198,8 +200,6 @@ object Person {
   }
 }</code></pre>
 <p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging is not enabled (whether through conditional logging, explicit filtering, or threshold), then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p>
-<h2><a href="#flow-behavior" name="flow-behavior" class="anchor"><span class="anchor-link"></span></a>Flow Behavior</h2>
-<p>What happens in a flow is determined by the <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. Implementing a flow behavior comes down to creating <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/api/Statement.html" title="com.tersesystems.blindsight.api.Statement"><code>Statement</code></a> for entry, exit, and exceptions.</p>
 <p>The flow is safe to use with <code>withCondition</code>. If disabled, the logger will short circuit to executing the block without adding any logging:</p>
 <pre class="prettyprint"><code class="language-scala">private def flowEnabled: Condition = Condition.never
 private val logger: FlowLogger = LoggerFactory.getLogger.flow.withCondition(flowEnabled)
@@ -216,7 +216,6 @@ private val logger: FlowLogger = LoggerFactory.getLogger.flow.withCondition(flow
 [info] FlowBenchmark.traceWhen   avgt    5   42.634 ±  1.379  ns/op
 </code></pre>
 <p>Evaluation of a no-op flow adds roughly 42 nanoseconds to execution &ndash; the time it takes to create a <code>Seq</code> from <code>sourcecode.Args</code> and discard them. Removing <code>sourcecode.Args</code> from the implicits takes the no-op down to 4.5 nanoseconds. For comparison, evaluating a guard of <code>if (logger.isLoggingDebug())</code> using SLF4J is 1.5 nanoseconds. I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.</p>
-<p>There are two out of the box behaviors provided: <a href="/blindsight/api/com/tersesystems/blindsight/flow/SimpleFlowBehavior.html" title="com.tersesystems.blindsight.flow.SimpleFlowBehavior"><code>SimpleFlowBehavior</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/flow/XLoggerFlowBehavior.html" title="com.tersesystems.blindsight.flow.XLoggerFlowBehavior"><code>XLoggerFlowBehavior</code></a>. These are modelled after <a href="https://github.com/JohnReedLOL/pos">pos</a> and <a href="http://www.slf4j.org/extensions.html#extended_logger">XLogger</a>, respectively.</p>
 <h2><a href="#integration" name="integration" class="anchor"><span class="anchor-link"></span></a>Integration</h2>
 <p>Flow based logging, because it leaves the flow behavior open, is a good way to integrate with third party systems.</p>
 <h3><a href="#opentracing" name="opentracing" class="anchor"><span class="anchor-link"></span></a>Opentracing</h3>
@@ -238,23 +237,27 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 <p>If you integrate with <a href="https://tersesystems.github.io/terse-logback/guide/tracing/">logback-tracing</a>, then you can also log to Honeycomb using a <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. To do this, add the following resolver:</p>
 <pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
 </code></pre>
-<p>and the following dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-tracing" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
-  &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
-  &lt;artifactId&gt;logback-tracing&lt;/artifactId&gt;
-  &lt;version&gt;latest.version&lt;/version&gt;
-&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
-  compile group: 'com.tersesystems.logback', name: 'logback-tracing', version: 'latest.version'
-}</code></pre></dd></dl><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-uniqueid-appender" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependency&gt;
-  &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
-  &lt;artifactId&gt;logback-uniqueid-appender&lt;/artifactId&gt;
-  &lt;version&gt;latest.version&lt;/version&gt;
-&lt;/dependency&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
-  compile group: 'com.tersesystems.logback', name: 'logback-uniqueid-appender', version: 'latest.version'
+<p>and the following dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-tracing" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
+    &lt;artifactId&gt;logback-tracing&lt;/artifactId&gt;
+    &lt;version&gt;latest.version&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  implementation "com.tersesystems.logback:logback-tracing:latest.version"
+}</code></pre></dd></dl><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-uniqueid-appender" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
+    &lt;artifactId&gt;logback-uniqueid-appender&lt;/artifactId&gt;
+    &lt;version&gt;latest.version&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  implementation "com.tersesystems.logback:logback-uniqueid-appender:latest.version"
 }</code></pre></dd></dl>
 <p>See <a href="http://github.com/tersesystems/play-blindsight">play-blindsight</a> for a worked example.</p>
 <p><img src="trace.png" alt="trace.png" /></p>
 <p>You can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source"></a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -363,7 +366,7 @@ object HoneycombFlowBehavior {
   val markerFactory = new SpanMarkerFactory
 }</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -379,7 +382,6 @@ The source code for this page can be found <a href="https://github.com/tersesyst
   <li><a href="../usage/flow.html#flow-api" class="header">Flow API</a>
   <ul>
     <li><a href="../usage/flow.html#usage" class="header">Usage</a></li>
-    <li><a href="../usage/flow.html#flow-behavior" class="header">Flow Behavior</a></li>
     <li><a href="../usage/flow.html#integration" class="header">Integration</a></li>
   </ul></li>
 </ul>
@@ -423,7 +425,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 
 <!--
 <div class="copyright">
-<span class="text">&copy; 2020</span>
+<span class="text">&copy; 2021</span>
 <a href="https://www.example.com" class="logo">logo</a>
 </div>
 -->
@@ -448,7 +450,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4+28-aee28a83', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

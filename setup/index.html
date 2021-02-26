@@ -12,6 +12,7 @@
 <script type="text/javascript" src="../js/page.js"></script>
 <script type="text/javascript" src="../js/warnOldVersion.js"></script>
 <script type="text/javascript" src="../js/groups.js"></script>
+<script type="text/javascript" src="../js/snippets.js"></script>
 <link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
 <link rel="stylesheet" type="text/css" href="../css/page.css"/>
 
@@ -31,17 +32,12 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4
+1.4.0-RC4+28-aee28a83
 </div>
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="active page">Setup</a>
-  <ul>
-    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
-    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
-  </ul></li>
+  <li><a href="../setup/index.html" class="active page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
@@ -49,6 +45,7 @@
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -100,17 +97,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4
+1.4.0-RC4+28-aee28a83
 </div>
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="active page">Setup</a>
-  <ul>
-    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
-    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
-  </ul></li>
+  <li><a href="../setup/index.html" class="active page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
@@ -118,6 +110,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
@@ -164,22 +157,133 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#setup" name="setup" class="anchor"><span class="anchor-link"></span></a>Setup</h1>
 <p>Blindsight depends on SLF4J using a service loader pattern, which is typically <a href="http://logback.qos.ch/">Logback</a> or <a href="https://logging.apache.org/log4j/2.x/">Log4J 2</a>. This means you should also plug in one of the service loader implementations, provided below.</p>
-<div class="toc ">
-<ul>
-  <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
-  <li><a href="../setup/generic.html" class="page">Generic</a></li>
-  <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
-</ul>
-</div>
+<h2><a href="#logstash" name="logstash" class="anchor"><span class="anchor-link"></span></a>Logstash</h2>
+<p>The recommended option for Logback is to use <code>blindsight-logstash</code>.</p>
+<p>Structured Logging is provided through the <a href="../usage/dsl.html">DSL</a> on the logger and provides a mapping for <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a> through <a href="https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields">Logstash Markers and StructuredArguments</a>. Source information (line, file, enclosing) is rendered as logstash markers.</p>
+<p>Add the following resolver:</p>
+<pre class="prettyprint"><code class="language-scala">resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+</code></pre>
+<p>And then add the given dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-logstash" % "1.4.0-RC4+28-aee28a83"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+  &lt;scala.binary.version&gt;2.13&lt;/scala.binary.version&gt;
+&lt;/properties&gt;
+&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
+    &lt;artifactId&gt;blindsight-logstash_${scala.binary.version}&lt;/artifactId&gt;
+    &lt;version&gt;1.4.0-RC4+28-aee28a83&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">def versions = [
+  ScalaBinary: "2.13"
+]
+dependencies {
+  implementation "com.tersesystems.blindsight:blindsight-logstash_${versions.ScalaBinary}:1.4.0-RC4+28-aee28a83"
+}</code></pre></dd></dl>
+<p>See <a href="https://github.com/tersesystems/blindsight#blindsight">Github</a> for the latest version.</p>
+<p>The version of <code>logstash-logback-encoder</code> depends on Jackson 2.11, which is newer than the packaged version used by many Scala libraries such as Play and Akka which depend on an older version of <a href="https://github.com/FasterXML/jackson-module-scala"><code>jackson-module-scala</code></a>. If you see library incompatibility errors, add an explicit dependency on 2.11 to your project:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+  &lt;scala.binary.version&gt;2.13&lt;/scala.binary.version&gt;
+&lt;/properties&gt;
+&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.module&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-module-scala_${scala.binary.version}&lt;/artifactId&gt;
+    &lt;version&gt;2.11.0&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">def versions = [
+  ScalaBinary: "2.13"
+]
+dependencies {
+  implementation "com.fasterxml.jackson.module:jackson-module-scala_${versions.ScalaBinary}:2.11.0"
+}</code></pre></dd></dl>
+<p>It is recommended (but not required) to use <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a> on the backend. Please see the documentation for what modules are appropriate for your use case.</p>
+<h2><a href="#generic" name="generic" class="anchor"><span class="anchor-link"></span></a>Generic</h2>
+<p>If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don&rsquo;t want to use the Logstash binding, you should use <code>blindsight-generic</code>, which has a serviceloader binding that depends solely on <code>slf4j-api</code>.</p><div class="callout note "><div class="callout-title">Note</div>
+<p>The generic binding does not have implementations for <a href="/blindsight/api/com/tersesystems/blindsight/ArgumentResolver.html" title="com.tersesystems.blindsight.ArgumentResolver"><code>ArgumentResolver</code></a> or <a href="/blindsight/api/com/tersesystems/blindsight/MarkersResolver.html" title="com.tersesystems.blindsight.MarkersResolver"><code>MarkersResolver</code></a>, which means that the <a href="../usage/dsl.html">DSL</a> cannot be used and there is no source code information written out.</p></div>
+<p>Add the bintray resolver:</p>
+<pre class="prettyprint"><code class="language-scala">resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+</code></pre>
+<p>And then add the dependency:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-generic" % "1.4.0-RC4+28-aee28a83"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+  &lt;scala.binary.version&gt;2.13&lt;/scala.binary.version&gt;
+&lt;/properties&gt;
+&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
+    &lt;artifactId&gt;blindsight-generic_${scala.binary.version}&lt;/artifactId&gt;
+    &lt;version&gt;1.4.0-RC4+28-aee28a83&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">def versions = [
+  ScalaBinary: "2.13"
+]
+dependencies {
+  implementation "com.tersesystems.blindsight:blindsight-generic_${versions.ScalaBinary}:1.4.0-RC4+28-aee28a83"
+}</code></pre></dd></dl>
+<p>See <a href="https://github.com/tersesystems/blindsight#blindsight">Github</a> for the latest version.</p>
+<h2><a href="#json-ld" name="json-ld" class="anchor"><span class="anchor-link"></span></a>JSON-LD</h2>
+<p><a href="../usage/jsonld.html">JSON-LD support</a> can be added for richer structured logging.</p>
+<p>Add the bintray resolver:</p>
+<pre class="prettyprint"><code class="language-scala">resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+</code></pre>
+<p>And then add the dependency:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-jsonld" % "1.4.0-RC4+28-aee28a83"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+  &lt;scala.binary.version&gt;2.13&lt;/scala.binary.version&gt;
+&lt;/properties&gt;
+&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
+    &lt;artifactId&gt;blindsight-jsonld_${scala.binary.version}&lt;/artifactId&gt;
+    &lt;version&gt;1.4.0-RC4+28-aee28a83&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">def versions = [
+  ScalaBinary: "2.13"
+]
+dependencies {
+  implementation "com.tersesystems.blindsight:blindsight-jsonld_${versions.ScalaBinary}:1.4.0-RC4+28-aee28a83"
+}</code></pre></dd></dl>
+<p>See <a href="https://github.com/tersesystems/blindsight#blindsight">Github</a> for the latest version.</p>
+<h2><a href="#ring-buffer" name="ring-buffer" class="anchor"><span class="anchor-link"></span></a>Ring Buffer</h2>
+<p>Blindsight comes with the option to add <a href="../usage/buffer.html">event buffering</a> to a logger, so that logged entries can be accessible from the application. This can be very useful for debugging and for verifying test output.</p>
+<p>A bounded in-memory ring buffer implementation based on <code>org.jctools.queues.MpmcArrayQueue</code> from the <a href="https://jctools.github.io/JCTools/">JCTools project</a> is provided. This implementation is thread-safe and <a href="http://psy-lob-saw.blogspot.com/p/lock-free-queues.html">performant</a>. If you need another implementation (for example, you want to use an off-heap buffer or buffer to disk), then the <a href="/blindsight/api/com/tersesystems/blindsight/EventBuffer.html" title="com.tersesystems.blindsight.EventBuffer"><code>EventBuffer</code></a> interface is relatively straightforward to implement.</p>
+<p>To add the ringbuffer implementation, add the following resolver:</p>
+<pre class="prettyprint"><code class="language-scala">resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
+</code></pre>
+<p>And then add the dependency:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-ringbuffer" % "1.4.0-RC4+28-aee28a83"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+  &lt;scala.binary.version&gt;2.13&lt;/scala.binary.version&gt;
+&lt;/properties&gt;
+&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
+    &lt;artifactId&gt;blindsight-ringbuffer_${scala.binary.version}&lt;/artifactId&gt;
+    &lt;version&gt;1.4.0-RC4+28-aee28a83&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">def versions = [
+  ScalaBinary: "2.13"
+]
+dependencies {
+  implementation "com.tersesystems.blindsight:blindsight-ringbuffer_${versions.ScalaBinary}:1.4.0-RC4+28-aee28a83"
+}</code></pre></dd></dl>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/main/paradox/setup/index.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/main/paradox/setup/index.md">here</a>.
 </div>
 
 <div class="nav-next">
-<p><strong>Next:</strong> <a href="../setup/logstash.html">Logback with Logstash</a></p>
+<p><strong>Next:</strong> <a href="../usage/index.html">Usage</a></p>
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html#setup" class="header">Setup</a>
+  <ul>
+    <li><a href="../setup/index.html#logstash" class="header">Logstash</a></li>
+    <li><a href="../setup/index.html#generic" class="header">Generic</a></li>
+    <li><a href="../setup/index.html#json-ld" class="header">JSON-LD</a></li>
+    <li><a href="../setup/index.html#ring-buffer" class="header">Ring Buffer</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 
@@ -217,7 +321,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 
 <!--
 <div class="copyright">
-<span class="text">&copy; 2020</span>
+<span class="text">&copy; 2021</span>
 <a href="https://www.example.com" class="logo">logo</a>
 </div>
 -->
@@ -242,7 +346,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4+28-aee28a83', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

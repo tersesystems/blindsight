@@ -12,6 +12,7 @@
 <script type="text/javascript" src="../js/page.js"></script>
 <script type="text/javascript" src="../js/warnOldVersion.js"></script>
 <script type="text/javascript" src="../js/groups.js"></script>
+<script type="text/javascript" src="../js/snippets.js"></script>
 <link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
 <link rel="stylesheet" type="text/css" href="../css/page.css"/>
 
@@ -31,17 +32,12 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4
+1.4.0-RC4+28-aee28a83
 </div>
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a>
-  <ul>
-    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
-    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
-  </ul></li>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
@@ -49,6 +45,7 @@
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="active page">Semantic API</a></li>
@@ -100,17 +97,12 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4
+1.4.0-RC4+28-aee28a83
 </div>
 </div>
 <div class="nav-toc">
 <ul>
-  <li><a href="../setup/index.html" class="page">Setup</a>
-  <ul>
-    <li><a href="../setup/logstash.html" class="page">Logback with Logstash</a></li>
-    <li><a href="../setup/generic.html" class="page">Generic</a></li>
-    <li><a href="../setup/ringbuffer.html" class="page">Ring Buffer</a></li>
-  </ul></li>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
   <li><a href="../usage/index.html" class="page">Usage</a>
   <ul>
     <li><a href="../usage/overview.html" class="page">Overview</a></li>
@@ -118,6 +110,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
     <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
     <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
     <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
     <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
     <li><a href="../usage/semantic.html" class="active page">Semantic API</a></li>
@@ -167,7 +160,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>A semantic logging API is <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md">strongly typed</a> and does not have the same construction oriented approach as the fluent API. Instead, the type of the instance is presumed to have a mapping directly to the attributes being logged.</p>
 <p>The semantic API works against <a href="/blindsight/api/com/tersesystems/blindsight/Statement.html" title="com.tersesystems.blindsight.Statement"><code>Statement</code></a> directly. The application is expected to handle the type class mapping to <a href="/blindsight/api/com/tersesystems/blindsight/Statement.html" title="com.tersesystems.blindsight.Statement"><code>Statement</code></a>.</p>
 <p>Here is an example:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/semantic/SemanticMain.scala#L25-L105" target="_blank" title="Go to snippet source"></a><code class="language-scala">object SemanticMain {
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/test/scala/example/semantic/SemanticMain.scala#L25-L105" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object SemanticMain {
 
   sealed trait UserEvent {
     def name: String
@@ -184,8 +177,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
           Arguments(
             bobj(
               &quot;user-logged-out-event&quot; -&gt;
-                (&quot;name&quot;     -&gt; instance.name) ~
-                  (&quot;ipAddr&quot; -&gt; instance.ipAddr)
+                (&quot;name&quot;   -&gt; instance.name) ~
+                (&quot;ipAddr&quot; -&gt; instance.ipAddr)
             )
           )
         )
@@ -203,8 +196,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
           Arguments(
             bobj(
               &quot;user-logged-out-event&quot; -&gt;
-                (&quot;name&quot;     -&gt; instance.name) ~
-                  (&quot;reason&quot; -&gt; instance.reason)
+                (&quot;name&quot;   -&gt; instance.name) ~
+                (&quot;reason&quot; -&gt; instance.reason)
             )
           )
         )
@@ -223,8 +216,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
           Arguments(
             bobj(
               &quot;user-is-up-late-event&quot; -&gt;
-                (&quot;name&quot;     -&gt; instance.name) ~
-                  (&quot;excuse&quot; -&gt; instance.excuse)
+                (&quot;name&quot;   -&gt; instance.name) ~
+                (&quot;excuse&quot; -&gt; instance.excuse)
             )
           )
         )
@@ -273,7 +266,7 @@ FgEdhil2zsk6O0Qbm7EAAA 2020-04-05T23:09:08.436+0000 [INFO ] example.semantic.Sem
 <h2><a href="#refinement-types" name="refinement-types" class="anchor"><span class="anchor-link"></span></a>Refinement Types</h2>
 <p>Semantic Logging works very well with <a href="https://github.com/fthomas/refined">refinement types</a>. </p>
 <p>For example, you can add compile time limitations on the kinds of messages that are passed in:</p>
-<pre class="prettyprint"><a class="icon go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/test/scala/example/semantic/RefinedMain.scala#L4-L32" target="_blank" title="Go to snippet source"></a><code class="language-scala">object RefinedMain {
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/test/scala/example/semantic/RefinedMain.scala#L4-L32" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object RefinedMain {
   import com.tersesystems.blindsight._
   import com.tersesystems.blindsight.semantic._
   import eu.timepit.refined._
@@ -303,7 +296,7 @@ FgEdhil2zsk6O0Qbm7EAAA 2020-04-05T23:09:08.436+0000 [INFO ] example.semantic.Sem
 
 }</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4/docs/src/main/paradox/usage/semantic.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/main/paradox/usage/semantic.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -361,7 +354,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 
 <!--
 <div class="copyright">
-<span class="text">&copy; 2020</span>
+<span class="text">&copy; 2021</span>
 <a href="https://www.example.com" class="logo">logo</a>
 </div>
 -->
@@ -386,7 +379,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4+28-aee28a83', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

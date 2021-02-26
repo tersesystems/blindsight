@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>JSON-LD · Blindsight</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='docs'/>
+<link rel="canonical" href="/blindsight/usage/jsonld.html"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../js/page.js"></script>
+<script type="text/javascript" src="../js/warnOldVersion.js"></script>
+<script type="text/javascript" src="../js/groups.js"></script>
+<script type="text/javascript" src="../js/snippets.js"></script>
+<link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="../css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="../images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.4.0-RC4+28-aee28a83
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="active page">JSON-LD</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="../index.html">Blindsight</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.4.0-RC4+28-aee28a83
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="active page">JSON-LD</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<span id="version-warning"></span>
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+<div class="nav-breadcrumbs">
+<ul>
+  <li><a href="../index.html">Blindsight</a></li>
+  <li><a href="../usage/index.html">Usage</a></li>
+  <li>JSON-LD</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#json-ld" name="json-ld" class="anchor"><span class="anchor-link"></span></a>JSON-LD</h1>
+<h2><a href="#overview" name="overview" class="anchor"><span class="anchor-link"></span></a>Overview</h2>
+<p><a href="https://www.w3.org/2018/json-ld-wg/">JSON-LD</a> is a lightweight format that uses JSON to describe structured data at a higher level. Information in JSON-LD can be used to link data through IRIs and represent lists, sets, and types. JSON-LD provides <a href="http://www.seoskeptic.com/what-is-json-ld/">unambiguous meaning</a> through typed values and node objects. One especially nice feature of JSON-LD is that it can be easily imported into graph databases, as JSON-LD can be converted into an <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework">RDF representation</a>, a common data model for knowledge management and reasoning.</p>
+<p>Blindsight supports JSON-LD by binding Scala types to JSON-LD and providing type classes to map data to JSON-LD.</p>
+<blockquote>
+  <p>NOTE: This guide does not cover how to set up a [JSON-LD context definition] or <a href="http://www-ksl.stanford.edu/people/dlm/papers/ontology101/ontology101-noy-mcguinness.html">creating an ontology</a>. It is assumed that context is passed out of band from the individual log entries. Please see <a href="https://json-ld.org/spec/latest/json-ld-api-best-practices/">JSON-LD Best Practices</a> for a guide on building JSON-LD schema.</p>
+</blockquote>
+<h2><a href="#quick-start" name="quick-start" class="anchor"><span class="anchor-link"></span></a>Quick Start</h2>
+<p>The simplest possible JSON-LD is as follows:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.jsonld._
+
+val yourSchema = IRI(&quot;https://yourcompany.com/jsonld/schema#&quot;).vocab
+val stringProperty = yourSchema(&quot;stringProperty&quot;).bindValue[String]
+val nodeObject = NodeObject(stringProperty -&gt; &quot;stringValue&quot;)
+</code></pre>
+<p>The first line sets up an <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/IRI.html" title="com.tersesystems.blindsight.jsonld.IRI"><code>IRI</code></a>. An <a href="https://www.w3.org/TR/json-ld11/#iris">IRI</a> defines a unique prefix for the properties. The IRI does not have to exist on the Internet, but it can be helpful, especially when using common schemas like <a href="https://schema.org">schema.org</a>. The IRI is then turned into a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Vocab.html" title="com.tersesystems.blindsight.jsonld.Vocab"><code>Vocab</code></a> instance using <code>vocab</code> &ndash; this indicates that this is the <a href="https://www.w3.org/TR/json-ld11/#default-vocabulary">default vocabulary</a> for the node object.</p>
+<p>The second line sets up a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Term.html" title="com.tersesystems.blindsight.jsonld.Term"><code>Term</code></a> that is then bound using <code>bindValue[String]</code> returning a <a href="com.tersesystems.blindsight.jsonld.ValueBinding">ValueBinding</a> called <code>stringProperty</code>.</p>
+<p>The third line defines a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObject.html" title="com.tersesystems.blindsight.jsonld.NodeObject"><code>NodeObject</code></a> and binds the <code>stringProperty</code> to <code>stringValue</code>, creating a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeEntry.html" title="com.tersesystems.blindsight.jsonld.NodeEntry"><code>NodeEntry</code></a> and passing it in as a property of the <a href="https://www.w3.org/TR/json-ld11/#dfn-node-object">node object</a>.</p>
+<p>Finally, the fourth and fifth lines set up a <a href="semantic.html">semantic logger</a> that logs only <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObject.html" title="com.tersesystems.blindsight.jsonld.NodeObject"><code>NodeObject</code></a>, and logs the node object.</p>
+<p>In practice, you will want to set up your IRIs and your bindings in one place so that only the last few lines are necessary.</p>
+<h2><a href="#converting-node-objects" name="converting-node-objects" class="anchor"><span class="anchor-link"></span></a>Converting Node Objects</h2>
+<p>Once you have a node object, you will want to integrate it as a loggable statement. Blindsight does not do this for you automatically, as you may want to include the node object as a named graph or filter the node object for sensitive information before adding it as an argument.</p>
+<p>You can pass node objects around as arguments using <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">implicit val nodeObjectToArgument: ToArgument[NodeObject] = ToArgument { nodeObject =&gt;
+  Argument(BlindsightASTMapping.toBObject(nodeObject))
+}
+logger.info(&quot;argument = {}&quot;, nodeObject)
+</code></pre>
+<p>Or as a marker using <a href="/blindsight/api/com/tersesystems/blindsight/ToMarkers.html" title="com.tersesystems.blindsight.ToMarkers"><code>ToMarkers</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">implicit val nodeObjectToMarkers: ToMarkers[NodeObject] = ToMarkers { nodeObject =&gt;
+  Markers(BlindsightASTMapping.toBObject(nodeObject))
+}
+
+logger.info(Markers(nodeObject), &quot;as a marker&quot;)
+</code></pre>
+<p>Or even as a statement <a href="/blindsight/api/com/tersesystems/blindsight/ToStatement.html" title="com.tersesystems.blindsight.ToStatement"><code>ToStatement</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">implicit val nodeObjectToStatement: ToStatement[NodeObject] = ToStatement { nodeObject =&gt;
+  val args = Arguments(Argument(bobj(&quot;@graph&quot; -&gt; BlindsightASTMapping.toBObject(nodeObject))))
+  Statement(message = &quot;{}&quot;, arguments = args)
+}
+
+val nodeObjectLogger = logger.semantic[NodeObject]
+nodeObjectLogger.info(nodeObject)
+</code></pre>
+<h2><a href="#establishing-a-context" name="establishing-a-context" class="anchor"><span class="anchor-link"></span></a>Establishing a Context</h2>
+<p>The easiest way to set up convenient logging in JSON-LD is to define terms and bindings in a trait.</p>
+<pre class="prettyprint"><code class="language-scala">trait YourContext {
+  val yourSchema = IRI(&quot;https://yourcompany.com/jsonld/schema#&quot;).vocab
+  val stringProperty = yourSchema(&quot;stringProperty&quot;).bindValue[String]
+}
+
+object YourContext extends YourContext
+
+</code></pre>
+<p>As you build up your context, you&rsquo;ll add more bindings to it. For example, you may want to define date and time properties. In JSON-LD, the idiom is to use the <a href="http://www.w3.org/2001/XMLSchema">XMLSchema namespace</a>, so we can add that in:</p>
+<pre class="prettyprint"><code class="language-scala">trait XSDContext {
+  val xsd: Term = IRI(&quot;http://www.w3.org/2001/XMLSchema#&quot;).term(&quot;xsd&quot;)
+  val xsdDate: CompactIRI = xsd(&quot;date&quot;) // &quot;xsd:date&quot;
+  val xsdDateTime: CompactIRI = xsd(&quot;dateTime&quot;) // &quot;xsd:dateTime&quot;
+}
+
+trait YourContext extends XSDContext {
+  // ...
+}
+</code></pre>
+<p>Note that here, we&rsquo;re using <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Term.html" title="com.tersesystems.blindsight.jsonld.Term"><code>Term</code></a> to provide a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/CompactIRI.html" title="com.tersesystems.blindsight.jsonld.CompactIRI"><code>CompactIRI</code></a> for <code>xsdDate</code> and <code>xsdDateTime</code>. A <a href="https://www.w3.org/TR/json-ld11/#compact-iris">compact IRI</a> expresses an IRI using a prefix and suffix separated by a colon as a shorthand.</p>
+<p>Using the context, we can go ahead and fill out our JSON-LD mapping, starting with defining properties with IRIs, using values and node objects, working up to list objects, set objects, and indexed values. </p>
+<h2><a href="#keywords" name="keywords" class="anchor"><span class="anchor-link"></span></a>Keywords</h2>
+<p>JSON-LD comes with a number of keywords. The <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Keyword$.html" title="com.tersesystems.blindsight.jsonld.Keyword"><code>Keyword</code></a> singleton object contains all the <a href="https://www.w3.org/TR/json-ld11/#keywords">defined keywords</a>, along with appropriate bindings.</p>
+<p>For example, the <code>@propagate</code> keyword must have the value of <code>true</code> or <code>false</code>, and so only the <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/ValueBindingKey.html" title="com.tersesystems.blindsight.jsonld.ValueBindingKey"><code>ValueBindingKey</code></a> is defined so <code>bindValue</code> is the only option.</p>
+<h3><a href="#aliases" name="aliases" class="anchor"><span class="anchor-link"></span></a>Aliases</h3>
+<p>JSON-LD allows <a href="https://www.w3.org/TR/json-ld11/#aliasing-keywords">keyword aliasing</a>. You can alias a keyword using <code>alias</code>. The alias will render with a different label, but will still have the same type.</p>
+<pre class="prettyprint"><code class="language-scala">val id: Keyword.Id = Keyword.`@id`.alias(&quot;id&quot;)
+</code></pre>
+<p>This is useful in situations where the keyword may collide with an existing property name. Note that you must still define the keyword alias yourself in your JSON-LD context definition.</p>
+<h2><a href="#iris" name="iris" class="anchor"><span class="anchor-link"></span></a>IRIs</h2>
+<p>IRIs are the foundation of linked data, and JSON-LD has several ways of representing a value that expands to a full IRI. <a href="https://www.w3.org/TR/json-ld11/#iris">IRI values</a> can show as compact IRIs, relative IRI references, or full IRIs.</p>
+<p>In Blindsight, the root trait is <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/IRIValue.html" title="com.tersesystems.blindsight.jsonld.IRIValue"><code>IRIValue</code></a>, which can expand out to a number of implementations.</p>
+<h4><a href="#iri" name="iri" class="anchor"><span class="anchor-link"></span></a>IRI</h4>
+<p>The <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/IRI.html" title="com.tersesystems.blindsight.jsonld.IRI"><code>IRI</code></a> in Blindsight refers to a full IRI. An IRI can be created from a <code>java.net.URL</code>, a <code>java.net.URI</code>, or a <code>java.util.UUID</code> instance. Blindsight only knows about the string representation, and does not keep any extra URL or URI information.</p>
+<pre class="prettyprint"><code class="language-scala">val textIRI = IRI(&quot;https://schema.org/&quot;)
+val uuidIRI: IRI = IRI(UUID.randomUUID())
+val uriIRI: IRI = IRI(new java.net.URI(&quot;https://schema.org&quot;))
+</code></pre>
+<p>You can create IRIs from existing IRIs using <code>property</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val niemCore = IRI(&quot;http://release.niem.gov/niem/niem-core/4.0/#&quot;)
+
+// value prints &quot;http://release.niem.gov/niem/niem-core/4.0/#PersonGivenName&quot;
+val personGivenName = niemCore.property(&quot;PersonGivenName&quot;)
+</code></pre>
+<p>Because full IRIs can be unwieldy in a document, JSON-LD has ways of compacting IRIs by representing an IRI prefix as either a term or a default vocabulary in compact IRIs.</p>
+<p>A <a href="https://www.w3.org/TR/json-ld11/#terms">term</a> is a prefix that is used as a &ldquo;label&rdquo; for an IRI. Blindsight creates a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Term.html" title="com.tersesystems.blindsight.jsonld.Term"><code>Term</code></a> using <code>iri.term(&quot;prefix&quot;)</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val xmlSchema = IRI(&quot;http://www.w3.org/2001/XMLSchema#&quot;)
+val xsd: Term = xmlSchema.term(&quot;xsd&quot;)
+</code></pre>
+<p>A <a href="https://www.w3.org/TR/json-ld11/#dfn-compact-iri">compact IRI</a> can be created from a term and property. In Blindsight, this is done using <code>term.apply(&quot;propertyName&quot;)</code> and creates a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/CompactIRI.html" title="com.tersesystems.blindsight.jsonld.CompactIRI"><code>CompactIRI</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">val xsdDateTime: CompactIRI = xsd(&quot;dateTime&quot;) // &quot;xsd:dateTime&quot;
+
+// Prints out the current instant as a typed value with xsd:dateTime
+val dateValue = Value(Instant.now.toString, xsdDateTime)
+</code></pre>
+<p>A <a href="https://www.w3.org/TR/json-ld11/#default-vocabulary">default vocabulary</a> is used when a property name is presented without a prefix. In Blindsight, this is done using <code>iri.vocab</code>, and returns a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Vocab.html" title="com.tersesystems.blindsight.jsonld.Vocab"><code>Vocab</code></a>:</p>
+<pre class="prettyprint"><code class="language-scala">val schemaVocab = IRI(&quot;https://schema.org/&quot;).vocab
+val schemaPerson = schemaVocab(&quot;Person&quot;) // prints &quot;Person&quot;
+</code></pre>
+<p>There are also points where a <a href="https://www.w3.org/TR/json-ld11/#iris">relative IRI reference</a> in the form &ldquo;some/path/fragment&rdquo; is defined. In JSON-LD, relative IRIs are relative to the <a href="https://www.w3.org/TR/json-ld11/#base-iri">base IRI</a>. A base IRI is created from an IRI using <code>base</code>, returning a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Base.html" title="com.tersesystems.blindsight.jsonld.Base"><code>Base</code></a>, which can then return a <a href="com.tersesystems.blindsight.jsonld.RelativeIRI">RelativeIRI</a></p>
+<pre class="prettyprint"><code class="language-scala">val baseIRI: Base = IRI(&quot;http://example.com/&quot;).base
+val enPost: RelativeIRI = baseIRI(&quot;1/en&quot;) // returns &quot;1/en&quot;
+</code></pre>
+<p>Relative IRIs are often used in <a href="https://w3c.github.io/json-ld-syntax/#node-identifier-indexing">ID Maps</a>.</p>
+<h3><a href="#binding-iri" name="binding-iri" class="anchor"><span class="anchor-link"></span></a>Binding IRI</h3>
+<p>Binding an IRI is done through <code>bindIRI</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val id          = Keyword.`@id`.bindIRI
+val node = NodeObject(
+  id -&gt; IRI(&quot;http://www.wikidata.org/entity/Q76&quot;)
+)
+</code></pre>
+<p>You can bind to an array of IRIs using <code>bindIRIs</code>. For example, you may want to specify multiple types to indicate that a node object has properties for both the &ldquo;foaf&rdquo; concept of a person and the &ldquo;schema&rdquo; concept of a person.</p>
+<pre class="prettyprint"><code class="language-scala">val schemaOrg: Vocab = IRI(&quot;https://schema.org/&quot;).vocab
+val foaf: Term = IRI(&quot;http://xmlns.com/foaf/0.1/&quot;).term(&quot;foaf&quot;)
+val foafPerson = foaf(&quot;Person&quot;)
+val schemaPerson = schemaOrg(&quot;Person&quot;)
+
+val `@type` = Keyword.`@type`.bindIRIs
+val node = NodeObject(
+  `@type` -&gt; Seq(schemaPerson, foafPerson)
+)
+</code></pre>
+<h3><a href="#custom-iri-mapper" name="custom-iri-mapper" class="anchor"><span class="anchor-link"></span></a>Custom IRI Mapper</h3>
+<p>Creating a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/CustomIRIMapper.html" title="com.tersesystems.blindsight.jsonld.CustomIRIMapper"><code>CustomIRIMapper</code></a> is relatively simple if you have a unique ID field that can be exposed as an IRI:</p>
+<pre class="prettyprint"><code class="language-scala"><br/>sealed trait Gender
+
+object Gender {
+  // https://schema.org/gender
+  implicit val maleMapper: IRIValueMapper[Gender] = IRIValueMapper {
+    case Male =&gt;
+      schemaOrg(&quot;Male&quot;) // https://schema.org/Male
+    case Female =&gt;
+      schemaOrg(&quot;Female&quot;) // https://schema.org/Female
+  }
+  
+  case object Male   extends Gender
+  case object Female extends Gender
+}
+
+</code></pre>
+<p>Once you have the custom IRI mapper for <code>Gender</code>, you can use <code>bindIRI[Gender]</code> and then it will only bind to instances of <code>Gender</code> like an enumeration:</p>
+<pre class="prettyprint"><code class="language-scala">val gender = schemaOrg(&quot;gender&quot;).bindIRI[Gender]
+val person = NodeObject(
+  `@type` -&gt; personType,
+  gender -&gt; Gender.Male
+)
+</code></pre>
+<p>This helps in JSON-LD for defining &ldquo;Things not Strings&rdquo; and avoiding stringly typed values.</p>
+<h2><a href="#values" name="values" class="anchor"><span class="anchor-link"></span></a>Values</h2>
+<p>A &ldquo;value&rdquo; in JSON-LD is a <a href="https://www.w3.org/TR/json-ld11/#describing-values">leaf node</a> that describes an atomic value such as string, a number, a boolean, or a date. If JSON-LD can represent the value natively in JSON, it writes out the corresponding literal, and if it doesn&rsquo;t (most notably for internationalized strings and dates), it uses a &ldquo;value object&rdquo; which is a JSON object containing the needed metadata along with the value.</p>
+<p>Broadly speaking, there are two types of values: literal values and typed values.</p>
+<h3><a href="#literal-values" name="literal-values" class="anchor"><span class="anchor-link"></span></a>Literal Values</h3>
+<p>A <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/LiteralValue.html" title="com.tersesystems.blindsight.jsonld.LiteralValue"><code>LiteralValue</code></a> has a direct representation in JSON. Strings, boolean values, and numbers can all be represented, with <code>null</code> represented by <code>None</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val name = schemaOrg(&quot;name&quot;).bindValue[String]
+val abridged = schemaOrg(&quot;abridged&quot;).bindValue[Boolean]
+val numberOfPages = schemaOrg(&quot;numberOfPages&quot;).bindValue[Int]
+val subtitle = schemaOrg(&quot;subtitle&quot;).bindValue[Option[String]]
+
+val bookType = schemaOrg(&quot;Book&quot;)
+
+val abridgedMobyDick = NodeObject(
+  `@type` -&gt; bookType,
+  name -&gt; &quot;Moby Dick&quot;,
+  subtitle -&gt; None,
+  abridged -&gt; true,
+  numberOfPages -&gt; 12
+)
+</code></pre>
+<p>Note that here the <code>@type</code> of the node object is specified as a &ldquo;Book&rdquo; &ndash; this is not required, but is useful to let JSON-LD know that there are some known properties (<code>name</code>, <code>numberOfPages</code>) associated with the node object.</p>
+<p>There is one complication, which is that <a href="https://www.w3.org/TR/json-ld11/#string-internationalization">string internationalization</a> may include string direction and a language, represented with a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/StringValue.html" title="com.tersesystems.blindsight.jsonld.StringValue"><code>StringValue</code></a>.</p>
+<pre class="prettyprint"><code class="language-scala">val blurb = yourSchema(&quot;blurb&quot;).bindValue[StringValue]
+val book = NodeObject(
+  blurb -&gt; Value(&quot;Some Blurb in English&quot;, StringDirection.LeftToRight, &quot;en&quot;)
+)
+</code></pre>
+<p>The expanded form of JSON-LD always renders an array of values. If you want to use the expanded form, you can use <code>bindValues</code> rather than <code>bindValue</code>.</p>
+<pre class="prettyprint"><code class="language-scala">val names = yourSchema(&quot;names&quot;).bindValues[String]
+val book = NodeObject(
+  names -&gt; Seq(&quot;Me&quot;, &quot;You&quot;) 
+)
+</code></pre>
+<h3><a href="#json-values" name="json-values" class="anchor"><span class="anchor-link"></span></a>JSON Values</h3>
+<p>JSON-LD also allows for <a href="https://www.w3.org/TR/json-ld11/#json-literals">JSON Literals</a>. JSON Literals are handled using Blindsight&rsquo;s <a href="dsl.html">DSL</a>:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.DSL._
+
+val jsonValue = yourSchema(&quot;jsonValue&quot;).bindValue[BObject]
+val bobject = bobj(&quot;key&quot; -&gt; &quot;value&quot;)
+val nodeObject = NodeObject(jsonValue -&gt; bobject)
+</code></pre>
+<p>or for an array:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.DSL._
+
+val jsonArray = schemaOrg(&quot;jsonArray&quot;).bindValue[BArray]
+val barray = BArray(List(1, 2, 3))
+val nodeObject = NodeObject(jsonArray -&gt; barray)
+</code></pre>
+<h3><a href="#typed-values" name="typed-values" class="anchor"><span class="anchor-link"></span></a>Typed Values</h3>
+<p><a href="https://www.w3.org/TR/json-ld11/#typed-values">Typed values</a> such as dates are represented with <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/TypedValue.html" title="com.tersesystems.blindsight.jsonld.TypedValue"><code>TypedValue</code></a>.</p>
+<pre class="prettyprint"><code class="language-scala">val dateCreated = schemaOrg(&quot;dateCreated&quot;).bindValue[TypedValue]
+val localDate = LocalDate.of(2020, 1, 1)
+val abridgedMobyDick = NodeObject(
+  `@type` -&gt; bookType,
+  name -&gt; &quot;Moby Dick&quot;,
+  dateCreated -&gt; Value(DateTimeFormatter.ISO_DATE.format(localDate), xsdDate)
+)
+</code></pre>
+<p>Because all typed values look the same to the Scala compiler, it&rsquo;s better to use a custom value mapper when binding.</p>
+<h3><a href="#custom-value-mapping" name="custom-value-mapping" class="anchor"><span class="anchor-link"></span></a>Custom Value Mapping</h3>
+<p>A custom <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/ValueMapper.html" title="com.tersesystems.blindsight.jsonld.ValueMapper"><code>ValueMapper</code></a> converts from a Scala type to a value using a type class instance. This is particularly useful for dates and times.</p>
+<pre class="prettyprint"><code class="language-scala">implicit val localDateMapper: ValueMapper[LocalDate] = ValueMapper { date =&gt;
+  Value(DateTimeFormatter.ISO_DATE.format(date), xsdDate)
+}
+
+val dateCreated = yourSchema(&quot;dateCreated&quot;).bindValue[LocalDate]
+val abridgedMobyDick = NodeObject(
+  `@type` -&gt; &quot;Book&quot;,
+  name -&gt; &quot;Moby Dick&quot;,
+  dateCreated -&gt; LocalDate.of(2020, 1, 1)
+)
+</code></pre>
+<p>or currencies:</p>
+<pre class="prettyprint"><code class="language-scala">implicit val currencyMapper: ValueMapper[Currency] = ValueMapper { currency =&gt;
+  Value(currency.getCurrencyCode)
+}
+val currency: ValueBinding[Currency] = schemaOrg(&quot;currency&quot;).bindValue[Currency]
+</code></pre><div class="callout note "><div class="callout-title">Note</div>
+<p>You may find it helpful to use <a href="https://github.com/fthomas/refined">Refined</a> and <a href="https://github.com/erikerlandson/coulomb#documentation">Coulomb</a> to provide type-safe validation and unit representation of data to the DSL</p></div>
+<h2><a href="#node-objects" name="node-objects" class="anchor"><span class="anchor-link"></span></a>Node Objects</h2>
+<p>A <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObject.html" title="com.tersesystems.blindsight.jsonld.NodeObject"><code>NodeObject</code></a> can also contain other node objects. This is referred to as <a href="https://www.w3.org/TR/json-ld11/#embedding">object embedding</a>.</p>
+<p>Binding to a node object is done using <code>bindObject</code>, or you can bind an <code>Iterable</code> using <code>bindObjects</code>.</p>
+<pre class="prettyprint"><code class="language-scala">val occupationType = schemaOrg(&quot;Occupation&quot;)
+val monetaryAmountType = schemaOrg(&quot;MonetaryAmount&quot;)
+val estimatedSalary = schemaOrg(&quot;estimatedSalary&quot;).bindObject[NodeObject]
+
+val occupation = NodeObject(
+  `@type` -&gt; occupationType,
+  name -&gt; &quot;Code Monkey&quot;,
+  estimatedSalary -&gt; NodeObject(
+    `@type` -&gt; monetaryAmountType,
+    currency -&gt; Currency.getInstance(&quot;USD&quot;),
+    value -&gt; 1
+  )
+)
+</code></pre>
+<h3><a href="#node-object-properties-ordering" name="node-object-properties-ordering" class="anchor"><span class="anchor-link"></span></a>Node Object Properties Ordering</h3>
+<p>As a useful guide for streaming JSON-LD, you should <a href="https://w3c.github.io/json-ld-streaming/#key-ordering-recommended">order properties</a> in the following priority:</p>
+<ul>
+  <li><code>@context</code> should come first, if defined.</li>
+  <li><code>@type</code>: comes after <code>@context</code>, if defined.</li>
+  <li><code>@id</code>: comes after <code>@type</code> or context if defined.</li>
+</ul>
+<h3><a href="#custom-nodeobject-mapping" name="custom-nodeobject-mapping" class="anchor"><span class="anchor-link"></span></a>Custom NodeObject Mapping</h3>
+<p>The easiest way to define a node object mapping is to define a case class and a type class instance of a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObjectMapper.html" title="com.tersesystems.blindsight.jsonld.NodeObjectMapper"><code>NodeObjectMapper</code></a>.</p>
+<pre class="prettyprint"><code class="language-scala">case class MonetaryAmount(currency: Currency, value: Int)
+
+object MonetaryAmount {
+  implicit val monetaryAmountMapper: NodeObjectMapper[MonetaryAmount] = NodeObjectMapper { ma =&gt;
+    NodeObject(
+      `@type` -&gt; monetaryAmountType,
+      currency -&gt; ma.currency,
+      value -&gt; ma.value
+    )
+  }
+}
+
+</code></pre>
+<p>And then you can bind to the <code>MonetaryAmount</code> directly:</p>
+<pre class="prettyprint"><code class="language-scala">val occupationType = schemaOrg(&quot;Occupation&quot;)
+val monetaryAmountType = schemaOrg(&quot;MonetaryAmount&quot;)
+val estimatedSalary = schemaOrg(&quot;estimatedSalary&quot;).bindObject[MonetaryAmount]
+
+val occupation = NodeObject(
+  `@type` -&gt; occupationType,
+  name -&gt; &quot;Code Monkey&quot;,
+  estimatedSalary -&gt; MonetaryAmount(USD, 1)
+)
+</code></pre>
+<h2><a href="#list-objects" name="list-objects" class="anchor"><span class="anchor-link"></span></a>List Objects</h2>
+<p><a href="https://www.w3.org/TR/json-ld11/#lists">Lists</a> in JSON-LD indicate an ordered set of elements. In the expanded form of JSON-LD they are represented as list objects, but may be rendered as JSON arrays when compacted.</p>
+<p>Binding to a list is done using <code>bindList[T]</code>, where <code>T</code> is the element type, returning an instance of <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/ListObject.html" title="com.tersesystems.blindsight.jsonld.ListObject"><code>ListObject</code></a>. You can bind any <code>Iterable[T]</code>, but <code>Seq</code> is most common. For example, to define a list of strings you would do the following:</p>
+<pre class="prettyprint"><code class="language-scala">val listOfStrings = schemaOrg(&quot;listOfStrings&quot;).bindList[String]
+
+val aListOfStrings = NodeObject(
+  listOfStrings -&gt; Seq(&quot;One&quot;, &quot;Two&quot;, &quot;Three&quot;, &quot;Four&quot;)
+)
+</code></pre>
+<p>If you want to represent a null element, then you should use <code>Option[T]</code>, and <code>None</code> will represent <code>null</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val optionalStrings = schemaOrg(&quot;optionalStrings&quot;).bindList[Option[String]]
+
+val obj = NodeObject(
+  optionalStrings -&gt; Seq(Some(&quot;some&quot;), None)
+)
+</code></pre>
+<p>If you have elements that do not have a common type, you can also bind to <code>NodeObject</code> or <code>Node</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val listOfNodes = schemaOrg(&quot;listOfNodes&quot;).bindList[NodeObject]
+
+val listObject = NodeObject(
+  listOfNodes -&gt; Seq(
+    NodeObject(name -&gt; &quot;firstNode&quot;),
+    NodeObject(name -&gt; &quot;secondNode&quot;)
+  )
+)
+</code></pre>
+<h4><a href="#custom-listobject-binding" name="custom-listobject-binding" class="anchor"><span class="anchor-link"></span></a>Custom ListObject Binding</h4>
+<p>Binding complex elements with nested lists can be done with custom mapping. For example, to render <a href="https://w3c.github.io/json-ld-syntax/#example-83-coordinates-expressed-in-geojson">the co-ordinates example</a>, you can do the following:</p>
+<pre class="prettyprint"><code class="language-scala">trait MyGeoContext {
+  val vocab = IRI(&quot;https://purl.org/geojson/vocab#&quot;)
+  val bbox     = geoJson(&quot;bbox&quot;).bindList[Double]
+  val geometry = geoJson(&quot;geometry&quot;).bindObject[Geometry]
+
+  implicit def seqMapper: NodeMapper[Seq[Double]] =
+    NodeMapper { iter =&gt;
+      val mapper = implicitly[NodeMapper[Double]]
+      ListObject(iter.map(mapper.mapNode))
+    }
+
+  val coordinates = geoJson(&quot;coordinates&quot;).bindList[Seq[Double]]
+}
+
+final case class Geometry(`@type`: String, coords: Seq[Seq[Double]])
+
+object Geometry extends MyGeoContext {
+  implicit val nodeMapper: NodeObjectMapper[Geometry] = NodeObjectMapper { geo =&gt;
+    val `@type` = Keyword.`@type`.bindIRI
+    NodeObject(
+      `@type` -&gt; geo.`@type`,
+      coordinates -&gt; geo.coords
+    )
+  }
+}
+</code></pre>
+<h2><a href="#set-objects" name="set-objects" class="anchor"><span class="anchor-link"></span></a>Set Objects</h2>
+<p><a href="https://www.w3.org/TR/json-ld11/#sets">Sets</a> in JSON-LD represent unordered set of elements. There is no uniqueness constraint as in Java and Scala sets. </p>
+<p>Use <code>bindSet[T]</code> where <code>T</code> is the element type. The binding will return an instance of <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/SetObject.html" title="com.tersesystems.blindsight.jsonld.SetObject"><code>SetObject</code></a> to the node object.</p>
+<p>For example, to bind a set of nicknames, you can do the following:</p>
+<pre class="prettyprint"><code class="language-scala">val foaf = IRI(&quot;http://xmlns.com/foaf/0.1/&quot;).term(&quot;foaf&quot;)
+
+// A set of string values
+val nick: SetBinding[String] = foaf(&quot;nick&quot;).bindSet[String]
+
+// https://www.songfacts.com/lyrics/sheryl-crow/all-i-wanna-do
+val personWithNicknames = NodeObject(
+  nick -&gt; Set(&quot;Bill&quot;, &quot;Billy&quot;, &quot;Mac&quot;, &quot;Buddy&quot;)
+)
+</code></pre>
+<p>To create a set that can contain <code>null</code>, call <code>bindSet</code> with an <code>Option[T]</code>. Like the list binding, if there is no common type you can use <code>Node</code>, <code>Value</code> or <code>NodeObject</code>. </p>
+<pre class="prettyprint"><code class="language-scala">val nodeSet = exampleOrg(&quot;nodeSet&quot;).bindSet[Option[Node]]
+val nodeSetNode = NodeObject(
+  nodeSet -&gt; Set(
+    Some(Value(1)),
+    Some(nodeObject),
+    None
+  )
+)
+</code></pre>
+<h2><a href="#indexed-values" name="indexed-values" class="anchor"><span class="anchor-link"></span></a>Indexed Values</h2>
+<p>JSON-LD contains an <a href="https://www.w3.org/TR/json-ld11/#indexed-values">indexing mechanism</a> that associates specific indices with associated values. From a Scala perspective, these look like instances of <code>Map[Key, Value]</code>, where <code>Key</code> and <code>Value</code> are dependent on the kind of indexing.</p>
+<h3><a href="#index-maps" name="index-maps" class="anchor"><span class="anchor-link"></span></a>Index Maps</h3>
+<p>In <a href="https://www.w3.org/TR/json-ld11/#data-indexing">data indexing</a>, the <code>Key</code> is a string that represents a key. The result is an <a href="https://www.w3.org/TR/json-ld11/#index-maps">index map</a>.</p>
+<p>There is no semantic meaning associated with the key, so only the type of the value is needed. You can create an index map using <code>bindIndexMap</code>.</p>
+<pre class="prettyprint"><code class="language-scala">val athletes = schemaOrg(&quot;athletes&quot;).bindIndexMap
+val name = schemaOrg(&quot;name&quot;).bindValue[String]
+val position = schemaOrg(&quot;position&quot;).bindValue[String]
+val person = schemaOrg(&quot;Person&quot;)
+val sportsTeam = schemaOrg(&quot;SportsTeam&quot;)
+
+val indexMapNode = NodeObject(
+  name -&gt; &quot;San Francisco Giants&quot;,
+  `@type` -&gt; sportsTeam,
+  athletes -&gt; Map(
+    &quot;catcher&quot; -&gt; NodeObject(
+      `@type` -&gt; person,
+      name -&gt; &quot;Buster Posey&quot;,
+      position -&gt; &quot;Catcher&quot;
+    ),
+    &quot;pitcher&quot; -&gt; NodeObject(
+      `@type` -&gt; person,
+      name -&gt; &quot;Madison Bumgarner&quot;,
+      position -&gt; &quot;Starting Pitcher&quot;
+    )
+  )
+)
+</code></pre>
+<p>You can specify a <code>@none</code> key by using <code>None</code> as the index:</p>
+<pre class="prettyprint"><code class="language-scala">val optIndexMap = schemaOrg(&quot;optionalIndexMap&quot;).bindIndexMap
+
+val indexMapNode = NodeObject(
+  optIndexMap -&gt; Map(
+    Some(&quot;existing&quot;) -&gt; &quot;existingValue&quot;,
+    None -&gt; &quot;defaultValue&quot;
+  )
+)
+</code></pre>
+<p>You can specify a <code>null</code> value by using using <code>None</code> as the value:</p>
+<pre class="prettyprint"><code class="language-scala">val optIndexMap = schemaOrg(&quot;optionalIndexValueMap&quot;).bindIndexMap
+
+val indexMapNode = NodeObject(
+  optIndexMap -&gt; Map(
+    &quot;exists&quot; -&gt; Option(&quot;existingValue&quot;),
+    &quot;does not exist&quot; -&gt; None
+  )
+)
+</code></pre>
+<p>If <a href="https://www.w3.org/TR/json-ld11/#property-based-index-maps">property based index maps</a> are used for <a href="https://www.w3.org/TR/json-ld11/#property-based-data-indexing">indexing</a>, then there is still no change as the ID is still a string.</p>
+<p>However, only mappers that resolve to a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObject.html" title="com.tersesystems.blindsight.jsonld.NodeObject"><code>NodeObject</code></a> are valid. For example, with a context definition of <code>&quot;@index&quot;: &quot;schema:jobTitle&quot;</code> the key would be:</p>
+<pre class="prettyprint"><code class="language-scala">val indexMapNode = NodeObject(
+  name -&gt; &quot;San Francisco Giants&quot;,
+  `@type` -&gt; sportsTeam,
+  athletes -&gt; Map(
+    &quot;Catcher&quot; -&gt; NodeObject(
+      `@type` -&gt; person,
+      name -&gt; &quot;Buster Posey&quot;
+    ),
+    &quot;Starting Pitcher&quot; -&gt; NodeObject(
+      `@type` -&gt; person,
+      name -&gt; &quot;Madison Bumgarner&quot;
+    )
+  )
+)
+</code></pre>
+<h3><a href="#id-maps" name="id-maps" class="anchor"><span class="anchor-link"></span></a>ID Maps</h3>
+<p>In <a href="https://www.w3.org/TR/json-ld11/#node-identifier-indexing">node id indexing</a>, the <code>Key</code> is an IRI value, and the <code>Value</code> is <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObject.html" title="com.tersesystems.blindsight.jsonld.NodeObject"><code>NodeObject</code></a></p>
+<p>You can create an <a href="https://www.w3.org/TR/json-ld11/#id-maps">ID Map</a> using <code>bindIdMap</code> with <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/IRIValueMapper.html" title="com.tersesystems.blindsight.jsonld.IRIValueMapper"><code>IRIValueMapper</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObjectMapper.html" title="com.tersesystems.blindsight.jsonld.NodeObjectMapper"><code>NodeObjectMapper</code></a>.</p>
+<p>For example, to create an ID map that binds <code>RelativeIRI</code> to <code>NodeObject</code> you would use:</p>
+<pre class="prettyprint"><code class="language-scala">val post = schemaOrg(&quot;post&quot;).bindIdMap
+val exampleCom = IRI(&quot;http://example.com/&quot;)
+val baseExampleCom = exampleCom.base
+val node = NodeObject(
+  `@id` -&gt; exampleCom,
+  `@type` -&gt; schemaOrg(&quot;Blog&quot;),
+  name -&gt; &quot;World Financial News&quot;,
+  post -&gt; Map(
+    baseExampleCom(&quot;1/en&quot;) -&gt; NodeObject(
+      body -&gt; &quot;World commodities were up today with heavy trading of crude oil...&quot;,
+      words -&gt; 1539
+    ),
+    baseExampleCom(&quot;1/de&quot;) -&gt; NodeObject(
+      body -&gt; &quot;Die Werte an Warenbörsen stiegen im Sog eines starken Handels von Rohöl...&quot;,
+      words -&gt; 1204
+    )
+  )
+)
+</code></pre>
+<h3><a href="#language-maps" name="language-maps" class="anchor"><span class="anchor-link"></span></a>Language Maps</h3>
+<p>In <a href="https://www.w3.org/TR/json-ld11/#language-indexing">language indexing</a>, the key is a string representing the <a href="https://en.wikipedia.org/wiki/IETF_language_tag">BCP47 language tag</a>, and the value is a string or array of strings.</p>
+<p>To create a <a href="https://www.w3.org/TR/json-ld11/#language-maps">language map</a>, use <code>bindLanguageMap</code>.</p>
+<p>The simplest matching is through a direct map:</p>
+<pre class="prettyprint"><code class="language-scala">val languageMap: LanguageMapBinding =
+  schemaOrg(&quot;languageMap&quot;).bindLanguageMap
+
+val nodeObject: NodeObject = NodeObject(
+  languageMap -&gt; Map(
+    &quot;en&quot; -&gt; &quot;English&quot;,
+    &quot;fr&quot; -&gt; &quot;Français&quot;,
+    &quot;de&quot; -&gt; &quot;Deutsch&quot;,
+    &quot;ar&quot; -&gt; &quot;موبي ديك&quot;
+  )
+)
+</code></pre>
+<p>but the binding can also take an array of strings:</p>
+<pre class="prettyprint"><code class="language-scala">val nodeObject: NodeObject = NodeObject(
+  languageMap -&gt; Map(
+    &quot;en&quot; -&gt; Seq(&quot;English&quot;, &quot;Still English&quot;)
+  )
+)
+</code></pre>
+<p>and if <code>@none</code> is needed then use <code>Some</code> and <code>None</code> as keys:</p>
+<pre class="prettyprint"><code class="language-scala"><br/>val nodeObject: NodeObject = NodeObject(
+  languageMap -&gt; Map(
+    Some(&quot;en&quot;) -&gt; &quot;English&quot;,
+    None -&gt; &quot;derp&quot;
+  )
+)
+
+</code></pre>
+<h3><a href="#type-maps" name="type-maps" class="anchor"><span class="anchor-link"></span></a>Type Maps</h3>
+<p>In <a href="https://www.w3.org/TR/json-ld11/#node-type-indexing">Node Type Indexing</a>, the key is an IRI value representing the <code>@type</code> of the associated node object, and the value must be a node object or an array of node objects.</p>
+<p>To create a <a href="https://www.w3.org/TR/json-ld11/#type-maps">type map</a>, use <code>bindTypeMap</code>.</p>
+<pre class="prettyprint"><code class="language-scala">val affiliation = schemaOrg(&quot;affiliation&quot;).bindTypeMap
+val node = NodeObject(
+  affiliation -&gt; Map(
+    schemaTerm(&quot;Corporation&quot;) -&gt; NodeObject(
+      `@id` -&gt; IRI(&quot;https://digitalbazaar.com/&quot;),
+      name -&gt; &quot;Digital Bazaar&quot;
+    ),
+    schemaTerm(&quot;ProfessionalService&quot;) -&gt; NodeObject(
+      `@id` -&gt; IRI(&quot;https://spec-ops.io&quot;),
+      name -&gt; &quot;Spec-Ops&quot;
+    )
+  )
+)
+</code></pre>
+<p>To bind an array, use an <code>Iterable</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val node = NodeObject(
+  affiliation -&gt; Map(
+    schemaTerm(&quot;Corporation&quot;) -&gt; Seq(
+      NodeObject(
+        `@id` -&gt; IRI(&quot;https://corp1.com/&quot;),
+        name -&gt; &quot;Corporation One&quot;
+      ),
+      NodeObject(
+        `@id` -&gt; IRI(&quot;https://corp2.io&quot;),
+        name -&gt; &quot;Corporation 2&quot;
+      )
+    )
+  )
+)
+</code></pre>
+<div class="source-github">
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/main/paradox/usage/jsonld.md">here</a>.
+</div>
+
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../usage/slf4j.html">SLF4J API</a></p>
+</div>
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/jsonld.html#json-ld" class="header">JSON-LD</a>
+  <ul>
+    <li><a href="../usage/jsonld.html#overview" class="header">Overview</a></li>
+    <li><a href="../usage/jsonld.html#quick-start" class="header">Quick Start</a></li>
+    <li><a href="../usage/jsonld.html#converting-node-objects" class="header">Converting Node Objects</a></li>
+    <li><a href="../usage/jsonld.html#establishing-a-context" class="header">Establishing a Context</a></li>
+    <li><a href="../usage/jsonld.html#keywords" class="header">Keywords</a></li>
+    <li><a href="../usage/jsonld.html#iris" class="header">IRIs</a></li>
+    <li><a href="../usage/jsonld.html#values" class="header">Values</a></li>
+    <li><a href="../usage/jsonld.html#node-objects" class="header">Node Objects</a></li>
+    <li><a href="../usage/jsonld.html#list-objects" class="header">List Objects</a></li>
+    <li><a href="../usage/jsonld.html#set-objects" class="header">Set Objects</a></li>
+    <li><a href="../usage/jsonld.html#indexed-values" class="header">Indexed Values</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2021</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="../lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="../js/magellan.js"></script>
+
+<style type="text/css">@import "../lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="../lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4+28-aee28a83', 'https://tersesystems.github.io/blindsight')});</script>
+
+
+</html>
