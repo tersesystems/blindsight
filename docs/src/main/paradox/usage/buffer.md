@@ -10,7 +10,7 @@ Because the event is generated just before being sent to SLF4J, the timestamp of
 
 ## Usage 
 
-Blindsight does not mandate the use of an event buffer, and so you must provide an implementation to your application.  The easiest way to do this is to add the @ref:[ringbuffer implementation](../setup/ringbuffer.md) as a library dependency, and then use the factory constructor which will call the implementation through a service loader pattern:
+Blindsight does not mandate the use of an event buffer, and so you must provide an implementation to your application.  The easiest way to do this is to add the @ref:[ringbuffer implementation](../setup/index.md) as a library dependency, and then use the factory constructor which will call the implementation through a service loader pattern:
 
 ```scala
 import com.tersesystems.blindsight._

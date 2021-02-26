@@ -1,11 +1,3 @@
-@@@ index
-
-* [Logback](logstash.md)
-* [Generic](generic.md)
-* [Ring Buffer](ringbuffer.md)
-
-@@@
-
 # Setup
 
 Blindsight depends on SLF4J using a service loader pattern, which is typically [Logback](http://logback.qos.ch/) or [Log4J 2](https://logging.apache.org/log4j/2.x/).  This means you should also plug in one of the service loader implementations, provided below.
@@ -71,7 +63,7 @@ See [Github](https://github.com/tersesystems/blindsight#blindsight) for the late
 
 ## JSON-LD
 
-[JSON-LD support](../usage/jsonld.md) can be added for richer structured logging.
+@ref:[JSON-LD support](../usage/jsonld.md) can be added for richer structured logging.
 
 Add the bintray resolver:
 
