@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4+28-aee28a83
+1.4.0
 </div>
 </div>
 <div class="nav-toc">
@@ -97,7 +97,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0-RC4+28-aee28a83
+1.4.0
 </div>
 </div>
 <div class="nav-toc">
@@ -173,7 +173,7 @@ val stringProperty = yourSchema(&quot;stringProperty&quot;).bindValue[String]
 val nodeObject = NodeObject(stringProperty -&gt; &quot;stringValue&quot;)
 </code></pre>
 <p>The first line sets up an <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/IRI.html" title="com.tersesystems.blindsight.jsonld.IRI"><code>IRI</code></a>. An <a href="https://www.w3.org/TR/json-ld11/#iris">IRI</a> defines a unique prefix for the properties. The IRI does not have to exist on the Internet, but it can be helpful, especially when using common schemas like <a href="https://schema.org">schema.org</a>. The IRI is then turned into a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Vocab.html" title="com.tersesystems.blindsight.jsonld.Vocab"><code>Vocab</code></a> instance using <code>vocab</code> &ndash; this indicates that this is the <a href="https://www.w3.org/TR/json-ld11/#default-vocabulary">default vocabulary</a> for the node object.</p>
-<p>The second line sets up a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Term.html" title="com.tersesystems.blindsight.jsonld.Term"><code>Term</code></a> that is then bound using <code>bindValue[String]</code> returning a <a href="com.tersesystems.blindsight.jsonld.ValueBinding">ValueBinding</a> called <code>stringProperty</code>.</p>
+<p>The second line sets up a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Term.html" title="com.tersesystems.blindsight.jsonld.Term"><code>Term</code></a> that is then bound using <code>bindValue[String]</code> returning a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/ValueBinding.html" title="com.tersesystems.blindsight.jsonld.ValueBinding"><code>ValueBinding</code></a> called <code>stringProperty</code>.</p>
 <p>The third line defines a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObject.html" title="com.tersesystems.blindsight.jsonld.NodeObject"><code>NodeObject</code></a> and binds the <code>stringProperty</code> to <code>stringValue</code>, creating a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeEntry.html" title="com.tersesystems.blindsight.jsonld.NodeEntry"><code>NodeEntry</code></a> and passing it in as a property of the <a href="https://www.w3.org/TR/json-ld11/#dfn-node-object">node object</a>.</p>
 <p>Finally, the fourth and fifth lines set up a <a href="semantic.html">semantic logger</a> that logs only <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/NodeObject.html" title="com.tersesystems.blindsight.jsonld.NodeObject"><code>NodeObject</code></a>, and logs the node object.</p>
 <p>In practice, you will want to set up your IRIs and your bindings in one place so that only the last few lines are necessary.</p>
@@ -262,7 +262,7 @@ val dateValue = Value(Instant.now.toString, xsdDateTime)
 <pre class="prettyprint"><code class="language-scala">val schemaVocab = IRI(&quot;https://schema.org/&quot;).vocab
 val schemaPerson = schemaVocab(&quot;Person&quot;) // prints &quot;Person&quot;
 </code></pre>
-<p>There are also points where a <a href="https://www.w3.org/TR/json-ld11/#iris">relative IRI reference</a> in the form &ldquo;some/path/fragment&rdquo; is defined. In JSON-LD, relative IRIs are relative to the <a href="https://www.w3.org/TR/json-ld11/#base-iri">base IRI</a>. A base IRI is created from an IRI using <code>base</code>, returning a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Base.html" title="com.tersesystems.blindsight.jsonld.Base"><code>Base</code></a>, which can then return a <a href="com.tersesystems.blindsight.jsonld.RelativeIRI">RelativeIRI</a></p>
+<p>There are also points where a <a href="https://www.w3.org/TR/json-ld11/#iris">relative IRI reference</a> in the form &ldquo;some/path/fragment&rdquo; is defined. In JSON-LD, relative IRIs are relative to the <a href="https://www.w3.org/TR/json-ld11/#base-iri">base IRI</a>. A base IRI is created from an IRI using <code>base</code>, returning a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/Base.html" title="com.tersesystems.blindsight.jsonld.Base"><code>Base</code></a>, which can then return a <a href="/blindsight/api/com/tersesystems/blindsight/jsonld/RelativeIRI.html" title="com.tersesystems.blindsight.jsonld.RelativeIRI"><code>RelativeIRI</code></a></p>
 <pre class="prettyprint"><code class="language-scala">val baseIRI: Base = IRI(&quot;http://example.com/&quot;).base
 val enPost: RelativeIRI = baseIRI(&quot;1/en&quot;) // returns &quot;1/en&quot;
 </code></pre>
@@ -672,7 +672,7 @@ val node = NodeObject(
 )
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0-RC4+28-aee28a83/docs/src/main/paradox/usage/jsonld.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0/docs/src/main/paradox/usage/jsonld.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -765,7 +765,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0-RC4+28-aee28a83', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
