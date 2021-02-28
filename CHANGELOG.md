@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## 1.4.0-RC1 [diff](https://github.com/tersesystems/blindsight/compare/v1.3.0...v1.4.0-RC1)
+## 1.4.0 [diff](https://github.com/tersesystems/blindsight/compare/v1.3.0...v1.4.0)
 
+* Add JSON-LD bindings
 * Add entry transformation
 * Add event buffers, with JCTools arrayqueue implementation
 * Deprecate `logger.onCondition` for `withCondition` to make consistent
