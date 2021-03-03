@@ -14,6 +14,11 @@ object TypeClassExample {
     logger.info(Markers(marker), "message with marker")
     // #markers-example
 
+    // #marker-enrichment
+    import MarkersEnrichment._ // adds "asMarkers" to org.slf4j.Marker
+    val markers: Markers = marker.asMarkers
+    // #marker-enrichment
+
     // #combine-markers
     val markers1: Markers          = Markers(MarkerFactory.getDetachedMarker("MARKER1"))
     val markers2: Markers          = Markers(MarkerFactory.getDetachedMarker("MARKER2"))

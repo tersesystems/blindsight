@@ -3,15 +3,11 @@
 ## Overview
 
 [JSON-LD](https://www.w3.org/2018/json-ld-wg/) is a lightweight format that uses JSON to describe structured data at a
-higher level. Information in JSON-LD can be used to link data through IRIs and represent lists, sets, and types. JSON-LD
-provides [unambiguous meaning](http://www.seoskeptic.com/what-is-json-ld/) through typed values and node objects. One
-especially nice feature of JSON-LD is that it can be easily imported into graph databases, as JSON-LD can be converted
-into an [RDF representation](https://en.wikipedia.org/wiki/Resource_Description_Framework), a common data model for
-knowledge management and reasoning.
+higher level. Information in JSON-LD can be used to link data through IRIs and represent lists, sets, and types. JSON-LD provides [unambiguous meaning](http://www.seoskeptic.com/what-is-json-ld/) through typed values and node objects. One especially nice feature of JSON-LD is that it can be easily imported into graph databases, as JSON-LD can be converted into an [RDF representation](https://en.wikipedia.org/wiki/Resource_Description_Framework), a common data model for knowledge management and reasoning.
 
 Blindsight supports JSON-LD by binding Scala types to JSON-LD and providing type classes to map data to JSON-LD.
 
-> NOTE: This guide does not cover how to set up a [JSON-LD context definition] or [creating an ontology](http://www-ksl.stanford.edu/people/dlm/papers/ontology101/ontology101-noy-mcguinness.html). It is assumed that context is passed out of band from the individual log entries. Please see
+> NOTE: This guide does not cover how to set up a [JSON-LD context definition](https://niem.github.io/json/reference/json-ld/context/) or [creating an ontology](http://www-ksl.stanford.edu/people/dlm/papers/ontology101/ontology101-noy-mcguinness.html). It is assumed that context is passed out of band from the individual log entries. Please see
 [JSON-LD Best Practices](https://json-ld.org/spec/latest/json-ld-api-best-practices/) for a guide on building JSON-LD schema.
 
 ## Quick Start
@@ -82,6 +78,29 @@ val nodeObjectLogger = logger.semantic[NodeObject]
 nodeObjectLogger.info(nodeObject)
 ```
 
+If you want to render node objects as arguments or markers automatically, you can map them using an `implicit def`:
+
+```scala
+implicit def nodeObjectToArgument[T: NodeObjectMapper]: ToArgument[T] = ToArgument { value =>
+  val node = implicitly[NodeObjectMapper[T]].mapNodeObject(value)
+  Argument(BlindsightASTMapping.toBObject(node))
+}
+
+case class Person(name: String, age: Int)
+object Person {
+  import MyContext._
+  implicit val personToNodeObject: NodeObjectMapper[Person] = NodeObjectMapper { person =>
+    NodeObject(
+      Keyword.`@type`.bindIRI -> personType,
+      propertyTerm("name").bindValue[String] -> person.name,
+      propertyTerm("age").bindValue[Int] -> person.age,
+    )
+  }
+}
+
+logger.info("node logger converts to argument {}", Person("Mike",34))
+```
+
 ## Establishing a Context
 
 The easiest way to set up convenient logging in JSON-LD is to define terms and bindings in a trait.
@@ -93,7 +112,6 @@ trait YourContext {
 }
 
 object YourContext extends YourContext
-
 ```
 
 As you build up your context, you'll add more bindings to it. For example, you may want to define date and time
@@ -114,8 +132,8 @@ trait YourContext extends XSDContext {
 
 Note that here, we're using @scaladoc[Term](com.tersesystems.blindsight.jsonld.Term) to provide a
 @scaladoc[CompactIRI](com.tersesystems.blindsight.jsonld.CompactIRI) for `xsdDate` and `xsdDateTime`.
-A [compact IRI](https://www.w3.org/TR/json-ld11/#compact-iris) expresses an IRI using a prefix and suffix separated by a
-colon as a shorthand.
+A [compact IRI](https://www.w3.org/TR/json-ld11/#compact-iris) expresses an IRI using a prefix and
+suffix separated by a colon as a shorthand.
 
 Using the context, we can go ahead and fill out our JSON-LD mapping, starting with defining properties with IRIs, using values and node objects, working up to list objects, set objects, and indexed values. 
 

@@ -50,6 +50,10 @@ You can also convert your own objects into appropriate markers.
 
 @@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala) { #weekday-to-marker }
 
+Or you can use the @scaladoc[MarkersEnrichment](com.tersesystems.blindsight.MarkersEnrichment) that adds an `asMarkers` method to `org.slf4j.Marker` through type enrichment:
+
+@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala)  { #marker-enrichment }
+
 The SLF4J API is awkward to use with markers, because there are several possible variations that can confuse the compiler and stop the type class from being used directly.  To avoid using the `Markers(marker)` wrapper, you can use the @ref:[fluent API](fluent.md) or use @ref:[contextual logging](context.md).
 
 ## Argument and Arguments
