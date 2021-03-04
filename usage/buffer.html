@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0
+1.4.0+2-ec9d2d65+20210303-1902
 </div>
 </div>
 <div class="nav-toc">
@@ -97,7 +97,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0
+1.4.0+2-ec9d2d65+20210303-1902
 </div>
 </div>
 <div class="nav-toc">
@@ -220,7 +220,7 @@ bufferList.find(_.entry.message.startsWith(&quot;IMPORTANT&quot;)).foreach { e =
 }
 </code></pre>
 <h3><a href="#buffers-in-production" name="buffers-in-production" class="anchor"><span class="anchor-link"></span></a>Buffers in Production</h3>
-<p>Buffers can be enabled in production, but be specifically <a href="https://tersesystems.com/blog/2019/07/22/targeted-diagnostic-logging-in-production/">targeted</a> using <a href="conditional.html">conditional logging</a>so that debugging and tracing information is only buffered by request. </p><div class="callout note "><div class="callout-title">Note</div>
+<p>Buffers can be enabled in production, but be specifically <a href="https://tersesystems.com/blog/2019/07/22/targeted-diagnostic-logging-in-production/">targeted</a> using <a href="conditional.html">conditional logging</a> so that debugging and tracing information is only buffered by request. </p><div class="callout note "><div class="callout-title">Note</div>
 <p>You may also need to enable the logger level as <code>TRACE</code> to ensure that logging passes the built-in predicates. If you want <code>DEBUG</code> and <code>TRACE</code> statements to be logged <strong>only</strong> to the buffer, you should use <a href="http://logback.qos.ch/manual/filters.html#thresholdFilter">threshold filters</a> on the appenders to suppress any output.</p></div>
 <pre class="prettyprint"><code class="language-scala">// enable buffer logging based off feature flags...
 private def bufferEnabled(markers: Markers) = ...
@@ -251,7 +251,7 @@ logger.debug { log =&gt;
 }
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0/docs/src/main/paradox/usage/buffer.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0+2-ec9d2d65+20210303-1902/docs/src/main/paradox/usage/buffer.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -335,7 +335,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0+2-ec9d2d65+20210303-1902', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
