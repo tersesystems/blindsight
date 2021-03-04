@@ -4,7 +4,7 @@ import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.{Condition, Entry, EventBuffer, Markers, ToMarkers}
 import org.slf4j.event.Level
 
-import java.time.Instant
+import java.time.{Clock, Instant}
 
 /**
  * The core logger.
@@ -32,8 +32,6 @@ trait CoreLogger
 }
 
 object CoreLogger {
-
-  private val clock = java.time.Clock.systemUTC()
 
   /**
    * The state of the core logger.
@@ -141,6 +139,8 @@ object CoreLogger {
    */
   abstract class Abstract extends CoreLogger {
     val state: State
+
+    protected def clock: Clock = java.time.Clock.systemUTC()
 
     override def predicate(level: Level): CorePredicate =
       new CorePredicate.Impl(level, this)
