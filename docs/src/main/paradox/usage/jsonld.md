@@ -3,7 +3,9 @@
 ## Overview
 
 [JSON-LD](https://www.w3.org/2018/json-ld-wg/) is a lightweight format that uses JSON to describe structured data at a
-higher level. Information in JSON-LD can be used to link data through IRIs and represent lists, sets, and types. JSON-LD provides [unambiguous meaning](http://www.seoskeptic.com/what-is-json-ld/) through typed values and node objects. One especially nice feature of JSON-LD is that it can be easily imported into graph databases, as JSON-LD can be converted into an [RDF representation](https://en.wikipedia.org/wiki/Resource_Description_Framework), a common data model for knowledge management and reasoning.
+higher level. Information in JSON-LD can be used to link data through IRIs and represent lists, sets, and types. JSON-LD provides [unambiguous meaning](http://www.seoskeptic.com/what-is-json-ld/) through typed values and node objects.  
+
+JSON-LD enables true "semantic logging" as both the input **and** the output in logging has type information, and JSON-LD is designed to fallback gracefully to JSON if there is no type information associated with a property.  As a result, JSON-LD it can be easily imported into graph databases and even converted into an [RDF representation](https://en.wikipedia.org/wiki/Resource_Description_Framework), a common data model for knowledge management and reasoning.
 
 Blindsight supports JSON-LD by binding Scala types to JSON-LD and providing type classes to map data to JSON-LD.
 

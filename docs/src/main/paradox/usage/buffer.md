@@ -103,7 +103,7 @@ bufferList.find(_.entry.message.startsWith("IMPORTANT")).foreach { e =>
 ### Buffers in Production
 
 Buffers can be enabled in production, but be specifically [targeted](https://tersesystems.com/blog/2019/07/22/targeted-diagnostic-logging-in-production/) using
-@ref[conditional logging](conditional.md)so that debugging and tracing information is only buffered by request. 
+@ref[conditional logging](conditional.md) so that debugging and tracing information is only buffered by request. 
 
 @@@ note
 
