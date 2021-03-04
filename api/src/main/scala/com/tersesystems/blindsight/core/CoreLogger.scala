@@ -169,7 +169,7 @@ object CoreLogger {
       }
     }
 
-    override def withCondition(c: Condition): CoreLogger = {
+    override def withCondition(c: Condition): Self = {
       if (c == Condition.never) {
         new Noop(state)
       } else {
@@ -218,20 +218,20 @@ object CoreLogger {
       new Impl(state.withMarker(m))
     }
 
-    override def withEntryTransform(level: Level, f: Entry => Entry): CoreLogger = {
+    override def withEntryTransform(level: Level, f: Entry => Entry): Self = {
       new Impl(state.withEntryTransform(level, f))
     }
 
-    override def withEntryTransform(f: Entry => Entry): CoreLogger = {
+    override def withEntryTransform(f: Entry => Entry): Self = {
       new Impl(state.withEntryTransform(f))
     }
 
-    override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
+    override def withEventBuffer(buffer: EventBuffer): Self = {
       val bufferedLists = buffered(buffer, () => clock.instant())
       new Impl(state.withParameterLists(bufferedLists))
     }
 
-    override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self = {
       val newLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newLists)
       newLists(level.ordinal()) = buffered(buffer, level, () => clock.instant())
@@ -249,7 +249,7 @@ object CoreLogger {
     override def parameterList(level: Level): ParameterList =
       new ParameterList.Conditional(level, impl)
 
-    override def withMarker[M: ToMarkers](m: M): CoreLogger = {
+    override def withMarker[M: ToMarkers](m: M): Self = {
       new Conditional(new Impl(state.withMarker(m)))
     }
 
@@ -260,16 +260,16 @@ object CoreLogger {
       new Conditional(new Impl(state.withEntryTransform(level, f)))
     }
 
-    override def withEntryTransform(f: Entry => Entry): CoreLogger = {
+    override def withEntryTransform(f: Entry => Entry): Self = {
       new Conditional(new Impl(state.withEntryTransform(f)))
     }
 
-    override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
+    override def withEventBuffer(buffer: EventBuffer): Self = {
       val bufferedLists = buffered(buffer, () => clock.instant())
       new Conditional(new Impl(state.withParameterLists(bufferedLists)))
     }
 
-    override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self = {
       val newLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newLists)
       newLists(level.ordinal()) = buffered(buffer, level, () => clock.instant())
@@ -285,24 +285,24 @@ object CoreLogger {
 
     override def when(level: Level, condition: Condition): Boolean = false
 
-    override def withCondition(condition: Condition): CoreLogger =
+    override def withCondition(condition: Condition): Self =
       new Noop(state.withCondition(condition))
 
-    override def withMarker[T: ToMarkers](instance: T): CoreLogger =
+    override def withMarker[T: ToMarkers](instance: T): Self =
       new Noop(state.withMarker(instance))
 
-    override def withEntryTransform(f: Entry => Entry): CoreLogger = this
+    override def withEntryTransform(f: Entry => Entry): Self = this
 
-    override def withEntryTransform(level: Level, f: Entry => Entry): CoreLogger = {
+    override def withEntryTransform(level: Level, f: Entry => Entry): Self = {
       this // XXX do some testing on this
     }
 
-    override def withEventBuffer(buffer: EventBuffer): CoreLogger = {
+    override def withEventBuffer(buffer: EventBuffer): Self = {
       val bufferedLists = buffered(buffer, () => clock.instant())
       new Noop(state.withParameterLists(bufferedLists))
     }
 
-    override def withEventBuffer(level: Level, buffer: EventBuffer): CoreLogger = {
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self = {
       val newLists: Array[ParameterList] = new Array(5)
       state.parameterLists.copyToArray(newLists)
       newLists(level.ordinal()) = buffered(buffer, level, () => clock.instant())

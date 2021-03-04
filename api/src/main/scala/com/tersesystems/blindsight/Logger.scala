@@ -84,17 +84,17 @@ object Logger {
     override def withEntryTransform(
         level: Level,
         f: Entry => Entry
-    ): Logger = {
+    ): Self = {
       new Impl(core.withEntryTransform(level, f))
     }
 
-    override def withEntryTransform(f: Entry => Entry): Logger =
+    override def withEntryTransform(f: Entry => Entry): Self =
       new Impl(core.withEntryTransform(f))
 
-    override def withEventBuffer(buffer: EventBuffer): Logger =
+    override def withEventBuffer(buffer: EventBuffer): Self =
       new Impl(core.withEventBuffer(buffer))
 
-    override def withEventBuffer(level: Level, buffer: EventBuffer): Logger =
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
       new Impl(core.withEventBuffer(level, buffer))
   }
 

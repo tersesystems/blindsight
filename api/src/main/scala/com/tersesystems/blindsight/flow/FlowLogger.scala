@@ -89,7 +89,7 @@ object FlowLogger {
      *
      * @return the new conditional logger instance.
      */
-    override def withCondition(condition: Condition): FlowLogger = {
+    override def withCondition(condition: Condition): Self = {
       if (condition == Condition.never) {
         new Noop(core)
       } else {
@@ -112,7 +112,7 @@ object FlowLogger {
 
     override def withEventBuffer(buffer: EventBuffer): Self = new Impl(core.withEventBuffer(buffer))
 
-    override def withEventBuffer(level: Level, buffer: EventBuffer): FlowLogger =
+    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
       new Impl(core.withEventBuffer(level, buffer))
   }
 

@@ -77,7 +77,7 @@ object FluentLogger {
     override def withEntryTransform(
         level: Level,
         f: Entry => Entry
-    ): FluentLogger = {
+    ): Self = {
       new Impl(core.withEntryTransform(level, f))
     }
 
