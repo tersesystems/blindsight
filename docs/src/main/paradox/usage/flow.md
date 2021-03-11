@@ -51,21 +51,33 @@ To disable flow logging where it would normally be logged, use `Condition.never`
 
 @@@  
 
-Performance of flow logging is evaluated with a set of JMH benchmarks, using Logback with a no-op appender and `FlowBehavior.noop`, so only the raw CPU cost of branching and constructing statements is evaluated.
+## Duration
 
-On an `i9-9990k`, the results are as follows:
+You can render durations in a flow logger by adding `logback-tracing`, which will keep track of various spans for you.
 
+@@dependency[sbt,Maven,Gradle] {
+  group="com.tersesystems.logback"
+  artifact="logback-tracing"
+  version="latest.version"
+}
+
+The `span.duration()` will return how long the span took to execute.  The honeycomb integration mentioned below is a complete implementation, but for example you can do something like this:
+
+```scala
+class DurationFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
+
+  // ...
+
+  override def exitStatement(resultValue: B, source: Source): Option[Statement] =
+    Some {
+      val span = popCurrentSpan
+      Statement()
+        .withMarkers(Markers(markerFactory(span)))
+        .withMessage(s"${source.enclosing.value} exit, duration ${span.duration()}")
+        .withArguments(Arguments(resultValue))
+    }
+}
 ```
-[info] Benchmark                 Mode  Cnt    Score    Error  Units
-[info] FlowBenchmark.info        avgt    5  533.628 ± 51.956  ns/op
-[info] FlowBenchmark.infoWhen    avgt    5   43.804 ±  1.139  ns/op
-[info] FlowBenchmark.neverInfo   avgt    5   38.950 ±  0.278  ns/op
-[info] FlowBenchmark.neverTrace  avgt    5   39.042 ±  0.659  ns/op
-[info] FlowBenchmark.trace       avgt    5   44.315 ±  1.513  ns/op
-[info] FlowBenchmark.traceWhen   avgt    5   42.634 ±  1.379  ns/op
-```
-
-Evaluation of a no-op flow adds roughly 42 nanoseconds to execution -- the time it takes to create a `Seq` from `sourcecode.Args` and discard them.  Removing `sourcecode.Args` from the implicits takes the no-op down to 4.5 nanoseconds.  For comparison, evaluating a guard of `if (logger.isLoggingDebug())` using SLF4J is 1.5 nanoseconds.  I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.
 
 ## Integration
 
@@ -124,3 +136,21 @@ See [play-blindsight](http://github.com/tersesystems/play-blindsight) for a work
 You can produce Honeycomb manual traces with the following:
 
 @@snip [HoneycombFlow.scala](../../../test/scala/example/flow/HoneycombFlow.scala) { #honeycomb_flow_example }
+
+## Performance
+
+Performance of flow logging is evaluated with a set of JMH benchmarks, using Logback with a no-op appender and `FlowBehavior.noop`, so only the raw CPU cost of branching and constructing statements is evaluated.
+
+On an `i9-9990k`, the results are as follows:
+
+```
+[info] Benchmark                 Mode  Cnt    Score    Error  Units
+[info] FlowBenchmark.info        avgt    5  533.628 ± 51.956  ns/op
+[info] FlowBenchmark.infoWhen    avgt    5   43.804 ±  1.139  ns/op
+[info] FlowBenchmark.neverInfo   avgt    5   38.950 ±  0.278  ns/op
+[info] FlowBenchmark.neverTrace  avgt    5   39.042 ±  0.659  ns/op
+[info] FlowBenchmark.trace       avgt    5   44.315 ±  1.513  ns/op
+[info] FlowBenchmark.traceWhen   avgt    5   42.634 ±  1.379  ns/op
+```
+
+Evaluation of a no-op flow adds roughly 42 nanoseconds to execution -- the time it takes to create a `Seq` from `sourcecode.Args` and discard them.  Removing `sourcecode.Args` from the implicits takes the no-op down to 4.5 nanoseconds.  For comparison, evaluating a guard of `if (logger.isLoggingDebug())` using SLF4J is 1.5 nanoseconds.  I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.
