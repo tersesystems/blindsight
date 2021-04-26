@@ -131,7 +131,7 @@ object SLF4JLogger {
     override def withEntryTransform(
         level: Level,
         transform: Entry => Entry
-    ): SLF4JLogger[UncheckedSLF4JMethod] =
+    ): Self =
       new Unchecked(core.withEntryTransform(level, transform))
 
     override def withEntryTransform(f: Entry => Entry): Self =
