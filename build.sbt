@@ -32,9 +32,6 @@ ThisBuild / developers := List(
 )
 ThisBuild / organization := "com.tersesystems.blindsight"
 
-// Must be same as https://oss.sonatype.org/#stagingProfiles
-ThisBuild / sonatypeProfileName := "com.tersesystems"
-
 ThisBuild / organizationName := "Terse Systems"
 ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 
@@ -167,6 +164,7 @@ lazy val api = (project in file("api"))
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    sonatypeProfileName := "com.tersesystems",
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
@@ -184,6 +182,7 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
     mimaPreviousArtifacts := Set.empty,
+    sonatypeProfileName := "com.tersesystems",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += "org.jctools" % "jctools-core" % "3.3.0",
     autoAPIMappings := true
@@ -194,6 +193,7 @@ lazy val jsonld = (project in file("jsonld"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.jsonld"))
   .settings(
     name := "blindsight-jsonld",
+    sonatypeProfileName := "com.tersesystems",
     mimaPreviousArtifacts := Set.empty,
     libraryDependencies += scalaTest % Test,
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
@@ -206,6 +206,7 @@ lazy val logstash = (project in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
     name := "blindsight-logstash",
+    sonatypeProfileName := "com.tersesystems",
     //    mimaPreviousArtifacts := Set(
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     //    ),
@@ -240,6 +241,7 @@ lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
+    sonatypeProfileName := "com.tersesystems",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
     //mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.4.0")
   )
