@@ -109,11 +109,7 @@ val datadogSpanId = Markers("dd.span_id" -> Option(getSpanId).getOrElse("0"))
 
 ### Honeycomb
 
-If you integrate with [logback-tracing](https://tersesystems.github.io/terse-logback/guide/tracing/), then you can also log to Honeycomb using a @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior).  To do this, add the following resolver:
-
-```
-resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-```
+If you integrate with [logback-tracing](https://tersesystems.github.io/terse-logback/guide/tracing/), then you can also log to Honeycomb using a @scaladoc[FlowBehavior](com.tersesystems.blindsight.flow.FlowBehavior). 
 
 and the following dependencies:
 

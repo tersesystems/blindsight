@@ -57,7 +57,6 @@ lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .disablePlugins(MimaPlugin)
   .settings(
-    resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies += cronScheduler                   % Test,
     libraryDependencies += scalaJava8Compat                % Test,
     libraryDependencies += logbackTracing                  % Test,
@@ -237,7 +236,7 @@ lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
-    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    scalacOptions := scalacOptionsVersion(scalaVersion.value)
     //mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.4.0")
   )
   .dependsOn(api)

@@ -4,7 +4,7 @@ object Dependencies {
   val scalaTest = "org.scalatest" %% "scalatest" % "3.2.5"
   val scalamock = "org.scalamock" %% "scalamock" % "4.4.0"
 
-  val terseLogback = "0.16.1"
+  val terseLogback = "0.16.2"
 
   lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
 
