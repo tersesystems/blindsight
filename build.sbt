@@ -31,6 +31,10 @@ ThisBuild / developers := List(
   Developer("wsargent", "Will Sargent", "will@tersesystems.com", url("https://tersesystems.com"))
 )
 ThisBuild / organization := "com.tersesystems.blindsight"
+
+// Must be same as https://oss.sonatype.org/#stagingProfiles
+ThisBuild / sonatypeProfileName := "com.tersesystems"
+
 ThisBuild / organizationName := "Terse Systems"
 ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 
