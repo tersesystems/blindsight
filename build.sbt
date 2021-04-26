@@ -1,15 +1,4 @@
 import Dependencies._
-import com.typesafe.tools.mima.core.{
-  DirectMissingMethodProblem,
-  IncompatibleMethTypeProblem,
-  IncompatibleResultTypeProblem,
-  IncompatibleTemplateDefProblem,
-  InheritedNewAbstractMethodProblem,
-  MissingClassProblem,
-  MissingTypesProblem,
-  ProblemFilters,
-  ReversedMissingMethodProblem
-}
 import sbt.Keys.libraryDependencies
 
 initialize := {
@@ -36,15 +25,7 @@ ThisBuild / scalafmtOnCompile := false
 ThisBuild / pgpPublicRing := file(".travis/local.pubring.asc")
 ThisBuild / pgpSecretRing := file(".travis/local.secring.asc")
 
-// https://github.com/jvican/sbt-release-early/wiki/How-to-release-with-Bintray#releasing-to-maven-central
-// Disable sync to maven, we absolutely don't need this in sbt
-// and it causes a None.get error at bintray.BintrayRepo.$anonfun$requestSonatypeCredentials$5(BintrayRepo.scala:186)
-ThisBuild / releaseEarlyEnableSyncToMaven := false
-
-ThisBuild / resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-
-ThisBuild / releaseEarlyWith := BintrayPublisher
-ThisBuild / bintrayOrganization := Some("tersesystems")
+ThisBuild / releaseEarlyWith := SonatypePublisher
 
 ThisBuild / developers := List(
   Developer("wsargent", "Will Sargent", "will@tersesystems.com", url("https://tersesystems.com"))
@@ -57,7 +38,7 @@ ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / headerLicense := None
 
-val previousVersion = "1.3.0"
+val previousVersion = "1.4.0"
 
 val disableDocs = Seq[Setting[_]](
   sources in (Compile, doc) := Seq.empty,
@@ -76,7 +57,6 @@ lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .disablePlugins(MimaPlugin)
   .settings(
-    resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies += cronScheduler                   % Test,
     libraryDependencies += scalaJava8Compat                % Test,
     libraryDependencies += logbackTracing                  % Test,
@@ -256,8 +236,8 @@ lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
-    scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.1.0")
+    scalacOptions := scalacOptionsVersion(scalaVersion.value)
+    //mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.4.0")
   )
   .dependsOn(api)
 
