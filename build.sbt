@@ -1,15 +1,4 @@
 import Dependencies._
-import com.typesafe.tools.mima.core.{
-  DirectMissingMethodProblem,
-  IncompatibleMethTypeProblem,
-  IncompatibleResultTypeProblem,
-  IncompatibleTemplateDefProblem,
-  InheritedNewAbstractMethodProblem,
-  MissingClassProblem,
-  MissingTypesProblem,
-  ProblemFilters,
-  ReversedMissingMethodProblem
-}
 import sbt.Keys.libraryDependencies
 
 initialize := {
@@ -254,7 +243,7 @@ lazy val generic = (project in file("generic"))
   .settings(
     name := "blindsight-generic",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.1.0")
+    //mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.4.0")
   )
   .dependsOn(api)
 
