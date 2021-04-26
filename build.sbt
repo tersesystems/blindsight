@@ -41,10 +41,7 @@ ThisBuild / pgpSecretRing := file(".travis/local.secring.asc")
 // and it causes a None.get error at bintray.BintrayRepo.$anonfun$requestSonatypeCredentials$5(BintrayRepo.scala:186)
 ThisBuild / releaseEarlyEnableSyncToMaven := false
 
-ThisBuild / resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-
-ThisBuild / releaseEarlyWith := BintrayPublisher
-ThisBuild / bintrayOrganization := Some("tersesystems")
+ThisBuild / releaseEarlyWith := SonatypePublisher
 
 ThisBuild / developers := List(
   Developer("wsargent", "Will Sargent", "will@tersesystems.com", url("https://tersesystems.com"))
