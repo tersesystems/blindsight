@@ -8,13 +8,7 @@ The recommended option for Logback is to use `blindsight-logstash`.
 
 Structured Logging is provided through the @ref:[DSL](../usage/dsl.md) on the logger and provides a mapping for @scaladoc[Argument](com.tersesystems.blindsight.Argument) and @scaladoc[Markers](com.tersesystems.blindsight.Markers) through [Logstash Markers and StructuredArguments](https://github.com/logstash/logstash-logback-encoder#event-specific-custom-fields).  Source information (line, file, enclosing) is rendered as logstash markers.
 
-Add the following resolver:
-
-```scala
-resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-```
-
-And then add the given dependencies:
+Add the given dependencies:
 
 @@dependency[sbt,Maven,Gradle] {
 group="com.tersesystems.blindsight"
@@ -36,21 +30,7 @@ It is recommended (but not required) to use [Terse Logback](https://tersesystems
 
 ## Generic
 
-If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don't want to use the Logstash binding, you should use `blindsight-generic`, which has a serviceloader binding that depends solely on `slf4j-api`.
-
-@@@ note
-
-The generic binding does not have implementations for @scaladoc[ArgumentResolver](com.tersesystems.blindsight.ArgumentResolver) or @scaladoc[MarkersResolver](com.tersesystems.blindsight.MarkersResolver), which means that the @ref:[DSL](../usage/dsl.md) cannot be used and there is no source code information written out.
-
-@@@
-
-Add the bintray resolver:
-
-```scala
-resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-```
-
-And then add the dependency:
+If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don't want to use the Logstash binding, you should use `blindsight-generic`, which has a service loader binding that depends solely on `slf4j-api`.  This package does not have the already configured implementation for @scaladoc[ArgumentResolver](com.tersesystems.blindsight.ArgumentResolver) or @scaladoc[MarkersResolver](com.tersesystems.blindsight.MarkersResolver), which means that you must implement these yourself for custom source code information.
 
 @@dependency[sbt,Maven,Gradle] {
 group="com.tersesystems.blindsight"
@@ -60,18 +40,9 @@ version="$project.version.short$"
 
 See [Github](https://github.com/tersesystems/blindsight#blindsight) for the latest version.
 
-
 ## JSON-LD
 
 @ref:[JSON-LD support](../usage/jsonld.md) can be added for richer structured logging.
-
-Add the bintray resolver:
-
-```scala
-resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-```
-
-And then add the dependency:
 
 @@dependency[sbt,Maven,Gradle] {
 group="com.tersesystems.blindsight"
@@ -86,14 +57,6 @@ See [Github](https://github.com/tersesystems/blindsight#blindsight) for the late
 Blindsight comes with the option to add @ref[event buffering](../usage/buffer.md) to a logger, so that logged entries can be accessible from the application.  This can be very useful for debugging and for verifying test output.
 
 A bounded in-memory ring buffer implementation based on `org.jctools.queues.MpmcArrayQueue` from the [JCTools project](https://jctools.github.io/JCTools/) is provided.  This implementation is thread-safe and [performant](http://psy-lob-saw.blogspot.com/p/lock-free-queues.html).  If you need another implementation (for example, you want to use an off-heap buffer or buffer to disk), then the @scaladoc[EventBuffer](com.tersesystems.blindsight.EventBuffer) interface is relatively straightforward to implement.
-
-To add the ringbuffer implementation, add the following resolver:
-
-```scala
-resolvers += Resolver.bintrayRepo("tersesystems", "maven")
-```
-
-And then add the dependency:
 
 @@dependency[sbt,Maven,Gradle] {
 group="com.tersesystems.blindsight"

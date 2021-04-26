@@ -15,9 +15,6 @@ addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.6.0")
 // https://github.com/sbt/sbt-unidoc
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
 
-// https://github.com/sbt/sbt-bintray
-addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.6.1")
-
 // https://github.com/scoverage/sbt-scoverage
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 

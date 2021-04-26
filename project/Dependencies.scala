@@ -1,16 +1,16 @@
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.5"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.7"
   val scalamock = "org.scalamock" %% "scalamock" % "4.4.0"
 
-  val terseLogback = "0.16.1"
+  val terseLogback = "0.16.2"
 
   lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
 
   // import scala.jdk.CollectionConverters._
   // https://github.com/scala/scala-library-compat/pull/217
-  lazy val scalaCollectionCompat = "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.2"
+  lazy val scalaCollectionCompat = "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.3"
   lazy val sourcecode            = "com.lihaoyi"            %% "sourcecode"              % "0.2.6"
   lazy val janino                = "org.codehaus.janino"     % "janino"                  % "3.0.11"
   lazy val jansi                 = "org.fusesource.jansi"    % "jansi"                   % "1.17.1"
@@ -27,7 +27,7 @@ object Dependencies {
   def refined(scalaVersion: String): ModuleID =
     scalaVersion match {
       case s if s.startsWith("2.11") => "eu.timepit" %% "refined" % "0.9.12"
-      case _                         => "eu.timepit" %% "refined" % "0.9.21"
+      case _                         => "eu.timepit" %% "refined" % "0.9.23"
     }
 
   lazy val logbackUniqueId        = "com.tersesystems.logback" % "logback-uniqueid-appender" % terseLogback
