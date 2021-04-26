@@ -19,8 +19,6 @@ jobs:
     name: Build code style check (fixed with `sbt scalafmtSbt`)
   - script: sbt docs/makeSite
     name: Verify documentation
-  - script: sbt mimaReportBinaryIssues
-    name: Report binary incompatibilities
   - stage: deploy
     name: Deploy to Maven Central
     script:

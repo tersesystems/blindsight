@@ -25,11 +25,6 @@ ThisBuild / scalafmtOnCompile := false
 ThisBuild / pgpPublicRing := file(".travis/local.pubring.asc")
 ThisBuild / pgpSecretRing := file(".travis/local.secring.asc")
 
-// https://github.com/jvican/sbt-release-early/wiki/How-to-release-with-Bintray#releasing-to-maven-central
-// Disable sync to maven, we absolutely don't need this in sbt
-// and it causes a None.get error at bintray.BintrayRepo.$anonfun$requestSonatypeCredentials$5(BintrayRepo.scala:186)
-ThisBuild / releaseEarlyEnableSyncToMaven := false
-
 ThisBuild / releaseEarlyWith := SonatypePublisher
 
 ThisBuild / developers := List(
