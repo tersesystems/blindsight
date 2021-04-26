@@ -10,7 +10,7 @@ object Dependencies {
 
   // import scala.jdk.CollectionConverters._
   // https://github.com/scala/scala-library-compat/pull/217
-  lazy val scalaCollectionCompat = "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.2"
+  lazy val scalaCollectionCompat = "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.3"
   lazy val sourcecode            = "com.lihaoyi"            %% "sourcecode"              % "0.2.5"
   lazy val janino                = "org.codehaus.janino"     % "janino"                  % "3.0.11"
   lazy val jansi                 = "org.fusesource.jansi"    % "jansi"                   % "1.17.1"
