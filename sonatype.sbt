@@ -1,14 +1,5 @@
 sonatypeProfileName := "com.tersesystems"
 
-publishMavenStyle := true
-
-ThisBuild / pomIncludeRepository := { _ => false }
-ThisBuild / publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
-
 // https://github.com/sbt/sbt-pgp#configuration-signing-key
 usePgpKeyHex("9033D60F5F798D53")
 
