@@ -31,6 +31,9 @@ ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
+// https://github.com/xerial/sbt-sonatype#buildsbt
+publishTo := sonatypePublishToBundle.value
+
 val disableDocs = Seq[Setting[_]](
   sources in (Compile, doc) := Seq.empty,
   publishArtifact in (Compile, packageDoc) := false
