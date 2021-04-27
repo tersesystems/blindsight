@@ -31,17 +31,6 @@ ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
-ThisBuild / pomIncludeRepository := { _ => false }
-ThisBuild / publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
-ThisBuild / publishMavenStyle := true
-
-// https://github.com/sbt/sbt-pgp#configuration-signing-key
-usePgpKeyHex("9033D60F5F798D53")
-
 val disableDocs = Seq[Setting[_]](
   sources in (Compile, doc) := Seq.empty,
   publishArtifact in (Compile, packageDoc) := false
@@ -51,10 +40,6 @@ val disablePublishing = Seq[Setting[_]](
   publishArtifact := false,
   skip in publish := true
 )
-
-// releaseStepCommand("sonatypeOpen \"your groupId\" \"Some staging name\""),
-// releaseStepCommand("publishSigned"),
-// releaseStepCommand("sonatypeRelease"),
 
 // sbt ghpagesPushSite to publish to ghpages
 // previewAuto to see the site in action.
