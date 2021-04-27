@@ -5,7 +5,7 @@
 <title>Flow API · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content='docs'/>
+<meta name="description" content='Rich Typesafe Scala Logging API based on SLF4J'/>
 <link rel="canonical" href="/blindsight/usage/flow.html"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0+2-ec9d2d65+20210303-1902
+1.4.1
 </div>
 </div>
 <div class="nav-toc">
@@ -97,7 +97,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0+2-ec9d2d65+20210303-1902
+1.4.1
 </div>
 </div>
 <div class="nav-toc">
@@ -176,12 +176,12 @@ trait LoggingTraits {
 }
 </code></pre>
 <p>Once you have a flow behavior in scope, the flow logger takes a block of execution, and returns the result transparently, according to the log level.</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0+2-ec9d2d65+20210303-1902/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
   flowLogger.trace {
     arg1 + arg2
   }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0+2-ec9d2d65+20210303-1902/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
   flowLogger.trace {
     Person(name = &quot;Will&quot;, age = arg1 + arg2)
   }
@@ -205,17 +205,31 @@ object Person {
 private val logger: FlowLogger = LoggerFactory.getLogger.flow.withCondition(flowEnabled)
 </code></pre><div class="callout note "><div class="callout-title">Note</div>
 <p>To disable flow logging where it would normally be logged, use <code>Condition.never</code> in the <code>withCondition</code> or <code>when</code> block. Using <code>Condition.never</code> allows the flow to short-circuit with no-op behavior.</p></div>
-<p>Performance of flow logging is evaluated with a set of JMH benchmarks, using Logback with a no-op appender and <code>FlowBehavior.noop</code>, so only the raw CPU cost of branching and constructing statements is evaluated.</p>
-<p>On an <code>i9-9990k</code>, the results are as follows:</p>
-<pre><code>[info] Benchmark                 Mode  Cnt    Score    Error  Units
-[info] FlowBenchmark.info        avgt    5  533.628 ± 51.956  ns/op
-[info] FlowBenchmark.infoWhen    avgt    5   43.804 ±  1.139  ns/op
-[info] FlowBenchmark.neverInfo   avgt    5   38.950 ±  0.278  ns/op
-[info] FlowBenchmark.neverTrace  avgt    5   39.042 ±  0.659  ns/op
-[info] FlowBenchmark.trace       avgt    5   44.315 ±  1.513  ns/op
-[info] FlowBenchmark.traceWhen   avgt    5   42.634 ±  1.379  ns/op
+<h2><a href="#duration" name="duration" class="anchor"><span class="anchor-link"></span></a>Duration</h2>
+<p>You can render durations in a flow logger by adding <code>logback-tracing</code>, which will keep track of various spans for you.</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-tracing" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependencies&gt
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
+    &lt;artifactId&gt;logback-tracing&lt;/artifactId&gt;
+    &lt;version&gt;latest.version&lt;/version&gt;
+  &lt;/dependency&gt
+&lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">dependencies {
+  implementation "com.tersesystems.logback:logback-tracing:latest.version"
+}</code></pre></dd></dl>
+<p>The <code>span.duration()</code> will return how long the span took to execute. The honeycomb integration mentioned below is a complete implementation, but for example you can do something like this:</p>
+<pre class="prettyprint"><code class="language-scala">class DurationFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends FlowBehavior[B] {
+
+  // ...
+
+  override def exitStatement(resultValue: B, source: Source): Option[Statement] =
+    Some {
+      val span = popCurrentSpan
+      Statement()
+        .withMarkers(Markers(markerFactory(span)))
+        .withMessage(s&quot;${source.enclosing.value} exit, duration ${span.duration()}&quot;)
+        .withArguments(Arguments(resultValue))
+    }
+}
 </code></pre>
-<p>Evaluation of a no-op flow adds roughly 42 nanoseconds to execution &ndash; the time it takes to create a <code>Seq</code> from <code>sourcecode.Args</code> and discard them. Removing <code>sourcecode.Args</code> from the implicits takes the no-op down to 4.5 nanoseconds. For comparison, evaluating a guard of <code>if (logger.isLoggingDebug())</code> using SLF4J is 1.5 nanoseconds. I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.</p>
 <h2><a href="#integration" name="integration" class="anchor"><span class="anchor-link"></span></a>Integration</h2>
 <p>Flow based logging, because it leaves the flow behavior open, is a good way to integrate with third party systems.</p>
 <h3><a href="#opentracing" name="opentracing" class="anchor"><span class="anchor-link"></span></a>Opentracing</h3>
@@ -234,9 +248,7 @@ val datadogTraceId = Markers(&quot;dd.trace_id&quot; -&gt; Option(getTraceId).ge
 val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOrElse(&quot;0&quot;))
 </code></pre>
 <h3><a href="#honeycomb" name="honeycomb" class="anchor"><span class="anchor-link"></span></a>Honeycomb</h3>
-<p>If you integrate with <a href="https://tersesystems.github.io/terse-logback/guide/tracing/">logback-tracing</a>, then you can also log to Honeycomb using a <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. To do this, add the following resolver:</p>
-<pre><code>resolvers += Resolver.bintrayRepo(&quot;tersesystems&quot;, &quot;maven&quot;)
-</code></pre>
+<p>If you integrate with <a href="https://tersesystems.github.io/terse-logback/guide/tracing/">logback-tracing</a>, then you can also log to Honeycomb using a <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a>. </p>
 <p>and the following dependencies:</p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.logback" % "logback-tracing" % "latest.version"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;dependencies&gt
   &lt;dependency&gt;
     &lt;groupId&gt;com.tersesystems.logback&lt;/groupId&gt;
@@ -257,7 +269,7 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 <p>See <a href="http://github.com/tersesystems/play-blindsight">play-blindsight</a> for a worked example.</p>
 <p><img src="trace.png" alt="trace.png" /></p>
 <p>You can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.0+2-ec9d2d65+20210303-1902/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.4.1/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -365,8 +377,20 @@ class HoneycombFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends 
 object HoneycombFlowBehavior {
   val markerFactory = new SpanMarkerFactory
 }</code></pre>
+<h2><a href="#performance" name="performance" class="anchor"><span class="anchor-link"></span></a>Performance</h2>
+<p>Performance of flow logging is evaluated with a set of JMH benchmarks, using Logback with a no-op appender and <code>FlowBehavior.noop</code>, so only the raw CPU cost of branching and constructing statements is evaluated.</p>
+<p>On an <code>i9-9990k</code>, the results are as follows:</p>
+<pre><code>[info] Benchmark                 Mode  Cnt    Score    Error  Units
+[info] FlowBenchmark.info        avgt    5  533.628 ± 51.956  ns/op
+[info] FlowBenchmark.infoWhen    avgt    5   43.804 ±  1.139  ns/op
+[info] FlowBenchmark.neverInfo   avgt    5   38.950 ±  0.278  ns/op
+[info] FlowBenchmark.neverTrace  avgt    5   39.042 ±  0.659  ns/op
+[info] FlowBenchmark.trace       avgt    5   44.315 ±  1.513  ns/op
+[info] FlowBenchmark.traceWhen   avgt    5   42.634 ±  1.379  ns/op
+</code></pre>
+<p>Evaluation of a no-op flow adds roughly 42 nanoseconds to execution &ndash; the time it takes to create a <code>Seq</code> from <code>sourcecode.Args</code> and discard them. Removing <code>sourcecode.Args</code> from the implicits takes the no-op down to 4.5 nanoseconds. For comparison, evaluating a guard of <code>if (logger.isLoggingDebug())</code> using SLF4J is 1.5 nanoseconds. I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0+2-ec9d2d65+20210303-1902/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.1/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -382,7 +406,9 @@ The source code for this page can be found <a href="https://github.com/tersesyst
   <li><a href="../usage/flow.html#flow-api" class="header">Flow API</a>
   <ul>
     <li><a href="../usage/flow.html#usage" class="header">Usage</a></li>
+    <li><a href="../usage/flow.html#duration" class="header">Duration</a></li>
     <li><a href="../usage/flow.html#integration" class="header">Integration</a></li>
+    <li><a href="../usage/flow.html#performance" class="header">Performance</a></li>
   </ul></li>
 </ul>
 </div>
@@ -450,7 +476,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0+2-ec9d2d65+20210303-1902', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

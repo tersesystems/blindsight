@@ -5,7 +5,7 @@
 <title>Overview · Blindsight</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content='docs'/>
+<meta name="description" content='Rich Typesafe Scala Logging API based on SLF4J'/>
 <link rel="canonical" href="/blindsight/extending/overview.html"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0+2-ec9d2d65+20210303-1902
+1.4.1
 </div>
 </div>
 <div class="nav-toc">
@@ -97,7 +97,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.0+2-ec9d2d65+20210303-1902
+1.4.1
 </div>
 </div>
 <div class="nav-toc">
@@ -163,6 +163,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   void info(String message);
 }
 </code></pre>
+<h2><a href="#loggerapi" name="loggerapi" class="anchor"><span class="anchor-link"></span></a>LoggerAPI</h2>
 <p>In Blindsight, the API and the logging levels are all traits, and the <code>LoggerAPI</code> is a composition of those traits. </p>
 <pre class="prettyprint"><code class="language-scala"><br/>trait SLF4JLoggerComponent[P, M] {
   type Predicate &lt;: P
@@ -185,6 +186,7 @@ trait SLF4JLoggerAPI[P, M]
     with SLF4JLoggerAPI.Warn[P, M]
     with SLF4JLoggerAPI.Error[P, M]
 </code></pre>
+<h2><a href="#logger" name="logger" class="anchor"><span class="anchor-link"></span></a>Logger</h2>
 <p>The logger itself just puts together the appropriate predicates and methods.</p>
 <pre class="prettyprint"><code class="language-scala">object SLF4JLogger {
 
@@ -222,6 +224,7 @@ trait SLF4JLoggerAPI[P, M]
   }
 }
 </code></pre>
+<h2><a href="#methods" name="methods" class="anchor"><span class="anchor-link"></span></a>Methods</h2>
 <p>You can see there&rsquo;s very little to the logger itself. The method API itself is as you&rsquo;d expect:</p>
 <pre class="prettyprint"><code class="language-scala">trait StrictSLF4JMethod {
 
@@ -243,8 +246,59 @@ trait SLF4JLoggerAPI[P, M]
 </code></pre>
 <p>And from there, the method implementation does the work of resolving type class instances and calling through to SLF4J with the appropriate arguments.</p>
 <p>Breaking down the API means that you can pass through only the <code>LoggerMethod</code>, or assemble your custom logging levels. You have the option of extending <code>LoggerMethod</code> and <code>LoggerPredicate</code> with your own application specific logging API. Blindsight is designed to work with you so that adding new functionality is easy.</p>
+<h3><a href="#complete-implementation" name="complete-implementation" class="anchor"><span class="anchor-link"></span></a>Complete Implementation</h3>
+<p>If you want to define your own logger from scratch, with a completely different API, that&rsquo;s easy enough too. Blindsight&rsquo;s API is small enough that you can swap out parts in a modular way.</p>
+<p>For example, here&rsquo;s a custom logger that just has <code>is*</code> instead of <code>is*Enabled</code>:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.{Condition, Entry, EventBuffer, Markers, ToMarkers}
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
+import com.tersesystems.blindsight.slf4j.{SLF4JLogger, StrictSLF4JMethod}
+import org.slf4j.Logger
+import org.slf4j.event.Level
+import org.slf4j.event.Level.{DEBUG, ERROR, INFO, TRACE, WARN}
+
+class CustomLogger(private val core: CoreLogger = CustomLogger.coreLogger) extends SLF4JLogger[StrictSLF4JMethod] {
+  override type Self = CustomLogger
+  override type Method = StrictSLF4JMethod
+  override type Predicate = CorePredicate
+
+  override val underlying: Logger = core.underlying
+
+  override val markers: Markers = core.markers
+
+  override def withEntryTransform(level: Level, f: Entry =&gt; Entry): Self =
+    new CustomLogger(core.withEntryTransform(level, f))
+
+  override def withEntryTransform(f: Entry =&gt; Entry): Self =
+    new CustomLogger(core.withEntryTransform(f))
+
+  override def withEventBuffer(buffer: EventBuffer): Self =
+    new CustomLogger(core.withEventBuffer(buffer))
+
+  override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
+    new CustomLogger(core.withEventBuffer(level, buffer))
+
+  override def withCondition(condition: Condition): Self =
+    new CustomLogger(core.withCondition(condition))
+
+  override def withMarker[T: ToMarkers](instance: T): Self =
+    new CustomLogger(core.withMarker(instance))
+
+  // note different &quot;method names&quot;
+  override val isTrace: Predicate = core.predicate(TRACE)
+  override val isDebug: Predicate = core.predicate(DEBUG)
+  override val isInfo: Predicate = core.predicate(INFO)
+  override val isWarn: Predicate = core.predicate(WARN)
+  override val isError: Predicate = core.predicate(ERROR)
+
+  override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, core)
+  override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, core)
+  override val info: Method = new StrictSLF4JMethod.Impl(INFO, core)
+  override val warn: Method = new StrictSLF4JMethod.Impl(WARN, core)
+  override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
+}
+</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.0+2-ec9d2d65+20210303-1902/docs/src/main/paradox/extending/overview.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.1/docs/src/main/paradox/extending/overview.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -252,6 +306,21 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../extending/overview.html#overview" class="header">Overview</a>
+  <ul>
+    <li><a href="../extending/overview.html#loggerapi" class="header">LoggerAPI</a></li>
+    <li><a href="../extending/overview.html#logger" class="header">Logger</a></li>
+    <li><a href="../extending/overview.html#methods" class="header">Methods</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 
@@ -314,7 +383,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.0+2-ec9d2d65+20210303-1902', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
