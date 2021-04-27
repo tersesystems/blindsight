@@ -19,29 +19,6 @@ jobs:
     name: Build code style check (fixed with `sbt scalafmtSbt`)
   - script: sbt docs/makeSite
     name: Verify documentation
-  - stage: deploy
-    name: Deploy to Maven Central
-    script:
-    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
-      -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
-    - tar xv -C .travis -f .travis/secrets.tar;
-    - mkdir -p $HOME/.sbt/gpg && cp .travis/local.pubring.asc $HOME/.sbt/gpg/pubring.asc
-      && cp .travis/local.secring.asc $HOME/.sbt/gpg/secring.asc
-    - sbt +releaseEarly
-  - stage: docs
-    name: Push documentation to ghpages
-    env: ISOLATED=true
-    scala: 2.13.5
-    script:
-    - git config --global user.name "$USER"
-    - git config --global user.email "$TRAVIS_BUILD_NUMBER@$TRAVIS_COMMIT"
-    - openssl aes-256-cbc -K $encrypted_b58cde0b2421_key -iv $encrypted_b58cde0b2421_iv
-      -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
-    - tar xv -C .travis -f .travis/secrets.tar;
-    - chmod 600 .travis/local.travis-deploy-key
-    - eval "$(ssh-agent -s)"
-    - ssh-add .travis/local.travis-deploy-key
-    - sbt ";docs/makeSite; docs/ghpagesPushSite"
 stages:
 - name: check
   if: NOT tag =~ ^v

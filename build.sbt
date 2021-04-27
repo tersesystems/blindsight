@@ -1,5 +1,5 @@
 import Dependencies._
-import sbt.Keys.libraryDependencies
+import sbt.Keys._
 
 initialize := {
   val _        = initialize.value // run the previous initialization
@@ -18,28 +18,29 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
   s
 }
 
+ThisBuild / versionScheme := Some("semver-spec")
+
 ThisBuild / scalafmtOnCompile := false
 
-// These settings seem not to work for sbt-release-early, so .travis.yml copies to
-// .sbt/gpg/pubring.asc / secring.asc as a fallback
-ThisBuild / pgpPublicRing := file(".travis/local.pubring.asc")
-ThisBuild / pgpSecretRing := file(".travis/local.secring.asc")
+ThisBuild / description := "Rich Typesafe Scala Logging API based on SLF4J"
 
-ThisBuild / releaseEarlyWith := SonatypePublisher
-
-ThisBuild / developers := List(
-  Developer("wsargent", "Will Sargent", "will@tersesystems.com", url("https://tersesystems.com"))
-)
 ThisBuild / organization := "com.tersesystems.blindsight"
 
-ThisBuild / organizationName := "Terse Systems"
 ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 
 ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
-ThisBuild / headerLicense := None
 
-val previousVersion = "1.4.0"
+ThisBuild / pomIncludeRepository := { _ => false }
+ThisBuild / publishTo := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+ThisBuild / publishMavenStyle := true
+
+// https://github.com/sbt/sbt-pgp#configuration-signing-key
+usePgpKeyHex("9033D60F5F798D53")
 
 val disableDocs = Seq[Setting[_]](
   sources in (Compile, doc) := Seq.empty,
@@ -51,12 +52,15 @@ val disablePublishing = Seq[Setting[_]](
   skip in publish := true
 )
 
+// releaseStepCommand("sonatypeOpen \"your groupId\" \"Some staging name\""),
+// releaseStepCommand("publishSigned"),
+// releaseStepCommand("sonatypeRelease"),
+
 // sbt ghpagesPushSite to publish to ghpages
 // previewAuto to see the site in action.
 // https://www.scala-sbt.org/sbt-site/getting-started.html#previewing-the-site
 lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
-  .disablePlugins(MimaPlugin)
   .settings(
     libraryDependencies += cronScheduler                   % Test,
     libraryDependencies += scalaJava8Compat                % Test,
@@ -90,7 +94,6 @@ lazy val docs = (project in file("docs"))
   .dependsOn(api, logstash, jsonld, ringbuffer)
 
 lazy val fixtures = (project in file("fixtures"))
-  .disablePlugins(MimaPlugin)
   .settings(
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
@@ -156,7 +159,6 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
 
 // API that provides a logger with everything
 lazy val api = (project in file("api"))
-  .disablePlugins(MimaPlugin)
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
   .settings(
     name := "blindsight-api",
@@ -164,7 +166,6 @@ lazy val api = (project in file("api"))
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    sonatypeProfileName := "com.tersesystems",
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
@@ -172,8 +173,7 @@ lazy val api = (project in file("api"))
     libraryDependencies += scalaTest              % Test,
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
-    libraryDependencies += logstashLogbackEncoder % Test,
-    autoAPIMappings := true
+    libraryDependencies += logstashLogbackEncoder % Test
   )
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
@@ -181,11 +181,8 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
-    mimaPreviousArtifacts := Set.empty,
-    sonatypeProfileName := "com.tersesystems",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += "org.jctools" % "jctools-core" % "3.3.0",
-    autoAPIMappings := true
   )
   .dependsOn(api)
 
@@ -193,42 +190,24 @@ lazy val jsonld = (project in file("jsonld"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.jsonld"))
   .settings(
     name := "blindsight-jsonld",
-    sonatypeProfileName := "com.tersesystems",
-    mimaPreviousArtifacts := Set.empty,
     libraryDependencies += scalaTest % Test,
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    autoAPIMappings := true
   )
   .dependsOn(api)
 
 lazy val logstash = (project in file("logstash"))
-  .disablePlugins(MimaPlugin)
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
     name := "blindsight-logstash",
-    sonatypeProfileName := "com.tersesystems",
-    //    mimaPreviousArtifacts := Set(
-    //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
-    //    ),
-    //    mimaBinaryIssueFilters := Seq(
-    //      ProblemFilters.exclude[IncompatibleResultTypeProblem](
-    //        "com.tersesystems.blindsight.logstash.LogstashArgumentResolver.resolve"
-    //      )
-    //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder,
-    autoAPIMappings := true
   )
   .dependsOn(api, fixtures % "test->test")
 
 // https://github.com/ktoso/sbt-jmh
-// http://tutorials.jenkov.com/java-performance/jmh.html
-// https://www.researchgate.net/publication/333825812_What's_Wrong_With_My_Benchmark_Results_Studying_Bad_Practices_in_JMH_Benchmarks
-// run with "jmh:run"
 lazy val benchmarks = (project in file("benchmarks"))
   .enablePlugins(JmhPlugin)
-  .disablePlugins(MimaPlugin)
   .settings(
     fork in run := true
   )
@@ -241,14 +220,11 @@ lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
-    sonatypeProfileName := "com.tersesystems",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
-    //mimaPreviousArtifacts := Set("com.tersesystems.blindsight" %% moduleName.value % "1.4.0")
   )
   .dependsOn(api)
 
 lazy val root = (project in file("."))
-  .disablePlugins(MimaPlugin)
   .settings(
     name := "blindsight-root"
   )

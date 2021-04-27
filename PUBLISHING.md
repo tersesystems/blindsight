@@ -1,22 +1,14 @@
 # Publishing
 
-Publishing a new version is done by updating `master` to the revision that you want, and then pushing the tag to `origin`:
+Publishing is done using `sbt-sonatype` and `sbt-release`:
 
 ```bash
-# must start with v, i.e. "v1.4.0"
-export RELEASE_TAG=...
-export RELEASE_SHA=...
-git tag -fa $RELEASE_TAG $RELEASE_SHA
-git push origin $RELEASE_TAG
+$ sbt release release-version 1.4.1
 ```
-
-This creates a build from a tag in github, and from there, Travis CI should push documentation and run `releaseEarly` for all three versions.  
-
-* [How to release in Travis CI](https://github.com/jvican/sbt-release-early/wiki/How-to-release-in-Travis-%28CI%29)
 
 Publishing documentation is done using `sbt-site`
 
-```scala
+```
 sbt
 > project docs 
 > makeSite

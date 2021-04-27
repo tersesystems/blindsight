@@ -1,6 +1,8 @@
 ## Benchmarks
 
-Using https://github.com/plokhotnyuk/jsoniter-scala#run-jvm-benchmarks as a guide (incredibly useful, way more stuff in there)
+Using https://github.com/plokhotnyuk/jsoniter-scala#run-jvm-benchmarks as a guide (incredibly useful, way more stuff in there).
+
+See [JMH tutorial](http://tutorials.jenkov.com/java-performance/jmh.html) and [What's Wrong with My Benchmark Results](https://www.researchgate.net/publication/333825812_What's_Wrong_With_My_Benchmark_Results_Studying_Bad_Practices_in_JMH_Benchmarks) before writing any new benchmarks.
 
 ## Running 
 

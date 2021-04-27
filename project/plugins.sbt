@@ -18,14 +18,17 @@ addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
 // https://github.com/scoverage/sbt-scoverage
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
-// https://github.com/jvican/sbt-release-early
-addSbtPlugin("ch.epfl.scala" % "sbt-release-early" % "2.1.1")
-
-// https://github.com/lightbend/mima
-addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.8.1")
-
 // https://github.com/dwijnand/sbt-travisci
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
 
 // https://github.com/ktoso/sbt-jmh
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.0")
+
+// https://github.com/sbt/sbt-pgp
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
+
+// https://github.com/sbt/sbt-release
+addSbtPlugin("com.github.sbt" % "sbt-release" % "1.0.15")
+
+// https://github.com/xerial/sbt-sonatype
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.7")
