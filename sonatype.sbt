@@ -3,7 +3,12 @@
 sonatypeProfileName := "com.tersesystems"
 
 ThisBuild / developers := List(
-  Developer(id="tersesystems", name="Terse Systems", email="will@tersesystems.com", url=url("https://tersesystems.com"))
+  Developer(
+    id = "tersesystems",
+    name = "Terse Systems",
+    email = "will@tersesystems.com",
+    url = url("https://tersesystems.com")
+  )
 )
 
 // https://github.com/xerial/sbt-sonatype#buildsbt

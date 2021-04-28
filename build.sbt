@@ -174,7 +174,7 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    libraryDependencies += "org.jctools" % "jctools-core" % "3.3.0",
+    libraryDependencies += "org.jctools" % "jctools-core" % "3.3.0"
   )
   .dependsOn(api)
 
@@ -183,7 +183,7 @@ lazy val jsonld = (project in file("jsonld"))
   .settings(
     name := "blindsight-jsonld",
     libraryDependencies += scalaTest % Test,
-    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
   .dependsOn(api)
 
@@ -193,7 +193,7 @@ lazy val logstash = (project in file("logstash"))
     name := "blindsight-logstash",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
-    libraryDependencies += logstashLogbackEncoder,
+    libraryDependencies += logstashLogbackEncoder
   )
   .dependsOn(api, fixtures % "test->test")
 
