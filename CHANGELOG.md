@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.4.1 [diff](https://github.com/tersesystems/blindsight/compare/v1.4.0...v1.4.1)
+
+* Migrate to Maven Central from Bintray
+* Upgrade various libraries from scala-steward
+* Documentation fixes
+* Fix core logger self type [#228](https://github.com/tersesystems/blindsight/pull/228)
+
 ## 1.4.0 [diff](https://github.com/tersesystems/blindsight/compare/v1.3.0...v1.4.0)
 
 * Add JSON-LD bindings
