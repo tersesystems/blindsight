@@ -22,6 +22,8 @@ import org.slf4j.Marker
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
+import scala.annotation.nowarn
+
 /**
  * An unchecked SLF4J method that takes `Any` as arguments.
  */
@@ -122,19 +124,19 @@ object UncheckedSLF4JMethod {
     }
 
     def apply(block: UncheckedSLF4JMethod => Unit): Unit = {
-      if (executePredicate()) block(this)
+      if (enabled) block(this)
     }
 
     override def apply(
         st: Statement
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate()) executeStatement(st)
+      if (enabled) executeStatement(st)
     }
 
     override def apply(
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate()) {
+      if (enabled) {
         message(msg)
       }
     }
@@ -143,7 +145,7 @@ object UncheckedSLF4JMethod {
         format: String,
         arg: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate()) {
+      if (enabled) {
         warnIfChecked(
           "Use apply(format, Argument(arg)) as Any cannot be type checked"
         )
@@ -156,7 +158,7 @@ object UncheckedSLF4JMethod {
         arg1: Any,
         arg2: Any
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate()) {
+      if (enabled) {
         warnIfChecked(
           "Use apply(format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
@@ -168,7 +170,7 @@ object UncheckedSLF4JMethod {
         format: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate()) {
+      if (enabled) {
         messageArgs(format, args.toArray)
       }
     }
@@ -177,7 +179,7 @@ object UncheckedSLF4JMethod {
         marker: Marker,
         msg: String
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate(marker)) {
+      if (enabled(marker)) {
         markerMessage(marker, msg)
       }
     }
@@ -187,7 +189,7 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (executePredicate(marker)) {
+      if (enabled(marker)) {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
@@ -200,7 +202,7 @@ object UncheckedSLF4JMethod {
         file: File,
         enclosing: Enclosing
     ): Unit = {
-      if (executePredicate(marker)) {
+      if (enabled(marker)) {
         warnIfChecked(
           "Use apply(marker, format, Arguments(arg1, arg2)) as Any cannot be type checked"
         )
@@ -213,9 +215,19 @@ object UncheckedSLF4JMethod {
         format: String,
         args: Arguments
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
-      if (executePredicate(marker)) {
+      if (enabled(marker)) {
         markerMessageArgs(marker, format, args.toArray)
       }
+    }
+
+    @nowarn
+    protected def enabled(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+      parameterList.executePredicate()
+    }
+
+    @nowarn
+    protected def enabled(marker: Marker)(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+      parameterList.executePredicate(marker)
     }
 
     override def toString: String = {

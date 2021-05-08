@@ -16,11 +16,12 @@
 
 package com.tersesystems.blindsight.flow
 
-import com.tersesystems.blindsight.core.{CoreLogger, ParameterList, CorePredicate}
+import com.tersesystems.blindsight.core.{CoreLogger, ParameterList}
 import com.tersesystems.blindsight.{Condition, ToArgument}
 import org.slf4j.event.Level
 import sourcecode.{Args, Enclosing, File, Line}
 
+import scala.annotation.nowarn
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -59,7 +60,14 @@ object FlowMethod {
    */
   class Impl(level: Level, core: CoreLogger) extends FlowMethod {
 
-    private val predicate: CorePredicate = core.predicate(level)
+    @nowarn
+    protected def enabled[B](implicit
+                          line: Line,
+                          file: File,
+                          enclosing: Enclosing,
+                          sourceArgs: Args,
+                          mapping: FlowBehavior[B]
+                         ): Boolean = core.predicate(level).apply()
 
     override def when(condition: Condition): FlowMethod = {
       if (condition == Condition.never) {
@@ -78,7 +86,7 @@ object FlowMethod {
         sourceArgs: Args,
         mapping: FlowBehavior[B]
     ): B = {
-      if (predicate()) {
+      if (enabled) {
         import mapping._
         val parameterList: ParameterList = core.parameterList(level)
 

@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.semantic
 
-import com.tersesystems.blindsight.{EventBuffer, Entry, NotNothing, ToStatement}
+import com.tersesystems.blindsight.{Entry, EventBuffer, NotNothing, ToStatement}
 import org.slf4j.event.Level
 
 trait SemanticLoggerComponent[StatementType, P, M[_]] {

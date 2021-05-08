@@ -16,12 +16,11 @@
 
 package com.tersesystems.blindsight.flow
 
+import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate, CoreLoggerDefaults}
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.slf4j._
-import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
 import org.slf4j.event.Level
-import org.slf4j.event.Level._
 
 /**
  * This trait implements a logger that is used for rendering entry/exit logging wrappers.
@@ -63,93 +62,28 @@ trait FlowLogger
 
 object FlowLogger {
 
-  class Impl(core: CoreLogger) extends FlowLogger {
-    override val isTraceEnabled: Predicate = core.predicate(TRACE)
-    override val trace: Method             = new FlowMethod.Impl(TRACE, core)
+  abstract class Base(protected val core: CoreLogger) extends FlowLogger
+    with CoreLoggerDefaults
+    with LoggerMethodDefaults[FlowMethod] {
+    override protected def predicate(level: Level): Predicate = core.predicate(level)
+  }
 
-    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
-    override val debug: Method             = new FlowMethod.Impl(DEBUG, core)
-
-    override val isInfoEnabled: Predicate = core.predicate(INFO)
-    override val info: Method             = new FlowMethod.Impl(INFO, core)
-
-    override val isWarnEnabled: Predicate = core.predicate(WARN)
-    override val warn: Method             = new FlowMethod.Impl(WARN, core)
-
-    override val isErrorEnabled: Predicate = core.predicate(ERROR)
-    override val error: Method             = new FlowMethod.Impl(ERROR, core)
-
-    override def markers: Markers = core.markers
-
-    override def underlying: org.slf4j.Logger = core.underlying
-
-    /**
-     * Returns a new instance of the logger that will only log if the
-     * condition is met.
-     *
-     * @return the new conditional logger instance.
-     */
+  class Impl(core: CoreLogger) extends Base(core) {
     override def withCondition(condition: Condition): Self = {
       if (condition == Condition.never) {
         new Noop(core)
       } else {
-        new Impl(core.withCondition(condition))
+        self(core.withCondition(condition))
       }
     }
 
-    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(core.withMarker(markerInstance))
-    }
-
-    override def withEntryTransform(
-        level: Level,
-        f: Entry => Entry
-    ): Self = {
-      new Impl(core.withEntryTransform(level, f))
-    }
-
-    override def withEntryTransform(f: Entry => Entry): Self = new Impl(core.withEntryTransform(f))
-
-    override def withEventBuffer(buffer: EventBuffer): Self = new Impl(core.withEventBuffer(buffer))
-
-    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
-      new Impl(core.withEventBuffer(level, buffer))
+    override protected def self(core: CoreLogger): Self = new Impl(core)
+    override protected def method(level: Level): Method = new FlowMethod.Impl(level, core)
   }
 
-  object Impl {}
-
-  final class Noop(core: CoreLogger) extends FlowLogger {
-    override val isTraceEnabled: Predicate = core.predicate(TRACE)
-    override val trace: Method             = FlowMethod.Noop
-
-    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
-    override val debug: Method             = FlowMethod.Noop
-
-    override val isInfoEnabled: Predicate = core.predicate(INFO)
-    override val info: Method             = FlowMethod.Noop
-
-    override val isWarnEnabled: Predicate = core.predicate(WARN)
-    override val warn: Method             = FlowMethod.Noop
-
-    override val isErrorEnabled: Predicate = core.predicate(ERROR)
-    override val error: Method             = FlowMethod.Noop
-
-    override def markers: Markers = core.markers
-
-    override def underlying: org.slf4j.Logger = core.underlying
-
-    override def withCondition(condition: Condition): Self = this // XXX is this right?
-
-    override def withEventBuffer(buffer: EventBuffer): Self = this // XXX is this right?
-
-    override def withMarker[T: ToMarkers](instance: T): Self = this // XXX is this right?
-
-    override def withEntryTransform(level: Level, f: Entry => Entry): Self =
-      this // XXX is this right?
-
-    override def withEntryTransform(f: Entry => Entry): Self = this
-
-    override def withEventBuffer(level: Level, buffer: EventBuffer): Self = this
+  final class Noop(core: CoreLogger) extends Base(core) {
+    override protected def self(core: CoreLogger): Self = new Noop(core)
+    override protected def method(level: Level): Method = FlowMethod.Noop
   }
 
 }

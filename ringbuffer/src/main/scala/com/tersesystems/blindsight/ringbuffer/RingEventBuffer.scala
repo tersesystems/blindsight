@@ -1,8 +1,8 @@
 package com.tersesystems.blindsight.ringbuffer
 
-import java.util.stream.Collectors
-
 import com.tersesystems.blindsight.EventBuffer
+
+import java.util.stream.Collectors
 
 /**
  * Ring buffer backed by <a href="https://github.com/JCTools/JCTools">MpmcArrayQueue</a>.

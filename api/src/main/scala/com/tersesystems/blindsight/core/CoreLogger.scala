@@ -1,10 +1,10 @@
 package com.tersesystems.blindsight.core
 
-import java.time.Instant
-
 import com.tersesystems.blindsight.mixins._
 import com.tersesystems.blindsight.{Condition, Entry, EventBuffer, Markers, ToMarkers}
 import org.slf4j.event.Level
+
+import java.time.Instant
 
 /**
  * The core logger.

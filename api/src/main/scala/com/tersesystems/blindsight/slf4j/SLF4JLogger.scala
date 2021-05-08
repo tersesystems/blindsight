@@ -16,12 +16,10 @@
 
 package com.tersesystems.blindsight.slf4j
 
+import com.tersesystems.blindsight.core._
 import com.tersesystems.blindsight.mixins.{EventBufferMixin, _}
-import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
-import org.slf4j.Logger
 import org.slf4j.event.Level
-import org.slf4j.event.Level._
+import org.slf4j.event.Level.{DEBUG, ERROR, INFO, TRACE, WARN}
 
 /**
  * Public SLF4J Logger interface.  This is intended for the end user.
@@ -47,6 +45,31 @@ trait SLF4JLogger[M]
   override type Self <: SLF4JLogger[M]
 }
 
+
+/**
+ * Provides a "Logger API" experience
+ */
+trait LoggerMethodDefaults[M] extends SLF4JLoggerAPI[CorePredicate, M] {
+  val isTraceEnabled: Predicate = predicate(TRACE)
+  val trace: Method             = method(TRACE)
+
+  val isDebugEnabled: Predicate = predicate(DEBUG)
+  val debug: Method             = method(DEBUG)
+
+  val isInfoEnabled: Predicate = predicate(INFO)
+  val info: Method             = method(INFO)
+
+  val isWarnEnabled: Predicate = predicate(WARN)
+  val warn: Method             = method(WARN)
+
+  val isErrorEnabled: Predicate = predicate(ERROR)
+  val error: Method             = method(ERROR)
+
+  protected def predicate(level: Level): Predicate
+  protected def method(level: Level): Method
+}
+
+
 object SLF4JLogger {
 
   /**
@@ -54,95 +77,29 @@ object SLF4JLogger {
    *
    * @tparam M the type of method.
    */
-  abstract class Base[M](core: CoreLogger) extends SLF4JLogger[M] {
+  abstract class Base[M](protected val core: CoreLogger) extends SLF4JLogger[M]
+    with CoreLoggerDefaults
+    with LoggerMethodDefaults[M] {
     override type Self      = SLF4JLogger[M]
     override type Method    = M
     override type Predicate = CorePredicate
-
-    override val underlying: Logger = core.underlying
-
-    /**
-     * Returns the accumulated markers of this logger.
-     *
-     * @return the accumulated markers, may be Markers.empty.
-     */
-    override val markers: Markers = core.markers
-
-    override val isTraceEnabled: Predicate = core.predicate(TRACE)
-    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
-    override val isInfoEnabled: Predicate  = core.predicate(INFO)
-    override val isWarnEnabled: Predicate  = core.predicate(WARN)
-    override val isErrorEnabled: Predicate = core.predicate(ERROR)
+    override protected def predicate(level: Level): Predicate = core.predicate(level)
   }
 
   /**
    * A logger that provides "strict" logging that only takes type class aware arguments.
    */
   class Strict(core: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](core) {
-    override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, core)
-    override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, core)
-    override val info: Method  = new StrictSLF4JMethod.Impl(INFO, core)
-    override val warn: Method  = new StrictSLF4JMethod.Impl(WARN, core)
-    override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
-
-    override def withMarker[T: ToMarkers](markerInst: T): Self =
-      new Strict(core.withMarker(markerInst))
-
-    override def withCondition(condition: Condition): Self =
-      new Strict(core.withCondition(condition))
-
-    override def withEntryTransform(level: Level, f: Entry => Entry): Self =
-      new Strict(core.withEntryTransform(level, f))
-
-    override def withEntryTransform(f: Entry => Entry): Self =
-      new Strict(core.withEntryTransform(f))
-
-    override def withEventBuffer(buffer: EventBuffer): Self =
-      new Strict(core.withEventBuffer(buffer))
-
-    override def withEventBuffer(level: Level, buffer: EventBuffer): Self = {
-      new Strict(core.withEventBuffer(level, buffer))
-    }
+    override def method(level: Level): Method = new StrictSLF4JMethod.Impl(level, core)
+    override protected def self(core: CoreLogger): Self = new Strict(core)
   }
 
   /**
    * A logger that provides "unchecked" logging that only takes type class aware arguments.
    */
   class Unchecked(core: CoreLogger) extends SLF4JLogger.Base[UncheckedSLF4JMethod](core) {
-    override val trace: Method = new UncheckedSLF4JMethod.Impl(TRACE, core)
-    override val debug: Method = new UncheckedSLF4JMethod.Impl(DEBUG, core)
-    override val info: Method  = new UncheckedSLF4JMethod.Impl(INFO, core)
-    override val warn: Method  = new UncheckedSLF4JMethod.Impl(WARN, core)
-    override val error: Method = new UncheckedSLF4JMethod.Impl(ERROR, core)
-
-    /**
-     * Returns a logger which will always render with the given marker.
-     *
-     * @param instance a type class instance of [[ToMarkers]]
-     * @tparam T the instance type.
-     * @return a new instance of the logger that has this marker.
-     */
-    override def withMarker[T: ToMarkers](instance: T): Self =
-      new Unchecked(core.withMarker(instance))
-
-    override def withCondition(condition: Condition): Self =
-      new Unchecked(core.withCondition(condition))
-
-    override def withEntryTransform(
-        level: Level,
-        transform: Entry => Entry
-    ): Self =
-      new Unchecked(core.withEntryTransform(level, transform))
-
-    override def withEntryTransform(f: Entry => Entry): Self =
-      new Unchecked(core.withEntryTransform(f))
-
-    override def withEventBuffer(buffer: EventBuffer): Self =
-      new Unchecked(core.withEventBuffer(buffer))
-
-    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
-      new Unchecked(core.withEventBuffer(level, buffer))
-
+    override def method(level: Level): Method = new UncheckedSLF4JMethod.Impl(level, core)
+    override protected def self(core: CoreLogger): Self = new Unchecked(core)
   }
 
 }

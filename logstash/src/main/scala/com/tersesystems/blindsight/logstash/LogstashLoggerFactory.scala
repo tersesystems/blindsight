@@ -28,7 +28,7 @@ class LogstashLoggerFactory extends LoggerFactory {
     new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior(underlying)))
   }
 
-  private def sourceInfoBehavior(underlying: org.slf4j.Logger): Option[SourceInfoBehavior] = {
+  protected def sourceInfoBehavior(underlying: org.slf4j.Logger): Option[SourceInfoBehavior] = {
     if (sourceInfoEnabled(underlying)) {
       Some(sourceInfoAsMarker(underlying))
     } else {
@@ -36,17 +36,17 @@ class LogstashLoggerFactory extends LoggerFactory {
     }
   }
 
-  private def sourceInfoEnabled(underlying: org.slf4j.Logger): Boolean = {
+  protected def sourceInfoEnabled(underlying: org.slf4j.Logger): Boolean = {
     val enabled = property(underlying, LogstashLoggerFactory.SourceEnabledProperty)
     java.lang.Boolean.parseBoolean(enabled.getOrElse(java.lang.Boolean.FALSE.toString))
   }
 
-  private def property(underlying: org.slf4j.Logger, propertyName: String): Option[String] = {
+  protected def property(underlying: org.slf4j.Logger, propertyName: String): Option[String] = {
     val logbackLogger = underlying.asInstanceOf[ch.qos.logback.classic.Logger]
     Option(logbackLogger.getLoggerContext.getProperty(propertyName))
   }
 
-  def sourceInfoAsMarker(underlying: org.slf4j.Logger): SourceInfoBehavior = {
+  protected def sourceInfoAsMarker(underlying: org.slf4j.Logger): SourceInfoBehavior = {
     import LogstashLoggerFactory._
     val fileLabel      = property(underlying, SourceFileProperty).getOrElse("source.file")
     val lineLabel      = property(underlying, SourceLineProperty).getOrElse("source.line")

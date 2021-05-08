@@ -16,9 +16,9 @@
 
 package com.tersesystems.blindsight
 
-import java.util.ServiceLoader
-
 import com.tersesystems.blindsight.AST.BObject
+
+import java.util.ServiceLoader
 
 /**
  * Resolves a [[com.tersesystems.blindsight.AST.BObject]] to [[Markers]].

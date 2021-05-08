@@ -16,12 +16,10 @@
 
 package com.tersesystems.blindsight.fluent
 
-import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate, CoreLoggerDefaults}
 import com.tersesystems.blindsight.mixins.{EventBufferMixin, _}
 import com.tersesystems.blindsight.slf4j._
 import org.slf4j.event.Level
-import org.slf4j.event.Level._
 
 /**
  * The fluent logger trait.
@@ -45,48 +43,14 @@ trait FluentLogger
 
 object FluentLogger {
 
-  class Impl(core: CoreLogger) extends FluentLogger {
+  abstract class Base(protected val core: CoreLogger) extends FluentLogger
+    with CoreLoggerDefaults
+    with LoggerMethodDefaults[FluentMethod] {
+    override protected def predicate(level: Level): Predicate = core.predicate(level)
+  }
 
-    override def markers: Markers = core.markers
-
-    override def underlying: org.slf4j.Logger = core.underlying
-
-    override val isTraceEnabled: Predicate = core.predicate(TRACE)
-    override val trace: Method             = new FluentMethod.Impl(TRACE, core)
-
-    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
-    override val debug: Method             = new FluentMethod.Impl(DEBUG, core)
-
-    override val isInfoEnabled: Predicate = core.predicate(INFO)
-    override val info: Method             = new FluentMethod.Impl(INFO, core)
-
-    override val isWarnEnabled: Predicate = core.predicate(WARN)
-    override val warn: Method             = new FluentMethod.Impl(WARN, core)
-
-    override val isErrorEnabled: Predicate = core.predicate(ERROR)
-    override val error: Method             = new FluentMethod.Impl(ERROR, core)
-
-    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(core.withMarker(markerInstance))
-    }
-
-    override def withCondition(condition: Condition): Self = {
-      new Impl(core.withCondition(condition))
-    }
-
-    override def withEntryTransform(
-        level: Level,
-        f: Entry => Entry
-    ): Self = {
-      new Impl(core.withEntryTransform(level, f))
-    }
-
-    override def withEntryTransform(f: Entry => Entry): Self = new Impl(core.withEntryTransform(f))
-
-    override def withEventBuffer(buffer: EventBuffer): Self =
-      new Impl(core.withEventBuffer(buffer))
-
-    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
-      new Impl(core.withEventBuffer(level, buffer))
+  class Impl(core: CoreLogger) extends Base(core)  {
+    override protected def method(level: Level): Method = new FluentMethod.Impl(level, core)
+    override protected def self(core: CoreLogger): Self = new Impl(core)
   }
 }

@@ -16,14 +16,14 @@
 
 package example.slf4j
 
-import java.time.Instant
-import java.time.format.DateTimeFormatter
-import java.util.Date
-
 import com.tersesystems.blindsight._
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
 import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
+
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 object Slf4jMain {
 

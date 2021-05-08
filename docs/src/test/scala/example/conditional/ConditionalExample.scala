@@ -1,11 +1,11 @@
 package example.conditional
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 import com.tersesystems.blindsight._
 import io.timeandspace.cronscheduler.CronTask
 import org.slf4j.MarkerFactory
 import org.slf4j.event.Level
+
+import java.util.concurrent.atomic.AtomicBoolean
 
 object SimpleConditionalExample {
   def main(args: Array[String]): Unit = {

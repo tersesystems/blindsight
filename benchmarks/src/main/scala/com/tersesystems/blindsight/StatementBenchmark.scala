@@ -1,9 +1,9 @@
 package com.tersesystems.blindsight
 
-import java.util.concurrent.TimeUnit
-
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
+
+import java.util.concurrent.TimeUnit
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)

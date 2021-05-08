@@ -16,10 +16,10 @@
 
 package example.fluent
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 import com.tersesystems.blindsight.LoggerFactory
 import com.tersesystems.blindsight.fluent.FluentLogger
+
+import java.util.concurrent.atomic.AtomicBoolean
 
 object ConditionalFluentMain {
 

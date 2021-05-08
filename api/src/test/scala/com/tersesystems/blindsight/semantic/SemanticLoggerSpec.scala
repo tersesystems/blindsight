@@ -1,13 +1,13 @@
 package com.tersesystems.blindsight.semantic
 
-import java.util.UUID
-
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.CoreLogger
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.MarkerFactory
+
+import java.util.UUID
 
 class SemanticLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 

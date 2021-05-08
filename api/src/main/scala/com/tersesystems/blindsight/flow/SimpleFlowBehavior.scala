@@ -16,10 +16,10 @@
 
 package com.tersesystems.blindsight.flow
 
-import java.io.File
-
 import com.tersesystems.blindsight._
 import org.slf4j.event.Level
+
+import java.io.File
 
 /**
  * A simple flow behavior that prints out the arguments and result, with the line number.

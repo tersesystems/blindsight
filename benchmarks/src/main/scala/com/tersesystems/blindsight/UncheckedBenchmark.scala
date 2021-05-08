@@ -1,9 +1,9 @@
 package com.tersesystems.blindsight
 
 import org.openjdk.jmh.annotations._
-import java.util.concurrent.TimeUnit
-
 import org.slf4j.event.{Level => SLF4JLevel}
+
+import java.util.concurrent.TimeUnit
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
