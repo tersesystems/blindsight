@@ -1,14 +1,10 @@
 package com.tersesystems.blindsight
 
 import com.tersesystems.blindsight.fluent.FluentLogger
-import org.openjdk.jmh.annotations.Benchmark
-
-import org.openjdk.jmh.annotations._
-import java.util.concurrent.TimeUnit
-
-import com.tersesystems.blindsight.fluent.FluentLogger
-
+import org.openjdk.jmh.annotations.{Benchmark, _}
 import org.slf4j.event.{Level => SLF4JLevel}
+
+import java.util.concurrent.TimeUnit
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)

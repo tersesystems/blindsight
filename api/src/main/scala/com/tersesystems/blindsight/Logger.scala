@@ -16,12 +16,11 @@
 
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
+import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate, CoreLoggerDefaults}
 import com.tersesystems.blindsight.flow.FlowLogger
 import com.tersesystems.blindsight.fluent.FluentLogger
 import com.tersesystems.blindsight.semantic.SemanticLogger
 import com.tersesystems.blindsight.slf4j._
-import org.slf4j.event.Level
 
 /**
  * The Blindsight logger trait.
@@ -42,13 +41,15 @@ trait Logger extends SLF4JLogger[StrictSLF4JMethod] {
 
 object Logger {
 
-  class Impl(core: CoreLogger)
+  class Impl(protected val core: CoreLogger)
       extends Logger
-      with SLF4JLoggerAPI.Proxy[CorePredicate, StrictSLF4JMethod] {
+      with SLF4JLoggerAPI.Proxy[CorePredicate, StrictSLF4JMethod]
+      with CoreLoggerDefaults {
 
     override type Parent = SLF4JLogger[StrictSLF4JMethod]
     override type Self   = Logger
 
+    // from Proxy API
     override protected val logger = new SLF4JLogger.Strict(core)
 
     override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
@@ -73,29 +74,6 @@ object Logger {
       new SemanticLogger.Impl[StatementType](core)
     }
 
-    override def withCondition(condition: Condition): Self = {
-      new Impl(core.withCondition(condition))
-    }
-
-    override def withMarker[T: ToMarkers](markerInstance: T): Self = {
-      new Impl(core.withMarker(markerInstance))
-    }
-
-    override def withEntryTransform(
-        level: Level,
-        f: Entry => Entry
-    ): Self = {
-      new Impl(core.withEntryTransform(level, f))
-    }
-
-    override def withEntryTransform(f: Entry => Entry): Self =
-      new Impl(core.withEntryTransform(f))
-
-    override def withEventBuffer(buffer: EventBuffer): Self =
-      new Impl(core.withEventBuffer(buffer))
-
-    override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
-      new Impl(core.withEventBuffer(level, buffer))
+    override protected def self(core: CoreLogger): Self = new Impl(core)
   }
-
 }

@@ -17,8 +17,8 @@
 package com.tersesystems.blindsight.semantic
 
 import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
-import com.tersesystems.blindsight.{EventBuffer, _}
 import com.tersesystems.blindsight.mixins._
+import com.tersesystems.blindsight.{EventBuffer, _}
 import org.slf4j.event.Level
 import org.slf4j.event.Level._
 
@@ -59,44 +59,42 @@ object SemanticLogger {
 
     override def withMarker[T: ToMarkers](markerInst: => T): Self[StatementType] = {
       val markers = implicitly[ToMarkers[T]].toMarkers(markerInst)
-      new Impl[StatementType](core.withMarker(markers))
+      self(core.withMarker(markers))
     }
 
-    override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = new Impl[T](core)
+    override def refine[T <: StatementType: ToStatement: NotNothing]: Self[T] = self[T](core)
 
-    override def withCondition(condition: Condition): Self[StatementType] = {
-      new Impl[StatementType](core.withCondition(condition))
-    }
+    override def withCondition(condition: Condition): Self[StatementType] =
+      self(core.withCondition(condition))
 
     override def withEntryTransform(
         level: Level,
         f: Entry => Entry
-    ): Self[StatementType] = {
-      new Impl[StatementType](core.withEntryTransform(level, f))
-    }
+    ): Self[StatementType] = self(core.withEntryTransform(level, f))
 
     override def withEventBuffer(buffer: EventBuffer): Self[StatementType] =
-      new Impl[StatementType](core.withEventBuffer(buffer))
+      self(core.withEventBuffer(buffer))
 
-    override val isTraceEnabled: Predicate = core.predicate(TRACE)
-    override val trace: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](TRACE, core)
+    override val isTraceEnabled: Predicate            = predicate(TRACE)
+    override val trace: SemanticMethod[StatementType] = method(TRACE)
 
-    override val isDebugEnabled: Predicate = core.predicate(DEBUG)
-    override val debug: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](DEBUG, core)
+    override val isDebugEnabled: Predicate            = predicate(DEBUG)
+    override val debug: SemanticMethod[StatementType] = method(DEBUG)
 
-    override val isInfoEnabled: Predicate = core.predicate(INFO)
-    override val info: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](INFO, core)
+    override val isInfoEnabled: Predicate            = predicate(INFO)
+    override val info: SemanticMethod[StatementType] = method(INFO)
 
-    override val isWarnEnabled: Predicate = core.predicate(WARN)
-    override val warn: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](WARN, core)
+    override val isWarnEnabled: Predicate            = predicate(WARN)
+    override val warn: SemanticMethod[StatementType] = method(WARN)
 
-    override val isErrorEnabled: Predicate = core.predicate(ERROR)
-    override val error: SemanticMethod[StatementType] =
-      new SemanticMethod.Impl[StatementType](ERROR, core)
+    override val isErrorEnabled: Predicate            = predicate(ERROR)
+    override val error: SemanticMethod[StatementType] = method(ERROR)
+
+    protected def self[T: NotNothing](core: CoreLogger): Self[T] = new Impl(core)
+    protected def predicate(level: Level): Predicate             = core.predicate(level)
+    protected def method(level: Level): Method[StatementType] = {
+      new SemanticMethod.Impl[StatementType](level, core)
+    }
 
   }
 

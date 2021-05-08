@@ -21,6 +21,8 @@ import com.tersesystems.blindsight.core.{CoreLogger, ParameterList}
 import org.slf4j.event.Level
 import sourcecode.{Enclosing, File, Line}
 
+import scala.annotation.nowarn
+
 trait SemanticMethod[StatementType] {
   def level: Level
 
@@ -51,7 +53,7 @@ object SemanticMethod {
         t: Throwable
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement = implicitly[ToStatement[T]].toStatement(instance)
-      if (shouldLog(statement.markers)) {
+      if (enabled(statement.markers)) {
         parameterList.executeStatement(statement.withThrowable(t))
       }
     }
@@ -61,7 +63,7 @@ object SemanticMethod {
     )(implicit line: Line, file: File, enclosing: Enclosing): Unit = {
       val statement: Statement =
         implicitly[ToStatement[T]].toStatement(instance)
-      if (shouldLog(statement.markers)) {
+      if (enabled(statement.markers)) {
         parameterList.executeStatement(statement)
       }
     }
@@ -72,7 +74,10 @@ object SemanticMethod {
       }
     }
 
-    protected def shouldLog(markers: Markers): Boolean = {
+    @nowarn
+    protected def enabled(
+        markers: Markers
+    )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
       if (markers.nonEmpty) {
         parameterList.executePredicate(markers.marker)
       } else {

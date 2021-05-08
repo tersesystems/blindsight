@@ -16,10 +16,10 @@
 
 package example.semantic
 
-import java.time.LocalTime
-
-import com.tersesystems.blindsight.semantic.SemanticLogger
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.semantic.SemanticLogger
+
+import java.time.LocalTime
 
 // #semantic-main
 object SemanticMain {

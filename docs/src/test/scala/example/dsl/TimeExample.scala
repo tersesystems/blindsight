@@ -1,9 +1,9 @@
 package example.dsl
 
-import java.time.{Duration, Instant}
-
 import com.tersesystems.blindsight.DSL._
 import com.tersesystems.blindsight._
+
+import java.time.{Duration, Instant}
 
 object TimeExample {
   private val logger = LoggerFactory.getLogger

@@ -1,14 +1,14 @@
 package com.tersesystems.blindsight.fixtures
 
-import java.util.Objects.requireNonNull
-import java.util.Optional
-
 import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.{Logger, LoggerContext}
 import ch.qos.logback.core.Appender
 import ch.qos.logback.core.read.ListAppender
 import org.scalatest.{Outcome, TestData, TestSuite, TestSuiteMixin}
+
+import java.util.Objects.requireNonNull
+import java.util.Optional
 
 trait OneContextPerTest extends TestSuiteMixin {
   this: TestSuite =>

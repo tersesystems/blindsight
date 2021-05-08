@@ -1,8 +1,8 @@
 package com.tersesystems.blindsight
 
-import java.time.Instant
-
 import org.slf4j.event.Level
+
+import java.time.Instant
 
 /**
  * An event buffer contains events that were about to be logged into SLF4J.

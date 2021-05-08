@@ -1,9 +1,6 @@
 package example.jsonld
 
-import com.tersesystems.blindsight.AST.BObject
-import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.jsonld._
-import com.tersesystems.blindsight.jsonld.BlindsightASTMapping._
 import eu.timepit.refined.api.{Refined, RefinedTypeOps}
 import eu.timepit.refined.string.Url
 

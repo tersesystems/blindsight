@@ -1,12 +1,11 @@
 package com.tersesystems.blindsight
 
-import org.openjdk.jmh.annotations._
-import java.util.concurrent.TimeUnit
-
 import com.tersesystems.blindsight.core.CoreLogger
-import org.openjdk.jmh.infra.Blackhole
+import org.openjdk.jmh.annotations._
 import org.slf4j.event.{Level => SLF4JLevel}
 import sourcecode.{Enclosing, File, Line}
+
+import java.util.concurrent.TimeUnit
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)

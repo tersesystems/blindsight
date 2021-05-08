@@ -1,10 +1,9 @@
 package example.semantic
 
-import java.time.Instant
-
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.semantic.SemanticLogger
 import org.slf4j.MarkerFactory
+
+import java.time.Instant
 
 object InterpolationMain {
 
