@@ -34,9 +34,9 @@ object InterpolationMain {
     val marker2   = MarkerFactory.getMarker("MARKER2")
     val throwable = new IllegalStateException("illegal state")
 
-    logger.info(st"")            // nothing at all
-    logger.info(st"I like food") // constant
-    logger.info(st"I like $pizza")
+    logger.info(st"")                       // nothing at all
+    logger.info(st"I like food")            // constant
+    logger.info(st"I like ${pizza: Pizza}") // with explicit type
     logger.info(st"I like $burrito")
     logger.info(st"I like both $pizza and $burrito")
     logger.info(st"I like $anything")

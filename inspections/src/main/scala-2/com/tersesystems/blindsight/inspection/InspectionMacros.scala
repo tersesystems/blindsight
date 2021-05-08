@@ -1,31 +1,6 @@
 package com.tersesystems.blindsight.inspection
 
 /**
- * Debugs a valdef.
- *
- * @param name name of the val or var
- * @param value the value of the val or var
- */
-case class ValDefInspection(name: String, value: Any)
-
-/**
- * Debugs a branch (if / match).
- *
- * @param code the condition of the branch
- * @param result the result of evaluating the condition
- */
-case class BranchInspection(code: String, result: Boolean)
-
-/**
- * Debugs a result.
- *
- * @param code the code that went into the result
- * @param value the result
- * @tparam A the type of the result.
- */
-case class ExprInspection[A](code: String, value: A)
-
-/**
  * Macros used for close inspection and debugging values.
  *
  * Easiest way to use these is to pay the import tax up front, or
@@ -214,8 +189,8 @@ object InspectionMacros extends InspectionMacros {
               val patSource   = extractRange(pat).map(p => s" match case $p") getOrElse ""
               val guardSource = extractRange(guard).map(" if " + _).getOrElse("")
               val src         = exprSource + patSource + guardSource
-              val debugIf     = q"com.tersesystems.blindsight.inspection.BranchInspection($src, true)"
-              val stmt        = q"$output($debugIf); $body"
+              val debugIf = q"com.tersesystems.blindsight.inspection.BranchInspection($src, true)"
+              val stmt    = q"$output($debugIf); $body"
               CaseDef(pat, guard, stmt)
             case other =>
               throw new IllegalStateException("Unknown case " + other)

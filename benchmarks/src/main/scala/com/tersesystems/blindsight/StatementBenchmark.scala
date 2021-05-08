@@ -13,13 +13,13 @@ import java.util.concurrent.TimeUnit
 @State(Scope.Benchmark)
 class StatementBenchmark {
 
-  @Benchmark
-  def statementFromInterpolation(blackhole: Blackhole): Unit = {
-    val arg1 = "one"
-    val arg2 = "two"
-    val arg3 = "three"
-    blackhole.consume(st"Hello world $arg1, $arg2, $arg3")
-  }
+  //    @Benchmark
+  //    def statementFromInterpolation(blackhole: Blackhole): Unit = {
+  //      val arg1 = "one"
+  //      val arg2 = "two"
+  //      val arg3 = "three"
+  //      blackhole.consume(st"Hello world $arg1, $arg2, $arg3")
+  //    }
 
   @Benchmark
   def statementFromApply(blackhole: Blackhole): Unit = {

@@ -90,7 +90,7 @@ class UncheckedBenchmark {
 
   @Benchmark
   def infoWithStatement(): Unit = {
-    logger.info(st"Hello world ${arg1}, ${arg2}, ${arg3}")
+    logger.info(Statement("Hello world {}, {}, {}", Arguments(arg1, arg2, arg3)))
   }
 
   @Benchmark

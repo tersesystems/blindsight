@@ -186,7 +186,7 @@ sealed trait IRIValue
  *
  * @param iri the full IRI string
  */
-final case class IRI private (value: String) extends IRIValue {
+final case class IRI private[blindsight] (value: String) extends IRIValue {
 
   /**
    * Creates a [[Vocab]] from the IRI.
@@ -266,7 +266,7 @@ object IRI {
  *
  * @param iri
  */
-final case class Base private (iri: IRI) {
+final case class Base private[blindsight] (iri: IRI) {
 
   /**
    * Creates a relative path from this IRI, which is considered the base IRI.
@@ -293,7 +293,7 @@ final case class RelativeIRI(name: String, base: Base) extends IRIValue {
 // A compact IRI has the form of prefix:suffix and is used as a way of expressing an IRI
 // without needing to define separate term definitions for each IRI contained within a common
 // vocabulary identified by prefix.
-final case class CompactIRI private (term: Term, suffix: String) extends IRIValue {
+final case class CompactIRI private[blindsight] (term: Term, suffix: String) extends IRIValue {
   def name = s"${term.name}:$suffix"
 
   def value: String = name
@@ -327,7 +327,7 @@ final case class PropertyIRI(name: String, base: IRI) extends IRIValue {
  * val personGivenName = ncVocab("PersonGivenName")
  * }}}
  */
-final case class Vocab private (iri: IRI) {
+final case class Vocab private[blindsight] (iri: IRI) {
 
   def name: String = Keyword.`@vocab`.name
 
@@ -354,7 +354,7 @@ final case class VocabProperty(value: String, vocab: Vocab) extends IRIValue {
  * @param name
  * @param iri
  */
-final case class Term private (name: String, iri: IRIValue) {
+final case class Term private[blindsight] (name: String, iri: IRIValue) {
   assert(name.nonEmpty, "Empty string used for term!")
   assert(!name.startsWith("@"), "Term starts with at character @")
   assert(!name.contains(":"), "Term contains colon character :")

@@ -101,6 +101,7 @@ object AST {
     type Values = Long
     def values = num
   }
+
   final case class BInt(num: BigInt) extends BValue with BNumber {
     type Values = BigInt
     def values = num

@@ -19,13 +19,13 @@ env:
 jobs:
   build:
     name: Build and Test
-    strategy:    
+    strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]        
+        os: [ubuntu-latest]
         java: [adopt@1.11]
-        scalaVersion: ["2_11", "2_12", "2_13"]
-        scalaPlatform: ["jvm"]        
+        scalaVersion: ["2_11", "2_12", "2_13", "3_0_0"]
+        scalaPlatform: ["jvm"]
     runs-on: ${{ matrix.os }}
     env:
       BUILD_KEY: ${{matrix.scalaVersion}}-${{matrix.scalaPlatform}}
@@ -55,6 +55,4 @@ jobs:
       - name: Build project
         run: sbt --client test-$BUILD_KEY
 
-      - name: Check formatting
-        run: sbt --client scalafmtCheck
 

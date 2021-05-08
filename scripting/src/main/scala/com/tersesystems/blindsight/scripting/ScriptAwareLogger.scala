@@ -40,8 +40,8 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
       new ScriptAwareUncheckedSLF4JLogger(core)
     }
 
-    override def method(level: Level): UncheckedSLF4JMethod =
-      new UncheckedSLF4JMethod.Impl(level, core) {
+    override def method(l: Level): UncheckedSLF4JMethod =
+      new UncheckedSLF4JMethod.Impl(l, core) {
         override protected def enabled(implicit
             line: Line,
             file: File,
@@ -64,8 +64,8 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
       new ScriptAwareSemanticLogger(core)
     }
 
-    override def method(level: Level): Method[StatementType] =
-      new SemanticMethod.Impl[StatementType](level, core) {
+    override def method(l: Level): Method[StatementType] =
+      new SemanticMethod.Impl[StatementType](l, core) {
         override protected def enabled(
             markers: Markers
         )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
@@ -79,7 +79,7 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
       new ScriptAwareFluentLogger(core)
     }
 
-    override def method(level: Level): FluentMethod = new FluentMethod.Impl(level, core) {
+    override def method(l: Level): FluentMethod = new FluentMethod.Impl(l, core) {
       override def enabled(
           markers: Markers
       )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
@@ -93,8 +93,8 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
       new ScriptAwareSLF4JLogger(core)
     }
 
-    override def method(level: Level): StrictSLF4JMethod = {
-      new StrictSLF4JMethod.Impl(level, core) {
+    override def method(l: Level): StrictSLF4JMethod = {
+      new StrictSLF4JMethod.Impl(l, core) {
 
         override def enabled(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
           scriptManager.execute(super.enabled, level, enclosing, line, file)

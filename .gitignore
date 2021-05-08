@@ -8,3 +8,5 @@ local.*
 .bloop/
 .vscode/
 .metals/
+.ammonite/
+metals.sbt

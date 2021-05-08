@@ -33,8 +33,11 @@ object TypeClassExample {
     sealed trait Weekday {
       def value: String
     }
-    final case object Monday extends Weekday { val value = "MONDAY" }
+
+    case object Monday extends Weekday { val value = "MONDAY" }
+
     object Weekday {
+      import scala.language.implicitConversions
       implicit def weekday2Marker(weekday: Weekday): Markers = Markers(weekday)
       implicit val toMarkers: ToMarkers[Weekday] = ToMarkers { weekday =>
         Markers(MarkerFactory.getDetachedMarker(weekday.value))

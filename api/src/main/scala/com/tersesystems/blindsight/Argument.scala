@@ -42,6 +42,10 @@ object Argument {
    * Converts an instance into an argument.
    */
   def apply[A: ToArgument](instance: A): Argument = implicitly[ToArgument[A]].toArgument(instance)
+
+  def unapply[A: ToArgument](instance: A): Option[Any] = {
+    Some(implicitly[ToArgument[A]].toArgument(instance).value)
+  }
 }
 
 /**
