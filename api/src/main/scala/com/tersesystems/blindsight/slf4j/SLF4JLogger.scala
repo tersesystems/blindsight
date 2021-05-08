@@ -45,7 +45,6 @@ trait SLF4JLogger[M]
   override type Self <: SLF4JLogger[M]
 }
 
-
 /**
  * Provides a "Logger API" experience
  */
@@ -69,7 +68,6 @@ trait LoggerMethodDefaults[M] extends SLF4JLoggerAPI[CorePredicate, M] {
   protected def method(level: Level): Method
 }
 
-
 object SLF4JLogger {
 
   /**
@@ -77,9 +75,10 @@ object SLF4JLogger {
    *
    * @tparam M the type of method.
    */
-  abstract class Base[M](protected val core: CoreLogger) extends SLF4JLogger[M]
-    with CoreLoggerDefaults
-    with LoggerMethodDefaults[M] {
+  abstract class Base[M](protected val core: CoreLogger)
+      extends SLF4JLogger[M]
+      with CoreLoggerDefaults
+      with LoggerMethodDefaults[M] {
     override type Self      = SLF4JLogger[M]
     override type Method    = M
     override type Predicate = CorePredicate
@@ -90,7 +89,7 @@ object SLF4JLogger {
    * A logger that provides "strict" logging that only takes type class aware arguments.
    */
   class Strict(core: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](core) {
-    override def method(level: Level): Method = new StrictSLF4JMethod.Impl(level, core)
+    override def method(level: Level): Method           = new StrictSLF4JMethod.Impl(level, core)
     override protected def self(core: CoreLogger): Self = new Strict(core)
   }
 
@@ -98,7 +97,7 @@ object SLF4JLogger {
    * A logger that provides "unchecked" logging that only takes type class aware arguments.
    */
   class Unchecked(core: CoreLogger) extends SLF4JLogger.Base[UncheckedSLF4JMethod](core) {
-    override def method(level: Level): Method = new UncheckedSLF4JMethod.Impl(level, core)
+    override def method(level: Level): Method           = new UncheckedSLF4JMethod.Impl(level, core)
     override protected def self(core: CoreLogger): Self = new Unchecked(core)
   }
 

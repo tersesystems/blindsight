@@ -62,9 +62,10 @@ trait FlowLogger
 
 object FlowLogger {
 
-  abstract class Base(protected val core: CoreLogger) extends FlowLogger
-    with CoreLoggerDefaults
-    with LoggerMethodDefaults[FlowMethod] {
+  abstract class Base(protected val core: CoreLogger)
+      extends FlowLogger
+      with CoreLoggerDefaults
+      with LoggerMethodDefaults[FlowMethod] {
     override protected def predicate(level: Level): Predicate = core.predicate(level)
   }
 

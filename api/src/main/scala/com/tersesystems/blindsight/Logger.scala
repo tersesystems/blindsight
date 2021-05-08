@@ -43,10 +43,11 @@ object Logger {
 
   class Impl(protected val core: CoreLogger)
       extends Logger
-      with SLF4JLoggerAPI.Proxy[CorePredicate, StrictSLF4JMethod] with CoreLoggerDefaults {
+      with SLF4JLoggerAPI.Proxy[CorePredicate, StrictSLF4JMethod]
+      with CoreLoggerDefaults {
 
     override type Parent = SLF4JLogger[StrictSLF4JMethod]
-    override type Self = Logger
+    override type Self   = Logger
 
     // from Proxy API
     override protected val logger = new SLF4JLogger.Strict(core)

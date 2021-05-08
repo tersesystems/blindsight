@@ -43,13 +43,14 @@ trait FluentLogger
 
 object FluentLogger {
 
-  abstract class Base(protected val core: CoreLogger) extends FluentLogger
-    with CoreLoggerDefaults
-    with LoggerMethodDefaults[FluentMethod] {
+  abstract class Base(protected val core: CoreLogger)
+      extends FluentLogger
+      with CoreLoggerDefaults
+      with LoggerMethodDefaults[FluentMethod] {
     override protected def predicate(level: Level): Predicate = core.predicate(level)
   }
 
-  class Impl(core: CoreLogger) extends Base(core)  {
+  class Impl(core: CoreLogger) extends Base(core) {
     override protected def method(level: Level): Method = new FluentMethod.Impl(level, core)
     override protected def self(core: CoreLogger): Self = new Impl(core)
   }

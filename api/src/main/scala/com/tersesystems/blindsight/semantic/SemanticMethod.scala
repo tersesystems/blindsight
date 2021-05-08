@@ -75,7 +75,9 @@ object SemanticMethod {
     }
 
     @nowarn
-    protected def enabled(markers: Markers)(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+    protected def enabled(
+        markers: Markers
+    )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
       if (markers.nonEmpty) {
         parameterList.executePredicate(markers.marker)
       } else {

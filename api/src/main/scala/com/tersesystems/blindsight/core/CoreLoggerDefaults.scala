@@ -7,7 +7,12 @@ import org.slf4j.event.Level
 /**
  * A trait that ties the logger to the core logger internals.
  */
-trait CoreLoggerDefaults { mixin: ConditionMixin with UnderlyingMixin with MarkerMixin with EntryTransformMixin with EventBufferMixin =>
+trait CoreLoggerDefaults {
+  mixin: ConditionMixin
+    with UnderlyingMixin
+    with MarkerMixin
+    with EntryTransformMixin
+    with EventBufferMixin =>
   type Self
 
   protected def core: CoreLogger

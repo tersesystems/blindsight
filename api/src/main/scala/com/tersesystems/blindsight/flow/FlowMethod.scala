@@ -62,12 +62,12 @@ object FlowMethod {
 
     @nowarn
     protected def enabled[B](implicit
-                          line: Line,
-                          file: File,
-                          enclosing: Enclosing,
-                          sourceArgs: Args,
-                          mapping: FlowBehavior[B]
-                         ): Boolean = core.predicate(level).apply()
+        line: Line,
+        file: File,
+        enclosing: Enclosing,
+        sourceArgs: Args,
+        mapping: FlowBehavior[B]
+    ): Boolean = core.predicate(level).apply()
 
     override def when(condition: Condition): FlowMethod = {
       if (condition == Condition.never) {

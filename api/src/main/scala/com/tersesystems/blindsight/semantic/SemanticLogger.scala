@@ -75,23 +75,23 @@ object SemanticLogger {
     override def withEventBuffer(buffer: EventBuffer): Self[StatementType] =
       self(core.withEventBuffer(buffer))
 
-    override val isTraceEnabled: Predicate = predicate(TRACE)
+    override val isTraceEnabled: Predicate            = predicate(TRACE)
     override val trace: SemanticMethod[StatementType] = method(TRACE)
 
-    override val isDebugEnabled: Predicate = predicate(DEBUG)
+    override val isDebugEnabled: Predicate            = predicate(DEBUG)
     override val debug: SemanticMethod[StatementType] = method(DEBUG)
 
-    override val isInfoEnabled: Predicate = predicate(INFO)
+    override val isInfoEnabled: Predicate            = predicate(INFO)
     override val info: SemanticMethod[StatementType] = method(INFO)
 
-    override val isWarnEnabled: Predicate = predicate(WARN)
+    override val isWarnEnabled: Predicate            = predicate(WARN)
     override val warn: SemanticMethod[StatementType] = method(WARN)
 
-    override val isErrorEnabled: Predicate = predicate(ERROR)
+    override val isErrorEnabled: Predicate            = predicate(ERROR)
     override val error: SemanticMethod[StatementType] = method(ERROR)
 
     protected def self[T: NotNothing](core: CoreLogger): Self[T] = new Impl(core)
-    protected def predicate(level: Level): Predicate = core.predicate(level)
+    protected def predicate(level: Level): Predicate             = core.predicate(level)
     protected def method(level: Level): Method[StatementType] = {
       new SemanticMethod.Impl[StatementType](level, core)
     }

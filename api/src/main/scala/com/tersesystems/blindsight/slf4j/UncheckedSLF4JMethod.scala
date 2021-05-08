@@ -226,7 +226,9 @@ object UncheckedSLF4JMethod {
     }
 
     @nowarn
-    protected def enabled(marker: Marker)(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+    protected def enabled(
+        marker: Marker
+    )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
       parameterList.executePredicate(marker)
     }
 
