@@ -4,7 +4,8 @@ language: scala
 scala:
 - 2.11.12
 - 2.12.12
-- 2.13.5
+- 2.13.6
+- 3.0.0
 sbt_args: "-no-colors -J-Xss2m -J-XX:MaxInlineLevel=18 -J-XX:MaxInlineSize=270 -J-XX:MaxTrivialSize=12"
 jobs:
   include:
@@ -17,7 +18,7 @@ jobs:
   - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please
       run 'scalafmtSbt' and commit the reformatted code."; false; }
     name: Build code style check (fixed with `sbt scalafmtSbt`)
-  - script: sbt ++2.13.5 docs/makeSite
+  - script: sbt ++2.13.6 docs/makeSite
     name: Verify documentation
 stages:
 - name: check

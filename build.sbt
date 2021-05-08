@@ -111,21 +111,28 @@ val optimizeInline = Seq(
 )
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
-  Seq(
-    "-unchecked",
-    "-deprecation",
-    "-feature",
-    "-encoding",
-    "UTF-8",
-    "-language:implicitConversions",
-    "-language:higherKinds",
-    "-language:existentials",
-    "-language:postfixOps",
-    "-Xlint",
-    "-Ywarn-dead-code",
-    "-Yrangepos"
-  ) ++ (CrossVersion.partialVersion(scalaVersion) match {
+ (CrossVersion.partialVersion(scalaVersion) match {
+    case Some((3, n)) =>
+      Seq(
+        "-language:implicitConversions",
+        "-release",
+        "8"
+      )
     case Some((2, n)) if n >= 13 =>
+      Seq(
+        "-unchecked",
+        "-deprecation",
+        "-feature",
+        "-encoding",
+        "UTF-8",
+        "-language:implicitConversions",
+        "-language:higherKinds",
+        "-language:existentials",
+        "-language:postfixOps",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos"
+      ) ++
       Seq(
         "-Xsource:2.13",
         "-Xfatal-warnings",
@@ -135,6 +142,19 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
       ) ++ optimizeInline
     case Some((2, n)) if n == 12 =>
       Seq(
+        "-unchecked",
+        "-deprecation",
+        "-feature",
+        "-encoding",
+        "UTF-8",
+        "-language:implicitConversions",
+        "-language:higherKinds",
+        "-language:existentials",
+        "-language:postfixOps",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos"
+      ) ++ Seq(
         "-Xsource:2.12",
         "-Yno-adapted-args"
         // "-release", "8" https://github.com/scala/bug/issues/11927 scaladoc is busted in 2.11.11
@@ -142,6 +162,19 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
       ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
       Seq(
+        "-unchecked",
+        "-deprecation",
+        "-feature",
+        "-encoding",
+        "UTF-8",
+        "-language:implicitConversions",
+        "-language:higherKinds",
+        "-language:existentials",
+        "-language:postfixOps",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos"
+      ) ++ Seq(
         "-Xsource:2.11",
         "-Yno-adapted-args",
         "-Xfatal-warnings"
