@@ -197,6 +197,17 @@ lazy val logstash = (project in file("logstash"))
   )
   .dependsOn(api, fixtures % "test->test")
 
+lazy val scripting = (project in file("scripting"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
+  .settings(
+    name := "blindsight-scripting",
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    libraryDependencies += "com.twineworks" % "tweakflow" % "1.3.2",
+    libraryDependencies += logbackClassic,
+    libraryDependencies += logstashLogbackEncoder
+  )
+  .dependsOn(api, fixtures % "test->test")
+
 // https://github.com/ktoso/sbt-jmh
 lazy val benchmarks = (project in file("benchmarks"))
   .enablePlugins(JmhPlugin)
@@ -222,4 +233,4 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, benchmarks, logstash, ringbuffer, jsonld, generic)
+  .aggregate(api, docs, fixtures, benchmarks, logstash, scripting, ringbuffer, jsonld, generic)
