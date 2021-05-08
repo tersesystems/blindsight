@@ -23,39 +23,49 @@ class TweakFlowConditionManager(path: Path, verifier: String => Boolean) {
     new TweakFlowDynamicCondition(line, enclosing, file)
   }
 
-  private[scripting] def execute(level: Level, enclosing: Enclosing, line: Line, file: File): Boolean = {
+  private[scripting] def execute(
+      level: Level,
+      enclosing: Enclosing,
+      line: Line,
+      file: File
+  ): Boolean = {
     if (mref.get == null || source.isInvalid) {
       eval()
     }
 
     try {
       val callSite = mref.get().getLibrary("condition").getVar("evaluate")
-      val result = callSite.call(
-        Values.make(level.toInt),
-        Values.make(enclosing.value),
-        Values.make(line.value),
-        Values.make(file.value)
-      ).bool()
+      val result = callSite
+        .call(
+          Values.make(level.toInt),
+          Values.make(enclosing.value),
+          Values.make(line.value),
+          Values.make(file.value)
+        )
+        .bool()
       result
     } catch {
       case e: LangException =>
         import com.tersesystems.blindsight.DSL._
         import com.tersesystems.blindsight._
         val info = e.getSourceInfo
-        logger.error("Cannot execute script: {}", bobj(
-          "line" -> info.getLine,
-          "column" -> info.getCharWithinLine,
-          "error" -> e.getCode.getName,
-          "message" -> e.getDigestMessage
-        ))
+        logger.error(
+          "Cannot execute script: {}",
+          bobj(
+            "line"    -> info.getLine,
+            "column"  -> info.getCharWithinLine,
+            "error"   -> e.getCode.getName,
+            "message" -> e.getDigestMessage
+          )
+        )
         false
     }
   }
 
   private def compileModule(script: String): Runtime.Module = {
     val memLocation = new MemoryLocation.Builder().add("condition.tf", script).build
-    val loadPath = new LoadPath.Builder().addStdLocation().add(memLocation).build()
-    val runtime = TweakFlow.compile(loadPath, "condition.tf")
+    val loadPath    = new LoadPath.Builder().addStdLocation().add(memLocation).build()
+    val runtime     = TweakFlow.compile(loadPath, "condition.tf")
     runtime.getModules.get(runtime.unitKey("condition.tf"))
   }
 
@@ -69,12 +79,15 @@ class TweakFlowConditionManager(path: Path, verifier: String => Boolean) {
         import com.tersesystems.blindsight.DSL._
         import com.tersesystems.blindsight._
         val info = e.getSourceInfo
-        logger.warn("Cannot compile script: {}", bobj(
-          "line" -> info.getLine,
-          "column" -> info.getCharWithinLine,
-          "error" -> e.getCode.getName,
-          "message" -> e.getDigestMessage
-        ))
+        logger.warn(
+          "Cannot compile script: {}",
+          bobj(
+            "line"    -> info.getLine,
+            "column"  -> info.getCharWithinLine,
+            "error"   -> e.getCode.getName,
+            "message" -> e.getDigestMessage
+          )
+        )
     }
   }
 

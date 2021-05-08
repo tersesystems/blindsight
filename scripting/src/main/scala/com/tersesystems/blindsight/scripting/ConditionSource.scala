@@ -12,7 +12,6 @@ trait ConditionSource {
   def script: String
 }
 
-
 class FileConditionSource(val path: Path, verifier: String => Boolean) extends ConditionSource {
 
   if (!Files.exists(path)) throw new FileNotFoundException(path.toAbsolutePath.toString)
@@ -24,8 +23,7 @@ class FileConditionSource(val path: Path, verifier: String => Boolean) extends C
     if (newTime.compareTo(lastModified.get) > 0) {
       lastModified.set(newTime)
       true
-    }
-    else false
+    } else false
   }
 
   override def script: String = {
