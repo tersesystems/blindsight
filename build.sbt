@@ -39,13 +39,13 @@ ThisBuild / scmInfo := Some(
 )
 
 val disableDocs = Seq[Setting[_]](
-  sources in (Compile, doc) := Seq.empty,
-  publishArtifact in (Compile, packageDoc) := false
+  Compile / doc / sources := Seq.empty,
+  Compile / packageDoc / publishArtifact := false
 )
 
 val disablePublishing = Seq[Setting[_]](
   publishArtifact := false,
-  skip in publish := true
+  publish / skip := true
 )
 
 // sbt ghpagesPushSite to publish to ghpages
@@ -70,17 +70,17 @@ lazy val docs = (project in file("docs"))
     ),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
     paradoxTheme := Some(builtinParadoxTheme("generic")),
-    mappings in makeSite ++= Seq(
+    makeSite / mappings ++= Seq(
       file("LICENSE") -> "LICENSE"
     ),
-    paradoxProperties in Compile ++= Map(
+    Compile / paradoxProperties ++= Map(
       "github.base_url"    -> s"https://github.com/tersesystems/blindsight/tree/v${version.value}",
       "canonical.base_url" -> "/blindsight/",
       "scaladoc.base_url"  -> "/blindsight/api/"
     ),
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(fixtures),
-    siteSubdirName in ScalaUnidoc := "api",
-    addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
+    (ScalaUnidoc / unidoc) / unidocProjectFilter := inAnyProject -- inProjects(fixtures),
+    ScalaUnidoc / siteSubdirName := "api",
+    addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
   )
   .settings(disablePublishing)
   .dependsOn(api, logstash, jsonld, ringbuffer)
@@ -201,7 +201,7 @@ lazy val logstash = (project in file("logstash"))
 lazy val benchmarks = (project in file("benchmarks"))
   .enablePlugins(JmhPlugin)
   .settings(
-    fork in run := true
+    run / fork := true
   )
   .settings(disableDocs)
   .settings(disablePublishing)
