@@ -49,15 +49,20 @@ class TweakFlowConditionManager(path: Path, verifier: String => Boolean) {
         import com.tersesystems.blindsight.DSL._
         import com.tersesystems.blindsight._
         val info = e.getSourceInfo
-        logger.error(
-          "Cannot execute script: {}",
+        val data = if (info != null) {
           bobj(
             "line"    -> info.getLine,
             "column"  -> info.getCharWithinLine,
             "error"   -> e.getCode.getName,
             "message" -> e.getDigestMessage
           )
-        )
+        } else {
+          bobj(
+            "error"   -> e.getCode.getName,
+            "message" -> e.getDigestMessage
+          )
+        }
+        logger.error("Cannot execute script: {}", data, e)
         false
     }
   }

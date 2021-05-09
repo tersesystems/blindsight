@@ -1,9 +1,10 @@
 package com.tersesystems.blindsight.scripting
 
-import java.io.{FileNotFoundException, IOException, Reader, StringReader}
-import java.nio.file.{Files, Path}
+import java.io.FileNotFoundException
 import java.nio.file.attribute.FileTime
+import java.nio.file.{Files, Path}
 import java.util.concurrent.atomic.AtomicReference
+import java.util.stream.Collectors
 
 trait ConditionSource {
 
@@ -27,11 +28,16 @@ class FileConditionSource(val path: Path, verifier: String => Boolean) extends C
   }
 
   override def script: String = {
-    val str = Files.readString(path)
-    if (verifier(str)) {
-      str
-    } else {
-      throw new IllegalStateException(s"Failed signature check on $path")
+    val reader = Files.newBufferedReader(path)
+    try {
+      val str = reader.lines().collect(Collectors.joining())
+      if (verifier(str)) {
+        str
+      } else {
+        throw new IllegalStateException(s"Failed signature check on $path")
+      }
+    } finally {
+      reader.close()
     }
   }
 }

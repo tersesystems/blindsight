@@ -202,9 +202,7 @@ lazy val scripting = (project in file("scripting"))
   .settings(
     name := "blindsight-scripting",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    libraryDependencies += "com.twineworks" % "tweakflow" % "1.3.2",
-    libraryDependencies += logbackClassic,
-    libraryDependencies += logstashLogbackEncoder
+    libraryDependencies += "com.twineworks" % "tweakflow" % "1.3.2"
   )
   .dependsOn(api, fixtures % "test->test")
 
