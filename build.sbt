@@ -45,7 +45,7 @@ val disableDocs = Seq[Setting[_]](
 
 val disablePublishing = Seq[Setting[_]](
   publishArtifact := false,
-  publish / skip  := true
+  publish / skip := true
 )
 
 // sbt ghpagesPushSite to publish to ghpages
