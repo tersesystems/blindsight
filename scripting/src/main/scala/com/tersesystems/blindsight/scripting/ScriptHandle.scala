@@ -55,16 +55,20 @@ class FileScriptHandle(val path: Path, verifier: String => Boolean, reporter: Th
       throw new FileNotFoundException(path.toAbsolutePath.toString)
     }
 
+    val str = readString(path)
+    if (verifier(str)) {
+      val newTime = Files.getLastModifiedTime(path)
+      lastModified.set(newTime)
+      str
+    } else {
+      throw new IllegalStateException(s"Failed verify check on $path")
+    }
+  }
+
+  protected def readString(path: Path): String = {
     val reader = Files.newBufferedReader(path)
     try {
-      val str = reader.lines().collect(Collectors.joining("\n"))
-      if (verifier(str)) {
-        val newTime = Files.getLastModifiedTime(path)
-        lastModified.set(newTime)
-        str
-      } else {
-        throw new IllegalStateException(s"Failed signature check on $path")
-      }
+      reader.lines().collect(Collectors.joining("\n"))
     } finally {
       reader.close()
     }
