@@ -95,10 +95,10 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
         override def enabled(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
           scriptManager.execute(super.enabled, level, enclosing, line, file)
         }
-        
+
         override def enabled(
-                              marker: Marker
-                            )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+            marker: Marker
+        )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
           scriptManager.execute(super.enabled(marker), level, enclosing, line, file)
         }
       }

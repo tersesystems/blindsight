@@ -26,9 +26,9 @@ class ScriptManager(handle: ScriptHandle) {
         eval(script).get
       }
       val levelV = Values.make(level.toInt)
-      val encV = Values.make(enclosing.value)
-      val lineV = Values.make(line.value)
-      val fileV = Values.make(file.value)
+      val encV   = Values.make(enclosing.value)
+      val lineV  = Values.make(line.value)
+      val fileV  = Values.make(file.value)
 
       call(levelV, encV, lineV, fileV)
     } catch {
@@ -39,7 +39,7 @@ class ScriptManager(handle: ScriptHandle) {
   }
 
   protected def call(level: Value, enc: Value, line: Value, file: Value): Boolean = {
-    val module = mref.get()
+    val module   = mref.get()
     val callSite = module.getLibrary("blindsight").getVar("evaluate")
 
     callSite.call(level, enc, line, file).bool()
@@ -50,8 +50,8 @@ class ScriptManager(handle: ScriptHandle) {
       .allowNativeFunctions(false)
       .add("condition.tf", script)
       .build
-    val loadPath    = new LoadPath.Builder().addStdLocation().add(memLocation).build()
-    val runtime     = TweakFlow.compile(loadPath, "condition.tf")
+    val loadPath = new LoadPath.Builder().addStdLocation().add(memLocation).build()
+    val runtime  = TweakFlow.compile(loadPath, "condition.tf")
     runtime.getModules.get(runtime.unitKey("condition.tf"))
   }
 

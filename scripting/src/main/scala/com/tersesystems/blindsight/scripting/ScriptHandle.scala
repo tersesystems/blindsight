@@ -31,12 +31,13 @@ trait ScriptHandle {
 
      watchService.close();
  }
-*/
+ */
 
 /**
  * A condition source that uses a direct path and verifies it.  Errors are sent to the reporter.
  */
-class FileScriptHandle(val path: Path, verifier: String => Boolean, reporter: Throwable => Unit) extends ScriptHandle {
+class FileScriptHandle(val path: Path, verifier: String => Boolean, reporter: Throwable => Unit)
+    extends ScriptHandle {
 
   private val lastModified = new AtomicReference[FileTime](Files.getLastModifiedTime(path))
 
@@ -71,4 +72,3 @@ class FileScriptHandle(val path: Path, verifier: String => Boolean, reporter: Th
 
   override def report(e: Throwable): Unit = reporter(e)
 }
-
