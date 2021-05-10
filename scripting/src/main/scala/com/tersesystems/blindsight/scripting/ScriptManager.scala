@@ -11,9 +11,15 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.util.Try
 
 class ScriptManager(handle: ScriptHandle) {
-  private val mref: AtomicReference[Runtime.Module] = new AtomicReference[Runtime.Module]()
+  protected val mref: AtomicReference[Runtime.Module] = new AtomicReference[Runtime.Module]()
 
-  private[scripting] def execute(
+  protected def path = "condition.tf"
+
+  protected def libraryName: String = "blindsight"
+
+  protected def functionName: String = "evaluate"
+
+  def execute(
       default: Boolean,
       level: Level,
       enclosing: Enclosing,
@@ -40,22 +46,21 @@ class ScriptManager(handle: ScriptHandle) {
 
   protected def call(level: Value, enc: Value, line: Value, file: Value): Boolean = {
     val module   = mref.get()
-    val callSite = module.getLibrary("blindsight").getVar("evaluate")
+    val callSite = module.getLibrary(libraryName).getVar(functionName)
 
     callSite.call(level, enc, line, file).bool()
   }
 
-  private def compileModule(script: String): Runtime.Module = {
+  protected def compileModule(script: String): Runtime.Module = {
     val memLocation = new MemoryLocation.Builder()
-      .allowNativeFunctions(false)
-      .add("condition.tf", script)
+      .add(path, script)
       .build
     val loadPath = new LoadPath.Builder().addStdLocation().add(memLocation).build()
-    val runtime  = TweakFlow.compile(loadPath, "condition.tf")
-    runtime.getModules.get(runtime.unitKey("condition.tf"))
+    val runtime  = TweakFlow.compile(loadPath, path)
+    runtime.getModules.get(runtime.unitKey(path))
   }
 
-  def eval(script: String): Try[Runtime.Module] = {
+  protected def eval(script: String): Try[Runtime.Module] = {
     Try {
       val module: Runtime.Module = compileModule(script)
       module.evaluate()
