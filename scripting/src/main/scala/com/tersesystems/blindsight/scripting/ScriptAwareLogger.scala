@@ -12,7 +12,7 @@ import sourcecode._
 /**
  * "top level" logger that lets us call logger.fluent, logger.flow etc.
  */
-class ScriptAwareLogger(core: CoreLogger, cm: TweakFlowConditionManager) extends Logger.Impl(core) {
+class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends Logger.Impl(core) {
 
   override protected val logger = new ScriptAwareSLF4JLogger(core)
 
@@ -24,7 +24,7 @@ class ScriptAwareLogger(core: CoreLogger, cm: TweakFlowConditionManager) extends
   override lazy val fluent: FluentLogger = new ScriptAwareFluentLogger(core)
 
   override protected def self(core: CoreLogger): Self = {
-    new ScriptAwareLogger(core, cm)
+    new ScriptAwareLogger(core, scriptManager)
   }
 
   override def semantic[StatementType: NotNothing]: SemanticLogger[StatementType] = {
@@ -43,13 +43,13 @@ class ScriptAwareLogger(core: CoreLogger, cm: TweakFlowConditionManager) extends
             file: File,
             enclosing: Enclosing
         ): Boolean = {
-          super.enabled && cm.execute(level, enclosing, line, file)
+          scriptManager.execute(super.enabled, level, enclosing, line, file)
         }
 
         override def enabled(
             marker: Marker
         )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
-          super.enabled(marker) && cm.execute(level, enclosing, line, file)
+          scriptManager.execute(super.enabled(marker), level, enclosing, line, file)
         }
       }
   }
@@ -65,7 +65,7 @@ class ScriptAwareLogger(core: CoreLogger, cm: TweakFlowConditionManager) extends
         override protected def enabled(
             markers: Markers
         )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
-          super.enabled(markers) && cm.execute(level, enclosing, line, file)
+          scriptManager.execute(super.enabled(markers), level, enclosing, line, file)
         }
       }
   }
@@ -79,7 +79,7 @@ class ScriptAwareLogger(core: CoreLogger, cm: TweakFlowConditionManager) extends
       override def enabled(
           markers: Markers
       )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
-        super.enabled(markers) && cm.execute(level, enclosing, line, file)
+        scriptManager.execute(super.enabled(markers), level, enclosing, line, file)
       }
     }
   }
@@ -91,14 +91,15 @@ class ScriptAwareLogger(core: CoreLogger, cm: TweakFlowConditionManager) extends
 
     override def method(level: Level): StrictSLF4JMethod = {
       new StrictSLF4JMethod.Impl(level, core) {
-        override def enabled(
-            marker: Marker
-        )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
-          super.enabled(marker) && cm.execute(level, enclosing, line, file)
-        }
 
         override def enabled(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
-          super.enabled && cm.execute(level, enclosing, line, file)
+          scriptManager.execute(super.enabled, level, enclosing, line, file)
+        }
+        
+        override def enabled(
+                              marker: Marker
+                            )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+          scriptManager.execute(super.enabled(marker), level, enclosing, line, file)
         }
       }
     }
