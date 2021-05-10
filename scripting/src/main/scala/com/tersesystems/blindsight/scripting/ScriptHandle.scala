@@ -41,11 +41,11 @@ class FileScriptHandle(val path: Path, verifier: String => Boolean, reporter: Th
   private val lastModified = new AtomicReference[FileTime](Files.getLastModifiedTime(path))
 
   override def isInvalid: Boolean = {
-    if (!Files.exists(path)) {
+    if (Files.exists(path)) {
       val newTime = Files.getLastModifiedTime(path)
       newTime.compareTo(lastModified.get) > 0
     } else {
-      true
+      false
     }
   }
 
