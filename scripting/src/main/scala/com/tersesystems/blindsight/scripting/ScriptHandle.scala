@@ -56,7 +56,7 @@ class FileScriptHandle(val path: Path, verifier: String => Boolean, reporter: Th
 
     val reader = Files.newBufferedReader(path)
     try {
-      val str = reader.lines().collect(Collectors.joining())
+      val str = reader.lines().collect(Collectors.joining("\n"))
       if (verifier(str)) {
         val newTime = Files.getLastModifiedTime(path)
         lastModified.set(newTime)
