@@ -29,9 +29,9 @@ class ConditionSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
         override def report(e: Throwable): Unit = e.printStackTrace()
       }
-      val sm = new ScriptManager(scriptHandle);
-      val underlying     = loggerContext.getLogger(this.getClass)
-      val logger = loggerFactory.getLogger(underlying)
+      val sm         = new ScriptManager(scriptHandle);
+      val underlying = loggerContext.getLogger(this.getClass)
+      val logger     = loggerFactory.getLogger(underlying)
 
       val location = new ScriptBasedLocation(sm, true)
       logger.debug.when(location.here) { log => // line 37 :-)
@@ -48,7 +48,6 @@ class ConditionSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     }
   }
 }
-
 
 // Very boring logger
 class BoringLoggerFactory extends LoggerFactory {

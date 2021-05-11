@@ -29,7 +29,7 @@ class SignatureBuilder(privateString: String) {
    */
   def verify(contents: String, signatureHex: String): Boolean = {
     val sha256Mac = MacBuilder.builder.withHmacSHA256().withString(privateString).build
-    val actual = sha256Mac.doFinal(contents.getBytes(StandardCharsets.UTF_8))
+    val actual    = sha256Mac.doFinal(contents.getBytes(StandardCharsets.UTF_8))
     val signature = hexToByteArray(signatureHex)
     MessageDigest.isEqual(actual, signature)
   }
@@ -43,11 +43,12 @@ class SignatureBuilder(privateString: String) {
   }
 
   private def hexToByteArray(s: String): Array[Byte] = {
-    val len = s.length
+    val len  = s.length
     val data = new Array[Byte](len / 2)
-    var i = 0
+    var i    = 0
     while (i < len) {
-      data(i / 2) = ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16)).toByte
+      data(i / 2) =
+        ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16)).toByte
       i += 2
     }
     data

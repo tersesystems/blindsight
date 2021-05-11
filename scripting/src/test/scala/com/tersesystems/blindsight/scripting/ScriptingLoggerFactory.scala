@@ -4,7 +4,6 @@ import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.CoreLogger
 
 /**
- *
  */
 class ScriptingLoggerFactory(scriptManager: ScriptManager) extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
@@ -12,4 +11,3 @@ class ScriptingLoggerFactory(scriptManager: ScriptManager) extends LoggerFactory
     new ScriptAwareLogger(CoreLogger(underlying), scriptManager)
   }
 }
-

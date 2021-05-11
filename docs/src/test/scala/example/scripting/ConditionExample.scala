@@ -17,7 +17,7 @@ object ConditionExample {
           |""".stripMargin
       override def report(e: Throwable): Unit = e.printStackTrace()
     }
-    val sm = new ScriptManager(scriptHandle)
+    val sm     = new ScriptManager(scriptHandle)
     val logger = LoggerFactory.getLogger
 
     val location = new ScriptBasedLocation(sm, true)
