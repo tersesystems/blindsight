@@ -31,7 +31,7 @@ class ScriptingLoggerFactory extends LogstashLoggerFactory {
       case lang: LangException =>
         val info = lang.getSourceInfo
         if (info != null) {
-          logger.error("Cannot evaluate script {}", info, e)
+          logger.error("Cannot evaluate script {}", info: Any, e: Any)
         } else {
           logger.error("Cannot evaluate script", e)
         }

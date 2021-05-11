@@ -37,7 +37,8 @@ class SignatureBuilder(privateString: String) {
   private def byteArrayToHex(a: Array[Byte]): String = {
     val sb = new StringBuilder(a.length * 2)
     for (b <- a) {
-      sb.append(String.format("%02x", b))
+      val str: String = String.format("%02x": String, b: java.lang.Byte)
+      sb.append(str)
     }
     sb.toString
   }
