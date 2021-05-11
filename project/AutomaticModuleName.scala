@@ -14,7 +14,7 @@ object AutomaticModuleName {
 
   def settings(name: String): Seq[Def.Setting[Task[Seq[PackageOption]]]] =
     Seq(
-      packageOptions in (Compile, packageBin) += Package.ManifestAttributes(
+      Compile / packageBin / packageOptions += Package.ManifestAttributes(
         AutomaticModuleName → name
       )
     )

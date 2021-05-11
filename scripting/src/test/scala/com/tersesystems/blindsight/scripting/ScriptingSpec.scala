@@ -28,9 +28,15 @@ class ScriptingSpec extends AnyWordSpec with Matchers with OneContextPerTest {
         }
         val sm = new ScriptManager(scriptHandle);
         val loggerFactory = new ScriptingLoggerFactory(sm)
-        val logger = loggerFactory.getLogger("example.Logger")
+        val underlying     = loggerContext.getLogger(this.getClass)
+        val logger = loggerFactory.getLogger(underlying)
 
         logger.info("Hello world!")
+        logger.debug("Should not be visible")
+
+        listAppender.list.size must be(1)
+        val event = listAppender.list.get(0)
+        event.getMessage must equal("Hello world!")
       }
 
     "work with a MAC script" in {
@@ -57,9 +63,15 @@ class ScriptingSpec extends AnyWordSpec with Matchers with OneContextPerTest {
         })
       val sm = new ScriptManager(scriptHandle);
       val loggerFactory = new ScriptingLoggerFactory(sm)
-      val logger = loggerFactory.getLogger("example.Logger")
+      val underlying     = loggerContext.getLogger(this.getClass)
+      val logger = loggerFactory.getLogger(underlying)
 
       logger.info("Hello world!")
+      logger.debug("Should not be visible")
+
+      listAppender.list.size must be(1)
+      val event = listAppender.list.get(0)
+      event.getMessage must equal("Hello world!")
     }
   }
 
