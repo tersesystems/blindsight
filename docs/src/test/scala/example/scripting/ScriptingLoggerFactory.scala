@@ -1,12 +1,15 @@
 package example.scripting
 
-import com.tersesystems.blindsight.{LoggerFactory, _}
+import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.CoreLogger
+import com.tersesystems.blindsight.logstash.LogstashLoggerFactory
 import com.tersesystems.blindsight.scripting.{ScriptAwareLogger, ScriptHandle, ScriptManager}
 import com.twineworks.tweakflow.lang.errors.LangException
 
 // #scripting_logger_factory
-class ScriptingLoggerFactory extends LoggerFactory {
+class ScriptingLoggerFactory extends LogstashLoggerFactory {
+
+  private val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 
   val scriptHandle = new ScriptHandle {
     override def isInvalid: Boolean = false
@@ -28,11 +31,12 @@ class ScriptingLoggerFactory extends LoggerFactory {
       case lang: LangException =>
         val info = lang.getSourceInfo
         if (info != null) {
-          System.err.println(s"source info = $info")
+          logger.error("Cannot evaluate script {}", info, e)
+        } else {
+          logger.error("Cannot evaluate script", e)
         }
-        lang.printStackTrace()
       case other: Throwable =>
-        other.printStackTrace()
+        logger.error("Cannot evaluate script", other)
     }
   }
   private val cm = new ScriptManager(scriptHandle)

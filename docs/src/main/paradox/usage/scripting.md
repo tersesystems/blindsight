@@ -13,21 +13,64 @@ library blindsight {
   #
   doc 'Evaluates a condition'
   function evaluate: (long level, string enc, long line, string file) ->
-    if (enc == "com.tersesystems.blindsight.scripting.Main.logDebugSpecial") then true
-    if (enc == "com.tersesystems.blindsight.scripting.Main.logInfoSpecial") then false
+    if (enc == "exampleapp.MyClass.logDebugSpecial") then true
     else (level >= 20); # info_int = 20
 }
 ```
 
-You can integrate tweakflow scripts through `ScriptHandle` and `ScriptManager` instances.  When the handle's `isInvalid` method returns `true`, the script is re-evaluated by the `ScriptManager` on the fly.  An example `FileScriptHandle` is provided.
+In this case, the script will return `true` if the logging statement is in the `logDebugSpecial` method of `exampleapp.MyClass`:
 
-## ScriptingLoggerFactory
+```scala
+package exampleapp
+class MyClass {
+  def logDebugSpecial(): Unit = {
+    logger.debug.when(location.here) { log => log("This will log!")}
+  }
+}
+```
 
-You can leverage scripting from a logger factory by pointing it to a script.  This will mean that all calls to the logger will pass through the script automatically.
+Otherwise, the script will return true iff the level is above or equal to 20 (the int value of `INFO`).
+
+Tweakflow has its own reference documentation, but it does not cover the standard library functions which include string matching.  The [test suite](https://github.com/twineworks/tweakflow/tree/master/src/test/resources/spec/std/strings) is a good place to start to show the standard library's capabilities.
+
+## Configuration
+
+Script-driven logging is most useful when it replaces level based logging, so in `logback.xml` you should set the level to `ALL` for the package you want:
+
+```xml
+<logger name="exampleapp" value="ALL"/>
+```
+
+@@@warning
+
+You should **not** set the root logger level to `ALL`.   
+
+Since Blindsight can only add source level information to your own code, packages based on libraries, i.e. `play.api` and `akka` will still use the SLF4J API directly and will not go through scripting. 
+
+@@@
+
+You can integrate tweakflow scripts through @scaladoc[ScriptHandle](com.tersesystems.blindsight.scripting.ScriptHandle) and  @scaladoc[ScriptManager](com.tersesystems.blindsight.scripting.ScriptManager) instances.  When the handle's `isInvalid` method returns `true`, the script is re-evaluated by the @scaladoc[ScriptManager](com.tersesystems.blindsight.scripting.ScriptManager) on the fly.  
+
+An example @scaladoc[FileScriptHandle](com.tersesystems.blindsight.scripting.FileScriptHandle) that compares the file's last modified date to determine validity. A verifier function is provided, which can be leveraged to check the script with a message authentication code.  Please see the `SignatureBuilder` in the test cases on Github for examples.
+
+## Script Aware Logging
+
+You can leverage scripting from a @scaladoc[ScriptAwareLogger](com.tersesystems.blindsight.scripting.ScriptAwareLogger).  All calls to the logger will pass through the script automatically.
+
+You can create @scaladoc[ScriptAwareLogger](com.tersesystems.blindsight.scripting.ScriptAwareLogger) directly with a CoreLogger:
+
+```scala
+import com.tersesystems.blindsight.scripting._
+val slf4jLogger = org.slf4j.LoggerFactory.getLogger(getClass)
+val scriptManager: ScriptManager = ???
+val logger = new ScriptAwareLogger(CoreLogger(slf4jLogger), scriptManager)
+```
+
+Or you can register all logging using a factory.  Create a factory class:
 
 @@snip [ScriptingLoggerFactory.scala](../../../test/scala/example/scripting/ScriptingLoggerFactory.scala) { #scripting_logger_factory }
 
-To activate the `ScriptingLoggerFactory`, you must register it with the service loader.  In a `resources` directory, create a `META-INF/services` directory, and create a `com.tersesystems.blindsight.LoggerFactory` file containing the following
+To activate the `ScriptingLoggerFactory`, you must register it with the [service loader](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html#register-service-providers) by creating a service provider configuration file.  In a `resources` directory, create a `META-INF/services` directory, and create a `com.tersesystems.blindsight.LoggerFactory` file containing the following:
 
 ```
 # com.tersesystems.blindsight.LoggerFactory
@@ -36,7 +79,7 @@ com.tersesystems.blindsight.scripting.ScriptingLoggerFactory
 
 ## Script Conditions
 
-If you only want some logging statements to be source aware, you can use a `SourceAwareLocation`, which returns a condition containing the source code information used by a script.
+If you only want some logging statements to be source aware, you can use a @scaladoc[ScriptBasedLocation](com.tersesystems.blindsight.scripting.ScriptBasedLocation), which returns a condition containing the source code information used by a script.
 
 @@snip [ConditionExample.scala](../../../test/scala/example/scripting/ConditionExample.scala) { #scripting_condition }
 

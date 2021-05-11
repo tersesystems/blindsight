@@ -10,9 +10,13 @@ object ConditionExample {
     val scriptHandle = new ScriptHandle {
       override def isInvalid: Boolean = false
       override val script: String =
-        """library blindsight {
+        """import strings as s from 'std.tf';
+          |alias s.ends_with? as ends_with?;
+          |
+          |library blindsight {
           |  function evaluate: (long level, string enc, long line, string file) ->
-          |    true;
+          |    if (ends_with?(enc, "main")) then true
+          |    else false;
           |}
           |""".stripMargin
       override def report(e: Throwable): Unit = e.printStackTrace()
