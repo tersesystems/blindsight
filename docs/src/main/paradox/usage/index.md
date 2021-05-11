@@ -15,6 +15,7 @@
 * [Entry Transformation](transform.md)
 * [Event Buffers](buffer.md)
 * [Source Code](sourcecode.md)
+* [Scripting](scripting.md)
 
 @@@
 
@@ -90,6 +91,14 @@ logger.info.when(booleanCondition) { info => info("when true") }
 
 ```scala
 logger.withMarker("userId" -> userId).info("Logging with user id added as a context marker!")
+```
+
+@ref:[Scripting](scripting.md):
+
+```scala
+logger.debug.when(location.here) { log =>
+  log("script allows selective logging by method or by line")
+}
 ```
 
 @@toc { depth=1 }

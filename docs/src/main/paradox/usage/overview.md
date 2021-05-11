@@ -82,8 +82,6 @@ All of these together make a logging statement.
 Blindsight keeps the same concept these parameters, but creates specific types; @scaladoc[Markers](com.tersesystems.blindsight.Markers), @scaladoc[Message](com.tersesystems.blindsight.Message), and @scaladoc[Argument](com.tersesystems.blindsight.Argument), with a @scaladoc[Statement](com.tersesystems.blindsight.Statement) that encompasses all the above.
 
 ```scala
-
-
 val markers: Markers = Markers(marker1, marker2)
 val message: Message = Message("some message")
 val argument1: Argument = Argument("arg1")

@@ -109,56 +109,99 @@ Breaking down the API means that you can pass through only the `LoggerMethod`, o
 
 ### Complete Implementation
 
-If you want to define your own logger from scratch, with a completely different API, that's easy enough too.  Blindsight's API is small enough that you can swap out parts in a modular way.
-
-For example, here's a custom logger that just has `is*` instead of `is*Enabled`:
+If you want to define your own logger, you can easily swap out behavior.  For example, here's the `ScriptAwareLogger` that calls out to a script manager.
 
 ```scala
-import com.tersesystems.blindsight.{Condition, Entry, EventBuffer, Markers, ToMarkers}
-import com.tersesystems.blindsight.core.{CoreLogger, CorePredicate}
-import com.tersesystems.blindsight.slf4j.{SLF4JLogger, StrictSLF4JMethod}
-import org.slf4j.Logger
-import org.slf4j.event.Level
-import org.slf4j.event.Level.{DEBUG, ERROR, INFO, TRACE, WARN}
+class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends Logger.Impl(core) {
 
-class CustomLogger(private val core: CoreLogger = CustomLogger.coreLogger) extends SLF4JLogger[StrictSLF4JMethod] {
-  override type Self = CustomLogger
-  override type Method = StrictSLF4JMethod
-  override type Predicate = CorePredicate
+  override protected val logger = new ScriptAwareSLF4JLogger(core)
 
-  override val underlying: Logger = core.underlying
+  override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
 
-  override val markers: Markers = core.markers
+  override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] =
+    new ScriptAwareUncheckedSLF4JLogger(core)
 
-  override def withEntryTransform(level: Level, f: Entry => Entry): Self =
-    new CustomLogger(core.withEntryTransform(level, f))
+  override lazy val fluent: FluentLogger = new ScriptAwareFluentLogger(core)
 
-  override def withEntryTransform(f: Entry => Entry): Self =
-    new CustomLogger(core.withEntryTransform(f))
+  override protected def self(core: CoreLogger): Self = {
+    new ScriptAwareLogger(core, scriptManager)
+  }
 
-  override def withEventBuffer(buffer: EventBuffer): Self =
-    new CustomLogger(core.withEventBuffer(buffer))
+  override def semantic[StatementType: NotNothing]: SemanticLogger[StatementType] = {
+    new ScriptAwareSemanticLogger(core)
+  }
 
-  override def withEventBuffer(level: Level, buffer: EventBuffer): Self =
-    new CustomLogger(core.withEventBuffer(level, buffer))
+  class ScriptAwareUncheckedSLF4JLogger(core: CoreLogger) extends SLF4JLogger.Unchecked(core) {
+    override def self(core: CoreLogger): SLF4JLogger[UncheckedSLF4JMethod] = {
+      new ScriptAwareUncheckedSLF4JLogger(core)
+    }
 
-  override def withCondition(condition: Condition): Self =
-    new CustomLogger(core.withCondition(condition))
+    override def method(level: Level): UncheckedSLF4JMethod =
+      new UncheckedSLF4JMethod.Impl(level, core) {
+        override protected def enabled(implicit
+                                       line: Line,
+                                       file: File,
+                                       enclosing: Enclosing
+                                      ): Boolean = {
+          scriptManager.execute(super.enabled, level, enclosing, line, file)
+        }
 
-  override def withMarker[T: ToMarkers](instance: T): Self =
-    new CustomLogger(core.withMarker(instance))
+        override def enabled(
+                              marker: Marker
+                            )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+          scriptManager.execute(super.enabled(marker), level, enclosing, line, file)
+        }
+      }
+  }
 
-  // note different "method names"
-  override val isTrace: Predicate = core.predicate(TRACE)
-  override val isDebug: Predicate = core.predicate(DEBUG)
-  override val isInfo: Predicate = core.predicate(INFO)
-  override val isWarn: Predicate = core.predicate(WARN)
-  override val isError: Predicate = core.predicate(ERROR)
+  class ScriptAwareSemanticLogger[StatementType: NotNothing](core: CoreLogger)
+    extends SemanticLogger.Impl[StatementType](core) {
+    override protected def self[T: NotNothing](core: CoreLogger): Self[T] = {
+      new ScriptAwareSemanticLogger(core)
+    }
 
-  override val trace: Method = new StrictSLF4JMethod.Impl(TRACE, core)
-  override val debug: Method = new StrictSLF4JMethod.Impl(DEBUG, core)
-  override val info: Method = new StrictSLF4JMethod.Impl(INFO, core)
-  override val warn: Method = new StrictSLF4JMethod.Impl(WARN, core)
-  override val error: Method = new StrictSLF4JMethod.Impl(ERROR, core)
+    override def method(level: Level): Method[StatementType] =
+      new SemanticMethod.Impl[StatementType](level, core) {
+        override protected def enabled(
+                                        markers: Markers
+                                      )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+          scriptManager.execute(super.enabled(markers), level, enclosing, line, file)
+        }
+      }
+  }
+
+  class ScriptAwareFluentLogger(core: CoreLogger) extends FluentLogger.Impl(core) {
+    override protected def self(core: CoreLogger): Self = {
+      new ScriptAwareFluentLogger(core)
+    }
+
+    override def method(level: Level): FluentMethod = new FluentMethod.Impl(level, core) {
+      override def enabled(
+                            markers: Markers
+                          )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+        scriptManager.execute(super.enabled(markers), level, enclosing, line, file)
+      }
+    }
+  }
+
+  class ScriptAwareSLF4JLogger(core: CoreLogger) extends SLF4JLogger.Strict(core) {
+    override protected def self(core: CoreLogger): Self = {
+      new ScriptAwareSLF4JLogger(core)
+    }
+
+    override def method(level: Level): StrictSLF4JMethod = {
+      new StrictSLF4JMethod.Impl(level, core) {
+        override def enabled(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+          scriptManager.execute(super.enabled, level, enclosing, line, file)
+        }
+
+        override def enabled(
+                              marker: Marker
+                            )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
+          scriptManager.execute(super.enabled(marker), level, enclosing, line, file)
+        }
+      }
+    }
+  }
 }
 ```

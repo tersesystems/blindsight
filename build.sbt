@@ -83,7 +83,7 @@ lazy val docs = (project in file("docs"))
     addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
   )
   .settings(disablePublishing)
-  .dependsOn(api, logstash, jsonld, ringbuffer)
+  .dependsOn(api, logstash, jsonld, ringbuffer, scripting)
 
 lazy val fixtures = (project in file("fixtures"))
   .settings(
@@ -197,6 +197,16 @@ lazy val logstash = (project in file("logstash"))
   )
   .dependsOn(api, fixtures % "test->test")
 
+lazy val scripting = (project in file("scripting"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
+  .settings(
+    name := "blindsight-scripting",
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+    libraryDependencies += tweakFlow,
+    libraryDependencies += securitybuilder % Test
+  )
+  .dependsOn(api, fixtures % "test->test")
+
 // https://github.com/ktoso/sbt-jmh
 lazy val benchmarks = (project in file("benchmarks"))
   .enablePlugins(JmhPlugin)
@@ -222,4 +232,4 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, benchmarks, logstash, ringbuffer, jsonld, generic)
+  .aggregate(api, docs, fixtures, benchmarks, logstash, scripting, ringbuffer, jsonld, generic)

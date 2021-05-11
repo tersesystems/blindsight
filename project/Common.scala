@@ -17,10 +17,10 @@ object Common extends AutoPlugin {
   override lazy val projectSettings = {
     inTask(doc)(
       Seq(
-        scalacOptions in Compile ++= scaladocOptions(
+        Compile / scalacOptions ++= scaladocOptions(
           scalaBinaryVersion.value,
           version.value,
-          (baseDirectory in ThisBuild).value
+          (ThisBuild / baseDirectory).value
         ),
         autoAPIMappings := true
       )
