@@ -83,7 +83,7 @@ lazy val docs = (project in file("docs"))
     addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
   )
   .settings(disablePublishing)
-  .dependsOn(api, logstash, jsonld, ringbuffer)
+  .dependsOn(api, logstash, jsonld, ringbuffer, scripting)
 
 lazy val fixtures = (project in file("fixtures"))
   .settings(

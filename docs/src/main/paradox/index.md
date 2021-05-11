@@ -29,6 +29,7 @@ Blindsight is a logging library written in Scala that wraps SLF4J to add @ref:[u
 * Minimal-overhead tracing and causality tracking through @ref:[flow logging](usage/flow.md).
 * Providing thread-safe context to logs through @ref:[context aware logging](usage/context.md).
 * Time-based and targeted diagnostic logging through @ref:[conditional logging](usage/conditional.md).
+* Runtime method or line based logging overrides through @ref:[scripting](usage/scripting.md).
 
 The only hard dependency is the SLF4J API, but the DSL functionality is only implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder).
 
