@@ -115,6 +115,9 @@ object ParameterList {
               markerMessageArgs(markers.marker, m.toString, args.toArray :+ exception)
             }
           }
+
+        case other =>
+          throw new IllegalStateException("Unknown state for statement " + other)
       }
   }
 

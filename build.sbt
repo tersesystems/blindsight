@@ -83,7 +83,7 @@ lazy val docs = (project in file("docs"))
     addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
   )
   .settings(disablePublishing)
-  .dependsOn(api, logstash, jsonld, ringbuffer, scripting)
+  .dependsOn(api, logstash, jsonld, ringbuffer, scripting, macros)
 
 lazy val fixtures = (project in file("fixtures"))
   .settings(
@@ -158,7 +158,6 @@ lazy val api = (project in file("api"))
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaCollectionCompat,
@@ -195,7 +194,26 @@ lazy val logstash = (project in file("logstash"))
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
   )
-  .dependsOn(api, fixtures % "test->test")
+  .dependsOn(api, macros, fixtures % "test->test")
+
+lazy val macros = (project in file("macros"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.macros"))
+  .settings(
+    name := "blindsight-macros",
+    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
+    scalacOptions := scalacOptionsVersion(scalaVersion.value)
+  )
+  .dependsOn(api)
+
+lazy val macrosTest = (project in file("macros-test"))
+  .settings(disableDocs)
+  .settings(disablePublishing)
+  .settings(
+    name := "blindsight-macros-test",
+    //libraryDependencies += "io.bullet" %% "macrolizer" % "0.5.0" % Test,
+    scalacOptions := scalacOptionsVersion(scalaVersion.value)
+  )
+  .dependsOn(macros, fixtures % "test->test")
 
 lazy val scripting = (project in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
@@ -224,7 +242,7 @@ lazy val generic = (project in file("generic"))
     name := "blindsight-generic",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
-  .dependsOn(api)
+  .dependsOn(api, macros)
 
 lazy val root = (project in file("."))
   .settings(
@@ -232,4 +250,16 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, benchmarks, logstash, scripting, ringbuffer, jsonld, generic)
+  .aggregate(
+    api,
+    docs,
+    fixtures,
+    benchmarks,
+    macros,
+    macrosTest,
+    logstash,
+    scripting,
+    ringbuffer,
+    jsonld,
+    generic
+  )
