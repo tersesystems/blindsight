@@ -29,7 +29,7 @@ class MyClass {
 }
 ```
 
-Otherwise, the script will return true iff the level is above or equal to 20 (the int value of `INFO`).
+Otherwise, the script will return true iff the level is above or equal to 20 (the integer value of `INFO`).
 
 Tweakflow has its own reference documentation, but it does not cover the standard library functions which include string matching.  The [test suite](https://github.com/twineworks/tweakflow/tree/master/src/test/resources/spec/std/strings) is a good place to start to show the standard library's capabilities.
 
@@ -66,7 +66,11 @@ val scriptManager: ScriptManager = ???
 val logger = new ScriptAwareLogger(CoreLogger(slf4jLogger), scriptManager)
 ```
 
-Or you can register all logging using a factory.  Create a factory class:
+Or you can register all logging using a custom logger factory.
+
+Start by installing @ref:[`blindsight-generic`](../setup/index.md) which does not have a service provider already exposed.
+
+Create a factory class:
 
 @@snip [ScriptingLoggerFactory.scala](../../../test/scala/example/scripting/ScriptingLoggerFactory.scala) { #scripting_logger_factory }
 

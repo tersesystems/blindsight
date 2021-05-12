@@ -7,7 +7,7 @@ import com.tersesystems.blindsight.scripting.{ScriptAwareLogger, ScriptHandle, S
 import com.twineworks.tweakflow.lang.errors.LangException
 
 // #scripting_logger_factory
-class ScriptingLoggerFactory extends LogstashLoggerFactory {
+class ScriptingLoggerFactory extends LoggerFactory {
 
   private val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 

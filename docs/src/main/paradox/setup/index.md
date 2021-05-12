@@ -30,7 +30,11 @@ It is recommended (but not required) to use [Terse Logback](https://tersesystems
 
 ## Generic
 
-If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don't want to use the Logstash binding, you should use `blindsight-generic`, which has a service loader binding that depends solely on `slf4j-api`.  This package does not have the already configured implementation for @scaladoc[ArgumentResolver](com.tersesystems.blindsight.ArgumentResolver) or @scaladoc[MarkersResolver](com.tersesystems.blindsight.MarkersResolver), which means that you must implement these yourself for custom source code information.
+If you are using another SLF4J compatible framework like Log4J 2 or SLF4J Simple, or don't want to use the Logstash binding, you should use `blindsight-generic`, which has a service loader binding that depends solely on `slf4j-api`.  This package does not register a service provider.
+
+The generic package is useful in situations where you want a custom `LoggerFactory`, for example in @ref:[scripting](../usage/scripting.md).
+
+This package does not have the already configured implementation for @scaladoc[ArgumentResolver](com.tersesystems.blindsight.ArgumentResolver) or @scaladoc[MarkersResolver](com.tersesystems.blindsight.MarkersResolver), which means that you must implement these yourself.
 
 @@dependency[sbt,Maven,Gradle] {
 group="com.tersesystems.blindsight"
