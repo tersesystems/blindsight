@@ -125,7 +125,7 @@ and the following dependencies:
   version="latest.version"
 }
 
-See [play-blindsight](http://github.com/tersesystems/play-blindsight) for a worked example.
+See [play-blindsight](https://github.com/tersesystems/play-blindsight) for a worked example.
 
 ![trace.png](trace.png)
 

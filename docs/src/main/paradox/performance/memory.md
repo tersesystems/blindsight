@@ -1,6 +1,6 @@
 # Memory Usage
 
-Kirk Pepperdine gives a very interesting presentation called **The Trouble with Memory** ( [transcript](https://www.infoq.com/presentations/memory-jvm) / [video](https://youtu.be/mfS-P49FSbY?t=549) / [slides](https://qconsf.com/system/files/presentation-slides/trouble_with_memory.pdf) ), which discusses "memory churn" -- excessive amounts of allocation and release of heap in the JVM.   The performance impact of memory is not well-known, but according to Pepperdine it can have severe effects on applications, while being very difficult to spot.
+Kirk Pepperdine gives a very interesting presentation called **The Trouble with Memory** ( [transcript](https://www.infoq.com/presentations/memory-jvm/) / [video](https://www.youtube.com/watch?t=549&v=mfS-P49FSbY&feature=youtu.be) / [slides](https://qconsf.com/system/files/presentation-slides/trouble_with_memory.pdf) ), which discusses "memory churn" -- excessive amounts of allocation and release of heap in the JVM.   The performance impact of memory is not well-known, but according to Pepperdine it can have severe effects on applications, while being very difficult to spot.
 
 One anecdote stood out in particular:
 
