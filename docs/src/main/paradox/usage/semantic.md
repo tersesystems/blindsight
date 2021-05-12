@@ -1,6 +1,6 @@
 # Semantic API
 
-A semantic logging API is [strongly typed](https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md) and does not have the same construction oriented approach as the fluent API.  Instead, the type of the instance is presumed to have a mapping directly to the attributes being logged.
+A semantic logging API is [strongly typed](https://github.com/microsoft/perfview/blob/main/documentation/TraceEvent/TraceEventProgrammersGuide.md) and does not have the same construction oriented approach as the fluent API.  Instead, the type of the instance is presumed to have a mapping directly to the attributes being logged.
 
 The semantic API works against @scaladoc[Statement](com.tersesystems.blindsight.Statement) directly.  The application is expected to handle the type class mapping to @scaladoc[Statement](com.tersesystems.blindsight.Statement).
 

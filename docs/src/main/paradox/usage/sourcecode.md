@@ -1,6 +1,6 @@
 # Source Code
 
-SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/lihaoyi/sourcecode) macros.  Internally, the @scaladoc[LogstashLoggerFactory](com.tersesystems.blindsight.logstash.LogstashLoggerFactory) adds extra markers to logging statements based on the macros.
+SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/com-lihaoyi/sourcecode) macros.  Internally, the @scaladoc[LogstashLoggerFactory](com.tersesystems.blindsight.logstash.LogstashLoggerFactory) adds extra markers to logging statements based on the macros.
 
 To enable this, use `blindsight-logstash` and add a `blindsight.source.enabled` property to the Logback context with the value of `true`:
 

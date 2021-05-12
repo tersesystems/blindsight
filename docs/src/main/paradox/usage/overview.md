@@ -156,7 +156,7 @@ See @ref:[Fluent API](fluent.md) for details.
 
 ## Semantic API
 
-The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a [semantic, strongly typed logging](https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md) API.  A @scaladoc[SemanticLogger](com.tersesystems.blindsight.semantic.SemanticLogger) is accessible through `logger.semantic`:
+The @scaladoc[Logger](com.tersesystems.blindsight.Logger) instance provides access to a [semantic, strongly typed logging](https://github.com/microsoft/perfview/blob/main/documentation/TraceEvent/TraceEventProgrammersGuide.md) API.  A @scaladoc[SemanticLogger](com.tersesystems.blindsight.semantic.SemanticLogger) is accessible through `logger.semantic`:
 
 ```scala
 
@@ -280,7 +280,7 @@ val event = queueBuffer.head
 
 ## Source Code
 
-SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/lihaoyi/sourcecode) macros, using the @scaladoc[SourceInfoMixin](com.tersesystems.blindsight.mixins.SourceInfoMixin) on the logger.
+SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive.  Blindsight provides this information for free, at compile time, through [sourcecode](https://github.com/com-lihaoyi/sourcecode) macros, using the @scaladoc[SourceInfoMixin](com.tersesystems.blindsight.mixins.SourceInfoMixin) on the logger.
 
 When using `blindsight-generic`, this returns `Markers.empty`, but when using `blindsight-logstash`, this adds `source.line`, `source.file` and `source.enclosing` to the JSON logs automatically:
 

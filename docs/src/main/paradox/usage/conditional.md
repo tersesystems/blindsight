@@ -75,7 +75,7 @@ You can rate limit your logging, or manage logging with a circuit breaker, so th
 
 ## Conditional on Feature Flag
 
-[Feature Flag](https://martinfowler.com/articles/feature-toggles.html) systems allow you to turn on and off features in the application at runtime, in response to complex inputs.  Commercial feature flag systems like [Launch Darkly](https://docs.launchdarkly.com/home/managing-flags/targeting-users#section-assigning-users-to-a-variation) allow you to target feature flags to specific users.
+[Feature Flag](https://martinfowler.com/articles/feature-toggles.html) systems allow you to turn on and off features in the application at runtime, in response to complex inputs.  Commercial feature flag systems like [Launch Darkly](https://docs.launchdarkly.com/home/flags/targeting-users) allow you to target feature flags to specific users.
 
 @@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #featureflag-conditional }
 
@@ -91,7 +91,7 @@ This works best with a @scaladoc[Deadline](scala.concurrent.duration.Deadline):
 
 @@snip [ConditionalExample.scala](../../../test/scala/example/conditional/ConditionalExample.scala) { #deadline-conditional }
 
-For periodic scheduling, you can use [CronScheduler](https://github.com/TimeAndSpaceIO/CronScheduler) in conjunction with an @javadoc[AtomicBoolean](java.util.concurrent.atomic.AtomicBoolean).  You can use @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService), but be aware that @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService) is not good at handling a periodic schedule as it can suffer from [extended drift, especially when system time is corrected](https://medium.com/@leventov/cronscheduler-a-reliable-java-scheduler-for-external-interactions-cb7ce4a4f2cd).
+For periodic scheduling, you can use [CronScheduler](https://github.com/TimeAndSpaceIO/CronScheduler) in conjunction with an @javadoc[AtomicBoolean](java.util.concurrent.atomic.AtomicBoolean).  You can use @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService), but be aware that @javadoc[ScheduledExecutorService](java.util.concurrent.ScheduledExecutorService) is not good at handling a periodic schedule as it can suffer from [extended drift, especially when system time is corrected](https://leventov.medium.com/cronscheduler-a-reliable-java-scheduler-for-external-interactions-cb7ce4a4f2cd).
 
 To use CronScheduler, first define a periodic scheduler in Java:
 
