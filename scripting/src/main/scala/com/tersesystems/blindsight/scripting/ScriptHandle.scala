@@ -6,16 +6,29 @@ import java.nio.file.{Files, Path}
 import java.util.concurrent.atomic.AtomicReference
 import java.util.stream.Collectors
 
+/**
+ * A script handle returns the script source, and can say if the script is invalid.
+ */
 trait ScriptHandle {
+
+  /**
+   * @return true if the script is invalid and should be re-evaluated, false otherwise.
+   */
   def isInvalid: Boolean
 
+  /**
+   * @return the code of the script.
+   */
   def script: String
 
+  /**
+   * If evaluating or parsing the script throws an exception, this method is called.
+   */
   def report(e: Throwable): Unit
 }
 
 /**
- * A condition source that uses a direct path and verifies it.  Errors are sent to the reporter.
+ * A script handle that uses a direct path and verifies it.  Errors are sent to the reporter.
  */
 class FileScriptHandle(val path: Path, verifier: String => Boolean, reporter: Throwable => Unit)
     extends ScriptHandle {
