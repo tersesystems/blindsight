@@ -206,7 +206,7 @@ val markerLogger = logger.withMarker(bobj("userId" -> userId))
 markerLogger.info("Logging with user id added as a context marker!")
 
 // can retrieve state markers
-val contextMarkers: Markers = logger.markers
+val contextMarkers: Markers = markerLogger.markers
 ```
 
 [Entry Transformation](https://tersesystems.github.io/blindsight/usage/transform.html):
