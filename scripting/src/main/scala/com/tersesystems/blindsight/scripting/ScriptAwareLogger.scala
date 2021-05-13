@@ -10,7 +10,11 @@ import org.slf4j.event.Level
 import sourcecode._
 
 /**
- * "top level" logger that lets us call logger.fluent, logger.flow etc.
+ * A logger that runs through a script manager for every predicate.  The script manager is responsible
+ * for evaluating the script and return true or false.  The only thing the logger does here is pass
+ * through sourcecode information and the level.
+ *
+ * If the script fails or throws an exception, the underlying predicate is called as the default.
  */
 class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends Logger.Impl(core) {
 

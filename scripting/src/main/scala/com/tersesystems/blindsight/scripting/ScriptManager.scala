@@ -10,6 +10,9 @@ import sourcecode.{Enclosing, File, Line}
 import java.util.concurrent.atomic.AtomicReference
 import scala.util.Try
 
+/**
+ * A script manager that parses and evaluates tweakflow scripts.
+ */
 class ScriptManager(handle: ScriptHandle) {
   protected val mref: AtomicReference[Runtime.Module] = new AtomicReference[Runtime.Module]()
 
