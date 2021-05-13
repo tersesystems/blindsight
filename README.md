@@ -28,7 +28,7 @@ Blindsight is a logging library written in Scala that wraps SLF4J to add [useful
 * Time-based and targeted diagnostic logging through [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html).
 * Hooks into logging entries through [entry transformation](https://tersesystems.github.io/blindsight/usage/transform.html)
 * Application accessible debug and trace logs through [event buffers](https://tersesystems.github.io/blindsight/usage/buffer.html)
-* Method or line based logging overrides at runtime through [scripting](https://tersesystems.github.io/blindsight/usage/scripting.md).
+* Method or line based logging overrides at runtime through [scripting](https://tersesystems.github.io/blindsight/usage/scripting.html).
 
 ## Dependencies
 
@@ -230,7 +230,7 @@ logger.info("Hello world")
 val event = queueBuffer.head
 ```
 
-[Scripting](https://tersesystems.github.io/blindsight/usage/scripting.md):
+[Scripting](https://tersesystems.github.io/blindsight/usage/scripting.html):
 
 ```scala
 val scriptHandle = new ScriptHandle {
@@ -247,16 +247,16 @@ val scriptHandle = new ScriptHandle {
       |""".stripMargin
   override def report(e: Throwable): Unit = e.printStackTrace()
 }
-val scriptManager = new ScriptManager(scriptHandle) // or FileScriptHandle
+val scriptManager = new ScriptManager(scriptHandle) 
 val location = new ScriptAwareLocation(scriptManager)
 
 def specialMethodName = {
-  logger.debug.when(location.here) { log =>
+  // inside the specialMethodName method here :-)
+  logger.debug.when(location.here) { log => 
     log("script allows selective logging by method or by line")
   }
 }
 ```
-
 
 ## Example
 
