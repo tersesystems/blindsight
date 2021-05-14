@@ -31,21 +31,21 @@ case class ParameterList(parameters: Seq[DumpTerm]) {
 
 object DebugMacros {
 
-  def decorateIfs[A](output: DebugBranch => Unit)(a: A): A = macro impl.decorateIfs
+  def decorateIfs[A](output: DebugBranch => Unit)(ifStatement: A): A = macro impl.decorateIfs
 
-  def decorateMatch[A](output: DebugBranch => Unit)(a: A): A = macro impl.decorateMatch
+  def decorateMatch[A](output: DebugBranch => Unit)(matchStatement: A): A = macro impl.decorateMatch
 
-  def decorateVals[A](output: DebugVal => Unit)(expr: A): A = macro impl.decorateVals[A]
+  def decorateVals[A](output: DebugVal => Unit)(block: A): A = macro impl.decorateVals[A]
 
-  def dumpExpr[A](output: DebugResult[A] => Unit)(a: A): A = macro impl.debugExprImpl[A]
+  def dumpExpr[A](output: DebugResult[A] => Unit)(block: A): A = macro impl.dumpExpr[A]
 
-  def dumpMethod: DumpMethod = macro impl.dumpMethodImpl
+  def dumpMethod: DumpMethod = macro impl.dumpMethod
 
-  def dumpConstructor: DumpConstructor = macro impl.dumpConstructorImpl
+  def dumpConstructor: DumpConstructor = macro impl.dumpConstructor
 
-  def dumpFields: Seq[DebugVal] = macro impl.debugFields
+  def dumpFields: Seq[DebugVal] = macro impl.dumpFields
 
-  def dumpPublicFields[A](instance: A): Seq[DebugVal] = macro impl.debugPublicFields[A]
+  def dumpPublicFields[A](instance: A): Seq[DebugVal] = macro impl.dumpPublicFields[A]
 
   private class impl(val c: blackbox.Context) {
     import c.universe._
@@ -72,8 +72,8 @@ object DebugMacros {
     /**
      * Add debugging information to if statements
      */
-    def decorateIfs(output: c.Expr[DebugBranch => Unit])(a: c.Tree): c.Tree = {
-      a match {
+    def decorateIfs(output: c.Expr[DebugBranch => Unit])(ifStatement: c.Tree): c.Tree = {
+      ifStatement match {
         // https://docs.scala-lang.org/overviews/quasiquotes/expression-details.html#if
         case q"if ($cond) $thenp else $elsep" =>
           val condSource = extractRange(cond) getOrElse ""
@@ -105,8 +105,8 @@ object DebugMacros {
       }
     }
 
-    def decorateMatch(output: c.Expr[DebugBranch => Unit])(a: c.Tree): c.Tree = {
-      a match {
+    def decorateMatch(output: c.Expr[DebugBranch => Unit])(matchStatement: c.Tree): c.Tree = {
+      matchStatement match {
         // https://docs.scala-lang.org/overviews/quasiquotes/expression-details.html#if
         case q"$expr match { case ..$cases }" =>
           val enhancedCases = cases.map {
@@ -130,19 +130,19 @@ object DebugMacros {
     /**
      * Provides the string with the given source.
      */
-    def debugExprImpl[A: c.WeakTypeTag](
+    def dumpExpr[A: c.WeakTypeTag](
                                          output: c.Expr[DebugResult[A] => Unit]
-                                       )(a: c.Expr[A]): c.Expr[A] = {
-      val portion = extractRange(a.tree) getOrElse ""
+                                       )(block: c.Expr[A]): c.Expr[A] = {
+      val portion = extractRange(block.tree) getOrElse ""
       val const   = c.Expr[String](Literal(Constant(portion)))
-      c.Expr[A](q"""$output(DebugResult($const, $a)); $a""")
+      c.Expr[A](q"""$output(DebugResult($const, $block)); $block""")
     }
 
     /**
      * Inserts debugging statements after the vals in the given block.
      */
-    def decorateVals[A](output: c.Expr[DebugVal => Unit])(expr: c.Expr[A]): c.Expr[A] = {
-      val loggedStats = expr.tree.children.flatMap {
+    def decorateVals[A](output: c.Expr[DebugVal => Unit])(block: c.Expr[A]): c.Expr[A] = {
+      val loggedStats = block.tree.children.flatMap {
         case valdef @ ValDef(_, termName, _, _) =>
           List(valdef, q"$output(DebugVal(${termName.encodedName.toString}, $termName))")
         case stat =>
@@ -154,7 +154,7 @@ object DebugMacros {
 
     // https://github.com/lloydmeta/unless-when/blob/master/src/main/scala/scala/ext/UnlessWhen/Macros.scala
 
-    def debugPublicFields[A: WeakTypeTag](instance: c.Expr[A]): c.Expr[Seq[DebugVal]] = {
+    def dumpPublicFields[A: WeakTypeTag](instance: c.Expr[A]): c.Expr[Seq[DebugVal]] = {
       def classVals(tpe: c.universe.Type) = {
         tpe.decls.collect {
           case method: MethodSymbol if method.isAccessor && method.isPublic =>
@@ -177,7 +177,7 @@ object DebugMacros {
      * XXX should test for lazy and by-name fields
      * XXX What does isAccessor actually do?
      */
-    def debugFields: c.Expr[Seq[DebugVal]] = {
+    def dumpFields: c.Expr[Seq[DebugVal]] = {
       def classVals(tpe: c.universe.Type) = {
         // decls contains directly declared variables
         tpe.decls.collect {
@@ -208,7 +208,7 @@ object DebugMacros {
      *
      * @return
      */
-    def dumpMethodImpl: c.Expr[DumpMethod] = {
+    def dumpMethod: c.Expr[DumpMethod] = {
       val enclosingMethodSymbol = getMethodSymbol()
       val methodName            = getMethodName(enclosingMethodSymbol)
       val paramLists            = parameterLists(enclosingMethodSymbol.info.paramLists)
@@ -223,7 +223,7 @@ object DebugMacros {
      *
      * @return
      */
-    def dumpConstructorImpl: c.Expr[DumpConstructor] = {
+    def dumpConstructor: c.Expr[DumpConstructor] = {
       val classSymbol = getClassSymbol()
 
       val pos        = classSymbol.pos

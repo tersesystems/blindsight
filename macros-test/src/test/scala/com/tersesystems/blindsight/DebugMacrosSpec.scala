@@ -46,10 +46,10 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       decorateMatch(dif => logger.debug(s"${dif.code} = ${dif.result}")) {
         string match {
           case s if s.startsWith("20") =>
-            println("SWEET")
+            assert("10".toInt > 1)
 
           case _ =>
-            println("OH NOES")
+            assert("true".toBoolean == true)
         }
       }
 
