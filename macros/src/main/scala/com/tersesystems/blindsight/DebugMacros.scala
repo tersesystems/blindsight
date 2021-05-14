@@ -45,7 +45,7 @@ object DebugMacros {
 
   def debugPublicFields[A](instance: A): Seq[DebugVal] = macro BlackboxMacros.debugPublicFields[A]
 
-  def debugExpr[A](a: A)(implicit output: DebugResult[A] => A): A =
+  def debugExpr[A](output: DebugResult[A] => Unit)(a: A): A =
     macro BlackboxMacros.debugExprImpl[A]
 
   /** Gives the source code of an expression and the result of the expr in a tuple */
@@ -142,11 +142,11 @@ class BlackboxMacros(val c: blackbox.Context) {
    * Provides the string with the given source.
    */
   def debugExprImpl[A: c.WeakTypeTag](
-      a: c.Expr[A]
-  )(output: c.Expr[DebugResult[A] => A]): c.Expr[A] = {
+      output: c.Expr[DebugResult[A] => Unit]
+  )(a: c.Expr[A]): c.Expr[A] = {
     val portion = extractRange(a.tree) getOrElse ""
     val const   = c.Expr[String](Literal(Constant(portion)))
-    c.Expr[A](q"""$output(DebugResult($const, $a))""")
+    c.Expr[A](q"""$output(DebugResult($const, $a)); $a""")
   }
 
   /**
