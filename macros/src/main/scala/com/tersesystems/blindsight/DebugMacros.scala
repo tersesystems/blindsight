@@ -37,6 +37,8 @@ object DebugMacros {
 
   def decorateVals[A](output: DebugVal => Unit)(expr: A): A = macro BlackboxMacros.decorateVals[A]
 
+  def debugExpr[A](output: DebugResult[A] => Unit)(a: A): A = macro BlackboxMacros.debugExprImpl[A]
+
   def dumpMethod: DumpMethod = macro BlackboxMacros.dumpMethodImpl
 
   def dumpConstructor: DumpConstructor = macro BlackboxMacros.dumpConstructorImpl
@@ -44,9 +46,6 @@ object DebugMacros {
   def debugFields: Seq[DebugVal] = macro BlackboxMacros.debugFields
 
   def debugPublicFields[A](instance: A): Seq[DebugVal] = macro BlackboxMacros.debugPublicFields[A]
-
-  def debugExpr[A](output: DebugResult[A] => Unit)(a: A): A =
-    macro BlackboxMacros.debugExprImpl[A]
 
   /** Gives the source code of an expression and the result of the expr in a tuple */
   def sourceExpr[A](a: A): (String, A) = macro BlackboxMacros.sourceExprImpl[A]

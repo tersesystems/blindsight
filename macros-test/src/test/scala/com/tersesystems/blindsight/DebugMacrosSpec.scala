@@ -26,7 +26,7 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "decorateIfs" in {
       val logger = createLogger
       decorateIfs(dif => logger.debug(s"${dif.code} = ${dif.result}")) {
-        if (System.currentTimeMillis() % 17 == 0) {
+        if (System.currentTimeMillis() - 1 == 0) {
           println("decorateIfs: if block")
         } else if (System.getProperty("derp") == null) {
           println("decorateIfs: derp is null")
@@ -36,7 +36,7 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       }
 
       val list = listAppender.list
-      list.get(0).getMessage must equal("System.currentTimeMillis() % 17 == 0 = false")
+      list.get(0).getMessage must equal("System.currentTimeMillis() - 1 == 0 = false")
       list.get(1).getMessage must equal("System.getProperty(\"derp\") == null = true")
     }
 
@@ -45,7 +45,7 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val string = java.time.Instant.now().toString
       decorateMatch(dif => logger.debug(s"${dif.code} = ${dif.result}")) {
         string match {
-          case s if s.startsWith("2021") =>
+          case s if s.startsWith("20") =>
             println("SWEET")
 
           case _ =>
@@ -54,12 +54,12 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       }
 
       val list = listAppender.list
-      list.get(0).getMessage must equal("string match case s if s.startsWith(\"2021\") = true")
+      list.get(0).getMessage must equal("string match case s if s.startsWith(\"20\") = true")
     }
 
     "debugExpr" in {
       val logger = createLogger
-      val output: Int = debugExpr[Int]((result: DebugResult[Int]) => logger.debug(s"result = ${result.code} = ${result.value}")) {
+      val output = debugExpr[Int](r => logger.debug(s"result = ${r.code} = ${r.value}")) {
         (1 + 1)
       }
 
@@ -67,6 +67,25 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val list = listAppender.list
       list.get(0).getMessage must equal("result = 1 + 1 = 2")
     }
+
+    "debugMethod" in {
+      def foo: DumpMethod = {
+         dumpMethod
+      }
+
+      foo.name must be("foo")
+      //foo.location.line must be(73) // XXX FIXME
+    }
+
+    "debugPublicFields" in {
+      val exObj = new ExampleClass(42)
+      val publicFields = debugPublicFields(exObj)
+
+      val head = publicFields.head
+      head.name must be("someInt")
+      head.value must be(42)
+    }
+
   }
 
   override def resourceName: String = "/logback-test.xml"
@@ -75,4 +94,11 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     val underlying = loggerContext.getLogger("testing")
     new Logger.Impl(CoreLogger(underlying))
   }
+}
+
+
+class ExampleClass(val someInt: Int) {
+  protected val privateInt = 22
+
+  def someMethod = 52
 }
