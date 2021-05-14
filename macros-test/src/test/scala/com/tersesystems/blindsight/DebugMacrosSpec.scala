@@ -59,7 +59,7 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
     "debugExpr" in {
       val logger = createLogger
-      val output = debugExpr[Int](r => logger.debug(s"result = ${r.code} = ${r.value}")) {
+      val output = dumpExpr[Int](r => logger.debug(s"result = ${r.code} = ${r.value}")) {
         (1 + 1)
       }
 
@@ -77,9 +77,21 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       //foo.location.line must be(73) // XXX FIXME
     }
 
+    "debugConstructor" in {
+      val logger = createLogger
+      val foo = new ExampleClass(logger, 12)
+
+      foo.someMethod()
+
+      val list = listAppender.list
+      list.get(0).getMessage must equal("constructor = DumpConstructor(Location(112,7),List())")
+    }
+
+
     "debugPublicFields" in {
-      val exObj = new ExampleClass(42)
-      val publicFields = debugPublicFields(exObj)
+      val logger = createLogger
+      val exObj = new ExampleClass(logger, 42)
+      val publicFields = dumpPublicFields(exObj)
 
       val head = publicFields.head
       head.name must be("someInt")
@@ -97,8 +109,10 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 }
 
 
-class ExampleClass(val someInt: Int) {
+class ExampleClass(logger: Logger, val someInt: Int) {
   protected val privateInt = 22
 
-  def someMethod = 52
+  def someMethod(): Unit = {
+    logger.debug(s"constructor = ${dumpConstructor}")
+  }
 }
