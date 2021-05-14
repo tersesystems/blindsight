@@ -27,11 +27,11 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val logger = createLogger
       decorateIfs(dif => logger.debug(s"${dif.code} = ${dif.result}")) {
         if (System.currentTimeMillis() - 1 == 0) {
-          println("decorateIfs: if block")
+          assert("decorateIfs: if block" != null)
         } else if (System.getProperty("derp") == null) {
-          println("decorateIfs: derp is null")
+          assert("decorateIfs: derp is null" != null)
         } else {
-          println("decorateIfs: else block")
+          assert("decorateIfs: else block" != null)
         }
       }
 
