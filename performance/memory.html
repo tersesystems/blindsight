@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.1
+1.5.0
 </div>
 </div>
 <div class="nav-toc">
@@ -55,6 +55,8 @@
     <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
     <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+    <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
+    <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -97,7 +99,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.1
+1.5.0
 </div>
 </div>
 <div class="nav-toc">
@@ -120,6 +122,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
     <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+    <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
+    <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -157,7 +161,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="page-content row">
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#memory-usage" name="memory-usage" class="anchor"><span class="anchor-link"></span></a>Memory Usage</h1>
-<p>Kirk Pepperdine gives a very interesting presentation called <strong>The Trouble with Memory</strong> ( <a href="https://www.infoq.com/presentations/memory-jvm">transcript</a> / <a href="https://youtu.be/mfS-P49FSbY?t=549">video</a> / <a href="https://qconsf.com/system/files/presentation-slides/trouble_with_memory.pdf">slides</a> ), which discusses &ldquo;memory churn&rdquo; &ndash; excessive amounts of allocation and release of heap in the JVM. The performance impact of memory is not well-known, but according to Pepperdine it can have severe effects on applications, while being very difficult to spot.</p>
+<p>Kirk Pepperdine gives a very interesting presentation called <strong>The Trouble with Memory</strong> ( <a href="https://www.infoq.com/presentations/memory-jvm/">transcript</a> / <a href="https://www.youtube.com/watch?t=549&v=mfS-P49FSbY&feature=youtu.be">video</a> / <a href="https://qconsf.com/system/files/presentation-slides/trouble_with_memory.pdf">slides</a> ), which discusses &ldquo;memory churn&rdquo; &ndash; excessive amounts of allocation and release of heap in the JVM. The performance impact of memory is not well-known, but according to Pepperdine it can have severe effects on applications, while being very difficult to spot.</p>
 <p>One anecdote stood out in particular:</p>
 <blockquote>
   <p>So I gave my usual logging rant at a workshop that I gave. I was in the Netherlands about a year or so ago. And that night, they went and stripped all the logging out of their transactional monitoring framework that they&rsquo;re using, which wasn&rsquo;t getting them the performance they wanted, which is why I was there giving the workshop in the first place. And when they stripped out all their logging, the throughput jumped by a factor of four. And they&rsquo;re going like, &ldquo;Oh, so now our performance problem not only went away, we&rsquo;ve been tuning this thing so long that actually, when they got rid of the real problem, it went much faster than they needed, like twice as fast as what they needed to go.&rdquo;</p>
@@ -290,7 +294,7 @@ logger.info(markers, &quot;Request served with {}&quot;, response)
 }
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.1/docs/src/main/paradox/performance/memory.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/main/paradox/performance/memory.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -376,7 +380,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.1', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.0', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

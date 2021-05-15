@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+<title>Scripting · Blindsight</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content='Rich Typesafe Scala Logging API based on SLF4J'/>
+<link rel="canonical" href="/blindsight/usage/scripting.html"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100normal,100italic,300normal,300italic,400normal,400italic,500normal,500italic,700normal,700italic,900normal,900italicc" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../js/page.js"></script>
+<script type="text/javascript" src="../js/warnOldVersion.js"></script>
+<script type="text/javascript" src="../js/groups.js"></script>
+<script type="text/javascript" src="../js/snippets.js"></script>
+<link rel="stylesheet" type="text/css" href="../lib/foundation/dist/foundation.min.css"/>
+<link rel="stylesheet" type="text/css" href="../css/page.css"/>
+
+<!--
+<link rel="shortcut icon" href="../images/favicon.ico" />
+-->
+</head>
+
+<body>
+<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+<div class="off-canvas position-left" id="off-canvas-menu" data-off-canvas>
+<nav class="off-canvas-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.5.0
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+    <li><a href="../usage/scripting.html" class="active page">Scripting</a></li>
+    <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="off-canvas-content" data-off-canvas-content>
+
+<header class="site-header expanded row">
+<div class="small-12 column">
+<a href="#" class="off-canvas-toggle hide-for-medium" data-toggle="off-canvas-menu"><svg class="svg-icon svg-icon-menu" version="1.1" id="Menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve"> <path class="svg-icon-menu-path" fill="#53CDEC" d="M16.4,9H3.6C3.048,9,3,9.447,3,10c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,9.447,16.952,9,16.4,9z M16.4,13
+H3.6C3.048,13,3,13.447,3,14c0,0.553,0.048,1,0.6,1H16.4c0.552,0,0.6-0.447,0.6-1C17,13.447,16.952,13,16.4,13z M3.6,7H16.4
+C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.048,7,3.6,7z"/></svg>
+</a>
+<div class="title"><a href="../index.html">Blindsight</a></div>
+
+<!--
+<a href="https://www.example.com" class="logo show-for-medium">logo</a>
+-->
+</div>
+</header>
+
+<div class="expanded row">
+
+<div class="medium-3 large-2 show-for-medium column">
+<nav class="site-nav">
+<div class="nav-home">
+<a href="../index.html" >
+<span class="home-icon">⌂</span>Blindsight
+</a>
+<div class="version-number">
+1.5.0
+</div>
+</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../setup/index.html" class="page">Setup</a></li>
+  <li><a href="../usage/index.html" class="page">Usage</a>
+  <ul>
+    <li><a href="../usage/overview.html" class="page">Overview</a></li>
+    <li><a href="../usage/resolvers.html" class="page">Logger Resolvers</a></li>
+    <li><a href="../usage/dsl.html" class="page">Structured DSL</a></li>
+    <li><a href="../usage/typeclasses.html" class="page">Type Classes</a></li>
+    <li><a href="../usage/interpolation.html" class="page">String Interpolation</a></li>
+    <li><a href="../usage/jsonld.html" class="page">JSON-LD</a></li>
+    <li><a href="../usage/slf4j.html" class="page">SLF4J API</a></li>
+    <li><a href="../usage/fluent.html" class="page">Fluent API</a></li>
+    <li><a href="../usage/semantic.html" class="page">Semantic API</a></li>
+    <li><a href="../usage/flow.html" class="page">Flow API</a></li>
+    <li><a href="../usage/conditional.html" class="page">Conditional Logging</a></li>
+    <li><a href="../usage/context.html" class="page">Contextual Logging</a></li>
+    <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
+    <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
+    <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+    <li><a href="../usage/scripting.html" class="active page">Scripting</a></li>
+    <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
+  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending</a>
+  <ul>
+    <li><a href="../extending/overview.html" class="page">Overview</a></li>
+  </ul></li>
+  <li><a href="../performance/index.html" class="page">Performance</a>
+  <ul>
+    <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
+    <li><a href="../performance/memory.html" class="page">Memory Usage</a></li>
+  </ul></li>
+  <li><a href="../principles.html" class="page">Principles</a></li>
+</ul>
+</div>
+
+</nav>
+</div>
+
+<div class="small-12 medium-9 large-10 column">
+<section class="site-content">
+
+<span id="version-warning"></span>
+
+<div class="page-header row">
+<div class="medium-12 show-for-medium column">
+<div class="nav-breadcrumbs">
+<ul>
+  <li><a href="../index.html">Blindsight</a></li>
+  <li><a href="../usage/index.html">Usage</a></li>
+  <li>Scripting</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="page-content row">
+<div class="small-12 large-9 column" id="docs">
+<h1><a href="#scripting" name="scripting" class="anchor"><span class="anchor-link"></span></a>Scripting</h1>
+<p>There are times when you want to reconfigure logging behavior. You can do that at the macro level with logging levels, but Blindsight gives you far more control, allowing you to change logging by individual method or even line number, in conjunction with <a href="https://twineworks.github.io/tweakflow/index.html">Tweakflow Scripts</a> that can be modified while the JVM is running.</p>
+<p>Here&rsquo;s an example Tweakflow script that will only enable logging that are in given methods and default to a level:</p>
+<pre class="prettyprint"><code class="language-tweakflow">library blindsight {
+  # level: the result of org.slf4j.event.Level.toInt()
+  # enc: &lt;class&gt;.&lt;method&gt; i.e. com.tersesystems.blindsight.groovy.Main.logDebugSpecial
+  # line: line number of the source code where condition was created
+  # file: absolute path of the file containing the condition
+  #
+  doc &#39;Evaluates a condition&#39;
+  function evaluate: (long level, string enc, long line, string file) -&gt;
+    if (enc == &quot;exampleapp.MyClass.logDebugSpecial&quot;) then true
+    else (level &gt;= 20); # info_int = 20
+}
+</code></pre>
+<p>In this case, the script will return <code>true</code> if the logging statement is in the <code>logDebugSpecial</code> method of <code>exampleapp.MyClass</code>:</p>
+<pre class="prettyprint"><code class="language-scala">package exampleapp
+class MyClass {
+  def logDebugSpecial(): Unit = {
+    logger.debug.when(location.here) { log =&gt; log(&quot;This will log!&quot;)}
+  }
+}
+</code></pre>
+<p>Otherwise, the script will return true iff the level is above or equal to 20 (the integer value of <code>INFO</code>).</p>
+<p>Tweakflow has its own reference documentation, but it does not cover the standard library functions which include string matching. The <a href="https://github.com/twineworks/tweakflow/tree/master/src/test/resources/spec/std/strings">test suite</a> is a good place to start to show the standard library&rsquo;s capabilities.</p>
+<h2><a href="#configuration" name="configuration" class="anchor"><span class="anchor-link"></span></a>Configuration</h2>
+<p>Script-driven logging is most useful when it replaces level based logging, so in <code>logback.xml</code> you should set the level to <code>ALL</code> for the package you want:</p>
+<pre class="prettyprint"><code class="language-xml">&lt;logger name=&quot;exampleapp&quot; value=&quot;ALL&quot;/&gt;
+</code></pre><div class="callout warning "><div class="callout-title">Warning</div>
+<p>You should <strong>not</strong> set the root logger level to <code>ALL</code>. </p>
+<p>Since Blindsight can only add source level information to your own code, packages based on libraries, i.e. <code>play.api</code> and <code>akka</code> will still use the SLF4J API directly and will not go through scripting. </p></div>
+<p>You can integrate tweakflow scripts through <a href="/blindsight/api/com/tersesystems/blindsight/scripting/ScriptHandle.html" title="com.tersesystems.blindsight.scripting.ScriptHandle"><code>ScriptHandle</code></a> and <a href="/blindsight/api/com/tersesystems/blindsight/scripting/ScriptManager.html" title="com.tersesystems.blindsight.scripting.ScriptManager"><code>ScriptManager</code></a> instances. When the handle&rsquo;s <code>isInvalid</code> method returns <code>true</code>, the script is re-evaluated by the <a href="/blindsight/api/com/tersesystems/blindsight/scripting/ScriptManager.html" title="com.tersesystems.blindsight.scripting.ScriptManager"><code>ScriptManager</code></a> on the fly. </p>
+<p>An example <a href="/blindsight/api/com/tersesystems/blindsight/scripting/FileScriptHandle.html" title="com.tersesystems.blindsight.scripting.FileScriptHandle"><code>FileScriptHandle</code></a> that compares the file&rsquo;s last modified date to determine validity. A verifier function is provided, which can be leveraged to check the script with a message authentication code. Please see the <code>SignatureBuilder</code> in the test cases on Github for examples.</p>
+<h2><a href="#script-aware-logging" name="script-aware-logging" class="anchor"><span class="anchor-link"></span></a>Script Aware Logging</h2>
+<p>You can leverage scripting from a <a href="/blindsight/api/com/tersesystems/blindsight/scripting/ScriptAwareLogger.html" title="com.tersesystems.blindsight.scripting.ScriptAwareLogger"><code>ScriptAwareLogger</code></a>. All calls to the logger will pass through the script automatically.</p>
+<p>You can create <a href="/blindsight/api/com/tersesystems/blindsight/scripting/ScriptAwareLogger.html" title="com.tersesystems.blindsight.scripting.ScriptAwareLogger"><code>ScriptAwareLogger</code></a> directly with a CoreLogger:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.scripting._
+val slf4jLogger = org.slf4j.LoggerFactory.getLogger(getClass)
+val scriptManager: ScriptManager = ???
+val logger = new ScriptAwareLogger(CoreLogger(slf4jLogger), scriptManager)
+</code></pre>
+<p>Or you can register all logging using a custom logger factory.</p>
+<p>Start by installing <a href="../setup/index.html"><code>blindsight-generic</code></a> which does not have a service provider already exposed.</p>
+<p>Create a factory class:</p>
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/test/scala/example/scripting/ScriptingLoggerFactory.scala#L10-L48" target="_blank" title="Go to snippet source">source</a><code class="language-scala">class ScriptingLoggerFactory extends LoggerFactory {
+
+  private val logger = org.slf4j.LoggerFactory.getLogger(getClass)
+
+  val scriptHandle = new ScriptHandle {
+    override def isInvalid: Boolean = false
+
+    override val script: String =
+      &quot;&quot;&quot;library blindsight {
+        |  # level: the result of org.slf4j.event.Level.toInt()
+        |  # enc: &lt;class&gt;.&lt;method&gt; i.e. com.tersesystems.blindsight.groovy.Main.logDebugSpecial
+        |  # line: line number of the source code where condition was created
+        |  # file: absolute path of the file containing the condition
+        |  #
+        |  doc &#39;Evaluates a condition&#39;
+        |  function evaluate: (long level, string enc, long line, string file) -&gt;
+        |    level &gt;= 20; # info_int = 20
+        |}
+        |&quot;&quot;&quot;.stripMargin
+
+    override def report(e: Throwable): Unit = e match {
+      case lang: LangException =&gt;
+        val info = lang.getSourceInfo
+        if (info != null) {
+          logger.error(&quot;Cannot evaluate script {}&quot;, info: Any, e: Any)
+        } else {
+          logger.error(&quot;Cannot evaluate script&quot;, e)
+        }
+      case other: Throwable =&gt;
+        logger.error(&quot;Cannot evaluate script&quot;, other)
+    }
+  }
+  private val cm = new ScriptManager(scriptHandle)
+
+  override def getLogger[T: LoggerResolver](instance: T): Logger = {
+    val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
+    new ScriptAwareLogger(CoreLogger(underlying), cm)
+  }
+}</code></pre>
+<p>To activate the <code>ScriptingLoggerFactory</code>, you must register it with the <a href="https://docs.oracle.com/javase/tutorial/ext/basics/spi.html#register-service-providers">service loader</a> by creating a service provider configuration file. In a <code>resources</code> directory, create a <code>META-INF/services</code> directory, and create a <code>com.tersesystems.blindsight.LoggerFactory</code> file containing the following:</p>
+<pre><code># com.tersesystems.blindsight.LoggerFactory
+com.tersesystems.blindsight.scripting.ScriptingLoggerFactory
+</code></pre>
+<h2><a href="#script-conditions" name="script-conditions" class="anchor"><span class="anchor-link"></span></a>Script Conditions</h2>
+<p>If you only want some logging statements to be source aware, you can use a <a href="/blindsight/api/com/tersesystems/blindsight/scripting/ScriptBasedLocation.html" title="com.tersesystems.blindsight.scripting.ScriptBasedLocation"><code>ScriptBasedLocation</code></a>, which returns a condition containing the source code information used by a script.</p>
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/test/scala/example/scripting/ConditionExample.scala#L7-L32" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object ConditionExample {
+  def main(args: Array[String]): Unit = {
+    // or use FileScriptHandle
+    val scriptHandle = new ScriptHandle {
+      override def isInvalid: Boolean = false
+      override val script: String =
+        &quot;&quot;&quot;import strings as s from &#39;std.tf&#39;;
+          |alias s.ends_with? as ends_with?;
+          |
+          |library blindsight {
+          |  function evaluate: (long level, string enc, long line, string file) -&gt;
+          |    if (ends_with?(enc, &quot;main&quot;)) then true
+          |    else false;
+          |}
+          |&quot;&quot;&quot;.stripMargin
+      override def report(e: Throwable): Unit = e.printStackTrace()
+    }
+    val sm     = new ScriptManager(scriptHandle)
+    val logger = LoggerFactory.getLogger
+
+    val location = new ScriptBasedLocation(sm, true)
+    logger.debug.when(location.here) { log =&gt; // line 37 :-)
+      log(&quot;Hello world!&quot;)
+    }
+  }
+}</code></pre>
+<h2><a href="#other-scripting-languages" name="other-scripting-languages" class="anchor"><span class="anchor-link"></span></a>Other Scripting Languages</h2>
+<p>You can also integrate Blindsight with more powerful scripting languages like Groovy using <a href="https://docs.oracle.com/en/java/javase/12/scripting/java-scripting-api.html#GUID-C4A6EB7C-0AEA-45EC-8662-099BDEFC361A">JSR-223</a>, but they do allow arbitrary execution and can pose a security risk. Please see the <a href="https://tersesystems.com/blog/2021/05/02/dynamic-logging-with-conditions/">blog post</a> for details.</p>
+<div class="source-github">
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/main/paradox/usage/scripting.md">here</a>.
+</div>
+
+<div class="nav-next">
+<p><strong>Next:</strong> <a href="../usage/inspections.html">Inspections</a></p>
+</div>
+</div>
+<div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/scripting.html#scripting" class="header">Scripting</a>
+  <ul>
+    <li><a href="../usage/scripting.html#configuration" class="header">Configuration</a></li>
+    <li><a href="../usage/scripting.html#script-aware-logging" class="header">Script Aware Logging</a></li>
+    <li><a href="../usage/scripting.html#script-conditions" class="header">Script Conditions</a></li>
+    <li><a href="../usage/scripting.html#other-scripting-languages" class="header">Other Scripting Languages</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
+</div>
+</div>
+
+</section>
+</div>
+
+</div>
+
+<footer class="site-footer">
+
+<section class="site-footer-nav">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 medium-4 large-3 text-center column">
+<div class="nav-links">
+<ul>
+<!-- <li><a href="https://www.example.com/products/">Products</a> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="site-footer-base">
+<div class="expanded row">
+<div class="small-12 large-offset-2 large-10 column">
+<div class="row site-footer-content">
+
+<div class="small-12 text-center large-9 column">
+
+<!--
+<div class="copyright">
+<span class="text">&copy; 2021</span>
+<a href="https://www.example.com" class="logo">logo</a>
+</div>
+-->
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</footer>
+
+</div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript" src="../lib/foundation/dist/foundation.min.js"></script>
+<script type="text/javascript">jQuery(document).foundation();</script>
+<script type="text/javascript" src="../js/magellan.js"></script>
+
+<style type="text/css">@import "../lib/prettify/prettify.css";</style>
+<script type="text/javascript" src="../lib/prettify/prettify.js"></script>
+<script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
+<script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.0', 'https://tersesystems.github.io/blindsight')});</script>
+
+
+</html>

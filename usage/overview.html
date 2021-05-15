@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.1
+1.5.0
 </div>
 </div>
 <div class="nav-toc">
@@ -55,6 +55,8 @@
     <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
     <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+    <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
+    <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -97,7 +99,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.4.1
+1.5.0
 </div>
 </div>
 <div class="nav-toc">
@@ -120,6 +122,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/transform.html" class="page">Entry Transformation</a></li>
     <li><a href="../usage/buffer.html" class="page">Event Buffers</a></li>
     <li><a href="../usage/sourcecode.html" class="page">Source Code</a></li>
+    <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
+    <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
   <li><a href="../extending/index.html" class="page">Extending</a>
   <ul>
@@ -207,7 +211,7 @@ logger.info(marker, message, arguments);
 </code></pre>
 <p>All of these together make a logging statement.</p>
 <p>Blindsight keeps the same concept these parameters, but creates specific types; <a href="/blindsight/api/com/tersesystems/blindsight/Markers.html" title="com.tersesystems.blindsight.Markers"><code>Markers</code></a>, <a href="/blindsight/api/com/tersesystems/blindsight/Message.html" title="com.tersesystems.blindsight.Message"><code>Message</code></a>, and <a href="/blindsight/api/com/tersesystems/blindsight/Argument.html" title="com.tersesystems.blindsight.Argument"><code>Argument</code></a>, with a <a href="/blindsight/api/com/tersesystems/blindsight/Statement.html" title="com.tersesystems.blindsight.Statement"><code>Statement</code></a> that encompasses all the above.</p>
-<pre class="prettyprint"><code class="language-scala"><br/><br/>val markers: Markers = Markers(marker1, marker2)
+<pre class="prettyprint"><code class="language-scala">val markers: Markers = Markers(marker1, marker2)
 val message: Message = Message(&quot;some message&quot;)
 val argument1: Argument = Argument(&quot;arg1&quot;)
 
@@ -257,7 +261,7 @@ fluentLogger.info.message(&quot;I am a fluent logger&quot;).log()
 </code></pre>
 <p>See <a href="fluent.html">Fluent API</a> for details.</p>
 <h2><a href="#semantic-api" name="semantic-api" class="anchor"><span class="anchor-link"></span></a>Semantic API</h2>
-<p>The <a href="/blindsight/api/com/tersesystems/blindsight/Logger.html" title="com.tersesystems.blindsight.Logger"><code>Logger</code></a> instance provides access to a <a href="https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventProgrammersGuide.md">semantic, strongly typed logging</a> API. A <a href="/blindsight/api/com/tersesystems/blindsight/semantic/SemanticLogger.html" title="com.tersesystems.blindsight.semantic.SemanticLogger"><code>SemanticLogger</code></a> is accessible through <code>logger.semantic</code>:</p>
+<p>The <a href="/blindsight/api/com/tersesystems/blindsight/Logger.html" title="com.tersesystems.blindsight.Logger"><code>Logger</code></a> instance provides access to a <a href="https://github.com/microsoft/perfview/blob/main/documentation/TraceEvent/TraceEventProgrammersGuide.md">semantic, strongly typed logging</a> API. A <a href="/blindsight/api/com/tersesystems/blindsight/semantic/SemanticLogger.html" title="com.tersesystems.blindsight.semantic.SemanticLogger"><code>SemanticLogger</code></a> is accessible through <code>logger.semantic</code>:</p>
 <pre class="prettyprint"><code class="language-scala"><br/>import com.tersesystems.blindsight.semantic.SemanticLogger
 
 val semanticLogger: SemanticLogger[UserEvent] = logger.semantic[UserEvent]
@@ -334,7 +338,7 @@ logger.info(&quot;Hello world&quot;)
 val event = queueBuffer.head
 </code></pre>
 <h2><a href="#source-code" name="source-code" class="anchor"><span class="anchor-link"></span></a>Source Code</h2>
-<p>SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive. Blindsight provides this information for free, at compile time, through <a href="https://github.com/lihaoyi/sourcecode">sourcecode</a> macros, using the <a href="/blindsight/api/com/tersesystems/blindsight/mixins/SourceInfoMixin.html" title="com.tersesystems.blindsight.mixins.SourceInfoMixin"><code>SourceInfoMixin</code></a> on the logger.</p>
+<p>SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive. Blindsight provides this information for free, at compile time, through <a href="https://github.com/com-lihaoyi/sourcecode">sourcecode</a> macros, using the <a href="/blindsight/api/com/tersesystems/blindsight/mixins/SourceInfoMixin.html" title="com.tersesystems.blindsight.mixins.SourceInfoMixin"><code>SourceInfoMixin</code></a> on the logger.</p>
 <p>When using <code>blindsight-generic</code>, this returns <code>Markers.empty</code>, but when using <code>blindsight-logstash</code>, this adds <code>source.line</code>, <code>source.file</code> and <code>source.enclosing</code> to the JSON logs automatically:</p>
 <pre class="prettyprint"><code class="language-json">{
   &quot;@timestamp&quot;: &quot;2020-04-12T17:58:45.410Z&quot;,
@@ -349,10 +353,47 @@ val event = queueBuffer.head
   &quot;source.enclosing&quot;: &quot;example.slf4j.Slf4jMain.main&quot;
 }
 </code></pre>
-<p>This is the default behavior, and you can override <code>sourceInfoMarker</code> in your own implementation to return whatever you like.</p>
+<p>This is the default behavior, and you can override <code>sourceInfoMarker</code> in your own implementation to return whatever you like using a custom logger factory.</p>
 <p>See <a href="sourcecode.html">Source Code</a> for more details.</p>
+<h2><a href="#scripting" name="scripting" class="anchor"><span class="anchor-link"></span></a>Scripting</h2>
+<p>There are times when you want to reconfigure logging behavior. You can do that at the macro level with logging levels, but Blindsight gives you far more control, allowing you to change logging by individual method or even line number, in conjunction with <a href="https://twineworks.github.io/tweakflow/index.html">Tweakflow Scripts</a> that can be modified while the JVM is running.</p>
+<p>Here&rsquo;s an example Tweakflow script that will only enable logging that are in given methods and default to a level:</p>
+<pre class="prettyprint"><code class="language-tweakflow">library blindsight {
+  # level: the result of org.slf4j.event.Level.toInt()
+  # enc: &lt;class&gt;.&lt;method&gt; i.e. com.tersesystems.blindsight.groovy.Main.logDebugSpecial
+  # line: line number of the source code where condition was created
+  # file: absolute path of the file containing the condition
+  #
+  doc &#39;Evaluates a condition&#39;
+  function evaluate: (long level, string enc, long line, string file) -&gt;
+    if (enc == &quot;exampleapp.MyClass.logDebugSpecial&quot;) then true
+    else (level &gt;= 20); # info_int = 20
+}
+</code></pre>
+<p>In this case, the script will return <code>true</code> if the logging statement is in the <code>logDebugSpecial</code> method of <code>exampleapp.MyClass</code>:</p>
+<pre class="prettyprint"><code class="language-scala">package exampleapp
+class MyClass {
+  def logDebugSpecial(): Unit = {
+    logger.debug.when(location.here) { log =&gt; log(&quot;This will log!&quot;)}
+  }
+}
+</code></pre>
+<p>Otherwise, the script will return true iff the level is above or equal to 20 (the int value of <code>INFO</code>).</p>
+<p>See <a href="scripting.html">Scripting</a> for more details.</p>
+<h2><a href="#inspections" name="inspections" class="anchor"><span class="anchor-link"></span></a>Inspections</h2>
+<p>Inspections are debugging focused methods and macros, intended to ease the experience of &ldquo;printf debugging&rdquo; and provide an experience closer to an interactive debugger.</p>
+<p>For example if you want to debug the statements in a block, you would use <code>decorateVals</code>:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.inspection.InspectionMacros._
+
+decorateVals(dval =&gt; logger.debug(s&quot;${dval.name} = ${dval.value}&quot;)) {
+  val a = 5
+  val b = 15
+  a + b
+}
+</code></pre>
+<p>See <a href="inspections.html">Inspections</a> for more details.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.4.1/docs/src/main/paradox/usage/overview.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/main/paradox/usage/overview.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -378,6 +419,8 @@ The source code for this page can be found <a href="https://github.com/tersesyst
     <li><a href="../usage/overview.html#entry-transformation" class="header">Entry Transformation</a></li>
     <li><a href="../usage/overview.html#event-buffer" class="header">Event Buffer</a></li>
     <li><a href="../usage/overview.html#source-code" class="header">Source Code</a></li>
+    <li><a href="../usage/overview.html#scripting" class="header">Scripting</a></li>
+    <li><a href="../usage/overview.html#inspections" class="header">Inspections</a></li>
   </ul></li>
 </ul>
 </div>
@@ -445,7 +488,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.4.1', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.0', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
