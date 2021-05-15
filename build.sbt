@@ -170,10 +170,10 @@ lazy val api = (project in file("api"))
     libraryDependencies += scalaCollectionCompat, // should not be in 2.13 or 3.0
     // scala-reflect only needed for Statement Interpolation
     libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
-    libraryDependencies += scalaTest              % Test,
-    libraryDependencies += scalaJava8Compat       % Test,
-    libraryDependencies += logbackClassic         % Test,
-    libraryDependencies += logstashLogbackEncoder % Test
+    libraryDependencies += scalaTest               % Test,
+    libraryDependencies += scalaJava8Compat        % Test,
+    libraryDependencies += logbackClassic          % Test,
+    libraryDependencies += logstashLogbackEncoder  % Test
   )
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
@@ -211,7 +211,8 @@ lazy val inspections = (project in file("inspections"))
     name := "blindsight-inspection",
     libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
-  ).dependsOn(api % Test, fixtures % "test->test")
+  )
+  .dependsOn(api % Test, fixtures % "test->test")
 
 lazy val scripting = (project in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
