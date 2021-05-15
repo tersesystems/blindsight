@@ -1,27 +1,16 @@
-package com.tersesystems.blindsight
+package com.tersesystems.blindsight.inspection
 
 import ch.qos.logback.classic.LoggerContext
-import com.tersesystems.blindsight.DebugMacros._
+import com.tersesystems.blindsight.Logger
+import com.tersesystems.blindsight.inspection.InspectionMacros._
 import com.tersesystems.blindsight.core.CoreLogger
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
+class InspectionMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
   "macro" should {
-    "decorateVals" in {
-      val logger = createLogger
-      decorateVals(dval => logger.debug(s"${dval.name} = ${dval.value}")) {
-        val a = 5
-        val b = 15
-        a + b
-      }
-
-      val list = listAppender.list
-      list.get(0).getMessage must equal("a = 5")
-      list.get(1).getMessage must equal("b = 15")
-    }
 
     "decorateIfs" in {
       val logger = createLogger
@@ -57,27 +46,43 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       list.get(0).getMessage must equal("string match case s if s.startsWith(\"20\") = true")
     }
 
-    "debugExpr" in {
+    "decorateVals" in {
       val logger = createLogger
-      val dr = dumpExpr(1 + 1)
+      decorateVals(dval => logger.debug(s"${dval.name} = ${dval.value}")) {
+        val a = 5
+        val b = 15
+        a + b
+      }
+
+      val list = listAppender.list
+      list.get(0).getMessage must equal("a = 5")
+      list.get(1).getMessage must equal("b = 15")
+    }
+
+    "decorateVals with vars" in {
+      val logger = createLogger
+      decorateVals(dval => logger.debug(s"${dval.name} = ${dval.value}")) {
+        var result = 0
+        result = 5 + 15
+        result
+      }
+
+      val list = listAppender.list
+      list.get(0).getMessage must equal("result = 0")
+    }
+
+    "dumpExpression" in {
+      val logger = createLogger
+      val dr     = dumpExpression(1 + 1)
       dr.value must be(2)
       logger.debug(s"result: ${dr.code} = ${dr.value}")
       val list = listAppender.list
       list.get(0).getMessage must equal("result: 1 + 1 = 2")
     }
 
-    "dumpMethod" in {
-      def foo: DumpMethod = {
-        dumpMethod
-      }
-
-      foo.name must be("foo")
-      //foo.location.line must be(73) // XXX FIXME
-    }
-
-    "debugPublicFields" in {
+    "dumpPublicFields" in {
       val exObj        = new ExampleClass(42)
-      val publicFields = debugPublicFields(exObj)
+      val publicFields = dumpPublicFields(exObj)
 
       val head = publicFields.head
       head.name must be("someInt")

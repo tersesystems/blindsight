@@ -16,6 +16,7 @@
 * [Event Buffers](buffer.md)
 * [Source Code](sourcecode.md)
 * [Scripting](scripting.md)
+* [Inspections](inspections.md)
 
 @@@
 
@@ -98,6 +99,18 @@ logger.withMarker("userId" -> userId).info("Logging with user id added as a cont
 ```scala
 logger.debug.when(location.here) { log =>
   log("script allows selective logging by method or by line")
+}
+```
+
+@ref:[Inspections](inspections.md):
+
+```scala
+import com.tersesystems.blindsight.inspection.InspectionMacros._
+
+decorateVals(dval => logger.debug(s"${dval.name} = ${dval.value}")) {
+  val a = 5
+  val b = 15
+  a + b
 }
 ```
 

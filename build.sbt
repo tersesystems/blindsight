@@ -83,7 +83,7 @@ lazy val docs = (project in file("docs"))
     addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
   )
   .settings(disablePublishing)
-  .dependsOn(api, logstash, jsonld, ringbuffer, scripting, macros)
+  .dependsOn(api, logstash, jsonld, ringbuffer, scripting)
 
 lazy val fixtures = (project in file("fixtures"))
   .settings(
@@ -120,15 +120,17 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:implicitConversions",
     "-language:higherKinds",
     "-language:existentials",
-    "-language:postfixOps",
-    "-Xlint",
-    "-Ywarn-dead-code",
-    "-Yrangepos"
+    "-language:postfixOps"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
+    case Some((3, 0)) =>
+      Seq.empty
     case Some((2, n)) if n >= 13 =>
       Seq(
         "-Xsource:2.13",
         "-Xfatal-warnings",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos",
         "-Wconf:any:warning-verbose",
         "-release",
         "8"
@@ -136,14 +138,19 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     case Some((2, n)) if n == 12 =>
       Seq(
         "-Xsource:2.12",
-        "-Yno-adapted-args"
-        // "-release", "8" https://github.com/scala/bug/issues/11927 scaladoc is busted in 2.11.11
-        // "-Xfatal-warnings" https://github.com/scala/bug/issues/7707 still broken in 2.12
+        "-Yno-adapted-args",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos",
+        "-release",
+        "8",               // https://github.com/scala/bug/issues/11927 scaladoc is busted in 2.11.11
+        "-Xfatal-warnings" // https://github.com/scala/bug/issues/7707 still broken in 2.12
       ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
       Seq(
         "-Xsource:2.11",
         "-Yno-adapted-args",
+        "-Yrangepos",
         "-Xfatal-warnings"
       )
   })
@@ -160,7 +167,9 @@ lazy val api = (project in file("api"))
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
-    libraryDependencies += scalaCollectionCompat,
+    libraryDependencies += scalaCollectionCompat, // should not be in 2.13 or 3.0
+    // scala-reflect only needed for Statement Interpolation
+    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
     libraryDependencies += scalaTest              % Test,
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
@@ -173,7 +182,7 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    libraryDependencies += "org.jctools" % "jctools-core" % "3.3.0"
+    libraryDependencies += jctools
   )
   .dependsOn(api)
 
@@ -194,26 +203,15 @@ lazy val logstash = (project in file("logstash"))
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
   )
-  .dependsOn(api, macros, fixtures % "test->test")
+  .dependsOn(api, inspections, fixtures % "test->test")
 
-lazy val macros = (project in file("macros"))
-  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.macros"))
+lazy val inspections = (project in file("inspections"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.inspection"))
   .settings(
-    name := "blindsight-macros",
+    name := "blindsight-inspection",
     libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
-  )
-  .dependsOn(api)
-
-lazy val macrosTest = (project in file("macros-test"))
-  .settings(disableDocs)
-  .settings(disablePublishing)
-  .settings(
-    name := "blindsight-macros-test",
-    //libraryDependencies += "io.bullet" %% "macrolizer" % "0.5.0" % Test,
-    scalacOptions := scalacOptionsVersion(scalaVersion.value)
-  )
-  .dependsOn(macros, fixtures % "test->test")
+  ).dependsOn(api % Test, fixtures % "test->test")
 
 lazy val scripting = (project in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
@@ -242,7 +240,7 @@ lazy val generic = (project in file("generic"))
     name := "blindsight-generic",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
-  .dependsOn(api, macros)
+  .dependsOn(api, inspections)
 
 lazy val root = (project in file("."))
   .settings(
@@ -255,11 +253,10 @@ lazy val root = (project in file("."))
     docs,
     fixtures,
     benchmarks,
-    macros,
-    macrosTest,
-    logstash,
+    inspections,
     scripting,
     ringbuffer,
     jsonld,
+    logstash,
     generic
   )
