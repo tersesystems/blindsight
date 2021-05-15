@@ -70,7 +70,7 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
     "debugMethod" in {
       def foo: DumpMethod = {
-         dumpMethod
+        dumpMethod
       }
 
       foo.name must be("foo")
@@ -89,9 +89,8 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
 
 
     "debugPublicFields" in {
-      val logger = createLogger
-      val exObj = new ExampleClass(logger, 42)
-      val publicFields = dumpPublicFields(exObj)
+      val exObj        = new ExampleClass(42)
+      val publicFields = debugPublicFields(exObj)
 
       val head = publicFields.head
       head.name must be("someInt")
@@ -108,8 +107,7 @@ class DebugMacrosSpec extends AnyWordSpec with Matchers with OneContextPerTest {
   }
 }
 
-
-class ExampleClass(logger: Logger, val someInt: Int) {
+class ExampleClass(val someInt: Int) {
   protected val privateInt = 22
 
   def someMethod(): Unit = {
