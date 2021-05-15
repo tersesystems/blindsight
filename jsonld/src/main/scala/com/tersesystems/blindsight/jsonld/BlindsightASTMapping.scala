@@ -38,6 +38,8 @@ trait BlindsightASTMapping {
       case arr: BArray  => arr
       case obj: BObject => obj
       case None         => BNull
+      case other =>
+        throw new IllegalStateException(s"other = $other")
     }
   }
 
@@ -89,6 +91,7 @@ trait BlindsightASTMapping {
       case no: NodeObject                          => BObject(extractNodeObject(no).toList)
       case lo: ListObject                          => extractListObject(lo)
       case so: SetObject                           => extractSetObject(so)
+      case other                                   => throw new IllegalStateException(s"other = $other")
     }
   }
 

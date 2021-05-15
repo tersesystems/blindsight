@@ -299,6 +299,59 @@ When using `blindsight-generic`, this returns `Markers.empty`, but when using `b
 }
 ```
 
-This is the default behavior, and you can override `sourceInfoMarker` in your own implementation to return whatever you like.
+This is the default behavior, and you can override `sourceInfoMarker` in your own implementation to return whatever you like using a custom logger factory.
 
 See @ref:[Source Code](sourcecode.md) for more details.
+
+## Scripting
+
+There are times when you want to reconfigure logging behavior.  You can do that at the macro level with logging levels, but Blindsight gives you far more control, allowing you to change logging by individual method or even line number, in conjunction with [Tweakflow Scripts](https://twineworks.github.io/tweakflow/index.html) that can be modified while the JVM is running.
+
+Here's an example Tweakflow script that will only enable logging that are in given methods and default to a level:
+
+```tweakflow
+library blindsight {
+  # level: the result of org.slf4j.event.Level.toInt()
+  # enc: <class>.<method> i.e. com.tersesystems.blindsight.groovy.Main.logDebugSpecial
+  # line: line number of the source code where condition was created
+  # file: absolute path of the file containing the condition
+  #
+  doc 'Evaluates a condition'
+  function evaluate: (long level, string enc, long line, string file) ->
+    if (enc == "exampleapp.MyClass.logDebugSpecial") then true
+    else (level >= 20); # info_int = 20
+}
+```
+
+In this case, the script will return `true` if the logging statement is in the `logDebugSpecial` method of `exampleapp.MyClass`:
+
+```scala
+package exampleapp
+class MyClass {
+  def logDebugSpecial(): Unit = {
+    logger.debug.when(location.here) { log => log("This will log!")}
+  }
+}
+```
+
+Otherwise, the script will return true iff the level is above or equal to 20 (the int value of `INFO`).
+
+See @ref:[Scripting](scripting.md) for more details.
+
+## Inspections
+
+Inspections are debugging focused methods and macros, intended to ease the experience of "printf debugging" and provide an experience closer to an interactive debugger.
+
+For example if you want to debug the statements in a block, you would use `decorateVals`:
+
+```scala
+import com.tersesystems.blindsight.inspection.InspectionMacros._
+
+decorateVals(dval => logger.debug(s"${dval.name} = ${dval.value}")) {
+  val a = 5
+  val b = 15
+  a + b
+}
+```
+
+See @ref:[Inspections](inspections.md) for more details.

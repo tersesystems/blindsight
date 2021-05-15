@@ -29,6 +29,7 @@ Blindsight is a logging library written in Scala that wraps SLF4J to add [useful
 * Hooks into logging entries through [entry transformation](https://tersesystems.github.io/blindsight/usage/transform.html)
 * Application accessible debug and trace logs through [event buffers](https://tersesystems.github.io/blindsight/usage/buffer.html)
 * Method or line based logging overrides at runtime through [scripting](https://tersesystems.github.io/blindsight/usage/scripting.html).
+* Easier "printf debugging" through macro based [inspections](https://tersesystems.github.io/blindsight/usage/inspections.html).
 
 ## Dependencies
 
@@ -254,6 +255,22 @@ def specialMethodName = {
   // inside the specialMethodName method here :-)
   logger.debug.when(location.here) { log => 
     log("script allows selective logging by method or by line")
+  }
+}
+```
+
+[Inspections](https://tersesystems.github.io/blindsight/usage/inspections.html):
+
+```scala
+import com.tersesystems.blindsight.inspection.InspectionMacros._
+
+decorateIfs(dif => logger.debug(s"${dif.code} = ${dif.result}")) {
+  if (System.currentTimeMillis() % 17 == 0) {
+    println("branch 1")
+  } else if (System.getProperty("derp") == null) {
+    println("branch 2")
+  } else {
+    println("else branch")
   }
 }
 ```

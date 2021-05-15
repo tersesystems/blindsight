@@ -68,7 +68,10 @@ package object blindsight {
               q"com.tersesystems.blindsight.Arguments.fromArray(Array[Argument](..$argumentList))"
 
             // statement message is made up of the constant parts of string.
-            val messageList = partz.map { case Literal(Constant(const: String)) => const }
+            val messageList = partz.map {
+              case Literal(Constant(const: String)) => const
+              case other                            => throw new IllegalStateException("Unknown case " + other)
+            }
 
             if (markersExpr.isEmpty) {
               val message = messageList.mkString("{}")
@@ -108,7 +111,11 @@ package object blindsight {
       } else {
         val constants = (c.prefix.tree match {
           case Apply(_, List(Apply(_, literals))) => literals
-        }).map { case Literal(Constant(s: String)) => s }
+          case other                              => throw new IllegalStateException("unknown case " + other)
+        }).map {
+          case Literal(Constant(s: String)) => s
+          case other                        => throw new IllegalStateException("unknown case " + other)
+        }
         c.Expr(q"com.tersesystems.blindsight.Statement(${constants.mkString})")
       }
     }

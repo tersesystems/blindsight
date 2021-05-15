@@ -57,12 +57,15 @@ class ScriptingSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       val scriptHandle = new FileScriptHandle(
         scriptFile,
         input => signatureBuilder.verify(input, readString(signatureFile)),
-        { case e @ (lang: LangException) =>
-          val info = lang.getSourceInfo
-          if (info != null) {
-            println(s"info = $info")
-          }
-          e.printStackTrace()
+        {
+          case e @ (lang: LangException) =>
+            val info = lang.getSourceInfo
+            if (info != null) {
+              println(s"info = $info")
+            }
+            e.printStackTrace()
+          case e =>
+            e.printStackTrace()
         }
       )
       val sm            = new ScriptManager(scriptHandle);

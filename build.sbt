@@ -158,14 +158,15 @@ lazy val api = (project in file("api"))
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
-    libraryDependencies += scalaCollectionCompat,
-    libraryDependencies += scalaTest              % Test,
-    libraryDependencies += scalaJava8Compat       % Test,
-    libraryDependencies += logbackClassic         % Test,
-    libraryDependencies += logstashLogbackEncoder % Test
+    libraryDependencies += scalaCollectionCompat, // should not be in 2.13 or 3.0
+    // scala-reflect only needed for Statement Interpolation
+    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
+    libraryDependencies += scalaTest               % Test,
+    libraryDependencies += scalaJava8Compat        % Test,
+    libraryDependencies += logbackClassic          % Test,
+    libraryDependencies += logstashLogbackEncoder  % Test
   )
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
@@ -174,7 +175,7 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-    libraryDependencies += "org.jctools" % "jctools-core" % "3.3.0"
+    libraryDependencies += jctools
   )
   .dependsOn(api)
 
@@ -195,7 +196,16 @@ lazy val logstash = (project in file("logstash"))
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
   )
-  .dependsOn(api, fixtures % "test->test")
+  .dependsOn(api, inspections, fixtures % "test->test")
+
+lazy val inspections = (project in file("inspections"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.inspection"))
+  .settings(
+    name := "blindsight-inspection",
+    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
+    scalacOptions := scalacOptionsVersion(scalaVersion.value)
+  )
+  .dependsOn(api % Test, fixtures % "test->test")
 
 lazy val scripting = (project in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
@@ -224,7 +234,7 @@ lazy val generic = (project in file("generic"))
     name := "blindsight-generic",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
-  .dependsOn(api)
+  .dependsOn(api, inspections)
 
 lazy val root = (project in file("."))
   .settings(
@@ -232,4 +242,15 @@ lazy val root = (project in file("."))
   )
   .settings(disableDocs)
   .settings(disablePublishing)
-  .aggregate(api, docs, fixtures, benchmarks, logstash, scripting, ringbuffer, jsonld, generic)
+  .aggregate(
+    api,
+    docs,
+    fixtures,
+    benchmarks,
+    inspections,
+    scripting,
+    ringbuffer,
+    jsonld,
+    logstash,
+    generic
+  )

@@ -16,8 +16,9 @@
 
 package com.tersesystems.blindsight
 
+import com.tersesystems.blindsight.AST.BObject
+
 import scala.collection.compat.immutable.ArraySeq
-import scala.reflect.macros.blackbox
 
 /**
  * This class represents an argument to a logging statement.
@@ -78,8 +79,6 @@ final class Arguments(private val elements: Array[Argument]) extends AnyVal {
 }
 
 object Arguments {
-  import scala.language.experimental.macros
-
   val empty: Arguments = new Arguments(Array.empty)
 
   def fromArray(els: Array[Argument]): Arguments = {
@@ -91,15 +90,12 @@ object Arguments {
     fromArray(Array(argument))
   }
 
-  def apply(args: Any*): Arguments = macro impl.apply
-
-  private object impl {
-    def apply(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[Arguments] = {
-      import c.universe._
-      val elements: Seq[c.Expr[Argument]] = args.map { t =>
-        c.Expr[Argument](q"com.tersesystems.blindsight.Argument(${t.tree})")
-      }
-      c.Expr[Arguments](q"com.tersesystems.blindsight.Arguments.fromArray(Array(..$elements))")
-    }
+  def apply(varargs: Any*): Arguments = {
+    val args: Array[Argument] = varargs.map {
+      case arg: Argument => arg
+      case bobj: BObject => Argument(bobj)
+      case other         => new Argument(other)
+    }.toArray
+    Arguments.fromArray(args)
   }
 }
