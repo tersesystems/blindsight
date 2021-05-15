@@ -52,7 +52,7 @@ trait InspectionMacros {
    * For example, the following code:
    *
    * {{{
-   * decorateIfs(dif => logger.debug(s"${dif.code} = ${dif.result}")) {
+   * decorateIfs(dif: BranchInspection => logger.debug(s"\${dif.code} = \${dif.result}")) {
    *   if (System.currentTimeMillis() % 17 == 0) {
    *     println("branch 1")
    *   } else if (System.getProperty("derp") == null) {
@@ -82,7 +82,7 @@ trait InspectionMacros {
    *
    * {{{
    * val string = java.time.Instant.now().toString
-   * decorateMatch(dm => logger.debug(s"${dm.code} = ${dm.result}")) {
+   * decorateMatch(dm: BranchInspection => logger.debug(s"\${dm.code} = \${dm.result}")) {
    *   string match {
    *     case s if s.startsWith("20") =>
    *       println("this example is still valid")
@@ -110,7 +110,7 @@ trait InspectionMacros {
    * For example, given the following statement:
    *
    * {{{
-   * decorateVals(dval => logger.debug(s"${dval.name} = ${dval.value}")) {
+   * decorateVals(dval: ValDefInspection => logger.debug(s"\${dval.name} = \${dval.value}")) {
    *   val a = 5
    *   val b = 15
    *   a + b
@@ -135,8 +135,8 @@ trait InspectionMacros {
    * For example, the following statement:
    *
    * {{{
-   * val dr = dumpExpression(1 + 1)
-   * logger.debug(s"result: ${dr.code} = ${dr.value}")
+   * val dr: ExprInspection[Int] = dumpExpression(1 + 1)
+   * logger.debug(s"result: \${dr.code} = \${dr.value}")
    * }}}
    *
    * would result in "result: 1 + 1 = 2"
@@ -155,7 +155,7 @@ trait InspectionMacros {
    *   protected val protectedInt = 22
    * }
    * val exObj        = new ExampleClass(42)
-   * val publicFields = dumpPublicFields(exObj)
+   * val publicFields: Seq[ValDefInspection] = dumpPublicFields(exObj)
    *
    * logger.debug(publicFields.toString)
    * }}}
