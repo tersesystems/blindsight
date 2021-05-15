@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.5.0 [diff](https://github.com/tersesystems/blindsight/compare/v1.4.1...v1.5.0)
+
+* Add scripting [#251](https://github.com/tersesystems/blindsight/pull/251)
+* Add debug intentions [#254](https://github.com/tersesystems/blindsight/pull/254)
+* Move the eventbuffer clock to abstract instance [#229](https://github.com/tersesystems/blindsight/pull/229)
+* Reorganize impl classes for easier subclassing and passing source info
+* Various tweaks to fix 2.13.5 compiler warnings
+* More docs
+
 ## 1.4.1 [diff](https://github.com/tersesystems/blindsight/compare/v1.4.0...v1.4.1)
 
 * Migrate to Maven Central from Bintray

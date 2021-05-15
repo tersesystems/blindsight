@@ -16,9 +16,3 @@ sbt
 > paradoxValidateLinks
 > ghpagesPushSite
 ```
-
-Should be possible to have a branch push documentation automatically:
-
-* [Publishing to Github Pages from Travis CI](https://www.scala-sbt.org/sbt-site/publishing.html#publishing-to-github-pages-from-travis-ci)
-
-`sbt-release-early` does not handle cross-publishing, and we only want the documentation to be published once, so it's not subject to the github build matrix.
