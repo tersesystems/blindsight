@@ -120,17 +120,15 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     "-language:implicitConversions",
     "-language:higherKinds",
     "-language:existentials",
-    "-language:postfixOps"
+    "-language:postfixOps",
+    "-Xlint",
+    "-Ywarn-dead-code",
+    "-Yrangepos"
   ) ++ (CrossVersion.partialVersion(scalaVersion) match {
-    case Some((3, 0)) =>
-      Seq.empty
     case Some((2, n)) if n >= 13 =>
       Seq(
         "-Xsource:2.13",
         "-Xfatal-warnings",
-        "-Xlint",
-        "-Ywarn-dead-code",
-        "-Yrangepos",
         "-Wconf:any:warning-verbose",
         "-release",
         "8"
@@ -138,19 +136,14 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
     case Some((2, n)) if n == 12 =>
       Seq(
         "-Xsource:2.12",
-        "-Yno-adapted-args",
-        "-Xlint",
-        "-Ywarn-dead-code",
-        "-Yrangepos",
-        "-release",
-        "8",               // https://github.com/scala/bug/issues/11927 scaladoc is busted in 2.11.11
-        "-Xfatal-warnings" // https://github.com/scala/bug/issues/7707 still broken in 2.12
+        "-Yno-adapted-args"
+        // "-release", "8" https://github.com/scala/bug/issues/11927 scaladoc is busted in 2.11.11
+        // "-Xfatal-warnings" https://github.com/scala/bug/issues/7707 still broken in 2.12
       ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
       Seq(
         "-Xsource:2.11",
         "-Yno-adapted-args",
-        "-Yrangepos",
         "-Xfatal-warnings"
       )
   })
