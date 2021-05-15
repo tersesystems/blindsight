@@ -37,11 +37,9 @@ object DebugMacros {
 
   def decorateVals[A](output: DebugVal => Unit)(block: A): A = macro impl.decorateVals[A]
 
-  def dumpExpr[A](output: DebugResult[A] => Unit)(block: A): A = macro impl.dumpExpr[A]
+  def dumpExpr[A](block: A): DebugResult[A] = macro impl.dumpExpr[A]
 
   def dumpMethod: DumpMethod = macro impl.dumpMethod
-
-  def dumpConstructor: DumpConstructor = macro impl.dumpConstructor
 
   def dumpFields: Seq[DebugVal] = macro impl.dumpFields
 
@@ -130,12 +128,10 @@ object DebugMacros {
     /**
      * Provides the string with the given source.
      */
-    def dumpExpr[A: c.WeakTypeTag](
-                                         output: c.Expr[DebugResult[A] => Unit]
-                                       )(block: c.Expr[A]): c.Expr[A] = {
+    def dumpExpr[A: c.WeakTypeTag](block: c.Expr[A]): c.Expr[DebugResult[A]] = {
       val portion = extractRange(block.tree) getOrElse ""
       val const   = c.Expr[String](Literal(Constant(portion)))
-      c.Expr[A](q"""$output(DebugResult($const, $block)); $block""")
+      c.Expr[DebugResult[A]](q"DebugResult($const, $block)")
     }
 
     /**
@@ -216,21 +212,6 @@ object DebugMacros {
       val pos      = methodName.pos
       val location = c.Expr(q"Location(${pos.line}, ${pos.column})")
       c.Expr(q"DumpMethod($location, $methodName, $paramLists)")
-    }
-
-    /**
-     * This returns information on the parameters and location that the constructor was called with.
-     *
-     * @return
-     */
-    def dumpConstructor: c.Expr[DumpConstructor] = {
-      val classSymbol = getClassSymbol()
-
-      val pos        = classSymbol.pos
-      val paramLists = parameterLists(classSymbol.info.paramLists)
-
-      val location = c.Expr(q"Location(${pos.line}, ${pos.column})")
-      c.Expr(q"DumpConstructor($location, $paramLists)")
     }
 
     /**
