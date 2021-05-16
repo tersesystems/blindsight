@@ -6,22 +6,43 @@ This is very useful when you are logging complex operations because a complete p
 
 Blindsight does not use MDC for managing context, and does not touch thread local storage.  Instead, it uses markers and builds up those markers for use in structured logging, returning a logger that will automatically apply those markers as context.
 
-The assumption is that you will be using the @ref:[structured logging](dsl.md) and [Terse Logback](https://tersesystems.github.io/terse-logback/).  You should also read through how to create your own [markers](https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/) for use in logging.
+The assumption is that you will be using [Terse Logback](https://tersesystems.github.io/terse-logback/).  You should also read through how to create your own [markers](https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/) for use in logging. 
+
+Mark McBride has a blog post on [adding context to events using the Five Ws](https://www.honeycomb.io/blog/event-foo-moar-context-better-events/) that talks about what context is appropriate to add.
+
+## The Easy Way
+
+The easy way to use contextual logging is to use the @ref:[DSL](dsl.md) with `blindsight-logstash`:
+
+```scala
+import com.tersesystems.blindsight._
+import DSL._
+
+val correlationId: String = "123"
+val clogger = logger.withMarker(bobj("correlationId" -> correlationId))
+clogger.info("This will log to JSON with a correlationId field")
+```
+
+This will do everything right behind the scenes, by building up context on the logger.
 
 ## General Principles
 
-Mark McBride has a blog post on [adding context to events using the Five Ws](https://www.honeycomb.io/blog/event-foo-moar-context-better-events/).
+There may be times when you want to work with `org.slf4j.Marker` or @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) in more detail.
 
-## Marker Context
+Blindsight allows state to be built up @scaladoc[Markers](com.tersesystems.blindsight.api.Markers) wrapping a set of SLF4J marker objects.
 
-Blindsight allows state to be built up through a set of SLF4J markers, wrapped by @scaladoc[Markers](com.tersesystems.blindsight.api.Markers).
+There is an implicit that converts an `org.slf4j.Marker` into a `Markers` instance:
 
 ```scala
 val entryLogger = logger.withMarker(MarkerFactory.getMarker("ENTRY"))
 entryLogger.trace("entry: entering method")
 ```
 
-You can accumulate several markers at once.
+Or you can use the @scaladoc[MarkersEnrichment](com.tersesystems.blindsight.MarkersEnrichment) that adds an `asMarkers` method to `org.slf4j.Marker` through type enrichment:
+
+@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala)  { #marker-enrichment }
+
+You can accumulate several markers on the logger:
 
 ```scala
 import net.logstash.logback.marker.{Markers => LogstashMarkers}
@@ -36,7 +57,7 @@ You should not call `marker.add(childMarker)` or otherwise use the SLF4J Marker 
 
 @@@
 
-The markers are available from the logger using `markers`:
+The markers are available from the logger using `logger.markers`, which can be useful if you need to extract a correlation id for use in tracing:
 
 ```scala
 val markers: Markers = entryLogger.markers
