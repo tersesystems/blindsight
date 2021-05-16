@@ -164,11 +164,21 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>Blindsight can handle context cleanly over multiple threads. Context is handled through an immutable API that returns new instances on modification.</p>
 <p>This is very useful when you are logging complex operations because a complete picture is often not available at the beginning of the unit of work. The more context you have in your logs, the better.</p>
 <p>Blindsight does not use MDC for managing context, and does not touch thread local storage. Instead, it uses markers and builds up those markers for use in structured logging, returning a logger that will automatically apply those markers as context.</p>
-<p>The assumption is that you will be using the <a href="dsl.html">structured logging</a> and <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a>. You should also read through how to create your own <a href="https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/">markers</a> for use in logging.</p>
+<p>The assumption is that you will be using <a href="https://tersesystems.github.io/terse-logback/">Terse Logback</a>. You should also read through how to create your own <a href="https://tersesystems.com/blog/2019/05/18/application-logging-in-java-part-4/">markers</a> for use in logging. </p>
+<p>Mark McBride has a blog post on <a href="https://www.honeycomb.io/blog/event-foo-moar-context-better-events/">adding context to events using the Five Ws</a> that talks about what context is appropriate to add.</p>
+<h2><a href="#the-easy-way" name="the-easy-way" class="anchor"><span class="anchor-link"></span></a>The Easy Way</h2>
+<p>The easy way to use contextual logging is to use the <a href="dsl.html">DSL</a> with <code>blindsight-logstash</code>:</p>
+<pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight._
+import DSL._
+
+val correlationId: String = &quot;123&quot;
+val clogger = logger.withMarker(bobj(&quot;correlationId&quot; -&gt; correlationId))
+clogger.info(&quot;This will log to JSON with a correlationId field&quot;)
+</code></pre>
+<p>This will do everything right behind the scenes, by building up context on the logger.</p>
 <h2><a href="#general-principles" name="general-principles" class="anchor"><span class="anchor-link"></span></a>General Principles</h2>
-<p>Mark McBride has a blog post on <a href="https://www.honeycomb.io/blog/event-foo-moar-context-better-events/">adding context to events using the Five Ws</a>.</p>
-<h2><a href="#marker-context" name="marker-context" class="anchor"><span class="anchor-link"></span></a>Marker Context</h2>
-<p>Blindsight allows state to be built up through a set of SLF4J markers, wrapped by <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a>.</p>
+<p>There may be times when you want to work with <code>org.slf4j.Marker</code> or <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> in more detail.</p>
+<p>Blindsight allows state to be built up <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> wrapping a set of SLF4J marker objects.</p>
 <pre class="prettyprint"><code class="language-scala">val entryLogger = logger.withMarker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
 entryLogger.trace(&quot;entry: entering method&quot;)
 </code></pre>
@@ -176,6 +186,9 @@ entryLogger.trace(&quot;entry: entering method&quot;)
 <pre class="prettyprint"><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
 val loggerWithTwoMarkers = entryLogger.withMarker(LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;))
 </code></pre>
+<p>Or you can use the <a href="/blindsight/api/com/tersesystems/blindsight/MarkersEnrichment.html" title="com.tersesystems.blindsight.MarkersEnrichment"><code>MarkersEnrichment</code></a> that adds an <code>asMarkers</code> method to <code>org.slf4j.Marker</code> through type enrichment:</p>
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L18-L19" target="_blank" title="Go to snippet source">source</a><code class="language-scala">import MarkersEnrichment._ // adds &quot;asMarkers&quot; to org.slf4j.Marker
+val markers: Markers = marker.asMarkers</code></pre>
 <p>The markers are not added to each other &ndash; in fact, there is no absolutely use of SLF4J marker parent/child relationships or SLF4J iterators in the code. Instead, they&rsquo;re handled by a Scala immutable set, and a custom parent marker is created lazily when you call <code>markers.marker</code>.</p><div class="callout note "><div class="callout-title">Note</div>
 <p>You should not call <code>marker.add(childMarker)</code> or otherwise use the SLF4J Marker API, as it directly mutates marker internal state.</p></div>
 <p>The markers are available from the logger using <code>markers</code>:</p>
@@ -216,8 +229,8 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <ul>
   <li><a href="../usage/context.html#contextual-logging" class="header">Contextual Logging</a>
   <ul>
+    <li><a href="../usage/context.html#the-easy-way" class="header">The Easy Way</a></li>
     <li><a href="../usage/context.html#general-principles" class="header">General Principles</a></li>
-    <li><a href="../usage/context.html#marker-context" class="header">Marker Context</a></li>
     <li><a href="../usage/context.html#mapped-diagnostic-context" class="header">Mapped Diagnostic Context</a></li>
   </ul></li>
 </ul>
