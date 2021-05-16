@@ -179,19 +179,20 @@ clogger.info(&quot;This will log to JSON with a correlationId field&quot;)
 <h2><a href="#general-principles" name="general-principles" class="anchor"><span class="anchor-link"></span></a>General Principles</h2>
 <p>There may be times when you want to work with <code>org.slf4j.Marker</code> or <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> in more detail.</p>
 <p>Blindsight allows state to be built up <a href="/blindsight/api/com/tersesystems/blindsight/api/Markers.html" title="com.tersesystems.blindsight.api.Markers"><code>Markers</code></a> wrapping a set of SLF4J marker objects.</p>
+<p>There is an implicit that converts an <code>org.slf4j.Marker</code> into a <code>Markers</code> instance:</p>
 <pre class="prettyprint"><code class="language-scala">val entryLogger = logger.withMarker(MarkerFactory.getMarker(&quot;ENTRY&quot;))
 entryLogger.trace(&quot;entry: entering method&quot;)
-</code></pre>
-<p>You can accumulate several markers at once.</p>
-<pre class="prettyprint"><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
-val loggerWithTwoMarkers = entryLogger.withMarker(LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;))
 </code></pre>
 <p>Or you can use the <a href="/blindsight/api/com/tersesystems/blindsight/MarkersEnrichment.html" title="com.tersesystems.blindsight.MarkersEnrichment"><code>MarkersEnrichment</code></a> that adds an <code>asMarkers</code> method to <code>org.slf4j.Marker</code> through type enrichment:</p>
 <pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/test/scala/example/typeclasses/TypeClassExample.scala#L18-L19" target="_blank" title="Go to snippet source">source</a><code class="language-scala">import MarkersEnrichment._ // adds &quot;asMarkers&quot; to org.slf4j.Marker
 val markers: Markers = marker.asMarkers</code></pre>
+<p>You can accumulate several markers on the logger:</p>
+<pre class="prettyprint"><code class="language-scala">import net.logstash.logback.marker.{Markers =&gt; LogstashMarkers}
+val loggerWithTwoMarkers = entryLogger.withMarker(LogstashMarkers.append(&quot;user&quot;, &quot;will&quot;))
+</code></pre>
 <p>The markers are not added to each other &ndash; in fact, there is no absolutely use of SLF4J marker parent/child relationships or SLF4J iterators in the code. Instead, they&rsquo;re handled by a Scala immutable set, and a custom parent marker is created lazily when you call <code>markers.marker</code>.</p><div class="callout note "><div class="callout-title">Note</div>
 <p>You should not call <code>marker.add(childMarker)</code> or otherwise use the SLF4J Marker API, as it directly mutates marker internal state.</p></div>
-<p>The markers are available from the logger using <code>markers</code>:</p>
+<p>The markers are available from the logger using <code>logger.markers</code>, which can be useful if you need to extract a correlation id for use in tracing:</p>
 <pre class="prettyprint"><code class="language-scala">val markers: Markers = entryLogger.markers
 val parentMarker: Marker = markers.marker
 </code></pre>
