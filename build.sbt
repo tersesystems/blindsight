@@ -196,7 +196,7 @@ lazy val logstash = (project in file("logstash"))
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
   )
-  .dependsOn(api, inspections, fixtures % "test->test")
+  .dependsOn(api, fixtures % "test->test")
 
 lazy val inspections = (project in file("inspections"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.inspection"))
@@ -234,7 +234,7 @@ lazy val generic = (project in file("generic"))
     name := "blindsight-generic",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
-  .dependsOn(api, inspections)
+  .dependsOn(api)
 
 lazy val root = (project in file("."))
   .settings(
