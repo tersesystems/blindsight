@@ -182,9 +182,11 @@ object InspectionMacros extends InspectionMacros {
       ifStatement match {
         case q"if ($cond) $thenp else $elsep" =>
           val condSource = extractRange(cond) getOrElse ""
-          val printThen  = q"$output(com.tersesystems.blindsight.inspection.BranchInspection($condSource, true))"
-          val elseThen   = q"$output(com.tersesystems.blindsight.inspection.BranchInspection($condSource, false))"
-          val decElseP   = decorateIfs(output)(elsep.asInstanceOf[c.Tree])
+          val printThen =
+            q"$output(com.tersesystems.blindsight.inspection.BranchInspection($condSource, true))"
+          val elseThen =
+            q"$output(com.tersesystems.blindsight.inspection.BranchInspection($condSource, false))"
+          val decElseP = decorateIfs(output)(elsep.asInstanceOf[c.Tree])
 
           val thenTree = q"""{ $printThen; $thenp }"""
           val elseTree = if (isEmpty(decElseP)) decElseP else q"""{ $elseThen; $decElseP }"""
@@ -227,13 +229,18 @@ object InspectionMacros extends InspectionMacros {
     def dumpExpression[A](block: c.Expr[A]): c.Expr[ExprInspection[A]] = {
       val portion = extractRange(block.tree) getOrElse ""
       val const   = c.Expr[String](Literal(Constant(portion)))
-      c.Expr[ExprInspection[A]](q"com.tersesystems.blindsight.inspection.ExprInspection($const, $block)")
+      c.Expr[ExprInspection[A]](
+        q"com.tersesystems.blindsight.inspection.ExprInspection($const, $block)"
+      )
     }
 
     def decorateVals[A](output: c.Expr[ValDefInspection => Unit])(block: c.Expr[A]): c.Expr[A] = {
       val loggedStats = block.tree.children.flatMap {
         case valdef @ ValDef(_, termName, _, _) =>
-          List(valdef, q"$output(com.tersesystems.blindsight.inspection.ValDefInspection(${termName.encodedName.toString}, $termName))")
+          List(
+            valdef,
+            q"$output(com.tersesystems.blindsight.inspection.ValDefInspection(${termName.encodedName.toString}, $termName))"
+          )
         case stat =>
           List(stat)
       }
