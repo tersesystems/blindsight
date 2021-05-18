@@ -2,6 +2,18 @@
 
 There are times when you want to reconfigure logging behavior.  You can do that at the macro level with logging levels, but Blindsight gives you far more control, allowing you to change logging by individual method or even line number, in conjunction with [Tweakflow Scripts](https://twineworks.github.io/tweakflow/index.html) that can be modified while the JVM is running.
 
+## Installation
+
+This library is in `blindsight-scripting` and depends on `blindsight-api`: 
+
+@@dependency[sbt,Maven,Gradle] {
+group="com.tersesystems.blindsight"
+artifact="blindsight-scripting_$scala.binary.version$"
+version="$project.version.short$"
+}
+
+## Usage
+
 Here's an example Tweakflow script that will only enable logging that are in given methods and default to a level:
 
 ```tweakflow

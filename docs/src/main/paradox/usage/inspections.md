@@ -10,7 +10,7 @@ This code has not been rigorously tested in the field and should be considered e
 
 @@@
 
-## Usage
+## Installation
 
 This library is in `blindsight-inspection` and does not depend on the rest of Blindsight: 
 
@@ -19,6 +19,8 @@ group="com.tersesystems.blindsight"
 artifact="blindsight-inspection_$scala.binary.version$"
 version="$project.version.short$"
 }
+
+## Usage
 
 You can import the methods using an import, or by incorporating the methods in a trait.
 
