@@ -22,7 +22,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.8.0")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
 
 // https://github.com/ktoso/sbt-jmh
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.0")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.2")
 
 // https://github.com/sbt/sbt-pgp
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
