@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.0
+1.5.1
 </div>
 </div>
 <div class="nav-toc">
@@ -99,7 +99,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.0
+1.5.1
 </div>
 </div>
 <div class="nav-toc">
@@ -164,22 +164,23 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <p>Most debugging starts off with &ldquo;printf debugging&rdquo;, where <code>println</code> and <code>logger.debug</code> statements are thrown into the code to see the internal state of an object or variable. Inserting statements into the code base for exploratory debugging is by far the most popular means of debugging, and most developers agree that <a href="https://www.spinellis.gr/pubs/conf/2018-ICSE-debugging-analysis/html/BSSZ18.pdf">the best invention in debugging was printf debugging</a>.</p>
 <p>Given that we already know that a good part of debugging involves inspecting internal state, we can leverage Scala&rsquo;s <a href="https://docs.scala-lang.org/overviews/macros/overview.html">macro system</a> to do the work for us.</p><div class="callout note "><div class="callout-title">Note</div>
 <p>This code has not been rigorously tested in the field and should be considered experimental. Please file bugs and PRs if you run into problems or edge cases.</p></div>
-<h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
-<p>This library is in <code>blindsight-inspection</code> and does not depend on the rest of Blindsight: </p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-inspection" % "1.5.0"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+<h2><a href="#installation" name="installation" class="anchor"><span class="anchor-link"></span></a>Installation</h2>
+<p>This library is in <code>blindsight-inspection</code> and does not depend on the rest of Blindsight: </p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-inspection" % "1.5.1"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
   &lt;scala.binary.version&gt;2.13&lt;/scala.binary.version&gt;
 &lt;/properties&gt;
 &lt;dependencies&gt
   &lt;dependency&gt;
     &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
     &lt;artifactId&gt;blindsight-inspection_${scala.binary.version}&lt;/artifactId&gt;
-    &lt;version&gt;1.5.0&lt;/version&gt;
+    &lt;version&gt;1.5.1&lt;/version&gt;
   &lt;/dependency&gt
 &lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">def versions = [
   ScalaBinary: "2.13"
 ]
 dependencies {
-  implementation "com.tersesystems.blindsight:blindsight-inspection_${versions.ScalaBinary}:1.5.0"
+  implementation "com.tersesystems.blindsight:blindsight-inspection_${versions.ScalaBinary}:1.5.1"
 }</code></pre></dd></dl>
+<h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>You can import the methods using an import, or by incorporating the methods in a trait.</p>
 <pre class="prettyprint"><code class="language-scala">import com.tersesystems.blindsight.inspection.InspectionMacros._
 </code></pre>
@@ -231,7 +232,7 @@ val publicFields = dumpPublicFields(exObj)
 logger.debug(s&quot;We set exObj.someInt as 42, actual value is $publicFields&quot;)
 </code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.0/docs/src/main/paradox/usage/inspections.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/main/paradox/usage/inspections.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -246,6 +247,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <ul>
   <li><a href="../usage/inspections.html#inspections" class="header">Inspections</a>
   <ul>
+    <li><a href="../usage/inspections.html#installation" class="header">Installation</a></li>
     <li><a href="../usage/inspections.html#usage" class="header">Usage</a></li>
     <li><a href="../usage/inspections.html#decorate-ifs" class="header">Decorate Ifs</a></li>
     <li><a href="../usage/inspections.html#decorate-match" class="header">Decorate Match</a></li>
@@ -319,7 +321,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.0', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.1', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
