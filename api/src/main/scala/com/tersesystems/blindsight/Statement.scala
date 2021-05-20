@@ -35,7 +35,7 @@ trait Statement {
 
 object Statement {
 
-  final case class Impl private (
+  final case class Impl private[blindsight] (
       markers: Markers = Markers.empty,
       message: Message = Message.empty,
       arguments: Arguments = Arguments.empty,
