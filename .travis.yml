@@ -11,14 +11,14 @@ jobs:
   include:
   - stage: check
     env: ISOLATED=true
-    scala: 2.13.6
+    scala: 3.0.0
     script: sbt scalafmtCheckAll || { echo "[error] Unformatted code found. Please
       run 'scalafmtAll' and commit the reformatted code."; false; }
     name: Code style check (fixed with `sbt scalafmtAll`)
   - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please
       run 'scalafmtSbt' and commit the reformatted code."; false; }
     name: Build code style check (fixed with `sbt scalafmtSbt`)
-  - script: sbt ++2.13.6 docs/makeSite
+  - script: sbt ++3.0.0 docs/makeSite
     name: Verify documentation
 stages:
 - name: check
