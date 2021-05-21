@@ -27,8 +27,9 @@ package object blindsight {
             case None =>
               report.error(s"could not find implicit", arg); '{???}
         }
+        val args = Expr.ofSeq(argShowedExprs)
         // sc.parts.head
-        '{ Statement("message", Arguments($argShowedExprs)) }
+        '{ Statement("message", Arguments($args)) }
       case _ =>
         // `new StringContext(...).showMeExpr(args: _*)` not an explicit `showMeExpr"..."`
         report.error(s"Args must be explicit", argsExpr)
