@@ -18,8 +18,6 @@ package com.tersesystems.blindsight
 
 import com.tersesystems.blindsight.AST._
 
-import sourcecode.Text.generate
-
 /**
  * A DSL to produce valid [[AST]] of values.
  *
