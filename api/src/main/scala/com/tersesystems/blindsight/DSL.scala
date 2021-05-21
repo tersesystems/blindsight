@@ -34,21 +34,21 @@ import sourcecode.Text.generate
 trait DSL extends DSLImplicits {
   implicit def seq2BValue[A](s: Iterable[A])(implicit ev: A => BValue): BArray =
     BArray(s.toList.map { a =>
-      val v: BValue = a; v
+      val v: BValue = ev(a); v
     })
 
   implicit def map2BValue[A](m: Map[String, A])(implicit ev: A => BValue): BObject =
-    BObject(m.toList.map { case (k, v) => BField(k, v) })
+    BObject(m.toList.map { case (k, v) => BField(k, ev(v)) })
 
   implicit def option2BValue[A](opt: Option[A])(implicit ev: A => BValue): BValue =
     opt match {
-      case Some(x) => x
+      case Some(x) => ev(x)
       case None    => BNothing
     }
 
   implicit def symbol2BValue(x: Symbol): BString = BString(x.name)
   implicit def pair2BValue[A](t: (String, A))(implicit ev: A => BValue): BObject =
-    BObject(List(BField(t._1, t._2)))
+    BObject(List(BField(t._1, ev(t._2))))
   implicit def list2BValue(l: List[BField]): BObject    = BObject(l)
   implicit def BObject2assoc(o: BObject): JsonListAssoc = new JsonListAssoc(o.obj)
   implicit def pair2Assoc[A](t: (String, A))(implicit ev: A => BValue): JsonAssoc[A] =
@@ -56,13 +56,13 @@ trait DSL extends DSLImplicits {
 
   class JsonAssoc[A](left: (String, A))(implicit ev: A => BValue) {
     def ~[B](right: (String, B))(implicit ev1: B => BValue): BObject = {
-      val l: BValue = left._2
-      val r: BValue = right._2
+      val l: BValue = ev(left._2)
+      val r: BValue = ev1(right._2)
       BObject(BField(left._1, l) :: BField(right._1, r) :: Nil)
     }
 
     def ~(right: BObject): BObject = {
-      val l: BValue = left._2
+      val l: BValue = ev(left._2)
       BObject(BField(left._1, l) :: right.obj)
     }
     def ~~[B](right: (String, B))(implicit ev: B => BValue): BObject = this.~(right)
