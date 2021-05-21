@@ -33,10 +33,10 @@ class LoggingBenchmark {
     logger.trace("Hello world {}, {}, {}", args)
   }
 
-  @Benchmark
-  def traceWithStatement(): Unit = {
-    logger.trace(st"Hello world ${arg1}, ${arg2}, ${arg3}")
-  }
+  //  @Benchmark
+  //  def traceWithStatement(): Unit = {
+  //    logger.trace(st"Hello world ${arg1}, ${arg2}, ${arg3}")
+  //  }
 
   @Benchmark
   def lazyTraceWithArgs(): Unit = {
@@ -48,7 +48,7 @@ class LoggingBenchmark {
   @Benchmark
   def lazyTraceWithStatement(): Unit = {
     logger.trace { log =>
-      log(st"Hello world ${arg1}, ${arg2}, ${arg3}")
+      log(Statement("Hello world {}, {}, {}", Arguments(arg1, arg2, arg3)))
     }
   }
 
@@ -84,7 +84,7 @@ class LoggingBenchmark {
 
   @Benchmark
   def infoWithStatement(): Unit = {
-    logger.info(st"Hello world ${arg1}, ${arg2}, ${arg3}")
+    logger.info(Statement("Hello world {}, {}, {}", Arguments(arg1, arg2, arg3)))
   }
 
   @Benchmark
@@ -97,7 +97,7 @@ class LoggingBenchmark {
   @Benchmark
   def lazyInfoWithStatement(): Unit = {
     logger.info { log =>
-      log(st"Hello world ${arg1}, ${arg2}, ${arg3}")
+      log(Statement("Hello world {}, {}, {}", Arguments(arg1, arg2, arg3)))
     }
   }
 

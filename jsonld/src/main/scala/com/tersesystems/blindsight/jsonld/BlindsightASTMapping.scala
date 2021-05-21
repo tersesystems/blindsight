@@ -29,10 +29,10 @@ trait BlindsightASTMapping {
   private def extractLiteralValue(vo: Value[_]): BValue = {
     vo.value match {
       case s: String    => BString(s)
-      case short: Short => BInt(short)
+      case short: Short => BInt(short.toInt)
       case int: Int     => BInt(int)
       case l: Long      => BLong(l)
-      case f: Float     => BDecimal(f)
+      case f: Float     => BDecimal(new java.math.BigDecimal(f))
       case d: Double    => BDouble(d)
       case b: Boolean   => BBool(b)
       case arr: BArray  => arr
