@@ -111,7 +111,7 @@ val optimizeInline = Seq(
 )
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
- (CrossVersion.partialVersion(scalaVersion) match {
+  (CrossVersion.partialVersion(scalaVersion) match {
     case Some((3, n)) =>
       Seq(
         "-language:implicitConversions",
@@ -133,13 +133,13 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
         "-Ywarn-dead-code",
         "-Yrangepos"
       ) ++
-      Seq(
-        "-Xsource:2.13",
-        "-Xfatal-warnings",
-        "-Wconf:any:warning-verbose",
-        "-release",
-        "8"
-      ) ++ optimizeInline
+        Seq(
+          "-Xsource:2.13",
+          "-Xfatal-warnings",
+          "-Wconf:any:warning-verbose",
+          "-release",
+          "8"
+        ) ++ optimizeInline
     case Some((2, n)) if n == 12 =>
       Seq(
         "-unchecked",
@@ -198,15 +198,16 @@ lazy val api = (project in file("api"))
     libraryDependencies ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, 0)) => Seq.empty
-        case _ => Seq(
-          "org.scala-lang" % "scala-reflect" % scalaVersion.value
-        )
+        case _ =>
+          Seq(
+            "org.scala-lang" % "scala-reflect" % scalaVersion.value
+          )
       }
     },
-    libraryDependencies += scalaTest               % Test,
-    libraryDependencies += scalaJava8Compat        % Test,
-    libraryDependencies += logbackClassic          % Test,
-    libraryDependencies += logstashLogbackEncoder  % Test
+    libraryDependencies += scalaTest              % Test,
+    libraryDependencies += scalaJava8Compat       % Test,
+    libraryDependencies += logbackClassic         % Test,
+    libraryDependencies += logstashLogbackEncoder % Test
   )
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
@@ -245,9 +246,10 @@ lazy val inspections = (project in file("inspections"))
     libraryDependencies ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, 0)) => Seq.empty
-        case _ => Seq(
-          "org.scala-lang" % "scala-reflect" % scalaVersion.value
-        )
+        case _ =>
+          Seq(
+            "org.scala-lang" % "scala-reflect" % scalaVersion.value
+          )
       }
     },
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
