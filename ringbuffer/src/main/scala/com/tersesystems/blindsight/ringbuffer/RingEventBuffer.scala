@@ -23,7 +23,7 @@ class RingEventBuffer(initCapacity: Int) extends EventBuffer {
 
   override def take(count: Int): scala.collection.immutable.Seq[EventBuffer.Event] = {
     import scala.collection.compat.immutable._
-    val events                             = queue.stream().limit(count).collect(Collectors.toList[EventBuffer.Event]())
+    val events = queue.stream().limit(count).collect(Collectors.toList[EventBuffer.Event]())
     val newArray: Array[EventBuffer.Event] = new Array(count)
     events.toArray(newArray)
     ArraySeq.unsafeWrapArray(newArray)

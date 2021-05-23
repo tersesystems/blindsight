@@ -91,7 +91,7 @@ trait BlindsightASTMapping {
       case no: NodeObject                          => BObject(extractNodeObject(no).toList)
       case lo: ListObject                          => extractListObject(lo)
       case so: SetObject                           => extractSetObject(so)
-      case other                                   => throw new IllegalStateException(s"other = $other")
+      case other => throw new IllegalStateException(s"other = $other")
     }
   }
 

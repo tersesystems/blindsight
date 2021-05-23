@@ -37,10 +37,10 @@ class FluentBenchmark {
       .log()
   }
 
-    @Benchmark
-    def infoWithStatement(): Unit = {
-      fluent.info.statement(Statement("Hello world {}, {}, {}", Arguments(arg1, arg2, arg3))).log()
-    }
+  @Benchmark
+  def infoWithStatement(): Unit = {
+    fluent.info.statement(Statement("Hello world {}, {}, {}", Arguments(arg1, arg2, arg3))).log()
+  }
 
   @Benchmark
   def infoWhen(): Unit = {
