@@ -47,7 +47,7 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "log on true with flow API" in {
       val logger = createLogger
 
-      val condition                            = true
+      val condition                                             = true
       implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior[B]
       def calcInt: Int =
         logger.flow.info.when(condition) { // line 53 :-)
@@ -58,15 +58,15 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
       result must be(3)
       val event = listAppender.list.get(0)
       event.getFormattedMessage must equal(
-        " => 3     at com.tersesystems.blindsight.LoggerSpec#calcInt(LoggerSpec.scala:53)"
+        " => 3     at com.tersesystems.blindsight.LoggerSpec#calcInt(LoggerSpec.scala:55)"
       )
     }
 
     "not log on false with flow API" in {
       val logger = createLogger
 
-      val condition                            = false
-      implicit def flowBehavior[B: ToArgument]: FlowBehavior[B]  = new SimpleFlowBehavior[B]
+      val condition                                             = false
+      implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior[B]
 
       def calcInt: Int =
         logger.flow.info.when(condition) {
@@ -148,8 +148,8 @@ class LoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest {
     "not log on false using conditional with flow API" in {
       val logger = createLogger
 
-      val condition                            = false
-      implicit def flowBehavior[B: ToArgument]: FlowBehavior[B]  = new SimpleFlowBehavior[B]
+      val condition                                             = false
+      implicit def flowBehavior[B: ToArgument]: FlowBehavior[B] = new SimpleFlowBehavior[B]
       logger.withCondition(condition).flow.info(1 + 2)
       listAppender.list must be(empty)
     }

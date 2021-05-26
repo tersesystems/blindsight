@@ -18,15 +18,15 @@ package object blindsight {
   private def impl(sops: Expr[StatementOps], argsExpr: Expr[Seq[Any]])(using quotes: Quotes): Expr[Statement] = {
     import quotes.reflect.*
 
+    val partz: List[String] = sops.asTerm.underlyingArgument match {
+      case Apply(conv, List(Apply(fun, List(Typed(Repeated(values, _), _))))) =>
+        values.collect { case Literal(StringConstant(value)) => value }
+    }
+
     // https://github.com/lampepfl/dotty/blob/master/tests/run-macros/f-interpolation-1/FQuote_1.scala
     val Typed(Repeated(allArgs, _), _) = argsExpr.asTerm.underlyingArgument
 
     if (allArgs.nonEmpty) {
-      val partz: List[String] = sops.asTerm.underlyingArgument match {
-        case Apply(conv, List(Apply(fun, List(Typed(Repeated(values, _), _))))) =>
-          values.collect { case Literal(StringConstant(value)) => value }
-      }
-
       argsExpr match
         case Varargs(elements) =>
           val argumentList = scala.collection.mutable.Buffer[Expr[Argument]]()
@@ -102,9 +102,9 @@ package object blindsight {
           report.error("Arguments without varargs?")
           return '{???}
     } else {
-      //val parts = Varargs(sc.parts.map(Expr(_)))
+      val parts = Expr(partz.mkString(""))
       // No args, just a string, halp
-      '{ Statement("noargs") }
+      '{ Statement(Message($parts)) }
     }
   }
 }
