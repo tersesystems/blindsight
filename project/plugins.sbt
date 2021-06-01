@@ -16,7 +16,7 @@ addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.6.0")
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
 
 // https://github.com/scoverage/sbt-scoverage
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.8.0")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.8.2")
 
 // https://github.com/dwijnand/sbt-travisci
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
