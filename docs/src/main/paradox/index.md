@@ -35,6 +35,8 @@ The only hard dependency is the SLF4J API, but the DSL functionality is only imp
 
 Please see the @ref:[Setup](setup/index.md) page for artifacts and installation.
 
+You can check out a "starter project" at [https://github.com/tersesystems/blindsight-starter](https://github.com/tersesystems/blindsight-starter).
+
 Blindsight is a pure SLF4J wrapper: it delegates all logging through to the SLF4J API and does not configure or manage the SLF4J implementation at all.
 
 Versions are published for Scala 2.11, 2.12, and 2.13.

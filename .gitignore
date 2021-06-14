@@ -5,3 +5,6 @@ logs/
 .idea
 local.*
 .bsp/
+.bloop/
+.vscode/
+.metals/

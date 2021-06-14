@@ -43,6 +43,8 @@ Versions are published for Scala 2.11, 2.12, and 2.13.
 
 See [Setup](https://tersesystems.github.io/blindsight/setup/index.html) for how to install Blindsight.
 
+You can check out a "starter project" at [https://github.com/tersesystems/blindsight-starter](https://github.com/tersesystems/blindsight-starter).
+
 Because Blindsight uses a very recent version of Logstash that depends on Jackson 2.11.0, you may need to update your dependencies for the `jackson-scala-module` if you're using Play or Akka.
 
 ```
