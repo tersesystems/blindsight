@@ -42,7 +42,8 @@ The flow is safe to use with `withCondition`.  If disabled, the logger will shor
 
 ```scala
 private def flowEnabled: Condition = Condition.never
-private val logger: FlowLogger = LoggerFactory.getLogger.flow.withCondition(flowEnabled)
+private val logger = LoggerFactory.getLogger
+private val flowLogger: FlowLogger = logger.flow.withCondition(flowEnabled)
 ```
 
 @@@ note
@@ -82,6 +83,26 @@ class DurationFlowBehavior[B: ToArgument](implicit spanInfo: SpanInfo) extends F
 ## Integration
 
 Flow based logging, because it leaves the flow behavior open, is a good way to integrate with third party systems.
+
+### Instrumentation
+
+Flow based logging works when you can add lines to the source and recompile, but in some situations you may have library or utility code, where you don't have access to the source code.  In this case, you can instrument the code at run time for logging entry and exit, using [terse-logback instrumentation](https://tersesystems.github.io/terse-logback/guide/instrumentation/).
+
+This works even on code in the Java standard libraries, and can be extremely useful when exceptions are swallowed or spawn threads with no exception handler:
+
+```
+logback.bytebuddy {
+  service-name = "example-service"
+  tracing {
+    "java.lang.Thread" = [
+      "run"
+    ]
+    "javax.net.ssl.SSLContext" = ["*"]
+  }
+}
+```
+
+See the [logging-instrumentation-example](https://github.com/tersesystems/logging-instrumentation-example) for an example.
 
 ### Opentracing
 

@@ -31,6 +31,16 @@ Blindsight is a logging library written in Scala that wraps SLF4J to add [useful
 * Method or line based logging overrides at runtime through [scripting](https://tersesystems.github.io/blindsight/usage/scripting.html).
 * Easier "printf debugging" through macro based [inspections](https://tersesystems.github.io/blindsight/usage/inspections.html).
 
+See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
+
+## Example
+
+You can check out a "starter project" at [https://github.com/tersesystems/blindsight-starter](https://github.com/tersesystems/blindsight-starter).
+
+There's an example application at [https://github.com/tersesystems/play-blindsight](https://github.com/tersesystems/play-blindsight) that integrates with Honeycomb Tracing using the flow logger:
+
+![trace.png](trace.png)
+
 ## Dependencies
 
 The only hard dependency is the SLF4J API, but the DSL functionality is only implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder).  
@@ -51,17 +61,18 @@ Because Blindsight uses a very recent version of Logstash that depends on Jackso
 libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0"
 ```
 
-## Benchmarks
-
-Benchmarks are available [here](https://tersesystems.github.io/blindsight/benchmarks.html).
-
 ## Usage
  
-To use a Blindsight Logger:
+The easiest way to use Blindsight is to import the base package and the DSL:
 
 ```scala
 import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.DSL._
+```
 
+To use a Blindsight Logger:
+
+```scala
 val logger = LoggerFactory.getLogger
 logger.info("I am an SLF4J-like logger")
 ```
@@ -277,15 +288,9 @@ decorateIfs(dif => logger.debug(s"${dif.code} = ${dif.result}")) {
 }
 ```
 
-## Example
+## Benchmarks
 
-There's an example application at [https://github.com/tersesystems/play-blindsight](https://github.com/tersesystems/play-blindsight) that integrates with Honeycomb Tracing using the flow logger:
-
-![trace.png](trace.png)
-
-## Documentation 
-
-See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
+Benchmarks are available [here](https://tersesystems.github.io/blindsight/benchmarks.html).
 
 ## License
 

@@ -22,10 +22,17 @@
 
 # Usage
 
+The easiest way to use Blindsight is to import the base package and the DSL:
+
+```scala
+import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.DSL._
+```
+
 To use a Blindsight @scaladoc[Logger](com.tersesystems.blindsight.Logger):
 
 ```scala
-val logger = com.tersesystems.blindsight.LoggerFactory.getLogger
+val logger = LoggerFactory.getLogger
 logger.info("I am an SLF4J-like logger")
 ```
 
