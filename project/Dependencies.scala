@@ -6,7 +6,7 @@ object Dependencies {
 
   val terseLogback = "0.16.2"
 
-  lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
+  lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.31"
 
   lazy val jctools = "org.jctools" % "jctools-core" % "3.3.0"
 
