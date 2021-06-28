@@ -15,8 +15,8 @@ addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.6.0")
 // https://github.com/sbt/sbt-unidoc
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
 
-// https://github.com/dwijnand/sbt-travisci
-addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
+// https://github.com/djspiewak/sbt-github-actions
+addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.12.0")
 
 // https://github.com/ktoso/sbt-jmh
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")

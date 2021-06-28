@@ -8,16 +8,6 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
-// Sanity check for sbt-travisci
-Global / onLoad := (Global / onLoad).value.andThen { s =>
-  val v = scala213.value
-  if (!CrossVersion.isScalaApiCompatible(v))
-    throw new MessageOnlyException(
-      s"Key scala213 doesn't define a scala version. Check .travis.yml is setup right. Version: $v"
-    )
-  s
-}
-
 ThisBuild / versionScheme := Some("semver-spec")
 
 ThisBuild / scalafmtOnCompile := false
