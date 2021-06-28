@@ -33,10 +33,11 @@ trait LowPriorityLoggerResolverImplicits {
     factory.getLogger(str)
   }
 
-  implicit def classToResolver[T]: LoggerResolver[Class[T]] =
-    LoggerResolver[Class[T]] { (instance: Class[T]) =>
+  implicit def classToResolver[T: scala.reflect.ClassTag]: LoggerResolver[T] =
+    LoggerResolver[T] { (instance: T) =>
+      val clazz = scala.reflect.classTag
       val factory = org.slf4j.LoggerFactory.getILoggerFactory
-      factory.getLogger(instance.getName)
+      factory.getLogger(clazz.runtimeClass.getName)
     }
 
   implicit val loggerToResolver: LoggerResolver[org.slf4j.Logger] =

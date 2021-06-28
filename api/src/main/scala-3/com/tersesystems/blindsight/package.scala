@@ -1,6 +1,6 @@
 package com.tersesystems
 
-import scala.quoted.{Expr, Quotes, Varargs}
+import scala.quoted._
 
 package object blindsight {
 
@@ -26,6 +26,19 @@ package object blindsight {
     // https://github.com/lampepfl/dotty/blob/master/tests/run-macros/f-interpolation-1/FQuote_1.scala
     val Typed(Repeated(allArgs, _), _) = argsExpr.asTerm.underlyingArgument
 
+    //    println(s"allArgs = $allArgs")
+    //    allArgs = List()
+    //    allArgs = List()
+    //    allArgs = List(Ident(arg))
+    //    allArgs = List(Ident(arg1), Ident(arg2))
+    //    allArgs = List(Ident(arg1), Ident(arg2))
+    //    allArgs = List(Ident(arg1), Ident(arg2), Ident(ex))
+    //    allArgs = List(Ident(marker1))
+    //    allArgs = List(Ident(markers))
+    //    allArgs = List(Ident(markers), Ident(arg1), Ident(arg2))
+    //    allArgs = List(Ident(markers), Ident(arg1), Ident(arg2), Ident(ex))
+    //    allArgs = List(Ident(ex1), Ident(ex2), Ident(ex3))
+
     if (allArgs.nonEmpty) {
       argsExpr match
         case Varargs(elements) =>
@@ -33,7 +46,7 @@ package object blindsight {
           var markersExpr: Option[Expr[Markers]] = None
           var throwableExpr: Option[Expr[Throwable]] = None
 
-          def assertMarkerConditions(): Unit =
+          def assertMarkerConditions(): Unit = {
             if (markersExpr.isDefined) {
               report.error(OnlyOneMarker)
             } else if (throwableExpr.isDefined) {
@@ -42,6 +55,20 @@ package object blindsight {
             } else if (argumentList.nonEmpty) {
               report.error(MarkerAfterArguments)
             }
+          }
+
+          def summonArgument[T: Type](expr: Expr[T]): Option[Expr[Argument]] = {
+            Expr.summon[ToArgument[T]].map { toArg =>
+              '{ $toArg.toArgument($expr) }
+            }
+          }
+
+          def summonMarkers[M: Type](expr: Expr[M]): Option[Expr[Markers]] = {
+            Expr.summon[ToMarkers[M]].map { toMarkers =>
+              val marker = '{ $toMarkers.toMarkers($expr) }
+              marker
+            }
+          }
 
           elements.foreach {
             case '{ $marker: org.slf4j.Marker } =>
@@ -52,25 +79,25 @@ package object blindsight {
               assertMarkerConditions()
               markersExpr = Some(markers)
 
+            case '{ $arg: Argument } =>
+              argumentList.append(arg)
+
             case '{ $t: Throwable } =>
+              val ta = '{ Argument($t.toString) }
+              argumentList.append(ta)
               throwableExpr = Some(t)
 
-            case '{ $arg: tp } =>
-              Expr.summon[ToArgument[tp]].foreach { toArg =>
-                argumentList.append('{ $toArg.toArgument($arg) })
-              }
-              Expr.summon[ToMarkers[tp]].foreach { toMarkers =>
-                markersExpr = Some('{ $toMarkers.toMarkers($arg) })
-              }
-            }
-          val inputSeq = Expr.ofSeq(argumentList.toSeq)
-          val arguments = '{Arguments($inputSeq)}
+            case el =>
+              // this is an Ident("arg") but we need to find the type
+              val optArg = summonArgument(el)
+              val optMarkers = summonMarkers(el)
 
-          // statement message is made up of the constant parts of string.
-          //val messageList = partz.map {
-          //  case Literal(Constant(const: String)) => const
-          //  case other                            => throw new IllegalStateException("Unknown case " + other)
-          //}
+              report.error(s"Cannot determine type of ${el.show}, is it an Argument()?")
+          }
+
+          val inputSeq = Expr.ofSeq(argumentList.toSeq)
+          val arguments = '{Arguments($inputSeq: _*)}
+
           val messageList = partz
 
           if (markersExpr.isEmpty) {
