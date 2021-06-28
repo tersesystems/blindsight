@@ -25,7 +25,7 @@ addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
 
 // https://github.com/sbt/sbt-release
-addSbtPlugin("com.github.sbt" % "sbt-release" % "1.0.15")
+addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 
 // https://github.com/xerial/sbt-sonatype
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.7")
