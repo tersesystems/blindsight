@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
   val scalaTest = "org.scalatest" %% "scalatest" % "3.2.9"
 
-  val terseLogback = "1.0.0"
+  val terseLogback = "1.0.1"
 
   lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.31"
 
