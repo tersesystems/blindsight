@@ -10,7 +10,8 @@ initialize := {
 
 val scala213 = "2.13.6"
 val scala212 = "2.12.14"
-val scalaVersions = Seq(scala213, scala212)
+val scala211 = "2.11.12"
+val scalaVersions = Seq(scala213, scala212, scala211)
 
 ThisBuild / versionScheme := Some("semver-spec")
 
