@@ -8,15 +8,10 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
-// Sanity check for sbt-travisci
-Global / onLoad := (Global / onLoad).value.andThen { s =>
-  val v = scala213.value
-  if (!CrossVersion.isScalaApiCompatible(v))
-    throw new MessageOnlyException(
-      s"Key scala213 doesn't define a scala version. Check .travis.yml is setup right. Version: $v"
-    )
-  s
-}
+val scala213 = "2.13.6"
+val scala212 = "2.12.14"
+val scala211 = "2.11.12"
+val scalaVersions = Seq(scala213, scala212, scala211)
 
 ThisBuild / versionScheme := Some("semver-spec")
 
@@ -46,68 +41,6 @@ val disableDocs = Seq[Setting[_]](
 val disablePublishing = Seq[Setting[_]](
   publishArtifact := false,
   publish / skip := true
-)
-
-// sbt ghpagesPushSite to publish to ghpages
-// previewAuto to see the site in action.
-// https://www.scala-sbt.org/sbt-site/getting-started.html#previewing-the-site
-lazy val docs = (project in file("docs"))
-  .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
-  .settings(
-    libraryDependencies += cronScheduler                   % Test,
-    libraryDependencies += scalaJava8Compat                % Test,
-    libraryDependencies += logbackTracing                  % Test,
-    libraryDependencies += refined(scalaVersion.value)     % Test,
-    libraryDependencies += logbackUniqueId                 % Test,
-    libraryDependencies += logbackTypesafeConfig           % Test,
-    libraryDependencies += logbackExceptionMapping         % Test,
-    libraryDependencies += logbackExceptionMappingProvider % Test,
-    scmInfo := Some(
-      ScmInfo(
-        url("https://github.com/tersesystems/blindsight"),
-        "scm:git:git@github.com:tersesystems/blindsight.git"
-      )
-    ),
-    git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
-    paradoxTheme := Some(builtinParadoxTheme("generic")),
-    makeSite / mappings ++= Seq(
-      file("LICENSE") -> "LICENSE"
-    ),
-    Compile / paradoxProperties ++= Map(
-      "github.base_url"    -> s"https://github.com/tersesystems/blindsight/tree/v${version.value}",
-      "canonical.base_url" -> "/blindsight/",
-      "scaladoc.base_url"  -> "/blindsight/api/"
-    ),
-    (ScalaUnidoc / unidoc) / unidocProjectFilter := inAnyProject -- inProjects(fixtures),
-    ScalaUnidoc / siteSubdirName := "api",
-    addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
-  )
-  .settings(disablePublishing)
-  .dependsOn(api, logstash, jsonld, ringbuffer, scripting)
-
-lazy val fixtures = (project in file("fixtures"))
-  .settings(
-    libraryDependencies += scalaJava8Compat       % Test,
-    libraryDependencies += logbackClassic         % Test,
-    libraryDependencies += logstashLogbackEncoder % Test,
-    libraryDependencies += scalaTest              % Test
-  )
-  .settings(disablePublishing)
-  .settings(disableDocs)
-
-// inliner must be run with "clean; compile", it's not incremental
-// https://www.lightbend.com/blog/scala-inliner-optimizer
-// https://docs.scala-lang.org/overviews/compiler-options/index.html
-val optimizeInline = Seq(
-  "-opt:l:inline",
-  "-opt-inline-from:com.tersesystems.blindsight.**",
-  "-opt-warnings:none"
-  // have to comment this out as it fails on this:
-  //Error:(51, 53) com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; could not be inlined:
-  //The callee com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; contains the instruction INVOKESPECIAL com/tersesystems/blindsight/LoggerFactory$.loggerFactory ()Lcom/tersesystems/blindsight/LoggerFactory;
-  //that would cause an IllegalAccessError when inlined into class com/tersesystems/blindsight/logstash/LogstashLoggerSpec.
-  //val logger: Logger = LoggerFactory.getLogger(underlying)
-  //"-opt-warnings:any-inline-failed"
 )
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
@@ -150,13 +83,13 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
 }
 
 // API that provides a logger with everything
-lazy val api = (project in file("api"))
+lazy val api = (projectMatrix in file("api"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight"))
   .settings(
     name := "blindsight-api",
     //    mimaPreviousArtifacts := Set(
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
-    //    ),
+    //    ),    
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
@@ -168,89 +101,159 @@ lazy val api = (project in file("api"))
     libraryDependencies += logbackClassic          % Test,
     libraryDependencies += logstashLogbackEncoder  % Test
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
-lazy val ringbuffer = (project in file("ringbuffer"))
+lazy val ringbuffer = (projectMatrix in file("ringbuffer"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += jctools
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api)
 
-lazy val jsonld = (project in file("jsonld"))
+lazy val jsonld = (projectMatrix in file("jsonld"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.jsonld"))
   .settings(
     name := "blindsight-jsonld",
     libraryDependencies += scalaTest % Test,
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api)
 
-lazy val logstash = (project in file("logstash"))
+lazy val logstash = (projectMatrix in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
-    name := "blindsight-logstash",
+    name := "blindsight-logstash",    
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api, fixtures % "test->test")
 
-lazy val inspections = (project in file("inspections"))
+lazy val inspections = (projectMatrix in file("inspections"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.inspection"))
   .settings(
     name := "blindsight-inspection",
     libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api % Test, fixtures % "test->test")
 
-lazy val scripting = (project in file("scripting"))
+lazy val scripting = (projectMatrix in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
   .settings(
-    name := "blindsight-scripting",
+    name := "blindsight-scripting",    
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += tweakFlow,
     libraryDependencies += securitybuilder % Test
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api, fixtures % "test->test")
 
 // https://github.com/ktoso/sbt-jmh
-lazy val benchmarks = (project in file("benchmarks"))
+lazy val benchmarks = (projectMatrix in file("benchmarks"))
   .enablePlugins(JmhPlugin)
-  .settings(
+  .settings(    
     run / fork := true
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .settings(disableDocs)
   .settings(disablePublishing)
   .dependsOn(logstash, ringbuffer)
 
 // serviceloader implementation with only SLF4J dependencies.
-lazy val generic = (project in file("generic"))
+lazy val generic = (projectMatrix in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
-    name := "blindsight-generic",
+    name := "blindsight-generic",    
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api)
 
-lazy val root = (project in file("."))
+// sbt ghpagesPushSite to publish to ghpages
+// previewAuto to see the site in action.
+// https://www.scala-sbt.org/sbt-site/getting-started.html#previewing-the-site
+lazy val docs = (project in file("docs"))
+  .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .settings(
-    name := "blindsight-root"
+    scalaVersion := scala213,
+    libraryDependencies += cronScheduler                   % Test,
+    libraryDependencies += scalaJava8Compat                % Test,
+    libraryDependencies += logbackTracing                  % Test,
+    libraryDependencies += refined(scalaVersion.value)     % Test,
+    libraryDependencies += logbackUniqueId                 % Test,
+    libraryDependencies += logbackTypesafeConfig           % Test,
+    libraryDependencies += logbackExceptionMapping         % Test,
+    libraryDependencies += logbackExceptionMappingProvider % Test,
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/tersesystems/blindsight"),
+        "scm:git:git@github.com:tersesystems/blindsight.git"
+      )
+    ),
+    git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
+    paradoxTheme := Some(builtinParadoxTheme("generic")),
+    makeSite / mappings ++= Seq(
+      file("LICENSE") -> "LICENSE"
+    ),
+    Compile / paradoxProperties ++= Map(
+      "github.base_url"    -> s"https://github.com/tersesystems/blindsight/tree/v${version.value}",
+      "canonical.base_url" -> "/blindsight/",
+      "scaladoc.base_url"  -> "/blindsight/api/"
+    ),
+    (ScalaUnidoc / unidoc) / unidocProjectFilter := inAnyProject -- inProjects(fixtures.jvm(scala213)),
+    ScalaUnidoc / siteSubdirName := "api",
+    addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
+  )
+  .settings(disablePublishing)
+  .dependsOn(api.jvm(scala213), logstash.jvm(scala213), jsonld.jvm(scala213), ringbuffer.jvm(scala213), scripting.jvm(scala213))
+
+lazy val fixtures = (projectMatrix in file("fixtures"))
+  .settings(
+    libraryDependencies += scalaJava8Compat       % Test,
+    libraryDependencies += logbackClassic         % Test,
+    libraryDependencies += logstashLogbackEncoder % Test,
+    libraryDependencies += scalaTest              % Test
+  )
+  .jvmPlatform(scalaVersions = scalaVersions)
+  .settings(disablePublishing)
+  .settings(disableDocs)
+
+// inliner must be run with "clean; compile", it's not incremental
+// https://www.lightbend.com/blog/scala-inliner-optimizer
+// https://docs.scala-lang.org/overviews/compiler-options/index.html
+val optimizeInline = Seq(
+  "-opt:l:inline",
+  "-opt-inline-from:com.tersesystems.blindsight.**",
+  "-opt-warnings:none"
+  // have to comment this out as it fails on this:
+  //Error:(51, 53) com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; could not be inlined:
+  //The callee com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; contains the instruction INVOKESPECIAL com/tersesystems/blindsight/LoggerFactory$.loggerFactory ()Lcom/tersesystems/blindsight/LoggerFactory;
+  //that would cause an IllegalAccessError when inlined into class com/tersesystems/blindsight/logstash/LogstashLoggerSpec.
+  //val logger: Logger = LoggerFactory.getLogger(underlying)
+  //"-opt-warnings:any-inline-failed"
+)
+
+lazy val root = (projectMatrix in file("."))
+  .settings(
+    name := "blindsight-root"    
   )
   .settings(disableDocs)
   .settings(disablePublishing)
   .aggregate(
     api,
-    docs,
     fixtures,
-    benchmarks,
     inspections,
     scripting,
     ringbuffer,
     jsonld,
     logstash,
     generic
-  )
+  ).jvmPlatform(scalaVersions = scalaVersions)
