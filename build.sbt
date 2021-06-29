@@ -8,6 +8,11 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
+lazy val scala213 = "2.13.6"
+lazy val scala212 = "2.12.14"
+lazy val scala211 = "2.11.12"
+lazy val supportedScalaVersions = List(scala213, scala212, scala211)
+
 ThisBuild / versionScheme := Some("semver-spec")
 
 ThisBuild / scalafmtOnCompile := false
@@ -147,6 +152,7 @@ lazy val api = (project in file("api"))
     //    mimaPreviousArtifacts := Set(
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
     //    ),
+    crossScalaVersions := supportedScalaVersions,
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
@@ -164,6 +170,7 @@ lazy val ringbuffer = (project in file("ringbuffer"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.ringbuffer"))
   .settings(
     name := "blindsight-ringbuffer",
+    crossScalaVersions := supportedScalaVersions,
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += jctools
   )
@@ -173,6 +180,7 @@ lazy val jsonld = (project in file("jsonld"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.jsonld"))
   .settings(
     name := "blindsight-jsonld",
+    crossScalaVersions := supportedScalaVersions,
     libraryDependencies += scalaTest % Test,
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
@@ -182,6 +190,7 @@ lazy val logstash = (project in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
     name := "blindsight-logstash",
+    crossScalaVersions := supportedScalaVersions,
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
@@ -192,6 +201,7 @@ lazy val inspections = (project in file("inspections"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.inspection"))
   .settings(
     name := "blindsight-inspection",
+    crossScalaVersions := supportedScalaVersions,
     libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
@@ -201,6 +211,7 @@ lazy val scripting = (project in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
   .settings(
     name := "blindsight-scripting",
+    crossScalaVersions := supportedScalaVersions,
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += tweakFlow,
     libraryDependencies += securitybuilder % Test
@@ -222,13 +233,16 @@ lazy val generic = (project in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
     name := "blindsight-generic",
+    crossScalaVersions := supportedScalaVersions,
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
   .dependsOn(api)
 
 lazy val root = (project in file("."))
   .settings(
-    name := "blindsight-root"
+    name := "blindsight-root",
+    // crossScalaVersions must be set to Nil on the aggregating project
+    crossScalaVersions := Nil
   )
   .settings(disableDocs)
   .settings(disablePublishing)
