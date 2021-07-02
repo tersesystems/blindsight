@@ -1,5 +1,6 @@
 import Dependencies._
 import sbt.Keys._
+import commandmatrix._
 
 initialize := {
   val _        = initialize.value // run the previous initialization
@@ -12,6 +13,18 @@ val scala213 = "2.13.6"
 val scala212 = "2.12.14"
 val scala211 = "2.11.12"
 val scalaVersions = Seq(scala213, scala212, scala211)
+
+inThisBuild(
+  Seq(
+    commands ++= CrossCommand.single(
+      "test",
+      matrices = Seq(root),
+      dimensions = Seq(
+        Dimension.scala("2.13"), 
+        Dimension.platform()
+      )
+    )
+))
 
 ThisBuild / versionScheme := Some("semver-spec")
 
