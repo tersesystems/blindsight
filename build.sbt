@@ -9,10 +9,11 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
+val scala3 = "3.0.0"
 val scala213 = "2.13.6"
 val scala212 = "2.12.14"
 val scala211 = "2.11.12"
-val scalaVersions = Seq(scala213, scala212, scala211)
+val scalaVersions = Seq(scala3, scala213, scala212, scala211)
 
 inThisBuild(
   Seq(
@@ -20,7 +21,7 @@ inThisBuild(
       "test",
       matrices = Seq(root),
       dimensions = Seq(
-        Dimension.scala("2.13"), 
+        Dimension.scala("2.13", fullFor3 = true),
         Dimension.platform()
       )
     )
@@ -57,30 +58,50 @@ val disablePublishing = Seq[Setting[_]](
 )
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
-  Seq(
-    "-unchecked",
-    "-deprecation",
-    "-feature",
-    "-encoding",
-    "UTF-8",
-    "-language:implicitConversions",
-    "-language:higherKinds",
-    "-language:existentials",
-    "-language:postfixOps",
-    "-Xlint",
-    "-Ywarn-dead-code",
-    "-Yrangepos"
-  ) ++ (CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, n)) if n >= 13 =>
+  (CrossVersion.partialVersion(scalaVersion) match {
+    case Some((3, n)) =>
       Seq(
-        "-Xsource:2.13",
-        "-Xfatal-warnings",
-        "-Wconf:any:warning-verbose",
+        "-language:implicitConversions",
         "-release",
         "8"
-      ) ++ optimizeInline
+      )
+    case Some((2, n)) if n >= 13 =>
+      Seq(
+        "-unchecked",
+        "-deprecation",
+        "-feature",
+        "-encoding",
+        "UTF-8",
+        "-language:implicitConversions",
+        "-language:higherKinds",
+        "-language:existentials",
+        "-language:postfixOps",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos"
+      ) ++
+        Seq(
+          "-Xsource:2.13",
+          "-Xfatal-warnings",
+          "-Wconf:any:warning-verbose",
+          "-release",
+          "8"
+        ) ++ optimizeInline
     case Some((2, n)) if n == 12 =>
       Seq(
+        "-unchecked",
+        "-deprecation",
+        "-feature",
+        "-encoding",
+        "UTF-8",
+        "-language:implicitConversions",
+        "-language:higherKinds",
+        "-language:existentials",
+        "-language:postfixOps",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos"
+      ) ++ Seq(
         "-Xsource:2.12",
         "-Yno-adapted-args"
         // "-release", "8" https://github.com/scala/bug/issues/11927 scaladoc is busted in 2.11.11
@@ -88,6 +109,19 @@ def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
       ) ++ optimizeInline
     case Some((2, n)) if n == 11 =>
       Seq(
+        "-unchecked",
+        "-deprecation",
+        "-feature",
+        "-encoding",
+        "UTF-8",
+        "-language:implicitConversions",
+        "-language:higherKinds",
+        "-language:existentials",
+        "-language:postfixOps",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-Yrangepos"
+      ) ++ Seq(
         "-Xsource:2.11",
         "-Yno-adapted-args",
         "-Xfatal-warnings"
@@ -102,17 +136,25 @@ lazy val api = (projectMatrix in file("api"))
     name := "blindsight-api",
     //    mimaPreviousArtifacts := Set(
     //      "com.tersesystems.blindsight" %% moduleName.value % previousVersion
-    //    ),    
+    //    ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += slf4jApi,
     libraryDependencies += sourcecode,
     libraryDependencies += scalaCollectionCompat, // should not be in 2.13 or 3.0
     // scala-reflect only needed for Statement Interpolation
-    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
-    libraryDependencies += scalaTest               % Test,
-    libraryDependencies += scalaJava8Compat        % Test,
-    libraryDependencies += logbackClassic          % Test,
-    libraryDependencies += logstashLogbackEncoder  % Test
+    libraryDependencies ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, 0)) => Seq.empty
+        case _ =>
+          Seq(
+            "org.scala-lang" % "scala-reflect" % scalaVersion.value
+          )
+      }
+    },
+    libraryDependencies += scalaTest              % Test,
+    libraryDependencies += scalaJava8Compat       % Test,
+    libraryDependencies += logbackClassic         % Test,
+    libraryDependencies += logstashLogbackEncoder % Test
   )
   .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
@@ -140,7 +182,7 @@ lazy val jsonld = (projectMatrix in file("jsonld"))
 lazy val logstash = (projectMatrix in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
-    name := "blindsight-logstash",    
+    name := "blindsight-logstash",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
@@ -152,7 +194,16 @@ lazy val inspections = (projectMatrix in file("inspections"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.inspection"))
   .settings(
     name := "blindsight-inspection",
-    libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value,
+    libraryDependencies ++= {
+      //Compile / scalafmtConfig := file(".scalafmt-dotty.conf")
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, 0)) => Seq.empty
+        case _ =>
+          Seq(
+            "org.scala-lang" % "scala-reflect" % scalaVersion.value
+          )
+      }
+    },
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
   .jvmPlatform(scalaVersions = scalaVersions)
@@ -161,7 +212,7 @@ lazy val inspections = (projectMatrix in file("inspections"))
 lazy val scripting = (projectMatrix in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
   .settings(
-    name := "blindsight-scripting",    
+    name := "blindsight-scripting",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += tweakFlow,
     libraryDependencies += securitybuilder % Test
@@ -172,7 +223,7 @@ lazy val scripting = (projectMatrix in file("scripting"))
 // https://github.com/ktoso/sbt-jmh
 lazy val benchmarks = (projectMatrix in file("benchmarks"))
   .enablePlugins(JmhPlugin)
-  .settings(    
+  .settings(
     run / fork := true
   )
   .jvmPlatform(scalaVersions = scalaVersions)
@@ -184,7 +235,7 @@ lazy val benchmarks = (projectMatrix in file("benchmarks"))
 lazy val generic = (projectMatrix in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
-    name := "blindsight-generic",    
+    name := "blindsight-generic",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
   .jvmPlatform(scalaVersions = scalaVersions)
@@ -256,7 +307,7 @@ val optimizeInline = Seq(
 
 lazy val root = (projectMatrix in file("."))
   .settings(
-    name := "blindsight-root"    
+    name := "blindsight-root"
   )
   .settings(disableDocs)
   .settings(disablePublishing)
@@ -269,4 +320,5 @@ lazy val root = (projectMatrix in file("."))
     jsonld,
     logstash,
     generic
-  ).jvmPlatform(scalaVersions = scalaVersions)
+  )
+  .jvmPlatform(scalaVersions = scalaVersions)
