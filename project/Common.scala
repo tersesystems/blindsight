@@ -31,7 +31,7 @@ object Common extends AutoPlugin {
 
   def scaladocOptions(binVer: String, ver: String, base: File): List[String] = {
     val sourceUrlOptions = binVer match {
-      case "2.12" | "2.13" =>
+      case "2.12" | "2.13" | "3" =>
         Seq(
           "-doc-source-url", {
             val branch = if (ver.endsWith("SNAPSHOT")) "master" else "v" + ver

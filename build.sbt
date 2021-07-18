@@ -9,14 +9,15 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
-val scala3 = "3.0.0"
-val scala213 = "2.13.6"
-val scala212 = "2.12.14"
-val scala211 = "2.11.12"
+val scala3        = "3.0.0"
+val scala213      = "2.13.6"
+val scala212      = "2.12.14"
+val scala211      = "2.11.12"
 val scalaVersions = Seq(scala3, scala213, scala212, scala211)
 
 inThisBuild(
   Seq(
+    // sbt-commandmatrix
     commands ++= CrossCommand.single(
       "test",
       matrices = Seq(root),
@@ -24,8 +25,17 @@ inThisBuild(
         Dimension.scala("2.13", fullFor3 = true),
         Dimension.platform()
       )
+    ),
+    commands ++= CrossCommand.single(
+      "packageSrc",
+      matrices = Seq(root),
+      dimensions = Seq(
+        Dimension.scala("2.13", fullFor3 = true),
+        Dimension.platform()
+      )
     )
-))
+  )
+)
 
 ThisBuild / versionScheme := Some("semver-spec")
 
@@ -40,6 +50,9 @@ ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
+// XXX Needed because projectmatrix creates a duplicate artifact, fix this before release
+ThisBuild / Compile / packageSrc / publishArtifact := false
+
 ThisBuild / scmInfo := Some(
   ScmInfo(
     url("https://github.com/tersesystems/blindsight"),
@@ -47,19 +60,20 @@ ThisBuild / scmInfo := Some(
   )
 )
 
+
 val disableDocs = Seq[Setting[_]](
-  Compile / doc / sources := Seq.empty,
+  Compile / doc / sources                := Seq.empty,
   Compile / packageDoc / publishArtifact := false
 )
 
 val disablePublishing = Seq[Setting[_]](
   publishArtifact := false,
-  publish / skip := true
+  publish / skip  := true
 )
 
 def scalacOptionsVersion(scalaVersion: String): Seq[String] = {
   (CrossVersion.partialVersion(scalaVersion) match {
-    case Some((3, n)) =>
+    case Some((3, _)) =>
       Seq(
         "-language:implicitConversions",
         "-release",
@@ -162,7 +176,7 @@ lazy val api = (projectMatrix in file("api"))
 lazy val ringbuffer = (projectMatrix in file("ringbuffer"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.ringbuffer"))
   .settings(
-    name := "blindsight-ringbuffer",
+    name          := "blindsight-ringbuffer",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += jctools
   )
@@ -172,9 +186,9 @@ lazy val ringbuffer = (projectMatrix in file("ringbuffer"))
 lazy val jsonld = (projectMatrix in file("jsonld"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.jsonld"))
   .settings(
-    name := "blindsight-jsonld",
+    name                            := "blindsight-jsonld",
     libraryDependencies += scalaTest % Test,
-    scalacOptions := scalacOptionsVersion(scalaVersion.value)
+    scalacOptions                   := scalacOptionsVersion(scalaVersion.value)
   )
   .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api)
@@ -182,7 +196,7 @@ lazy val jsonld = (projectMatrix in file("jsonld"))
 lazy val logstash = (projectMatrix in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
   .settings(
-    name := "blindsight-logstash",
+    name          := "blindsight-logstash",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += logbackClassic,
     libraryDependencies += logstashLogbackEncoder
@@ -212,7 +226,7 @@ lazy val inspections = (projectMatrix in file("inspections"))
 lazy val scripting = (projectMatrix in file("scripting"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.scripting"))
   .settings(
-    name := "blindsight-scripting",
+    name          := "blindsight-scripting",
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     libraryDependencies += tweakFlow,
     libraryDependencies += securitybuilder % Test
@@ -235,7 +249,7 @@ lazy val benchmarks = (projectMatrix in file("benchmarks"))
 lazy val generic = (projectMatrix in file("generic"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.generic"))
   .settings(
-    name := "blindsight-generic",
+    name          := "blindsight-generic",
     scalacOptions := scalacOptionsVersion(scalaVersion.value)
   )
   .jvmPlatform(scalaVersions = scalaVersions)
@@ -247,7 +261,7 @@ lazy val generic = (projectMatrix in file("generic"))
 lazy val docs = (project in file("docs"))
   .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
   .settings(
-    scalaVersion := scala213,
+    scalaVersion                                          := scala213,
     libraryDependencies += cronScheduler                   % Test,
     libraryDependencies += scalaJava8Compat                % Test,
     libraryDependencies += logbackTracing                  % Test,
@@ -263,7 +277,7 @@ lazy val docs = (project in file("docs"))
       )
     ),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
-    paradoxTheme := Some(builtinParadoxTheme("generic")),
+    paradoxTheme   := Some(builtinParadoxTheme("generic")),
     makeSite / mappings ++= Seq(
       file("LICENSE") -> "LICENSE"
     ),
@@ -272,12 +286,20 @@ lazy val docs = (project in file("docs"))
       "canonical.base_url" -> "/blindsight/",
       "scaladoc.base_url"  -> "/blindsight/api/"
     ),
-    (ScalaUnidoc / unidoc) / unidocProjectFilter := inAnyProject -- inProjects(fixtures.jvm(scala213)),
+    (ScalaUnidoc / unidoc) / unidocProjectFilter := inAnyProject -- inProjects(
+      fixtures.jvm(scala213)
+    ),
     ScalaUnidoc / siteSubdirName := "api",
     addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
   )
   .settings(disablePublishing)
-  .dependsOn(api.jvm(scala213), logstash.jvm(scala213), jsonld.jvm(scala213), ringbuffer.jvm(scala213), scripting.jvm(scala213))
+  .dependsOn(
+    api.jvm(scala213),
+    logstash.jvm(scala213),
+    jsonld.jvm(scala213),
+    ringbuffer.jvm(scala213),
+    scripting.jvm(scala213)
+  )
 
 lazy val fixtures = (projectMatrix in file("fixtures"))
   .settings(
