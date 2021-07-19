@@ -50,9 +50,6 @@ ThisBuild / homepage := Some(url("https://tersesystems.github.io/blindsight"))
 ThisBuild / startYear := Some(2020)
 ThisBuild / licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
-// XXX Needed because projectmatrix creates a duplicate artifact, fix this before release
-ThisBuild / Compile / packageSrc / publishArtifact := false
-
 ThisBuild / scmInfo := Some(
   ScmInfo(
     url("https://github.com/tersesystems/blindsight"),
