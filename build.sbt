@@ -25,14 +25,6 @@ inThisBuild(
         Dimension.scala("2.13", fullFor3 = true),
         Dimension.platform()
       )
-    ),
-    commands ++= CrossCommand.single(
-      "packageSrc",
-      matrices = Seq(root),
-      dimensions = Seq(
-        Dimension.scala("2.13", fullFor3 = true),
-        Dimension.platform()
-      )
     )
   )
 )
