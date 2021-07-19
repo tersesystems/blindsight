@@ -11,7 +11,10 @@ $ sbt publishLocalSigned
 
 If that works right (it does scaladoc that isn't in the CI test suite) then do a release as follows:
 
+Using sbt-projectmatrix uses lots of memory so better to use 4 GB:
+
 ```bash
+$ export SBT_OPTS="-Xms512M -Xmx4g -Xss2M -XX:MaxMetaspaceSize=1024M" 
 $ sbt release 
 ```
 
