@@ -29,7 +29,7 @@ object Dependencies {
   def refined(scalaVersion: String): ModuleID =
     scalaVersion match {
       case s if s.startsWith("2.11") => "eu.timepit" %% "refined" % "0.9.12"
-      case _                         => "eu.timepit" %% "refined" % "0.9.26"
+      case _                         => "eu.timepit" %% "refined" % "0.9.27"
     }
 
   lazy val logbackUniqueId        = "com.tersesystems.logback"         % "logback-uniqueid-appender" % terseLogback
