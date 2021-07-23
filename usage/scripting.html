@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.1
+1.5.2
 </div>
 </div>
 <div class="nav-toc">
@@ -58,10 +58,7 @@
     <li><a href="../usage/scripting.html" class="active page">Scripting</a></li>
     <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/overview.html" class="page">Overview</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending Blindsight API</a></li>
   <li><a href="../performance/index.html" class="page">Performance</a>
   <ul>
     <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
@@ -99,7 +96,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.1
+1.5.2
 </div>
 </div>
 <div class="nav-toc">
@@ -125,10 +122,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/scripting.html" class="active page">Scripting</a></li>
     <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/overview.html" class="page">Overview</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending Blindsight API</a></li>
   <li><a href="../performance/index.html" class="page">Performance</a>
   <ul>
     <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
@@ -163,20 +157,20 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <h1><a href="#scripting" name="scripting" class="anchor"><span class="anchor-link"></span></a>Scripting</h1>
 <p>There are times when you want to reconfigure logging behavior. You can do that at the macro level with logging levels, but Blindsight gives you far more control, allowing you to change logging by individual method or even line number, in conjunction with <a href="https://twineworks.github.io/tweakflow/index.html">Tweakflow Scripts</a> that can be modified while the JVM is running.</p>
 <h2><a href="#installation" name="installation" class="anchor"><span class="anchor-link"></span></a>Installation</h2>
-<p>This library is in <code>blindsight-scripting</code> and depends on <code>blindsight-api</code>: </p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-scripting" % "1.5.1"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
+<p>This library is in <code>blindsight-scripting</code> and depends on <code>blindsight-api</code>: </p><dl class="dependency"><dt>sbt</dt><dd><pre class="prettyprint"><code class="language-scala">libraryDependencies += "com.tersesystems.blindsight" %% "blindsight-scripting" % "1.5.2"</code></pre></dd><dt>Maven</dt><dd><pre class="prettyprint"><code class="language-xml">&lt;properties&gt;
   &lt;scala.binary.version&gt;2.13&lt;/scala.binary.version&gt;
 &lt;/properties&gt;
 &lt;dependencies&gt
   &lt;dependency&gt;
     &lt;groupId&gt;com.tersesystems.blindsight&lt;/groupId&gt;
     &lt;artifactId&gt;blindsight-scripting_${scala.binary.version}&lt;/artifactId&gt;
-    &lt;version&gt;1.5.1&lt;/version&gt;
+    &lt;version&gt;1.5.2&lt;/version&gt;
   &lt;/dependency&gt
 &lt;/dependencies&gt;</code></pre></dd><dt>Gradle</dt><dd><pre class="prettyprint"><code class="language-gradle">def versions = [
   ScalaBinary: "2.13"
 ]
 dependencies {
-  implementation "com.tersesystems.blindsight:blindsight-scripting_${versions.ScalaBinary}:1.5.1"
+  implementation "com.tersesystems.blindsight:blindsight-scripting_${versions.ScalaBinary}:1.5.2"
 }</code></pre></dd></dl>
 <h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>Here&rsquo;s an example Tweakflow script that will only enable logging that are in given methods and default to a level:</p>
@@ -221,7 +215,7 @@ val logger = new ScriptAwareLogger(CoreLogger(slf4jLogger), scriptManager)
 <p>Or you can register all logging using a custom logger factory.</p>
 <p>Start by installing <a href="../setup/index.html"><code>blindsight-generic</code></a> which does not have a service provider already exposed.</p>
 <p>Create a factory class:</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/test/scala/example/scripting/ScriptingLoggerFactory.scala#L10-L48" target="_blank" title="Go to snippet source">source</a><code class="language-scala">class ScriptingLoggerFactory extends LoggerFactory {
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/test/scala/example/scripting/ScriptingLoggerFactory.scala#L10-L48" target="_blank" title="Go to snippet source">source</a><code class="language-scala">class ScriptingLoggerFactory extends LoggerFactory {
 
   private val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 
@@ -266,7 +260,7 @@ com.tersesystems.blindsight.scripting.ScriptingLoggerFactory
 </code></pre>
 <h2><a href="#script-conditions" name="script-conditions" class="anchor"><span class="anchor-link"></span></a>Script Conditions</h2>
 <p>If you only want some logging statements to be source aware, you can use a <a href="/blindsight/api/com/tersesystems/blindsight/scripting/ScriptBasedLocation.html" title="com.tersesystems.blindsight.scripting.ScriptBasedLocation"><code>ScriptBasedLocation</code></a>, which returns a condition containing the source code information used by a script.</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/test/scala/example/scripting/ConditionExample.scala#L7-L32" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object ConditionExample {
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/test/scala/example/scripting/ConditionExample.scala#L7-L32" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object ConditionExample {
   def main(args: Array[String]): Unit = {
     // or use FileScriptHandle
     val scriptHandle = new ScriptHandle {
@@ -295,7 +289,7 @@ com.tersesystems.blindsight.scripting.ScriptingLoggerFactory
 <h2><a href="#other-scripting-languages" name="other-scripting-languages" class="anchor"><span class="anchor-link"></span></a>Other Scripting Languages</h2>
 <p>You can also integrate Blindsight with more powerful scripting languages like Groovy using <a href="https://docs.oracle.com/en/java/javase/12/scripting/java-scripting-api.html#GUID-C4A6EB7C-0AEA-45EC-8662-099BDEFC361A">JSR-223</a>, but they do allow arbitrary execution and can pose a security risk. Please see the <a href="https://tersesystems.com/blog/2021/05/02/dynamic-logging-with-conditions/">blog post</a> for details.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/main/paradox/usage/scripting.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/main/paradox/usage/scripting.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -383,7 +377,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.1', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.2', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.1
+1.5.2
 </div>
 </div>
 <div class="nav-toc">
@@ -58,10 +58,7 @@
     <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
     <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/overview.html" class="page">Overview</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending Blindsight API</a></li>
   <li><a href="../performance/index.html" class="page">Performance</a>
   <ul>
     <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
@@ -99,7 +96,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.1
+1.5.2
 </div>
 </div>
 <div class="nav-toc">
@@ -125,10 +122,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
     <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/overview.html" class="page">Overview</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending Blindsight API</a></li>
   <li><a href="../performance/index.html" class="page">Performance</a>
   <ul>
     <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
@@ -162,6 +156,8 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <div class="small-12 large-9 column" id="docs">
 <h1><a href="#source-code" name="source-code" class="anchor"><span class="anchor-link"></span></a>Source Code</h1>
 <p>SLF4J can give access to the line and file of source code, but this is done at runtime and is very expensive. Blindsight provides this information for free, at compile time, through <a href="https://github.com/com-lihaoyi/sourcecode">sourcecode</a> macros. Internally, the <a href="/blindsight/api/com/tersesystems/blindsight/logstash/LogstashLoggerFactory.html" title="com.tersesystems.blindsight.logstash.LogstashLoggerFactory"><code>LogstashLoggerFactory</code></a> adds extra markers to logging statements based on the macros.</p>
+<p>Note that this only provides source code info where Blindsight is used, not generally across Logback. If you want source code information out of Logback generally with the compile time overhead of caller info, check out <a href="https://tersesystems.github.io/terse-logback/guide/instrumentation/">instrumentation</a>.</p>
+<h2><a href="#usage" name="usage" class="anchor"><span class="anchor-link"></span></a>Usage</h2>
 <p>To enable this, use <code>blindsight-logstash</code> and add a <code>blindsight.source.enabled</code> property to the Logback context with the value of <code>true</code>:</p>
 <pre class="prettyprint"><code class="language-xml">&lt;configuration&gt;
   &lt;property name=&quot;blindsight.source.enabled&quot; value=&quot;true&quot; scope=&quot;context&quot;/&gt;
@@ -183,6 +179,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
   &quot;source.enclosing&quot;: &quot;example.slf4j.Slf4jMain.main&quot;
 }
 </code></pre>
+<h2><a href="#changing-property-names" name="changing-property-names" class="anchor"><span class="anchor-link"></span></a>Changing Property Names</h2>
 <p>This is the default behavior. You can change the name of the labels used in the event that you have a conflict.</p>
 <blockquote>
   <p>For example, <a href="https://www.elastic.co/guide/en/beats/filebeat/6.8/index.html">Filebeat 6.8 and later</a> uses <a href="https://www.elastic.co/guide/en/beats/filebeat/6.8/migration-changed-fields.html#_the_file_field_was_renamed_to_source">source.*</a> internally and will not collect logs if a field with that prefix already exists.</p>
@@ -196,8 +193,52 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 &lt;!-- ... --&gt;
 &lt;/configuration&gt;
 </code></pre>
+<h2><a href="#customizing-loggerfactory" name="customizing-loggerfactory" class="anchor"><span class="anchor-link"></span></a>Customizing LoggerFactory</h2>
+<p>If you want to customize the source code behavior, you can provide your own <code>LoggerFactory</code> implementation. The <code>LoggerFactory</code> is provided from a service loader implementation, so the easiest thing to do is install the <a href="../setup/index.html">generic</a> logger and implement <code>META-INF/services/com.tersesystems.blindsight.LoggerFactory</code> with your own <code>LoggerFactory</code>.</p>
+<p>Writing your own logger factory is not too hard &ndash; here&rsquo;s the <code>LogstashLoggerFactory</code> for reference.</p>
+<pre class="prettyprint"><code class="language-scala">class LogstashLoggerFactory extends LoggerFactory {
+  override def getLogger[T: LoggerResolver](instance: T): Logger = {
+    val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
+    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior(underlying)))
+  }
+
+  protected def sourceInfoBehavior(underlying: org.slf4j.Logger): Option[SourceInfoBehavior] = {
+    if (sourceInfoEnabled(underlying)) {
+      Some(sourceInfoAsMarker(underlying))
+    } else {
+      None
+    }
+  }
+
+  protected def sourceInfoEnabled(underlying: org.slf4j.Logger): Boolean = {
+    val enabled = property(underlying, LogstashLoggerFactory.SourceEnabledProperty)
+    java.lang.Boolean.parseBoolean(enabled.getOrElse(java.lang.Boolean.FALSE.toString))
+  }
+
+  protected def property(underlying: org.slf4j.Logger, propertyName: String): Option[String] = {
+    val logbackLogger = underlying.asInstanceOf[ch.qos.logback.classic.Logger]
+    Option(logbackLogger.getLoggerContext.getProperty(propertyName))
+  }
+
+  protected def sourceInfoAsMarker(underlying: org.slf4j.Logger): SourceInfoBehavior = {
+    import LogstashLoggerFactory._
+    val fileLabel      = property(underlying, SourceFileProperty).getOrElse(&quot;source.file&quot;)
+    val lineLabel      = property(underlying, SourceLineProperty).getOrElse(&quot;source.line&quot;)
+    val enclosingLabel = property(underlying, SourceEnclosingProperty).getOrElse(&quot;source.enclosing&quot;)
+    new SourceInfoBehavior.Impl(fileLabel, lineLabel, enclosingLabel)
+  }
+
+}
+
+object LogstashLoggerFactory {
+  val SourceEnabledProperty   = &quot;blindsight.source.enabled&quot;
+  val SourceFileProperty      = &quot;blindsight.source.file&quot;
+  val SourceLineProperty      = &quot;blindsight.source.line&quot;
+  val SourceEnclosingProperty = &quot;blindsight.source.enclosing&quot;
+}
+</code></pre>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/main/paradox/usage/sourcecode.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/main/paradox/usage/sourcecode.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -205,6 +246,21 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 </div>
 </div>
 <div class="large-3 show-for-large column" data-sticky-container>
+<nav class="sidebar sticky" data-sticky data-anchor="docs" data-sticky-on="large">
+<div class="page-nav">
+<div class="nav-title">On this page:</div>
+<div class="nav-toc">
+<ul>
+  <li><a href="../usage/sourcecode.html#source-code" class="header">Source Code</a>
+  <ul>
+    <li><a href="../usage/sourcecode.html#usage" class="header">Usage</a></li>
+    <li><a href="../usage/sourcecode.html#changing-property-names" class="header">Changing Property Names</a></li>
+    <li><a href="../usage/sourcecode.html#customizing-loggerfactory" class="header">Customizing LoggerFactory</a></li>
+  </ul></li>
+</ul>
+</div>
+</div>
+</nav>
 </div>
 </div>
 
@@ -267,7 +323,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.1', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.2', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>

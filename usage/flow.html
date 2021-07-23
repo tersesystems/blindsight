@@ -32,7 +32,7 @@
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.1
+1.5.2
 </div>
 </div>
 <div class="nav-toc">
@@ -58,10 +58,7 @@
     <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
     <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/overview.html" class="page">Overview</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending Blindsight API</a></li>
   <li><a href="../performance/index.html" class="page">Performance</a>
   <ul>
     <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
@@ -99,7 +96,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
 <span class="home-icon">⌂</span>Blindsight
 </a>
 <div class="version-number">
-1.5.1
+1.5.2
 </div>
 </div>
 <div class="nav-toc">
@@ -125,10 +122,7 @@ C16.952,7,17,6.553,17,6c0-0.553-0.048-1-0.6-1H3.6C3.048,5,3,5.447,3,6C3,6.553,3.
     <li><a href="../usage/scripting.html" class="page">Scripting</a></li>
     <li><a href="../usage/inspections.html" class="page">Inspections</a></li>
   </ul></li>
-  <li><a href="../extending/index.html" class="page">Extending</a>
-  <ul>
-    <li><a href="../extending/overview.html" class="page">Overview</a></li>
-  </ul></li>
+  <li><a href="../extending/index.html" class="page">Extending Blindsight API</a></li>
   <li><a href="../performance/index.html" class="page">Performance</a>
   <ul>
     <li><a href="../performance/benchmarks.html" class="page">Benchmarks</a></li>
@@ -180,12 +174,12 @@ trait LoggingTraits {
 }
 </code></pre>
 <p>Once you have a flow behavior in scope, the flow logger takes a block of execution, and returns the result transparently, according to the log level.</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/test/scala/example/flow/SimpleFlow.scala#L42-L45" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def flowMethod(arg1: Int, arg2: Int): Int =
   flowLogger.trace {
     arg1 + arg2
   }</code></pre>
 <p>The result should have a type class instance of <a href="/blindsight/api/com/tersesystems/blindsight/ToArgument.html" title="com.tersesystems.blindsight.ToArgument"><code>ToArgument</code></a>, so that it can be considered in logging. For example, if the return type is <code>Person</code>, then you must have a <code>ToArguments[Person]</code> in scope:</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/test/scala/example/flow/SimpleFlow.scala#L49-L66" target="_blank" title="Go to snippet source">source</a><code class="language-scala">def personFlowMethod(arg1: Int, arg2: Int): Person =
   flowLogger.trace {
     Person(name = &quot;Will&quot;, age = arg1 + arg2)
   }
@@ -206,7 +200,8 @@ object Person {
 <p>If logging is enabled, then the execution is wrapped to capture the result or execution, and then the result is returned or execution rethrown. If the logging is not enabled (whether through conditional logging, explicit filtering, or threshold), then execution of the block still proceeds but is not wrapped by a <code>Try</code> block.</p>
 <p>The flow is safe to use with <code>withCondition</code>. If disabled, the logger will short circuit to executing the block without adding any logging:</p>
 <pre class="prettyprint"><code class="language-scala">private def flowEnabled: Condition = Condition.never
-private val logger: FlowLogger = LoggerFactory.getLogger.flow.withCondition(flowEnabled)
+private val logger = LoggerFactory.getLogger
+private val flowLogger: FlowLogger = logger.flow.withCondition(flowEnabled)
 </code></pre><div class="callout note "><div class="callout-title">Note</div>
 <p>To disable flow logging where it would normally be logged, use <code>Condition.never</code> in the <code>withCondition</code> or <code>when</code> block. Using <code>Condition.never</code> allows the flow to short-circuit with no-op behavior.</p></div>
 <h2><a href="#duration" name="duration" class="anchor"><span class="anchor-link"></span></a>Duration</h2>
@@ -236,6 +231,20 @@ private val logger: FlowLogger = LoggerFactory.getLogger.flow.withCondition(flow
 </code></pre>
 <h2><a href="#integration" name="integration" class="anchor"><span class="anchor-link"></span></a>Integration</h2>
 <p>Flow based logging, because it leaves the flow behavior open, is a good way to integrate with third party systems.</p>
+<h3><a href="#instrumentation" name="instrumentation" class="anchor"><span class="anchor-link"></span></a>Instrumentation</h3>
+<p>Flow based logging works when you can add lines to the source and recompile, but in some situations you may have library or utility code, where you don&rsquo;t have access to the source code. In this case, you can instrument the code at run time for logging entry and exit, using <a href="https://tersesystems.github.io/terse-logback/guide/instrumentation/">terse-logback instrumentation</a>.</p>
+<p>This works even on code in the Java standard libraries, and can be extremely useful when exceptions are swallowed or spawn threads with no exception handler:</p>
+<pre><code>logback.bytebuddy {
+  service-name = &quot;example-service&quot;
+  tracing {
+    &quot;java.lang.Thread&quot; = [
+      &quot;run&quot;
+    ]
+    &quot;javax.net.ssl.SSLContext&quot; = [&quot;*&quot;]
+  }
+}
+</code></pre>
+<p>See the <a href="https://github.com/tersesystems/logging-instrumentation-example">logging-instrumentation-example</a> for an example.</p>
 <h3><a href="#opentracing" name="opentracing" class="anchor"><span class="anchor-link"></span></a>Opentracing</h3>
 <p>While it&rsquo;s possible to set up an Opentracing <a href="/blindsight/api/com/tersesystems/blindsight/flow/FlowBehavior.html" title="com.tersesystems.blindsight.flow.FlowBehavior"><code>FlowBehavior</code></a> that creates spans directly, spans will not show up in the logs (which is confusing) and will tightly couple the Opentracing instrumentation with your logging (which may lead to bugs).</p>
 <p>What you can do instead is inject your logs into an active span inside of a flow, using the <a href="https://github.com/opentracing/specification/blob/master/semantic_conventions.md#log-fields-table">standard log fields</a>:</p>
@@ -273,7 +282,7 @@ val datadogSpanId = Markers(&quot;dd.span_id&quot; -&gt; Option(getSpanId).getOr
 <p>See <a href="https://github.com/tersesystems/play-blindsight">play-blindsight</a> for a worked example.</p>
 <p><img src="trace.png" alt="trace.png" /></p>
 <p>You can produce Honeycomb manual traces with the following:</p>
-<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object HoneycombFlow {
+<pre class="prettyprint"><button class="snippet-button copy-snippet" title="Copy snippet to clipboard">copy</button><a class="snippet-button go-to-source" href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/test/scala/example/flow/HoneycombFlow.scala#L37-L144" target="_blank" title="Go to snippet source">source</a><code class="language-scala">object HoneycombFlow {
 
   private val logger = LoggerFactory.getLogger
 
@@ -394,7 +403,7 @@ object HoneycombFlowBehavior {
 </code></pre>
 <p>Evaluation of a no-op flow adds roughly 42 nanoseconds to execution &ndash; the time it takes to create a <code>Seq</code> from <code>sourcecode.Args</code> and discard them. Removing <code>sourcecode.Args</code> from the implicits takes the no-op down to 4.5 nanoseconds. For comparison, evaluating a guard of <code>if (logger.isLoggingDebug())</code> using SLF4J is 1.5 nanoseconds. I believe this is an acceptable cost for tracing, but please file an issue if it is a concern.</p>
 <div class="source-github">
-The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.1/docs/src/main/paradox/usage/flow.md">here</a>.
+The source code for this page can be found <a href="https://github.com/tersesystems/blindsight/tree/v1.5.2/docs/src/main/paradox/usage/flow.md">here</a>.
 </div>
 
 <div class="nav-next">
@@ -480,7 +489,7 @@ The source code for this page can be found <a href="https://github.com/tersesyst
 <script type="text/javascript" src="../lib/prettify/prettify.js"></script>
 <script type="text/javascript" src="../lib/prettify/lang-scala.js"></script>
 <script type="text/javascript">jQuery(function(){window.prettyPrint && prettyPrint()});</script>
-<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.1', 'https://tersesystems.github.io/blindsight')});</script>
+<script type="text/javascript">jQuery(function(jq){initOldVersionWarnings(jq, '1.5.2', 'https://tersesystems.github.io/blindsight')});</script>
 
 
 </html>
