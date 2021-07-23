@@ -248,7 +248,7 @@ lazy val generic = (projectMatrix in file("generic"))
 // previewAuto to see the site in action.
 // https://www.scala-sbt.org/sbt-site/getting-started.html#previewing-the-site
 lazy val docs = (project in file("docs"))
-  .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin, ScalaUnidocPlugin)
+  .enablePlugins(ParadoxPlugin, ParadoxSitePlugin, GhpagesPlugin)
   .settings(
     scalaVersion                                          := scala213,
     libraryDependencies += cronScheduler                   % Test,
@@ -274,12 +274,7 @@ lazy val docs = (project in file("docs"))
       "github.base_url"    -> s"https://github.com/tersesystems/blindsight/tree/v${version.value}",
       "canonical.base_url" -> "/blindsight/",
       "scaladoc.base_url"  -> "/blindsight/api/"
-    ),
-    (ScalaUnidoc / unidoc) / unidocProjectFilter := inAnyProject -- inProjects(
-      fixtures.jvm(scala213)
-    ),
-    ScalaUnidoc / siteSubdirName := "api",
-    addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)
+    )
   )
   .settings(disablePublishing)
   .dependsOn(
