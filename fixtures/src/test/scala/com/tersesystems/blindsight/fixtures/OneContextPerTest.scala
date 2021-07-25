@@ -53,7 +53,7 @@ trait OneContextPerTest extends TestSuiteMixin {
   def listAppender(implicit context: LoggerContext): ListAppender[ILoggingEvent] = {
     def getFirstAppender(logger: Logger): Optional[Appender[ILoggingEvent]] = {
       val appenderStream =
-        com.tersesystems.blindsight.fixtures.StreamUtils.fromIterator(logger.iteratorForAppenders)
+        StreamUtils.fromIterator(logger.iteratorForAppenders)
       appenderStream.findFirst
     }
 
