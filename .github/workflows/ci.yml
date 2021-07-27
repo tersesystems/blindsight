@@ -24,7 +24,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         java: [adopt@1.11]
-        scalaVersion: ["2_11", "2_12", "2_13", "3_0_0"]
+        scalaVersion: ["2_11", "2_12", "2_13", "3_0_1"]
         scalaPlatform: ["jvm"]
     runs-on: ${{ matrix.os }}
     env:
