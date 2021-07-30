@@ -334,9 +334,8 @@ import scala.quoted.*
       }
 
       block.asTerm match {
-        case Inlined(emptyTree, emptyList, statementBlock) =>
-          val newBlock = rewriteBlock(statementBlock)
-          Inlined(emptyTree, emptyList, newBlock).asExprOf[A]
+        case tree: Inlined =>
+          Inlined.copy(tree)(call = tree.call, bindings = tree.bindings, expansion = rewriteBlock(tree.body)).asExprOf[A]
         case _ =>
           block
       }
