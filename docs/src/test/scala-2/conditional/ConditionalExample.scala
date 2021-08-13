@@ -18,8 +18,8 @@ object SimpleConditionalExample {
     // #simple-conditional
 
     // #marker-conditional
-    val fooMarker              = MarkerFactory.getMarker("FOO")
-    val markerCondition        = Condition((stateMarkers: Markers) => stateMarkers.contains(fooMarker))
+    val fooMarker       = MarkerFactory.getMarker("FOO")
+    val markerCondition = Condition((stateMarkers: Markers) => stateMarkers.contains(fooMarker))
     val conditionalOnFooMarker = logger.withCondition(markerCondition)
     // #marker-conditional
 

@@ -90,7 +90,7 @@ class InspectionMacrosSpec extends AnyWordSpec with Matchers with OneContextPerT
 
       publicFields(1).name must be("fieldInt")
       publicFields(1).value must be(1337)
-      
+
     }
 
   }
@@ -103,10 +103,12 @@ class InspectionMacrosSpec extends AnyWordSpec with Matchers with OneContextPerT
   }
 }
 
-class ExampleClass(val paramInt: Int,
-   private val privateParamInt: Int = 20,
-   protected val protectedParamInt: Int = 19) {
-  val fieldInt: Int = 1337
-  private val privateInt = 22
+class ExampleClass(
+    val paramInt: Int,
+    private val privateParamInt: Int = 20,
+    protected val protectedParamInt: Int = 19
+) {
+  val fieldInt: Int          = 1337
+  private val privateInt     = 22
   protected val protectedInt = 21
 }
