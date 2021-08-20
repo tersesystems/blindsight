@@ -65,7 +65,7 @@ object SimpleDSLExample {
       ("lotto-id"        -> lotto.id) ~
       ("winning-numbers" -> lotto.winningNumbers) ~
       ("draw-date"       -> lotto.drawDate.map(_.toString)) ~
-      ("winners"         -> lotto.winners.map(w => ("winner-id" -> w.id) ~ ("numbers" -> w.numbers)))
+      ("winners" -> lotto.winners.map(w => ("winner-id" -> w.id) ~ ("numbers" -> w.numbers)))
     logger.info("Logs with an array as marker", complexArgument)
     // #simple-dsl-example
   }

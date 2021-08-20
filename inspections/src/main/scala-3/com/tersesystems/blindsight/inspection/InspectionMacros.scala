@@ -47,7 +47,7 @@ trait InspectionMacros {
    * @return the result of the if statement.
    */
   inline def decorateIfs[A](output: BranchInspection => Unit)(ifStatement: => A): A
-  
+
   /**
    * Decorates a match statement with logging statements at each case.
    *
@@ -146,7 +146,7 @@ trait InspectionMacros {
 // https://docs.scala-lang.org/scala3/guides/migration/tutorial-macro-cross-building.html
 // You must run with "project inspections3; test" for this to work with sbt-projectmatrix
 object InspectionMacros extends InspectionMacros {
-import scala.quoted.*
+  import scala.quoted.*
 
   /*
    inline def location: Location = ${locationImpl}
@@ -160,7 +160,7 @@ import scala.quoted.*
    */
 
   inline def decorateIfs[A](output: BranchInspection => Unit)(ifStatement: => A): A =
-    ${ Impl.decorateIfsImpl('output, 'ifStatement)}
+    ${ Impl.decorateIfsImpl('output, 'ifStatement) }
 
   inline def decorateMatch[A](output: BranchInspection => Unit)(matchStatement: => A): A =
     ${ Impl.decorateMatchImpl('output, 'matchStatement) }
@@ -171,7 +171,7 @@ import scala.quoted.*
   inline def decorateVals[A](output: ValDefInspection => Unit)(inline block: A): A =
     ${ Impl.decorateValsImpl('output, 'block) }
 
-  inline def dumpPublicFields[A](instance: A): Seq[ValDefInspection] = 
+  inline def dumpPublicFields[A](instance: A): Seq[ValDefInspection] =
     ${ Impl.dumpPublicFields('instance) }
 
   object Impl {
@@ -180,28 +180,28 @@ import scala.quoted.*
       import quotes.reflect.*
 
       def isPublic(sym: Symbol): Boolean = {
-        ! (sym.flags.is(Flags.Protected) || sym.flags.is(Flags.Private))
+        !(sym.flags.is(Flags.Protected) || sym.flags.is(Flags.Private))
       }
 
       def classVals(repr: TypeRepr): Seq[Expr[ValDefInspection]] = {
 
-        val exprs: Seq[Expr[ValDefInspection]] = repr.typeSymbol.declaredFields.collect {        
+        val exprs: Seq[Expr[ValDefInspection]] = repr.typeSymbol.declaredFields.collect {
           case other if isPublic(other) =>
             val name: String = other.name
-            val field: Term = Select.unique(instance.asTerm, name)
-            '{ ValDefInspection(${Expr(name)}, ${field.asExpr}) }                    
+            val field: Term  = Select.unique(instance.asTerm, name)
+            '{ ValDefInspection(${ Expr(name) }, ${ field.asExpr }) }
         }
         exprs
       }
       val fields: Seq[Expr[ValDefInspection]] = classVals(TypeRepr.of[A])
-      val expr: Expr[Seq[ValDefInspection]] = Expr.ofSeq(fields)
+      val expr: Expr[Seq[ValDefInspection]]   = Expr.ofSeq(fields)
       expr
     }
 
     def decorateMatchImpl[A: Type](
-                                    output: Expr[BranchInspection => Unit],
-                                    matchStatement: Expr[A]
-                                  )(using Quotes): Expr[A] = {
+        output: Expr[BranchInspection => Unit],
+        matchStatement: Expr[A]
+    )(using Quotes): Expr[A] = {
       import quotes.reflect.*
 
       matchStatement.asTerm match {
@@ -216,17 +216,17 @@ import scala.quoted.*
                   val enhancedCases = cases.map {
                     case CaseDef(pat: Tree, guard: Option[Term], body: Term) =>
                       val guardSource = guard.map(t => s" if ${t.show}").getOrElse("")
-                      val patSource   = pat match {
+                      val patSource = pat match {
                         case Bind(b, f) => s"case $b"
-                        case Ident(i) => s"case $i"
+                        case Ident(i)   => s"case $i"
                         case other =>
                           println(s"Unexpected macro case $other")
                           s"case $other"
                       }
                       val name: String = m.asExpr.show
-                      val src         = Expr(s"$name match $patSource$guardSource")
-                      val bodyExpr    = body.asExpr
-                      val stmt        = '{ $output(BranchInspection($src, true)); $bodyExpr }
+                      val src          = Expr(s"$name match $patSource$guardSource")
+                      val bodyExpr     = body.asExpr
+                      val stmt         = '{ $output(BranchInspection($src, true)); $bodyExpr }
                       CaseDef(pat, guard, stmt.asTerm)
                   }
                   Block(b, Match(m, enhancedCases))
@@ -248,8 +248,8 @@ import scala.quoted.*
     }
 
     def decorateIfsImpl[A: Type](
-      output: Expr[BranchInspection => Unit],
-      ifStatement: Expr[A]
+        output: Expr[BranchInspection => Unit],
+        ifStatement: Expr[A]
     )(using Quotes): Expr[A] = {
       import quotes.reflect.*
 
@@ -268,15 +268,18 @@ import scala.quoted.*
       }
 
       def constructIf(condTerm: Term, thenTerm: Term, elseTerm: Term): Expr[A] = {
-        val condSource = condTerm.show
-        val branchTrue = '{ BranchInspection(${Expr(condSource)}, true) }
-        val branchFalse = '{ BranchInspection(${Expr(condSource)}, false) }
+        val condSource          = condTerm.show
+        val branchTrue          = '{ BranchInspection(${ Expr(condSource) }, true) }
+        val branchFalse         = '{ BranchInspection(${ Expr(condSource) }, false) }
         val cond: Expr[Boolean] = condTerm.asExprOf[Boolean]
-        val thenp: Expr[A] = thenTerm.asExprOf[A]
-        val elsep: Expr[A] = findIfMethod(elseTerm)
+        val thenp: Expr[A]      = thenTerm.asExprOf[A]
+        val elsep: Expr[A]      = findIfMethod(elseTerm)
 
         // Return a construction with the new statement
-        val remade = '{ if ($cond) { $output($branchTrue); $thenp } else { $output($branchFalse); $elsep } }
+        val remade = '{
+          if ($cond) { $output($branchTrue); $thenp }
+          else { $output($branchFalse); $elsep }
+        }
         //println(s"remade = ${remade.show}")
         remade
       }
@@ -309,7 +312,9 @@ import scala.quoted.*
       '{ ExprInspection($const, $block) }
     }
 
-    def decorateValsImpl[A: Type](output: Expr[ValDefInspection => Unit], block: Expr[A])(using Quotes): Expr[A] = {
+    def decorateValsImpl[A: Type](output: Expr[ValDefInspection => Unit], block: Expr[A])(using
+        Quotes
+    ): Expr[A] = {
       import quotes.reflect.*
 
       def rewriteBlock(data: Term): Term = {
@@ -324,8 +329,8 @@ import scala.quoted.*
         statement match {
           case valdef: ValDef =>
             val termExpr: Expr[String] = Expr(valdef.name)
-            val termRef = TermRef(valdef.tpt.tpe, valdef.name)
-            val identExpr = Ref(valdef.symbol).asExpr
+            val termRef                = TermRef(valdef.tpt.tpe, valdef.name)
+            val identExpr              = Ref(valdef.symbol).asExpr
             val inspection: Term = '{ $output(ValDefInspection($termExpr, $identExpr)) }.asTerm
             List(valdef, inspection)
           case other =>
@@ -335,13 +340,17 @@ import scala.quoted.*
 
       block.asTerm match {
         case tree: Inlined =>
-          Inlined.copy(tree)(call = tree.call, bindings = tree.bindings, expansion = rewriteBlock(tree.body)).asExprOf[A]
+          Inlined
+            .copy(tree)(
+              call = tree.call,
+              bindings = tree.bindings,
+              expansion = rewriteBlock(tree.body)
+            )
+            .asExprOf[A]
         case _ =>
           block
       }
     }
   }
 
-  
 }
-

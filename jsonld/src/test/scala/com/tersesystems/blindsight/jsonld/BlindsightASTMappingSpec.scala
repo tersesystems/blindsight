@@ -180,7 +180,7 @@ class BlindsightASTMappingSpec extends BaseSpec {
       import BlindsightASTMapping._
 
       val indexMap: LanguageMapBinding = schemaOrg("indexMap").bindLanguageMap
-      val bobject                      = toBObject(NodeObject(indexMap -> Map("en" -> "English", "he" -> "Hebrew")))
+      val bobject = toBObject(NodeObject(indexMap -> Map("en" -> "English", "he" -> "Hebrew")))
       bobject shouldBe BObject(
         List(
           BField(
