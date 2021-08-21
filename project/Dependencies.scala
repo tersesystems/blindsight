@@ -32,12 +32,12 @@ object Dependencies {
       case _                         => "eu.timepit" %% "refined" % "0.9.27"
     }
 
-  lazy val logbackUniqueId        = "com.tersesystems.logback"         % "logback-uniqueid-appender" % terseLogback
-  lazy val logbackTracing         = "com.tersesystems.logback"         % "logback-tracing"           % terseLogback
-  lazy val logbackClassic         = "ch.qos.logback"                   % "logback-classic"           % "1.2.5"
-  lazy val logstashLogbackEncoder = "net.logstash.logback"             % "logstash-logback-encoder"  % "6.6"
-  lazy val cronScheduler          = "io.timeandspace"                  % "cron-scheduler"            % "0.1"
-  lazy val scalaJava8Compat       = "org.scala-lang.modules"          %% "scala-java8-compat"        % "1.0.0"
-  lazy val tweakFlow              = "com.twineworks"                   % "tweakflow"                 % "1.3.2"
-  lazy val securitybuilder        = "com.tersesystems.securitybuilder" % "securitybuilder"           % "1.0.1"
+  lazy val logbackUniqueId = "com.tersesystems.logback" % "logback-uniqueid-appender" % terseLogback
+  lazy val logbackTracing  = "com.tersesystems.logback" % "logback-tracing"           % terseLogback
+  lazy val logbackClassic  = "ch.qos.logback"           % "logback-classic"           % "1.2.5"
+  lazy val logstashLogbackEncoder = "net.logstash.logback"    % "logstash-logback-encoder" % "6.6"
+  lazy val cronScheduler          = "io.timeandspace"         % "cron-scheduler"           % "0.1"
+  lazy val scalaJava8Compat       = "org.scala-lang.modules" %% "scala-java8-compat"       % "1.0.0"
+  lazy val tweakFlow              = "com.twineworks"          % "tweakflow"                % "1.3.2"
+  lazy val securitybuilder = "com.tersesystems.securitybuilder" % "securitybuilder" % "1.0.1"
 }

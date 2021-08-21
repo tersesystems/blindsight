@@ -49,7 +49,6 @@ ThisBuild / scmInfo := Some(
   )
 )
 
-
 val disableDocs = Seq[Setting[_]](
   Compile / doc / sources                := Seq.empty,
   Compile / packageDoc / publishArtifact := false

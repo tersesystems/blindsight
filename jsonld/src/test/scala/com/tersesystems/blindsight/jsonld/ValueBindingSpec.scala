@@ -25,7 +25,7 @@ class ValueBindingSpec extends BaseSpec {
       "convert to a string value" in {
         val givenName = schemaOrg("givenName").bindValue[String]
         val willPerson = NodeObject(
-          givenName -> "Steve", // literals work
+          givenName -> "Steve",                                         // literals work
           givenName -> Value("Will", StringDirection.LeftToRight, "en") // values work
         )
 

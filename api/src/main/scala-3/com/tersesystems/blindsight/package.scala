@@ -15,7 +15,9 @@ package object blindsight {
   private val MarkerAfterThrowable =
     "Marker argument is after throwable!  Please move the marker to the beginning of the string."
 
-  private def impl(sops: Expr[StatementOps], argsExpr: Expr[Seq[Any]])(using quotes: Quotes): Expr[Statement] = {
+  private def impl(sops: Expr[StatementOps], argsExpr: Expr[Seq[Any]])(using
+      quotes: Quotes
+  ): Expr[Statement] = {
     import quotes.reflect.*
 
     val partz: List[String] = sops.asTerm.underlyingArgument match {
@@ -29,7 +31,7 @@ package object blindsight {
     if (allArgs.nonEmpty) {
       argsExpr match
         case Varargs(elements) =>
-          val argumentList = scala.collection.mutable.Buffer[Expr[Argument]]()
+          val argumentList                       = scala.collection.mutable.Buffer[Expr[Argument]]()
           var markersExpr: Option[Expr[Markers]] = None
           var throwableExpr: Option[Expr[Throwable]] = None
 
@@ -56,7 +58,7 @@ package object blindsight {
 
             option.orElse {
               val originalType = TypeRepr.of[T]
-              val widenedType = originalType.widen
+              val widenedType  = originalType.widen
               if (widenedType == originalType) {
                 // report.error(s"Cannot find a ToArgument type class for ${originalType.show}!")
                 None
@@ -80,7 +82,7 @@ package object blindsight {
 
             option.orElse {
               val originalType = TypeRepr.of[M]
-              val widenedType = originalType.widen
+              val widenedType  = originalType.widen
               if (widenedType == originalType) {
                 None
               } else {
@@ -111,7 +113,7 @@ package object blindsight {
               throwableExpr = Some(t)
 
             case '{ $el: tpe } =>
-              val optArg = summonArgument(el)
+              val optArg     = summonArgument(el)
               val optMarkers = summonMarkers(el)
 
               if (optMarkers.isDefined && optArg.isEmpty) {
@@ -128,18 +130,18 @@ package object blindsight {
               }
           }
 
-          val inputSeq = Expr.ofSeq(argumentList.toSeq)
-          val arguments = '{Arguments($inputSeq: _*)}
+          val inputSeq  = Expr.ofSeq(argumentList.toSeq)
+          val arguments = '{ Arguments($inputSeq: _*) }
 
           val messageList = partz
 
           if (markersExpr.isEmpty) {
             val message = Expr(messageList.mkString("{}"))
             if (throwableExpr.isEmpty) {
-              '{Statement(Message($message), $arguments)}
+              '{ Statement(Message($message), $arguments) }
             } else {
               val throwable = throwableExpr.get
-              '{Statement(Message($message), $arguments, $throwable)}
+              '{ Statement(Message($message), $arguments, $throwable) }
             }
           } else {
             // Remove the first {} as it is a marker.
@@ -147,20 +149,20 @@ package object blindsight {
             // st"$marker1 $marker2 etc"
             // then we'd have to figure out what to do with the whitespace in between (trim? leave?),
             // and it's much simpler to require a preaggregated one.
-            val str = messageList.mkString("{}").replaceFirst("\\{}", "")
+            val str                   = messageList.mkString("{}").replaceFirst("\\{}", "")
             val message: Expr[String] = Expr(str)
 
             val markers = markersExpr.get
             if (throwableExpr.isEmpty) {
-              '{Statement($markers, Message($message), $arguments)}
+              '{ Statement($markers, Message($message), $arguments) }
             } else {
               val throwable = throwableExpr.get
-              '{Statement($markers, Message($message), $arguments, $throwable)}
+              '{ Statement($markers, Message($message), $arguments, $throwable) }
             }
           }
         case tree =>
           report.error("Arguments without varargs?")
-          return '{???}
+          return '{ ??? }
     } else {
       val parts = Expr(partz.mkString(""))
       // No args, just a string, halp
