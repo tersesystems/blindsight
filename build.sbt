@@ -197,7 +197,7 @@ lazy val inspections = (projectMatrix in file("inspections"))
   .settings(
     name := "blindsight-inspection",
     libraryDependencies ++= {
-      //Compile / scalafmtConfig := file(".scalafmt-dotty.conf")
+      // Compile / scalafmtConfig := file(".scalafmt-dotty.conf")
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, 0)) => Seq.empty
         case _ =>
@@ -308,11 +308,11 @@ val optimizeInline = Seq(
   "-opt-inline-from:com.tersesystems.blindsight.**",
   "-opt-warnings:none"
   // have to comment this out as it fails on this:
-  //Error:(51, 53) com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; could not be inlined:
-  //The callee com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; contains the instruction INVOKESPECIAL com/tersesystems/blindsight/LoggerFactory$.loggerFactory ()Lcom/tersesystems/blindsight/LoggerFactory;
-  //that would cause an IllegalAccessError when inlined into class com/tersesystems/blindsight/logstash/LogstashLoggerSpec.
-  //val logger: Logger = LoggerFactory.getLogger(underlying)
-  //"-opt-warnings:any-inline-failed"
+  // Error:(51, 53) com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; could not be inlined:
+  // The callee com/tersesystems/blindsight/LoggerFactory$::getLogger(Lscala/Function0;Lcom/tersesystems/blindsight/LoggerResolver;)Lcom/tersesystems/blindsight/Logger; contains the instruction INVOKESPECIAL com/tersesystems/blindsight/LoggerFactory$.loggerFactory ()Lcom/tersesystems/blindsight/LoggerFactory;
+  // that would cause an IllegalAccessError when inlined into class com/tersesystems/blindsight/logstash/LogstashLoggerSpec.
+  // val logger: Logger = LoggerFactory.getLogger(underlying)
+  // "-opt-warnings:any-inline-failed"
 )
 
 lazy val root = (projectMatrix in file("."))

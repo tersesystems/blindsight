@@ -38,7 +38,7 @@ object SimpleConditionalExample {
 
     // #when-conditional
     logger.info.when(booleanCondition) { info => info("log") }
-    //#when-conditional
+    // #when-conditional
 
     // #function-when-conditional
     val infoFunction = logger.info.when(1 == 1)(_)
