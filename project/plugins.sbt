@@ -13,7 +13,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.6.3")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.6.0")
 
 // https://github.com/sbt/sbt-unidoc
-addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
+addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
 
 // https://github.com/djspiewak/sbt-github-actions
 addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.12.0")
@@ -34,4 +34,4 @@ addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.10")
 addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.8.0")
 
 // https://github.com/indoorvivants/sbt-commandmatrix
-addSbtPlugin("com.indoorvivants" % "sbt-commandmatrix" % "0.0.3")
+addSbtPlugin("com.indoorvivants" % "sbt-commandmatrix" % "0.0.4")

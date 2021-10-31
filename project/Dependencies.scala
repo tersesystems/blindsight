@@ -2,7 +2,7 @@ import sbt.Keys.{scalaOrganization, scalaVersion}
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.9"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.10"
 
   val terseLogback = "1.0.1"
 
@@ -38,6 +38,6 @@ object Dependencies {
   lazy val logstashLogbackEncoder = "net.logstash.logback"    % "logstash-logback-encoder" % "6.6"
   lazy val cronScheduler          = "io.timeandspace"         % "cron-scheduler"           % "0.1"
   lazy val scalaJava8Compat       = "org.scala-lang.modules" %% "scala-java8-compat"       % "1.0.1"
-  lazy val tweakFlow              = "com.twineworks"          % "tweakflow"                % "1.3.2"
+  lazy val tweakFlow              = "com.twineworks"          % "tweakflow"                % "1.3.3"
   lazy val securitybuilder = "com.tersesystems.securitybuilder" % "securitybuilder" % "1.0.1"
 }
