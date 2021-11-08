@@ -31,7 +31,7 @@ addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.10")
 
 // https://github.com/sbt/sbt-projectmatrix
-addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.8.0")
+addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.9.0")
 
 // https://github.com/indoorvivants/sbt-commandmatrix
 addSbtPlugin("com.indoorvivants" % "sbt-commandmatrix" % "0.0.4")
