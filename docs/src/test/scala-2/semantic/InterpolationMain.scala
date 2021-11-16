@@ -46,7 +46,7 @@ object InterpolationMain {
     import DSL._
     logger.info(st"Time since epoch is ${bobj("instant_tse" -> Instant.now.toEpochMilli)}")
 
-    //logger.info(st"${marker1} ${marker2} two markers won't compile")
+    // logger.info(st"${marker1} ${marker2} two markers won't compile")
     logger.info(st"${Markers(marker1) + Markers(marker2)}a single Markers will compile")
 
     // exception should be handled specially.

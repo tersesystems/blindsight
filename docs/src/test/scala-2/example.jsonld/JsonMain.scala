@@ -10,7 +10,7 @@ import java.util.Currency
 object JsonMain {
   val logger: Logger = LoggerFactory.getLogger
 
-  //------------------------------------------------------
+  // ------------------------------------------------------
   // Map NodeObject to Blindsight Logging
 
   implicit val nodeObjectToArgument: ToArgument[NodeObject] = ToArgument[NodeObject] { nodeObject =>
