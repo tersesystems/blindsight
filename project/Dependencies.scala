@@ -34,7 +34,7 @@ object Dependencies {
 
   lazy val logbackUniqueId = "com.tersesystems.logback" % "logback-uniqueid-appender" % terseLogback
   lazy val logbackTracing  = "com.tersesystems.logback" % "logback-tracing"           % terseLogback
-  lazy val logbackClassic  = "ch.qos.logback"           % "logback-classic"           % "1.2.6"
+  lazy val logbackClassic  = "ch.qos.logback"           % "logback-classic"           % "1.2.10"
   lazy val logstashLogbackEncoder = "net.logstash.logback"    % "logstash-logback-encoder" % "7.0"
   lazy val cronScheduler          = "io.timeandspace"         % "cron-scheduler"           % "0.1"
   lazy val scalaJava8Compat       = "org.scala-lang.modules" %% "scala-java8-compat"       % "1.0.1"
