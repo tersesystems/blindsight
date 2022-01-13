@@ -38,6 +38,6 @@ object Dependencies {
   lazy val logstashLogbackEncoder = "net.logstash.logback"    % "logstash-logback-encoder" % "7.0.1"
   lazy val cronScheduler          = "io.timeandspace"         % "cron-scheduler"           % "0.1"
   lazy val scalaJava8Compat       = "org.scala-lang.modules" %% "scala-java8-compat"       % "1.0.2"
-  lazy val tweakFlow              = "com.twineworks"          % "tweakflow"                % "1.3.4"
+  lazy val tweakFlow              = "com.twineworks"          % "tweakflow"                % "1.4.1"
   lazy val securitybuilder = "com.tersesystems.securitybuilder" % "securitybuilder" % "1.0.1"
 }
