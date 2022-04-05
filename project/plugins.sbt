@@ -10,13 +10,13 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
 addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.6.3")
 
 // https://github.com/sbt/sbt-header
-addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.6.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.6.5")
 
 // https://github.com/sbt/sbt-unidoc
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
 
 // https://github.com/djspiewak/sbt-github-actions
-addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.12.0")
+addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.14.2")
 
 // https://github.com/ktoso/sbt-jmh
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
@@ -28,7 +28,7 @@ addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 
 // https://github.com/xerial/sbt-sonatype
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.10")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.12")
 
 // https://github.com/sbt/sbt-projectmatrix
 addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.9.0")
