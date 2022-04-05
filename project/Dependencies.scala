@@ -2,18 +2,18 @@ import sbt.Keys.{scalaOrganization, scalaVersion}
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.10"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.11"
 
-  val terseLogback = "1.0.1"
+  val terseLogback = "1.0.2"
 
-  lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.32"
+  lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.36"
 
   lazy val jctools = "org.jctools" % "jctools-core" % "3.3.0"
 
   // import scala.jdk.CollectionConverters._
   // https://github.com/scala/scala-library-compat/pull/217
-  lazy val scalaCollectionCompat = "org.scala-lang.modules" %% "scala-collection-compat" % "2.5.0"
-  lazy val sourcecode            = "com.lihaoyi"            %% "sourcecode"              % "0.2.7"
+  lazy val scalaCollectionCompat = "org.scala-lang.modules" %% "scala-collection-compat" % "2.7.0"
+  lazy val sourcecode            = "com.lihaoyi"            %% "sourcecode"              % "0.2.8"
   lazy val janino                = "org.codehaus.janino"     % "janino"                  % "3.0.11"
   lazy val jansi                 = "org.fusesource.jansi"    % "jansi"                   % "1.17.1"
 
@@ -34,10 +34,10 @@ object Dependencies {
 
   lazy val logbackUniqueId = "com.tersesystems.logback" % "logback-uniqueid-appender" % terseLogback
   lazy val logbackTracing  = "com.tersesystems.logback" % "logback-tracing"           % terseLogback
-  lazy val logbackClassic  = "ch.qos.logback"           % "logback-classic"           % "1.2.6"
-  lazy val logstashLogbackEncoder = "net.logstash.logback"    % "logstash-logback-encoder" % "7.0"
+  lazy val logbackClassic  = "ch.qos.logback"           % "logback-classic"           % "1.2.11"
+  lazy val logstashLogbackEncoder = "net.logstash.logback"    % "logstash-logback-encoder" % "7.0.1"
   lazy val cronScheduler          = "io.timeandspace"         % "cron-scheduler"           % "0.1"
-  lazy val scalaJava8Compat       = "org.scala-lang.modules" %% "scala-java8-compat"       % "1.0.1"
-  lazy val tweakFlow              = "com.twineworks"          % "tweakflow"                % "1.3.4"
+  lazy val scalaJava8Compat       = "org.scala-lang.modules" %% "scala-java8-compat"       % "1.0.2"
+  lazy val tweakFlow              = "com.twineworks"          % "tweakflow"                % "1.4.1"
   lazy val securitybuilder = "com.tersesystems.securitybuilder" % "securitybuilder" % "1.0.1"
 }
