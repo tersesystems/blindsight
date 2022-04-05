@@ -26,7 +26,7 @@ object ConditionalFluentMain {
   def main(args: Array[String]): Unit = {
     val latch = new AtomicBoolean(true)
     def test: Boolean = {
-      //println("test called at " + System.currentTimeMillis())
+      // println("test called at " + System.currentTimeMillis())
       latch.getAndSet(!latch.get())
     }
     val logger: FluentLogger = LoggerFactory.getLogger(getClass).fluent.withCondition(test)
@@ -50,7 +50,7 @@ object ConditionalFluentMain {
 
     var counter: Int = 0
     def mod4 = {
-      //println("mod4 called at " + System.currentTimeMillis())
+      // println("mod4 called at " + System.currentTimeMillis())
       counter = (counter + 1) % 2
       counter == 1
     }

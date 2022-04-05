@@ -208,11 +208,11 @@ object InspectionMacros extends InspectionMacros {
         case Inlined(_, _, matchIdent: Ident) =>
           matchIdent.symbol.tree match {
             case DefDef(_, _, _, Some(term)) =>
-              //println(s"matchStatement = ${term}")
+              // println(s"matchStatement = ${term}")
               val modifiedMatch = term match {
                 case Block(b, Match(m, cases)) =>
                   // List of case defs
-                  //println(s"cases = ${cases}")
+                  // println(s"cases = ${cases}")
                   val enhancedCases = cases.map {
                     case CaseDef(pat: Tree, guard: Option[Term], body: Term) =>
                       val guardSource = guard.map(t => s" if ${t.show}").getOrElse("")
@@ -234,7 +234,7 @@ object InspectionMacros extends InspectionMacros {
                   println(s"other = $other")
                   other
               }
-              //println(s"${modifiedMatch.show}")
+              // println(s"${modifiedMatch.show}")
               modifiedMatch.asExprOf[A]
 
             case otherIdent =>
@@ -262,7 +262,7 @@ object InspectionMacros extends InspectionMacros {
             constructIf(condTerm, thenTerm, elseTerm)
 
           case other =>
-            //println(s"Rendering block as $other")
+            // println(s"Rendering block as $other")
             ifTerm.asExprOf[A]
         }
       }
@@ -280,7 +280,7 @@ object InspectionMacros extends InspectionMacros {
           if ($cond) { $output($branchTrue); $thenp }
           else { $output($branchFalse); $elsep }
         }
-        //println(s"remade = ${remade.show}")
+        // println(s"remade = ${remade.show}")
         remade
       }
 

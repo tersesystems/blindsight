@@ -44,7 +44,7 @@ object Node {
 sealed abstract class Value[T] extends Node {
   def value: T
 
-  //override def toString: String = value.toString
+  // override def toString: String = value.toString
 }
 
 object Value {
