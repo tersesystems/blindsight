@@ -202,7 +202,7 @@ object Keyword {
   /**
    * Used to express reverse properties.
    */
-  //case object `@reverse` extends Keyword("@reverse") with IRIBindingKey
+  // case object `@reverse` extends Keyword("@reverse") with IRIBindingKey
   trait Reverse extends Keyword[Reverse] with IRIBindingKey
   private final case class ReverseImpl(name: String) extends Reverse {
     override def alias(name: String): Reverse = copy(name)
@@ -240,7 +240,7 @@ object Keyword {
   /**
    * Used in a context definition to set the processing mode.
    */
-  //case object `@version` extends Keyword("@version") with ValueBindingKey
+  // case object `@version` extends Keyword("@version") with ValueBindingKey
   trait Version extends Keyword[Version] with ValueBindingKey
   private final case class VersionImpl(name: String) extends Version {
     override def alias(name: String): Version = copy(name)

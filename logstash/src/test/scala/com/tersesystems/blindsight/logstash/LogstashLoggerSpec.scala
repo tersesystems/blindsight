@@ -123,7 +123,7 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         val underlying     = loggerContext.getLogger(this.getClass)
         val logger: Logger = LoggerFactory.getLogger(underlying)
 
-        //val infoFunction = logger.info.when(1 == 1)(_)
+        // val infoFunction = logger.info.when(1 == 1)(_)
         logger.info.when(1 == 1) { info => info("when true") }
 
         val event = listAppender.list.get(0)

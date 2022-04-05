@@ -85,7 +85,7 @@ object Slf4jMain {
       "arg1",
       "arg2"
     )
-    //logger.info("won't compile, must define ToArguments[CreditCard]", creditCard)
+    // logger.info("won't compile, must define ToArguments[CreditCard]", creditCard)
 
     logger.info(
       Markers(LogstashMarkers.append("key", "value")),

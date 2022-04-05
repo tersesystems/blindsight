@@ -21,12 +21,12 @@ object RefinedMain {
       logger.semantic[String Refined NonEmpty]
     notEmptyLogger.info(refineMV[NonEmpty]("this is a statement"))
     // will not compile
-    //notEmptyLogger.info(refineMV(""))
+    // notEmptyLogger.info(refineMV(""))
 
     val urlLogger: SemanticLogger[String Refined Url] = logger.semantic[String Refined Url]
     urlLogger.info(refineMV[Url]("http://google.com"))
     // will not compile
-    //urlLogger.info(refineMV("this is a statement"))
+    // urlLogger.info(refineMV("this is a statement"))
   }
 
 }
