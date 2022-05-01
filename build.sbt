@@ -294,7 +294,8 @@ lazy val fixtures = (projectMatrix in file("fixtures"))
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
     libraryDependencies += logstashLogbackEncoder % Test,
-    libraryDependencies += scalaTest              % Test
+    libraryDependencies += scalaTest              % Test,
+    Test / compileOrder := CompileOrder.JavaThenScala
   )
   .jvmPlatform(scalaVersions = scalaVersions)
   .settings(disablePublishing)
