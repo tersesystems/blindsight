@@ -9,9 +9,9 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
-val scala3        = "3.0.1"
+val scala3        = "3.0.2"
 val scala213      = "2.13.6"
-val scala212      = "2.12.14"
+val scala212      = "2.12.15"
 val scala211      = "2.11.12"
 val scalaVersions = Seq(scala3, scala213, scala212, scala211)
 
@@ -294,7 +294,8 @@ lazy val fixtures = (projectMatrix in file("fixtures"))
     libraryDependencies += scalaJava8Compat       % Test,
     libraryDependencies += logbackClassic         % Test,
     libraryDependencies += logstashLogbackEncoder % Test,
-    libraryDependencies += scalaTest              % Test
+    libraryDependencies += scalaTest              % Test,
+    Test / compileOrder := CompileOrder.JavaThenScala
   )
   .jvmPlatform(scalaVersions = scalaVersions)
   .settings(disablePublishing)
