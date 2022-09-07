@@ -9,7 +9,7 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
-val scala3        = "3.0.2"
+val scala3        = "3.2.0"
 val scala213      = "2.13.6"
 val scala212      = "2.12.15"
 val scala211      = "2.11.12"
