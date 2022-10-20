@@ -8,7 +8,7 @@ object Dependencies {
 
   lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.36"
 
-  lazy val jctools = "org.jctools" % "jctools-core" % "3.3.0"
+  lazy val jctools = "org.jctools" % "jctools-core" % "4.0.1"
 
   // import scala.jdk.CollectionConverters._
   // https://github.com/scala/scala-library-compat/pull/217
