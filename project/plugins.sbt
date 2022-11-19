@@ -1,7 +1,7 @@
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 
 // https://developer.lightbend.com/docs/paradox/current/
-addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.9.2")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.10.3")
 
 // https://www.scala-sbt.org/sbt-site/getting-started.html
 addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
@@ -10,7 +10,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
 addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.6.3")
 
 // https://github.com/sbt/sbt-header
-addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.7.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.8.0")
 
 // https://github.com/sbt/sbt-unidoc
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
@@ -28,7 +28,7 @@ addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 
 // https://github.com/xerial/sbt-sonatype
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.12")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.14")
 
 // https://github.com/sbt/sbt-projectmatrix
 addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.9.0")
