@@ -1,4 +1,4 @@
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.0")
 
 // https://developer.lightbend.com/docs/paradox/current/
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.10.3")
