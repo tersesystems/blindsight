@@ -22,7 +22,7 @@ addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.14.2")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
 
 // https://github.com/sbt/sbt-pgp
-addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.2.1")
 
 // https://github.com/sbt/sbt-release
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
