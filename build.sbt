@@ -9,7 +9,7 @@ initialize := {
   assert(current >= required, s"Unsupported JDK: java.specification.version $current != $required")
 }
 
-val scala3        = "3.0.2"
+val scala3        = "3.2.2"
 val scala213      = "2.13.10"
 val scala212      = "2.12.17"
 val scala211      = "2.11.12"
@@ -146,8 +146,8 @@ lazy val api = (projectMatrix in file("api"))
     // scala-reflect only needed for Statement Interpolation
     libraryDependencies ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((3, 0)) => Seq.empty
-        case _ =>
+        case Some((3, _)) => Seq.empty
+        case other =>
           Seq(
             "org.scala-lang" % "scala-reflect" % scalaVersion.value
           )
@@ -199,7 +199,7 @@ lazy val inspections = (projectMatrix in file("inspections"))
     libraryDependencies ++= {
       // Compile / scalafmtConfig := file(".scalafmt-dotty.conf")
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((3, 0)) => Seq.empty
+        case Some((3, _)) => Seq.empty
         case _ =>
           Seq(
             "org.scala-lang" % "scala-reflect" % scalaVersion.value
