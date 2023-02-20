@@ -68,29 +68,3 @@ logger.debug { debug =>
   debug(st"I am a debugging statement with lots of extra $debugInfo")
 }
 ```
-
-## Unchecked API
-
-An unchecked API is available that does not use type class inference at all, and looks just like SLF4J with the additions of conditions and markers.
-
-This is easier to use, but since `Any` cannot be type checked, it can output information you don't expect.  For example, it could output credit card information because calling `toString` exposes the case class data:
-
-```scala
-val logger = LoggerFactory.getLogger
-
-val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = logger.unchecked
-
-// Uses Any, renders credit card as "toString"
-val creditCard = CreditCard("4111111111111")
-
- // case class tostring renders CC number, which is unsafe!
-unchecked.info("this is risky unchecked {}", creditCard)
-```
-
-Where there are several arguments, the @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) must be used rather than `Seq` or `Array`, as it is very awkward to use `Seq` and `Array` with varadic input:
-
-```scala
-unchecked.info("this is risky unchecked {}, {}, {}", Arguments("1", 2, true))
-```
-
-In the unchecked API, you can set `-Dblindsight.anywarn=true` as a system property, and output will be written to `System.out.error` when calls to `Any` are made.
