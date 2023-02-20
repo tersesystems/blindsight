@@ -34,8 +34,6 @@ trait Logger extends SLF4JLogger[StrictSLF4JMethod] {
 
   def strict: SLF4JLogger[StrictSLF4JMethod]
 
-  def unchecked: SLF4JLogger[UncheckedSLF4JMethod]
-
   def semantic[MessageType: NotNothing]: SemanticLogger[MessageType]
 }
 
@@ -57,10 +55,6 @@ object Logger {
     override def markers: Markers = core.markers
 
     override def underlying: org.slf4j.Logger = core.underlying
-
-    override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] = {
-      new SLF4JLogger.Unchecked(core)
-    }
 
     override lazy val flow: FlowLogger = {
       new FlowLogger.Impl(core)

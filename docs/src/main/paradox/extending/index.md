@@ -123,10 +123,7 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
   override protected val logger = new ScriptAwareSLF4JLogger(core)
 
   override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
-
-  override lazy val unchecked: SLF4JLogger[UncheckedSLF4JMethod] =
-    new ScriptAwareUncheckedSLF4JLogger(core)
-
+  
   override lazy val fluent: FluentLogger = new ScriptAwareFluentLogger(core)
 
   override protected def self(core: CoreLogger): Self = {

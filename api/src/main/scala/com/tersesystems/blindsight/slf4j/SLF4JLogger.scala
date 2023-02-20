@@ -93,12 +93,4 @@ object SLF4JLogger {
     override protected def self(core: CoreLogger): Self = new Strict(core)
   }
 
-  /**
-   * A logger that provides "unchecked" logging that only takes type class aware arguments.
-   */
-  class Unchecked(core: CoreLogger) extends SLF4JLogger.Base[UncheckedSLF4JMethod](core) {
-    override def method(level: Level): Method           = new UncheckedSLF4JMethod.Impl(level, core)
-    override protected def self(core: CoreLogger): Self = new Unchecked(core)
-  }
-
 }
