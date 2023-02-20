@@ -134,29 +134,6 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
     new ScriptAwareSemanticLogger(core)
   }
 
-  class ScriptAwareUncheckedSLF4JLogger(core: CoreLogger) extends SLF4JLogger.Unchecked(core) {
-    override def self(core: CoreLogger): SLF4JLogger[UncheckedSLF4JMethod] = {
-      new ScriptAwareUncheckedSLF4JLogger(core)
-    }
-
-    override def method(level: Level): UncheckedSLF4JMethod =
-      new UncheckedSLF4JMethod.Impl(level, core) {
-        override protected def enabled(implicit
-                                       line: Line,
-                                       file: File,
-                                       enclosing: Enclosing
-                                      ): Boolean = {
-          scriptManager.execute(super.enabled, level, enclosing, line, file)
-        }
-
-        override def enabled(
-                              marker: Marker
-                            )(implicit line: Line, file: File, enclosing: Enclosing): Boolean = {
-          scriptManager.execute(super.enabled(marker), level, enclosing, line, file)
-        }
-      }
-  }
-
   class ScriptAwareSemanticLogger[StatementType: NotNothing](core: CoreLogger)
     extends SemanticLogger.Impl[StatementType](core) {
     override protected def self[T: NotNothing](core: CoreLogger): Self[T] = {
