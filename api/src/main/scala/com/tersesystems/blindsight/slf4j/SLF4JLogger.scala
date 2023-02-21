@@ -17,9 +17,9 @@
 package com.tersesystems.blindsight.slf4j
 
 import com.tersesystems.blindsight.core._
-import com.tersesystems.blindsight.mixins.{EventBufferMixin, _}
+import com.tersesystems.blindsight.mixins._
 import org.slf4j.event.Level
-import org.slf4j.event.Level.{DEBUG, ERROR, INFO, TRACE, WARN}
+import org.slf4j.event.Level._
 
 /**
  * Public SLF4J Logger interface.  This is intended for the end user.
@@ -31,18 +31,16 @@ import org.slf4j.event.Level.{DEBUG, ERROR, INFO, TRACE, WARN}
  * val e = new RuntimeException("whoops")
  * logger.info(markers, message, arguments, e);
  * }}}
- *
- * @tparam M the type of method.
  */
-trait SLF4JLogger[M]
-    extends SLF4JLoggerAPI[CorePredicate, M]
+trait SLF4JLogger
+    extends SLF4JLoggerAPI[CorePredicate, StrictSLF4JMethod]
     with MarkerMixin
     with UnderlyingMixin
     with EntryTransformMixin
     with EventBufferMixin
     with ConditionMixin
     with OnConditionMixin {
-  override type Self <: SLF4JLogger[M]
+  override type Self <: SLF4JLogger
 }
 
 /**
@@ -71,24 +69,16 @@ trait LoggerMethodDefaults[M] extends SLF4JLoggerAPI[CorePredicate, M] {
 object SLF4JLogger {
 
   /**
-   * A convenient abstract base class implementation.
-   *
-   * @tparam M the type of method.
-   */
-  abstract class Base[M](protected val core: CoreLogger)
-      extends SLF4JLogger[M]
-      with CoreLoggerDefaults
-      with LoggerMethodDefaults[M] {
-    override type Self      = SLF4JLogger[M]
-    override type Method    = M
-    override type Predicate = CorePredicate
-    override protected def predicate(level: Level): Predicate = core.predicate(level)
-  }
-
-  /**
    * A logger that provides "strict" logging that only takes type class aware arguments.
    */
-  class Strict(core: CoreLogger) extends SLF4JLogger.Base[StrictSLF4JMethod](core) {
+  class Strict(val core: CoreLogger) extends SLF4JLogger
+    with CoreLoggerDefaults
+    with LoggerMethodDefaults[StrictSLF4JMethod] {
+    override type Self = SLF4JLogger
+    override type Method = StrictSLF4JMethod
+    override type Predicate = CorePredicate
+
+    override protected def predicate(level: Level): Predicate = core.predicate(level)
     override def method(level: Level): Method           = new StrictSLF4JMethod.Impl(level, core)
     override protected def self(core: CoreLogger): Self = new Strict(core)
   }
