@@ -25,14 +25,14 @@ import com.tersesystems.blindsight.slf4j._
 /**
  * The Blindsight logger trait.
  */
-trait Logger extends SLF4JLogger[StrictSLF4JMethod] {
+trait Logger extends SLF4JLogger {
   override type Self = Logger
 
   def fluent: FluentLogger
 
   def flow: FlowLogger
 
-  def strict: SLF4JLogger[StrictSLF4JMethod]
+  def strict: SLF4JLogger
 
   def semantic[MessageType: NotNothing]: SemanticLogger[MessageType]
 }
@@ -44,13 +44,13 @@ object Logger {
       with SLF4JLoggerAPI.Proxy[CorePredicate, StrictSLF4JMethod]
       with CoreLoggerDefaults {
 
-    override type Parent = SLF4JLogger[StrictSLF4JMethod]
+    override type Parent = SLF4JLogger
     override type Self   = Logger
 
     // from Proxy API
     override protected val logger = new SLF4JLogger.Strict(core)
 
-    override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
+    override def strict: SLF4JLogger = logger
 
     override def markers: Markers = core.markers
 

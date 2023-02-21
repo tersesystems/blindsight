@@ -36,7 +36,7 @@ class ScriptAwareLogger(core: CoreLogger, scriptManager: ScriptManager) extends 
 
   override protected val logger = new ScriptAwareSLF4JLogger(core)
 
-  override def strict: SLF4JLogger[StrictSLF4JMethod] = logger
+  override def strict: SLF4JLogger = logger
 
   override lazy val fluent: FluentLogger = new ScriptAwareFluentLogger(core)
 
