@@ -146,8 +146,8 @@ package object blindsight {
               }
           }
 
-          val inputSeq  = Expr.ofSeq(argumentList.toSeq)
-          val arguments = '{ Arguments($inputSeq: _*) }
+          val inputSeq  = Expr.ofSeq[Argument](argumentList.toSeq)
+          val arguments = '{ Arguments.fromSeq($inputSeq) }
 
           val messageList = partz
 
