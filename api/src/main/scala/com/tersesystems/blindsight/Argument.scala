@@ -87,6 +87,10 @@ object Arguments {
     new Arguments(els)
   }
 
+  def fromSeq(els: Seq[Argument]): Arguments = {
+    new Arguments(els.toArray)
+  }
+
   def fromInstance[A: ToArgument](instance: A): Arguments = apply(instance)
 
   def apply[A1: ToArgument](a1: A1): Arguments = {
