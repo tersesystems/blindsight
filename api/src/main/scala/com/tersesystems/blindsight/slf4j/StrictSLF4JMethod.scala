@@ -62,12 +62,6 @@ trait StrictSLF4JMethod {
       arg: A
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
-  def apply[A: ToArgument](
-      message: Message,
-      arg: A,
-      throwable: Throwable
-  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
-
   def apply[A1: ToArgument, A2: ToArgument](
       message: Message,
       arg1: A1,
@@ -654,6 +648,11 @@ trait StrictSLF4JMethod {
       throwable: Throwable
   )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 
+  def apply[A: ToArgument](
+      message: Message,
+      arg: A,
+      throwable: Throwable
+  )(implicit line: Line, file: File, enclosing: Enclosing): Unit
 }
 
 object StrictSLF4JMethod {
