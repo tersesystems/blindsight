@@ -20,13 +20,13 @@ class NodeObjectBindingSpec extends BaseSpec {
         case class MonetaryAmount(currency: Currency, value: Int)
 
         // Usually this would be inside the companion object
-        implicit
-        val monetaryAmountMapper: NodeObjectMapper[MonetaryAmount] = NodeObjectMapper { ma =>
-          NodeObject(
-            `@type`  -> monetaryAmountType,
-            currency -> ma.currency,
-            value    -> ma.value
-          )
+        implicit val monetaryAmountMapper: NodeObjectMapper[MonetaryAmount] = NodeObjectMapper {
+          ma =>
+            NodeObject(
+              `@type`  -> monetaryAmountType,
+              currency -> ma.currency,
+              value    -> ma.value
+            )
         }
         val estimatedSalary: NodeObjectBinding[MonetaryAmount] =
           schemaOrg("estimatedSalary").bindObject[MonetaryAmount]
