@@ -71,11 +71,12 @@ object SLF4JLogger {
   /**
    * A logger that provides "strict" logging that only takes type class aware arguments.
    */
-  class Strict(val core: CoreLogger) extends SLF4JLogger
-    with CoreLoggerDefaults
-    with LoggerMethodDefaults[StrictSLF4JMethod] {
-    override type Self = SLF4JLogger
-    override type Method = StrictSLF4JMethod
+  class Strict(val core: CoreLogger)
+      extends SLF4JLogger
+      with CoreLoggerDefaults
+      with LoggerMethodDefaults[StrictSLF4JMethod] {
+    override type Self      = SLF4JLogger
+    override type Method    = StrictSLF4JMethod
     override type Predicate = CorePredicate
 
     override protected def predicate(level: Level): Predicate = core.predicate(level)
