@@ -16,6 +16,7 @@
 
 package com.tersesystems.blindsight.slf4j
 
+import ch.qos.logback.classic.spi.ThrowableProxy
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.core.CoreLogger
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
@@ -31,6 +32,7 @@ class StrictLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
   class TestLogger(underlying: org.slf4j.Logger) extends Strict(CoreLogger(underlying))
 
   "A logger with no state marker" when {
+
     "calling predicate" should {
       "call with no arguments" in {
         val logger = new TestLogger(loggerContext.getLogger("testing"))
@@ -46,6 +48,16 @@ class StrictLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
     }
 
     "calling method" should {
+
+      "call with throwable" in {
+        val logger = new TestLogger(loggerContext.getLogger("testing"))
+        logger.error(new RuntimeException("test exception"))
+
+        val event = listAppender.list.get(0)
+        val proxy = event.getThrowableProxy.asInstanceOf[ThrowableProxy]
+        proxy.getThrowable.getMessage must equal("test exception")
+      }
+
       "call with message" in {
         val logger = new TestLogger(loggerContext.getLogger("testing"))
         logger.debug("hello world")
@@ -61,6 +73,17 @@ class StrictLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
         val event = listAppender.list.get(0)
         event.getMessage must equal("hello world")
         event.getArgumentArray.apply(0) must equal(42)
+      }
+
+      "call with message and throwable" in {
+        val logger = new TestLogger(loggerContext.getLogger("testing"))
+        logger.debug("hello world", new RuntimeException("test exception"))
+
+        val event = listAppender.list.get(0)
+        event.getMessage must equal("hello world")
+        event.getArgumentArray.apply(0) must equal(42)
+        val proxy = event.getThrowableProxy.asInstanceOf[ThrowableProxy]
+        proxy.getThrowable.getMessage must equal("test exception")
       }
 
       "call with message and two arguments" in {

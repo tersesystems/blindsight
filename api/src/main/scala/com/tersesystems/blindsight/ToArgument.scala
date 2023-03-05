@@ -35,11 +35,17 @@ trait ToArgument[T] {
   def toArgument(instance: T): Argument
 }
 
+object LowPriorityToArgumentImplicits {
+  private val unitArgument = new Argument(())
+}
+
 trait LowPriorityToArgumentImplicits {
 
   implicit val argumentToArgument: ToArgument[Argument] = ToArgument(identity)
 
-  implicit val unitToArguments: ToArgument[Unit] = ToArgument { unit => new Argument(unit) }
+  implicit def throwableToArgument[E <: Throwable]: ToArgument[E] = ToArgument { throwable => new Argument(throwable) }
+
+  implicit val unitToArguments: ToArgument[Unit] = ToArgument { _ => LowPriorityToArgumentImplicits.unitArgument }
 
   implicit val stringToArgument: ToArgument[String] = ToArgument { string => new Argument(string) }
 
@@ -58,9 +64,6 @@ trait LowPriorityToArgumentImplicits {
   implicit val bobjectToArgument: ToArgument[BObject] = ToArgument { bobject =>
     ArgumentResolver(bobject)
   }
-
-  // Note that an exception is **not** a valid argument, and exceptions are
-  // handled explicitly as [[java.lang.Throwable]] in the APIs.
 }
 
 object ToArgument extends LowPriorityToArgumentImplicits {
