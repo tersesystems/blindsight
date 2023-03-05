@@ -43,9 +43,13 @@ trait LowPriorityToArgumentImplicits {
 
   implicit val argumentToArgument: ToArgument[Argument] = ToArgument(identity)
 
-  implicit def throwableToArgument[E <: Throwable]: ToArgument[E] = ToArgument { throwable => new Argument(throwable) }
+  implicit def throwableToArgument[E <: Throwable]: ToArgument[E] = ToArgument { throwable =>
+    new Argument(throwable)
+  }
 
-  implicit val unitToArguments: ToArgument[Unit] = ToArgument { _ => LowPriorityToArgumentImplicits.unitArgument }
+  implicit val unitToArguments: ToArgument[Unit] = ToArgument { _ =>
+    LowPriorityToArgumentImplicits.unitArgument
+  }
 
   implicit val stringToArgument: ToArgument[String] = ToArgument { string => new Argument(string) }
 
