@@ -7,12 +7,6 @@
 ![Build](https://github.com/tersesystems/blindsight/actions/workflows/ci.yml/badge.svg)
 [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 
-> Suffering in silence, you check the logs for fresh telemetry.
->
-> You think: *That can't be right*.
->
-> -- [Blindsight](https://www.rifters.com/real/Blindsight.htm#Prologue), Peter Watts
-
 Blindsight is a logging library written in Scala that wraps SLF4J.  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
 The core feature of Blindsight is that it is "type safe" -- rather than passing in arguments of type `java.lang.Object`, the API accepts only objects that can be converted into an `Argument` through the `ToArgument` [type class](https://tersesystems.github.io/blindsight/usage/typeclasses.html).
@@ -23,12 +17,12 @@ val number: Int = 1
 val arg: Person = Person(name, age) // has a ToArgument[Person] type class instance
 logger.info("{} {} {}", bool, number, person) // compiles fine
 
-logger.info("will not compile", new Object()) // WILL NOT COMPILE
+logger.info("{}", new Object()) // WILL NOT COMPILE
 ```
 
-By tightening the definition of an argument, Blindsight gives the user control over arguments are rendered in a given context.
+By adding type safety, Blindsight gives the application more control over how data is logged, rather than implicitly relying on the `toString` method to render data for logging purposes.
 
-In addition, Blindsight adds [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
+Blindsight adds [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
 
 * Rendering structured logs in multiple formats through an AST, along with an optional format-independent [DSL](https://tersesystems.github.io/blindsight/usage/dsl.html).
 * Providing thread-safe context to logs through [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html).
@@ -51,11 +45,9 @@ Finally, there's also more advanced functionality to transform arguments and sta
 
 See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
 
-@@@ note
+## Blindsight and Echopraxia
 
 If you are looking for a strict structured logging solution in Scala, please checkout [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala).  Structured logging is optional in Blindsight, and it's possible to mix structured and "flat" arguments and markers into a logging statement.  In contrast, [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala) **requires** structured logging in its API and does not allow unstructured data as input.
-
-@@@
 
 ## Example
 

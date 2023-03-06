@@ -29,9 +29,9 @@ logger.info("{} {} {}", bool, number, person) // compiles fine
 logger.info("will not compile", new Object()) // WILL NOT COMPILE
 ```
 
-By tightening the definition of an argument, Blindsight gives the user control over arguments are rendered in a given context.
+By adding type safety, Blindsight gives the application more control over how data is logged, rather than implicitly relying on the `toString` method to render data for logging purposes.
 
-In addition, Blindsight adds @ref:[useful features](usage/overview.md) that solve several outstanding problems with logging:
+Blindsight adds @ref:[useful features](usage/overview.md) that solve several outstanding problems with logging:
 
 * Rendering structured logs in multiple formats through an AST, along with an optional format-independent @ref:[DSL](usage/dsl.md).
 * Providing thread-safe context to logs through @ref:[context aware logging](usage/context.md).
@@ -52,10 +52,8 @@ Finally, there's also more advanced functionality to transform arguments and sta
 * Hooks into logging entries through @ref:[entry transformation](usage/transform.html)
 * Application accessible debug and trace logs through @ref:[event buffers](usage/buffer.html)
 
-@@@ note
+## Blindsight and Echopraxia
 
 If you are looking for a strict structured logging solution in Scala, please checkout [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala).  Structured logging is optional in Blindsight, and it's possible to mix structured and "flat" arguments and markers into a logging statement.  In contrast, [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala) **requires** structured logging in its API and does not allow unstructured data as input.
-
-@@@
 
 @@toc { depth=1 }
