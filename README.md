@@ -47,7 +47,9 @@ See [the documentation](https://tersesystems.github.io/blindsight/) for more det
 
 ## Blindsight and Echopraxia
 
-If you are looking for a strict structured logging solution in Scala, please checkout [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala).  Structured logging is optional in Blindsight, and it's possible to mix structured and "flat" arguments and markers into a logging statement.  In contrast, [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala) **requires** structured logging in its API and does not allow unstructured data as input.
+If you are looking for a strict structured logging solution in Scala, please checkout [echopraxia-plusscala](https://github.com/tersesystems/echopraxia-plusscala).
+
+Structured logging is optional in Blindsight, and it's possible to mix structured and "flat" arguments and markers into a logging statement.  In contrast, [echopraxia-plusscala](https://github.com/tersesystems/echopraxia-plusscala) **requires** structured logging and does not allow unstructured data as input.
 
 ## Example
 
