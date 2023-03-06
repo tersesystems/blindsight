@@ -181,8 +181,7 @@ class ValueBindingSpec extends BaseSpec {
       "work using raw bobject" in {
         val jsonTerm = schemaOrg("jsonValue").bindValue[BObject]
 
-        import com.tersesystems.blindsight.DSL._
-        val bobject = bobj("key" -> "value")
+        val bobject = bobj("key" -> BString("value"))
 
         val nodeObject = NodeObject(jsonTerm -> bobject)
         val map        = toMap(nodeObject)
@@ -194,8 +193,7 @@ class ValueBindingSpec extends BaseSpec {
       "work using raw barray" in {
         val jsonTerm = schemaOrg("jsonValue").bindValue[BArray]
 
-        import com.tersesystems.blindsight.DSL._
-        val barray = BArray(List(1, 2, 3))
+        val barray = BArray(List(BInt(1), BInt(2), BInt(3)))
 
         val nodeObject = NodeObject(jsonTerm -> barray)
         val map        = toMap(nodeObject)

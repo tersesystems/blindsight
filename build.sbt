@@ -187,7 +187,7 @@ lazy val jsonld = (projectMatrix in file("jsonld"))
     scalacOptions                   := scalacOptionsVersion(scalaVersion.value)
   )
   .jvmPlatform(scalaVersions = scalaVersions)
-  .dependsOn(api, dsl)
+  .dependsOn(api)
 
 lazy val logstash = (projectMatrix in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
