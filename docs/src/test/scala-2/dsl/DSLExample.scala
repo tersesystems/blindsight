@@ -3,7 +3,7 @@ package example.dsl
 // #dsl-example
 import com.tersesystems.blindsight.AST._
 import com.tersesystems.blindsight.DSL._
-import com.tersesystems.blindsight.{LoggerFactory, _}
+import com.tersesystems.blindsight._
 
 object DSLExample {
   private val logger = LoggerFactory.getLogger

@@ -60,26 +60,25 @@ trait BlindsightASTMapping {
   }
 
   def extractStringValue(sv: StringValue): BValue = {
-    import com.tersesystems.blindsight.DSL._
     val `@direction` = Keyword.`@direction`.name
     val `@language`  = Keyword.`@language`.name
     val `@value`     = Keyword.`@value`.name
     sv match {
       case StringValue(value, Some(directionValue), Some(lang)) =>
         bobj(
-          `@value`     -> value,
-          `@direction` -> directionValue.value,
-          `@language`  -> lang
+          (`@value`    -> BString(value)),
+          `@direction` -> BString(directionValue.value),
+          `@language`  -> BString(lang)
         )
       case StringValue(value, None, Some(lang)) =>
         bobj(
-          `@value`    -> value,
-          `@language` -> lang
+          `@value`    -> BString(value),
+          `@language` -> BString(lang)
         )
       case StringValue(value, Some(directionValue), None) =>
         bobj(
-          `@value`     -> value,
-          `@direction` -> directionValue.value
+          `@value`     -> BString(value),
+          `@direction` -> BString(directionValue.value)
         )
       case StringValue(value, None, None) =>
         BString(value)
