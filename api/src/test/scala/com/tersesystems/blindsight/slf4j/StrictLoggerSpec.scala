@@ -77,11 +77,12 @@ class StrictLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTest 
 
       "call with message and throwable" in {
         val logger = new TestLogger(loggerContext.getLogger("testing"))
-        logger.debug("hello world", new RuntimeException("test exception"))
+        logger.error("hello world", new RuntimeException("test exception"))
 
         val event = listAppender.list.get(0)
         event.getMessage must equal("hello world")
-        event.getArgumentArray.apply(0) must equal(42)
+        val args = event.getArgumentArray
+        args.size must be(0)
         val proxy = event.getThrowableProxy.asInstanceOf[ThrowableProxy]
         proxy.getThrowable.getMessage must equal("test exception")
       }
