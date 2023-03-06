@@ -13,23 +13,41 @@
 >
 > -- [Blindsight](https://www.rifters.com/real/Blindsight.htm#Prologue), Peter Watts
 
-Blindsight is "observability through logging" where observability is defined as [baked in high cardinality structured data with field types](https://www.honeycomb.io/blog/observability-a-manifesto/).  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
+Blindsight is a logging library written in Scala that wraps SLF4J.  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
-Blindsight is a logging library written in Scala that wraps SLF4J to add [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
+The core feature of Blindsight is that it is "type safe" -- rather than passing in arguments of type `java.lang.Object`, the API accepts only objects that can be converted into an `Argument` through the `ToArgument` [type class](https://tersesystems.github.io/blindsight/usage/typeclasses.html).
 
-* Rendering structured logs in multiple formats through a format-independent [AST and DSL](https://tersesystems.github.io/blindsight/usage/dsl.html).
-* Managing complex relationships and schema through [JSON-LD](https://tersesystems.github.io/blindsight/usage/jsonld.html).  
-* Expressing domain specific objects as arguments through [type classes](https://tersesystems.github.io/blindsight/usage/typeclasses.html).
-* Resolving operation-specific loggers through [logger resolvers](https://tersesystems.github.io/blindsight/usage/resolvers.html).
+```
+val str: String = "string arg"
+val number: Int = 1
+val arg: Person = Person(name, age) // has a ToArgument[Person] type class instance
+logger.info("{} {} {}", bool, number, person) // compiles fine
+
+logger.info("will not compile", new Object()) // WILL NOT COMPILE
+```
+
+By tightening the definition of an argument, Blindsight gives the user control over arguments are rendered in a given context.
+
+In addition, Blindsight adds [useful features](https://tersesystems.github.io/blindsight/usage/overview.html) that solve several outstanding problems with logging:
+
+* Rendering structured logs in multiple formats through an AST, along with an optional format-independent [DSL](https://tersesystems.github.io/blindsight/usage/dsl.html).
+* Providing thread-safe context to logs through [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html).
+* Time-based and targeted logging through [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html).
+* Dynamic targeted logging through [scripting](https://tersesystems.github.io/blindsight/usage/scripting.html).
+* Easier "printf debugging" through macro based [inspections](https://tersesystems.github.io/blindsight/usage/inspections.html).
+
+Using Scala to break apart the SLF4J API also makes constructing new logging APIs much easier.  You have the option of creating your own, depending on your use case:
+
 * Building up complex logging statements through [fluent logging](https://tersesystems.github.io/blindsight/usage/fluent.html).
 * Enforcing user supplied type constraints through [semantic logging](https://tersesystems.github.io/blindsight/usage/semantic.html).
 * Minimal-overhead tracing and causality tracking through [flow logging](https://tersesystems.github.io/blindsight/usage/flow.html).
-* Providing thread-safe context to logs through [context aware logging](https://tersesystems.github.io/blindsight/usage/context.html).
-* Time-based and targeted diagnostic logging through [conditional logging](https://tersesystems.github.io/blindsight/usage/conditional.html).
+* Managing complex relationships and schema through [JSON-LD](https://tersesystems.github.io/blindsight/usage/jsonld.html).
+
+Finally, there's also more advanced functionality to transform arguments and statements before entering SLF4J:
+
+* Resolving operation-specific loggers through [logger resolvers](https://tersesystems.github.io/blindsight/usage/resolvers.html).
 * Hooks into logging entries through [entry transformation](https://tersesystems.github.io/blindsight/usage/transform.html)
 * Application accessible debug and trace logs through [event buffers](https://tersesystems.github.io/blindsight/usage/buffer.html)
-* Method or line based logging overrides at runtime through [scripting](https://tersesystems.github.io/blindsight/usage/scripting.html).
-* Easier "printf debugging" through macro based [inspections](https://tersesystems.github.io/blindsight/usage/inspections.html).
 
 See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
 
@@ -49,7 +67,7 @@ There's an example application at [https://github.com/tersesystems/play-blindsig
 
 ## Dependencies
 
-The only hard dependency is the SLF4J API.  The DSL functionality is only implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder).  
+The only hard dependency is the SLF4J API.  Structured logging is implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder), but this is only a requirement if you are using structured logging.
 
 Blindsight is a pure SLF4J wrapper: it delegates all logging through to the SLF4J API and does not configure or manage the SLF4J implementation at all.
 

@@ -16,31 +16,46 @@
 >
 > -- [Blindsight](https://www.rifters.com/real/Blindsight.htm#Prologue), Peter Watts
 
-Blindsight is "observability through logging" where observability is defined as [baked in high cardinality structured data with field types](https://www.honeycomb.io/blog/observability-a-manifesto/).  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
+Blindsight is a logging library written in Scala that wraps SLF4J.  The name is taken from Peter Watts' excellent first contact novel, [Blindsight](https://en.wikipedia.org/wiki/Blindsight_\(Watts_novel\)).
 
-Blindsight is a logging library written in Scala that wraps SLF4J to add @ref:[useful features](usage/overview.md) that solve several outstanding problems with logging:
+The core feature of Blindsight is that it is "type safe" -- rather than passing in arguments of type `java.lang.Object`, the API accepts only objects that can be converted into an `Argument` through the `ToArgument` @ref:[type class](usage/typeclasses.html).
 
-* Expressing domain specific objects as arguments through @ref:[type classes](usage/typeclasses.md).
-* Rendering structured logs in multiple formats through a format-independent @ref:[AST and DSL](usage/dsl.md).
-* Enabling rich structured data through @ref:[JSON-LD](usage/jsonld.md).
-* Resolving operation-specific loggers through @ref:[logger resolvers](usage/resolvers.md).
-* Building up complex logging statements through @ref:[fluent logging](usage/fluent.md).
-* Enforcing user supplied type constraints through @ref:[semantic logging](usage/semantic.md).
-* Minimal-overhead tracing and causality tracking through @ref:[flow logging](usage/flow.md).
+```
+val str: String = "string arg"
+val number: Int = 1
+val arg: Person = Person(name, age) // has a ToArgument[Person] type class instance
+logger.info("{} {} {}", bool, number, person) // compiles fine
+
+logger.info("will not compile", new Object()) // WILL NOT COMPILE
+```
+
+By tightening the definition of an argument, Blindsight gives the user control over arguments are rendered in a given context.
+
+In addition, Blindsight adds @ref:[useful features](usage/overview.md) that solve several outstanding problems with logging:
+
+* Rendering structured logs in multiple formats through an AST, along with an optional format-independent @ref:[DSL](usage/dsl.md).
 * Providing thread-safe context to logs through @ref:[context aware logging](usage/context.md).
-* Time-based and targeted diagnostic logging through @ref:[conditional logging](usage/conditional.md).
-* Runtime method or line based logging overrides through @ref:[scripting](usage/scripting.md).
+* Time-based and targeted logging through @ref:[conditional logging](usage/conditional.html).
+* Dynamic targeted logging through @ref:[scripting](usage/scripting.html).
+* Easier "printf debugging" through macro based @ref:[inspections](usage/inspections.html).
 
-The only hard dependency is the SLF4J API, but the DSL functionality is only implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder).
+Using Scala to break apart the SLF4J API also makes constructing new logging APIs much easier.  You have the option of creating your own, depending on your use case:
 
-Please see the @ref:[Setup](setup/index.md) page for artifacts and installation.
+* Building up complex logging statements through @ref:[fluent logging](usage/fluent.html).
+* Enforcing user supplied type constraints through @ref:[semantic logging](usage/semantic.html).
+* Minimal-overhead tracing and causality tracking through @ref:[flow logging](usage/flow.html).
+* Managing complex relationships and schema through @ref:[JSON-LD](usage/jsonld.md).
 
-You can check out a "starter project" at [https://github.com/tersesystems/blindsight-starter](https://github.com/tersesystems/blindsight-starter).
+Finally, there's also more advanced functionality to transform arguments and statements before entering SLF4J:
 
-Blindsight is a pure SLF4J wrapper: it delegates all logging through to the SLF4J API and does not configure or manage the SLF4J implementation at all.
+* Resolving operation-specific loggers through @ref:[logger resolvers](usage/resolvers.md).
+* Hooks into logging entries through @ref:[entry transformation](usage/transform.html)
+* Application accessible debug and trace logs through @ref:[event buffers](usage/buffer.html)
 
-Versions are published for Scala 2.11, 2.12, and 2.13.
+@@@ note
 
-It is heavily informed by the [blog posts at tersesystems.com](https://tersesystems.com/category/logging/) and the [diagnostic logging showcase](https://github.com/tersesystems/terse-logback-showcase).
+If you are looking for a strict structured logging solution in Scala, please checkout [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala).  Structured logging is optional in Blindsight, and it's possible to mix structured and "flat" arguments and markers into a logging statement.  In contrast, [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala) **requires** structured logging in its API and does not allow unstructured data as input.
+
+@@@
 
 @@toc { depth=1 }
