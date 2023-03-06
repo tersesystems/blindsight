@@ -33,6 +33,12 @@ Blindsight is a logging library written in Scala that wraps SLF4J to add [useful
 
 See [the documentation](https://tersesystems.github.io/blindsight/) for more details.
 
+@@@ note
+
+If you are looking for a strict structured logging solution in Scala, please checkout [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala).  Structured logging is optional in Blindsight, and it's possible to mix structured and "flat" arguments and markers into a logging statement.  In contrast, [Echopraxia](https://github.com/tersesystems/echopraxia-plusscala) **requires** structured logging in its API and does not allow unstructured data as input.
+
+@@@
+
 ## Example
 
 You can check out a "starter project" at [https://github.com/tersesystems/blindsight-starter](https://github.com/tersesystems/blindsight-starter).
@@ -43,7 +49,7 @@ There's an example application at [https://github.com/tersesystems/play-blindsig
 
 ## Dependencies
 
-The only hard dependency is the SLF4J API, but the DSL functionality is only implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder).  
+The only hard dependency is the SLF4J API.  The DSL functionality is only implemented for Logback with [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder).  
 
 Blindsight is a pure SLF4J wrapper: it delegates all logging through to the SLF4J API and does not configure or manage the SLF4J implementation at all.
 
