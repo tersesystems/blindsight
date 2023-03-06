@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tersesystems.blindsight
+package com.tersesystems.blindsight.dsl
 
 import com.tersesystems.blindsight.AST._
 

@@ -1,6 +1,6 @@
 package com.tersesystems.blindsight.logstash
 
-import com.tersesystems.blindsight.DSL._
+import com.tersesystems.blindsight.dsl.DSL._
 import com.tersesystems.blindsight._
 import com.tersesystems.blindsight.fixtures.OneContextPerTest
 import com.tersesystems.blindsight.fluent.FluentLogger

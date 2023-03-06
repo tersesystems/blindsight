@@ -161,6 +161,14 @@ lazy val api = (projectMatrix in file("api"))
   .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(fixtures % "test->test" /* tests in api depend on test code in fixtures */ )
 
+lazy val dsl = (projectMatrix in file("dsl"))
+  .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.dsl"))
+  .settings(
+    name          := "blindsight-dsl",
+    scalacOptions := scalacOptionsVersion(scalaVersion.value),
+  ).jvmPlatform(scalaVersions = scalaVersions)
+  .dependsOn(api)
+
 lazy val ringbuffer = (projectMatrix in file("ringbuffer"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.ringbuffer"))
   .settings(
@@ -179,7 +187,7 @@ lazy val jsonld = (projectMatrix in file("jsonld"))
     scalacOptions                   := scalacOptionsVersion(scalaVersion.value)
   )
   .jvmPlatform(scalaVersions = scalaVersions)
-  .dependsOn(api)
+  .dependsOn(api, dsl)
 
 lazy val logstash = (projectMatrix in file("logstash"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.logstash"))
@@ -190,7 +198,7 @@ lazy val logstash = (projectMatrix in file("logstash"))
     libraryDependencies += logstashLogbackEncoder
   )
   .jvmPlatform(scalaVersions = scalaVersions)
-  .dependsOn(api, fixtures % "test->test")
+  .dependsOn(api, dsl, fixtures % "test->test")
 
 lazy val inspections = (projectMatrix in file("inspections"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.inspection"))
@@ -324,6 +332,7 @@ lazy val root = (projectMatrix in file("."))
   .settings(disablePublishing)
   .aggregate(
     api,
+    dsl,
     fixtures,
     inspections,
     scripting,

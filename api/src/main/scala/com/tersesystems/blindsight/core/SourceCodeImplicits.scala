@@ -16,7 +16,7 @@
 
 package com.tersesystems.blindsight.core
 
-import com.tersesystems.blindsight.{AST, DSL}
+import com.tersesystems.blindsight.AST
 import sourcecode._
 
 /**
@@ -33,12 +33,11 @@ class SourceCodeImplicits(
     enclosingLabel: String
 ) {
   import AST._
-  import DSL._
 
-  implicit def fileToBObject(file: File): BField = fileLabel -> file.value
+  implicit def fileToField(file: File): BField = fileLabel -> BString(file.value)
 
-  implicit def lineToField(line: Line): BField = lineLabel -> line.value
+  implicit def lineToField(line: Line): BField = lineLabel -> BInt(line.value)
 
   implicit def enclosingToField(enclosing: Enclosing): BField =
-    enclosingLabel -> enclosing.value
+    enclosingLabel -> BString(enclosing.value)
 }

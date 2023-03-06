@@ -60,7 +60,7 @@ trait BlindsightASTMapping {
   }
 
   def extractStringValue(sv: StringValue): BValue = {
-    import com.tersesystems.blindsight.DSL._
+    import com.tersesystems.blindsight.dsl.DSL._
     val `@direction` = Keyword.`@direction`.name
     val `@language`  = Keyword.`@language`.name
     val `@value`     = Keyword.`@value`.name
