@@ -36,7 +36,7 @@ object AST {
 
   object BValue
 
-  sealed abstract class BValue extends Product with Serializable {
+  sealed abstract class BValue {
     type Values
 
     def values: Values
@@ -50,7 +50,7 @@ object AST {
 
     def apply(i: Int): BValue = BNothing
 
-    def ++(other: BValue) = {
+    def ++(other: BValue): BValue = {
       def append(value1: BValue, value2: BValue): BValue =
         (value1, value2) match {
           case (BNothing, x)            => x
@@ -118,8 +118,8 @@ object AST {
   }
 
   final case class BObject(obj: List[BField]) extends BValue {
-    type Values = Map[String, Any]
-    def values: Map[String, Any] = obj.iterator.map { case (n, v) => (n, v.values) }.toMap
+    type Values = List[BField]
+    def values: List[BField] = obj
 
     override def equals(that: Any): Boolean =
       that match {
