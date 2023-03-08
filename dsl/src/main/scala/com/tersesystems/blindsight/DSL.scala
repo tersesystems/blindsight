@@ -30,6 +30,7 @@ import com.tersesystems.blindsight.AST._
  * }}}
  */
 trait DSL extends DSLImplicits {
+
   implicit def seq2BValue[A](s: Iterable[A])(implicit ev: A => BValue): BArray =
     BArray(s.toList.map { a =>
       val v: BValue = ev(a); v

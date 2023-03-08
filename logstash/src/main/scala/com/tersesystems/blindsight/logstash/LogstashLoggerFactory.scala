@@ -17,7 +17,7 @@
 package com.tersesystems.blindsight.logstash
 
 import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.core.{CoreLogger, SourceInfoBehavior}
+import com.tersesystems.blindsight.core.CoreLogger
 
 /**
  * A logger factory that returns logstash enabled loggers.
@@ -25,15 +25,7 @@ import com.tersesystems.blindsight.core.{CoreLogger, SourceInfoBehavior}
 class LogstashLoggerFactory extends LoggerFactory {
   override def getLogger[T: LoggerResolver](instance: T): Logger = {
     val underlying = implicitly[LoggerResolver[T]].resolveLogger(instance)
-    new Logger.Impl(CoreLogger(underlying, sourceInfoBehavior(underlying)))
-  }
-
-  protected def sourceInfoBehavior(underlying: org.slf4j.Logger): Option[SourceInfoBehavior] = {
-    if (sourceInfoEnabled(underlying)) {
-      Some(sourceInfoAsMarker(underlying))
-    } else {
-      None
-    }
+    new Logger.Impl(CoreLogger(underlying))
   }
 
   protected def sourceInfoEnabled(underlying: org.slf4j.Logger): Boolean = {
@@ -44,14 +36,6 @@ class LogstashLoggerFactory extends LoggerFactory {
   protected def property(underlying: org.slf4j.Logger, propertyName: String): Option[String] = {
     val logbackLogger = underlying.asInstanceOf[ch.qos.logback.classic.Logger]
     Option(logbackLogger.getLoggerContext.getProperty(propertyName))
-  }
-
-  protected def sourceInfoAsMarker(underlying: org.slf4j.Logger): SourceInfoBehavior = {
-    import LogstashLoggerFactory._
-    val fileLabel      = property(underlying, SourceFileProperty).getOrElse("source.file")
-    val lineLabel      = property(underlying, SourceLineProperty).getOrElse("source.line")
-    val enclosingLabel = property(underlying, SourceEnclosingProperty).getOrElse("source.enclosing")
-    new SourceInfoBehavior.Impl(fileLabel, lineLabel, enclosingLabel)
   }
 
 }

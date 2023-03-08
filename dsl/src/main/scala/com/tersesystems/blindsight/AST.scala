@@ -32,6 +32,12 @@ package com.tersesystems.blindsight
  * }}}
  */
 object AST {
+  implicit val bobjectToMarkers: ToMarkers[BObject] = ToMarkers { bobj => MarkersResolver(bobj) }
+
+  implicit val bobjectToArgument: ToArgument[BObject] = ToArgument { bobject =>
+    ArgumentResolver(bobject)
+  }
+
   type BField = (String, BValue)
 
   object BValue
