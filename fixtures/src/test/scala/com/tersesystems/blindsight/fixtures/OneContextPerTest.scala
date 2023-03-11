@@ -8,7 +8,8 @@ import ch.qos.logback.core.read.ListAppender
 import org.scalatest.{Outcome, TestData, TestSuite, TestSuiteMixin}
 
 import java.util.Objects.requireNonNull
-import java.util.Optional
+import java.util.{Optional, Spliterator, Spliterators}
+import java.util.stream.StreamSupport
 
 trait OneContextPerTest extends TestSuiteMixin {
   this: TestSuite =>
@@ -52,8 +53,7 @@ trait OneContextPerTest extends TestSuiteMixin {
 
   def listAppender(implicit context: LoggerContext): ListAppender[ILoggingEvent] = {
     def getFirstAppender(logger: Logger): Optional[Appender[ILoggingEvent]] = {
-      val appenderStream =
-        StreamUtils.fromIterator(logger.iteratorForAppenders)
+      val appenderStream = fromIterator(logger.iteratorForAppenders)
       appenderStream.findFirst
     }
 
@@ -61,6 +61,11 @@ trait OneContextPerTest extends TestSuiteMixin {
     if (maybeAppender.isPresent)
       requireNonNull(maybeAppender.get).asInstanceOf[ListAppender[ILoggingEvent]]
     else throw new IllegalStateException("Cannot find appender")
+  }
+
+  private def fromIterator[E](iterator: java.util.Iterator[E]) = {
+    val spliterator: Spliterator[E] = Spliterators.spliteratorUnknownSize(iterator, 0)
+    StreamSupport.stream(spliterator, false)
   }
 
 }

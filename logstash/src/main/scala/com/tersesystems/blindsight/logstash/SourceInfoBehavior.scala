@@ -5,18 +5,16 @@ import com.tersesystems.blindsight.Markers
 import com.tersesystems.blindsight.core.SourceInfoBehavior
 import sourcecode._
 
-object SourceInfoBehavior {
 
-  class Impl(
-      fileLabel: String,
-      lineLabel: String,
-      enclosingLabel: String
-  ) extends SourceCodeImplicits(fileLabel, lineLabel, enclosingLabel)
-      with SourceInfoBehavior {
-    override def apply(line: Line, file: File, enclosing: Enclosing): Markers = {
-      val obj: BObject = BObject(List(line, file, enclosing))
-      Markers(obj)
-    }
+class SourceInfoBehaviorImpl(
+    fileLabel: String,
+    lineLabel: String,
+    enclosingLabel: String
+) extends SourceCodeImplicits(fileLabel, lineLabel, enclosingLabel)
+    with SourceInfoBehavior {
+  override def apply(line: Line, file: File, enclosing: Enclosing): Markers = {
+    val obj: BObject = BObject(List(line, file, enclosing))
+    Markers(obj)
   }
 }
 
