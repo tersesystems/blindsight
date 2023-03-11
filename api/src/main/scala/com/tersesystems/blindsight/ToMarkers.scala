@@ -16,7 +16,6 @@
 
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.AST.BObject
 import org.slf4j.Marker
 
 /**
@@ -48,8 +47,6 @@ trait LowPriorityToMarkersImplicits {
   implicit val markersToMarkers: ToMarkers[Markers] = ToMarkers(identity)
 
   implicit val markerToMarkers: ToMarkers[Marker] = ToMarkers(Markers(_))
-
-  implicit val bobjectToMarkers: ToMarkers[BObject] = ToMarkers { bobj => MarkersResolver(bobj) }
 }
 
 object ToMarkers extends LowPriorityToMarkersImplicits {

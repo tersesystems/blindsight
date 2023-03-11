@@ -16,8 +16,6 @@
 
 package com.tersesystems.blindsight
 
-import com.tersesystems.blindsight.AST.BObject
-
 /**
  * This is a type class used to convert given types to [[Argument]].
  *
@@ -64,10 +62,6 @@ trait LowPriorityToArgumentImplicits {
   implicit val floatToArgument: ToArgument[Float] = ToArgument { float => new Argument(float) }
 
   implicit val doubleToArgument: ToArgument[Double] = ToArgument { double => new Argument(double) }
-
-  implicit val bobjectToArgument: ToArgument[BObject] = ToArgument { bobject =>
-    ArgumentResolver(bobject)
-  }
 }
 
 object ToArgument extends LowPriorityToArgumentImplicits {
