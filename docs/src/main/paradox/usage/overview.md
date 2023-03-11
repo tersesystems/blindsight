@@ -103,17 +103,17 @@ And the API takes `ToArgument` for automatic conversion:
 logger.info("this is a message", "arg1", "arg2");
 ```
 
-The @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) class aggregates multiple arguments together when there are more than two arguments.  The `Arguments()` method takes a varadic list of arguments that can be hetrogeneous.
+You can pass in up to 20 arguments.  If you have more arguments than that, the @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) class aggregates multiple arguments.
 
 ```scala
-val arguments: Arguments = Arguments("arg1", 42, true)
+val arguments: Arguments = ... // 100 arguments
 logger.info(markers, message, arguments);
 ```
 
-Exceptions must be at the end of the statement, and are not aggregated with arguments.  This is to encourage type safety and make it impossible to include an exception as an argument by accident.
+Exceptions must be at the end of the arguments list, whether passed in as parameter or in an `Arguments` array.
 
 ```scala
-logger.info("Message with arguments and exceptions", arguments, exception);
+logger.info("Message with arguments and exceptions");
 ```
 
 You can use type class instances to extend Blindsight's functionality.  For example, you can pass a feature flag into `isDebugEnabled` and it will convert it into a `Markers`:

@@ -4,26 +4,7 @@ The default Logger API has the same logger methods and (roughly) the type signat
 
 The biggest difference is that methods take a type class instance of @scaladoc[Markers](com.tersesystems.blindsight.Markers) and @scaladoc[Arguments](com.tersesystems.blindsight.Arguments), if you have them defined.
 
-## Markers
-
-Markers work the same way, but must be an instance of @scaladoc[Markers](com.tersesystems.blindsight.Markers).
-
-```scala
-val marker = MarkerFactory.getDetachedMarker("foo")
-logger.info(Markers(marker), "hello")
-```
-
-Using the @ref:[DSL](dsl.md) with marker enrichment is encouraged here, as it can make marker specification much easier:
-
-```scala
-import com.tersesystems.blindsight._
-import com.tersesystems.blindsight.MarkersEnrichment._
-logger.info(bobj("markerKey" -> "markerValue").asMarkers, "marker and argument")
-```
-
-Generally, you should not need to use markers explicitly in messages, as they can be used with @ref:[context](context.md) more effectively.
-
-## Arguments 
+## Arguments
 
 Arguments in Blindsight are type checked, in constrast to the SLF4J API, which takes an `Any`.  There **must** be a type class instance of @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) in scope.  This is to prevent awkward `toString` matches on object instances, and ensure that structured logging is taking place. 
 
@@ -38,24 +19,40 @@ Default @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) are determ
 logger.info("one argument {}", 42) // works, because default
 ```
 
-If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) instance:
+If you have more than twenty arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) instance:
 
 ```scala
-logger.info("arg {}, arg {}, arg {}", Arguments(1, "2", false))
+val arguments: Arguments = ...
+logger.info(template, arguments)
 ```
 
-comes out as:
-
-```
-FgEddUhGnXE6O0Qbm7EAAA 17:36:55.142 [INFO ] e.s.Slf4jMain$ -  arg 1, arg 2, arg false
-```
-
-Exceptions come after arguments, and are not included in the list.  For example:
+Like SLF4J, an exception must be at the end of the parameter list to be included with the stacktrace.  For example:
 
 ```scala
 val e = new Exception("something is horribly wrong")
-logger.error("this is an error with argument {}", Arguments("a" -> "b"), e)
+logger.error("this is an error with argument {}", ("a" -> "b"), e)
 ```
+
+## Markers
+
+Markers work the same way, but must be an instance of @scaladoc[Markers](com.tersesystems.blindsight.Markers).
+
+```scala
+val marker = MarkerFactory.getDetachedMarker("foo")
+logger.info(Markers(marker), "hello")
+```
+
+Using the @ref:[DSL](dsl.md) with marker enrichment is encouraged here, as it can make marker specification much easier:
+
+```scala
+import com.tersesystems.DSL._
+import com.tersesystems.blindsight._
+import com.tersesystems.blindsight.MarkersEnrichment._
+val marker = bobj("markerKey" -> "markerValue").asMarkers
+logger.info(marker, "marker")
+```
+
+Generally, you should not need to use markers explicitly in messages, as they can be used with @ref:[context](context.md) more effectively.
 
 ## Lazy Blocks
 
