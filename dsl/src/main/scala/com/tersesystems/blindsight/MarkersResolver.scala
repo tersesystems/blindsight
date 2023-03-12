@@ -21,7 +21,7 @@ import com.tersesystems.blindsight.AST.BObject
 import java.util.ServiceLoader
 
 /**
- * Resolves a [[com.tersesystems.blindsight.AST.BObject]] to [[Markers]].
+ * Resolves a [[com.tersesystems.blindsight.AST.BObject]] to Markers.
  *
  * {{{
  * val markers: Markers = MarkersResolver(bobj("foo" -> "bar"))
