@@ -19,7 +19,7 @@ package com.tersesystems.blindsight
 import com.tersesystems.blindsight.AST._
 
 /**
- * A DSL to produce valid [[AST]] of values.
+ * A DSL to produce valid AST of values.
  *
  * This is "inspired" by JSON4S code.
  *

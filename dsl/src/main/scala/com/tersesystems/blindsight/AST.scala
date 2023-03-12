@@ -22,7 +22,7 @@ package com.tersesystems.blindsight
  * [[MarkersResolver]] or [[ArgumentResolver]] is used to convert from AST to [[Markers]]
  * or [[Argument]], respectively.
  *
- * A tree is typically constructed by using the [[DSL]].
+ * A tree is typically constructed by using the DSL.
  *
  * {{{
  * import com.tersesystems.blindsight.AST._
