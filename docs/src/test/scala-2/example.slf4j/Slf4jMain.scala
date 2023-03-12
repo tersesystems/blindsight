@@ -75,7 +75,7 @@ object Slf4jMain {
     val m1 = MarkerFactory.getMarker("M1")
 
     logger.info("this is strict {} {}", 42, 53)
-    logger.info("arg {}, arg {}, arg 3 {}", Arguments(1, "2", false))
+    logger.info("arg {}, arg {}, arg 3 {}", 1, "2", false)
 
     val e = new Exception("derp")
     logger.error("this is an error", e)

@@ -4,27 +4,28 @@ The important types in Blindsight are @scaladoc[Markers](com.tersesystems.blinds
 
  Where possible, the APIs map automatically, using the @scaladoc[ToMarkers](com.tersesystems.blindsight.ToMarkers), @scaladoc[ToMessage](com.tersesystems.blindsight.ToMessage) and @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) type classes, respectively.
 
-## General Principles
+## Argument and Arguments
 
-Type classes let you represent your domain objects as structured logging data. 
+Arguments must be convertible to @scaladoc[Argument](com.tersesystems.blindsight.Argument).  This is usually done with type class instances.
 
-Although Blindsight does provide mappings of the basic primitive types, you may want to provide some more semantic detail about what the value represents, and use the DSL with a specific field name and type -- for example, rather than representing an age as an integer, `logger.info("person age = {}", persion.age)` is easier if you use a specific class `Age` and have a type class instance that represents that `Age` as `bobj("age_year" -> ageInYear)`
+Default @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) are determined for the primitives (`String`, `Int`, etc):
 
-You can of course use type classes to render any given type in logging.  For example, to render a `Future` as an argument:
+@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala) { #argument-int }
+
+You can define your own argument type class instances:
+
+@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala) { #argument-chronounit }
+
+Although it's usually better to use the @ref:[DSL](dsl.md) and map to a @scaladoc[BObject](com.tersesystems.blindsight.AST.BObject), which is an "object" value:
+
+@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala) { #argument-person }
+
+There is a plural of @scaladoc[Argument](com.tersesystems.blindsight.Argument), @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) that is used when you have large numbers of Arguments.
 
 ```scala
-implicit val futureToArgument: ToArgument[Future[_]] = ToArgument[Future[_]] { future =>
-   new Argument(future.toString)
-}
-
-logger.info("future is {}", Future.successful(()))
+val arguments: Arguments = Arguments.fromSeq(veryLargeList)
+logger.info(template, arguments)
 ```
-
-@@@ note
-
-You may find it helpful to use [Refined](https://github.com/fthomas/refined) and [Coulomb](https://github.com/erikerlandson/coulomb#documentation) to provide type-safe validation and unit representation of data to the DSL.
-
-@@@
 
 ## Markers
 
@@ -55,28 +56,6 @@ Or you can use the @scaladoc[MarkersEnrichment](com.tersesystems.blindsight.Mark
 @@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala)  { #marker-enrichment }
 
 The SLF4J API is awkward to use with markers, because there are several possible variations that can confuse the compiler and stop the type class from being used directly.  To avoid using the `Markers(marker)` wrapper, you can use the @ref:[fluent API](fluent.md) or use @ref:[contextual logging](context.md).
-
-## Argument and Arguments
-
-Arguments must be convertible to @scaladoc[Argument](com.tersesystems.blindsight.Argument).  This is usually done with type class instances.
-
-Default @scaladoc[ToArgument](com.tersesystems.blindsight.ToArgument) are determined for the primitives (`String`, `Int`, etc):
-
-@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala) { #argument-int }
-
-You can define your own argument type class instances:
-
-@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala) { #argument-chronounit }
-
-Although it's usually better to use the @ref:[DSL](dsl.md) and map to a @scaladoc[BObject](com.tersesystems.blindsight.AST.BObject):
-
-@@snip [TypeClassExample.scala](../../../test/scala/example/typeclasses/TypeClassExample.scala) { #argument-person }
-
-There is a plural of @scaladoc[Argument](com.tersesystems.blindsight.Argument), @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) that is used in place of varadic arguments.  If you have more than two arguments, you will need to wrap them so they are provided as a single @scaladoc[Arguments](com.tersesystems.blindsight.Arguments) instance:
-
-```scala
-logger.info("arg {}, arg {}, arg {}", Arguments(1, "2", false))
-```
 
 ## Message
 
