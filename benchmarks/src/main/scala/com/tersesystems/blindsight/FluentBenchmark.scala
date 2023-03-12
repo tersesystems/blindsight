@@ -36,7 +36,6 @@ class FluentBenchmark {
   val arg1 = Argument("one")
   val arg2 = Argument("two")
   val arg3 = Argument("three")
-  val args = Arguments(arg1, arg2, arg3)
 
   @Benchmark
   def info(): Unit = {

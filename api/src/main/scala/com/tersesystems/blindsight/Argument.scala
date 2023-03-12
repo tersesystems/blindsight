@@ -24,9 +24,6 @@ import scala.collection.compat.immutable.ArraySeq
  * Normally this is used in a [[ToArgument]] type class instance, and you
  * should not have to use it in a logging statement directly.
  *
- * Note that an exception is **not** a valid argument, and exceptions are
- * handled explicitly as `java.lang.Throwable` in the APIs.
- *
  * @param value the argument value.
  */
 final class Argument(val value: Any) extends AnyVal {
@@ -47,9 +44,10 @@ object Argument {
 }
 
 /**
- * This is the representation of arguments in an SLF4J logging statement.  It is used to
- * prevent the use of varadic arguments in the SLF4J API, which is a problem for type safety
- * and also causes problems with `: _*` type ascryption and confused IDEs.
+ * This is the representation of arguments in an SLF4J logging statement. 
+ *
+ * You shouldn't need to use this most of the time, as its used for when there are more arguments
+ * than the API can handle directly.
  *
  * Arguments present as an immutable API, which can be composed together using `+` and
  * `++` for sequences.

@@ -23,6 +23,8 @@ artifact="blindsight-dsl_$scala.binary.version$"
 version="$project.version.short$"
 }
 
+This is included automatically in `blindsight-logstash` as a dependency.
+
 ## Constructing DSL
 
 The DSL is imported by adding the following import statement:

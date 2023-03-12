@@ -26,13 +26,12 @@ The first approach says that logging should be done up front inside a guard stat
 if (logger.isLoggingInfo()) {
   val arg1 = ...
   val arg2 = ...
-  val arg3 = ...
-  val arguments = Arguments(arg1, arg2, arg3)
-  logger.info("My message with {} {} {}", arguments)
+  val arg3 = ...  
+  logger.info("My message with {} {} {}", arg1, arg2, arg3)
 }
 ```
 
-The issue with guard statements is that they don't flow very well, and it's easy to forget them.  There's also the argument that if you're logging at info level, you're checking the guard twice (since it gets checked in `logger.info` itself), and so you may as well eliminate the condition altogether. 
+The issue with guard statements is that they don't flow very well, and it's easy to forget them.  There's also the argument that if you're logging at info level, you're checking the guard twice (since it gets checked in `logger.info` itself), and so you may as well eliminate the condition altogether.
 
 The second approach says that logging should be done inside a function block, with lazy evaluation:
 
@@ -41,8 +40,7 @@ logger.info { info =>
   val arg1 = ...
   val arg2 = ...
   val arg3 = ...
-  val arguments = Arguments(arg1, arg2, arg3)
-  info("My message with {} {} {}", arguments)
+  info("My message with {} {} {}", arg1, arg2, arg3)
 }
 ```
 
