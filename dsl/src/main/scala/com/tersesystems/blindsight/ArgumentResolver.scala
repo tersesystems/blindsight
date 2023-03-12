@@ -21,7 +21,7 @@ import com.tersesystems.blindsight.AST.BObject
 import java.util.ServiceLoader
 
 /**
- * Resolves a [[com.tersesystems.blindsight.AST.BObject]] to an [[Argument]].
+ * Resolves a [[com.tersesystems.blindsight.AST.BObject]] to an Argument.
  *
  * {{{
  * val argument: Argument = ArgumentResolver(bobj("foo" -> "bar"))
