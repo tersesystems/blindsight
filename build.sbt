@@ -165,8 +165,9 @@ lazy val dsl = (projectMatrix in file("dsl"))
   .settings(AutomaticModuleName.settings("com.tersesystems.blindsight.dsl"))
   .settings(
     name          := "blindsight-dsl",
-    scalacOptions := scalacOptionsVersion(scalaVersion.value),
-  ).jvmPlatform(scalaVersions = scalaVersions)
+    scalacOptions := scalacOptionsVersion(scalaVersion.value)
+  )
+  .jvmPlatform(scalaVersions = scalaVersions)
   .dependsOn(api)
 
 lazy val ringbuffer = (projectMatrix in file("ringbuffer"))
