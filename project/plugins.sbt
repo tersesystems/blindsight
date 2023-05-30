@@ -7,7 +7,7 @@ addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.10.3")
 addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
 
 // https://github.com/sbt/sbt-ghpages
-addSbtPlugin("com.github.sbt" % "sbt-ghpages" % "0.7.0")
+addSbtPlugin("com.github.sbt" % "sbt-ghpages" % "0.8.0")
 
 // https://github.com/sbt/sbt-header
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.9.0")
