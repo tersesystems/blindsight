@@ -2,7 +2,7 @@ import sbt.Keys.{scalaOrganization, scalaVersion}
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.15"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.16"
 
   val terseLogback = "1.2.0"
 
