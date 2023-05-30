@@ -4,7 +4,7 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.0")
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.10.3")
 
 // https://www.scala-sbt.org/sbt-site/getting-started.html
-addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
+addSbtPlugin("com.github.sbt" % "sbt-site" % "1.5.0")
 
 // https://github.com/sbt/sbt-ghpages
 addSbtPlugin("com.github.sbt" % "sbt-ghpages" % "0.7.0")
