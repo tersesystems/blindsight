@@ -19,7 +19,7 @@ addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
 addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.14.2")
 
 // https://github.com/ktoso/sbt-jmh
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.4")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.5")
 
 // https://github.com/sbt/sbt-pgp
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.2.1")
