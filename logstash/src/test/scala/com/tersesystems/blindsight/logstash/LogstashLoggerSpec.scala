@@ -104,7 +104,9 @@ class LogstashLoggerSpec extends AnyWordSpec with Matchers with OneContextPerTes
         logger.info(
           Markers(bobj("markerKey" -> "markerValue")),
           "a=b",
-          bobj("1" -> "2"), bobj("3" -> "4"), e
+          bobj("1" -> "2"),
+          bobj("3" -> "4"),
+          e
         )
 
         val event = listAppender.list.get(0)
