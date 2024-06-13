@@ -10,7 +10,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
 addSbtPlugin("com.github.sbt" % "sbt-ghpages" % "0.7.0")
 
 // https://github.com/sbt/sbt-header
-addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.9.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.10.0")
 
 // https://github.com/sbt/sbt-unidoc
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
