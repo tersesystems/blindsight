@@ -13,7 +13,7 @@ addSbtPlugin("com.github.sbt" % "sbt-ghpages" % "0.7.0")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.9.0")
 
 // https://github.com/sbt/sbt-unidoc
-addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
+addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.6.0")
 
 // https://github.com/djspiewak/sbt-github-actions
 addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.14.2")
