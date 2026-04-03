@@ -34,4 +34,4 @@ addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.18")
 addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.9.0")
 
 // https://github.com/indoorvivants/sbt-commandmatrix
-addSbtPlugin("com.indoorvivants" % "sbt-commandmatrix" % "0.0.5")
+addSbtPlugin("com.indoorvivants" % "sbt-commandmatrix" % "0.1.0")
